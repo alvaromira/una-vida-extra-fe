@@ -34,7 +34,32 @@ a,
   }
 }
 */
+@import url("https://fonts.googleapis.com/css?family=Roboto+Condensed");
 
+html,
 body {
+  font-family: "Roboto", sans-serif;
+}
+
+#app {
+  font-family: "Roboto", sans-serif;
+}
+body {
+  margin: 0;
+  background-color: #fdf6e4;
+}
+
+main {
+  padding: 2rem;
+  background-color: #fdf6e4;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  padding: 0;
   margin: 0;
 }

@@ -56,6 +56,7 @@ const showLocation = () => {
   width: 100%;
   padding: 1rem;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  background-color: #fff;
 }
 .product-top {
   text-align: center;

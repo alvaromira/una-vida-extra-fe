@@ -1,10 +1,7 @@
 <template>
   <div>
-    <h1>This is the products page</h1>
-  </div>
-  <main>
-    <section>
-      <h2>Check the latest additions!</h2>
+    <h2>Check the latest additions!</h2>
+    <section class="product-card-container">
       <div v-for="product in products">
         <ProductCard
           :image="product.image"
@@ -14,7 +11,7 @@
         />
       </div>
     </section>
-  </main>
+  </div>
   <!--
     Header
     Main
@@ -62,3 +59,21 @@ const total = computed(() => {
 //  name: "Produts",
 //};
 </script>
+<style scoped>
+.product-card-container {
+  display: flex;
+
+  align-items: flex-start;
+  flex-flow: row wrap;
+  /* Then we define how is distributed the remaining space */
+  justify-content: center;
+  gap: 3rem;
+}
+
+h2 {
+  text-transform: uppercase;
+  text-align: center;
+  color: #7ab370;
+  padding: 1rem 1rem 1.5rem 1rem;
+}
+</style>

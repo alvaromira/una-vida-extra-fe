@@ -13,7 +13,9 @@ import TheHeader from "./components/Layout/TheHeader/TheHeader.vue";
 
 <template>
   <TheHeader></TheHeader>
-  <RouterView />
+  <div id="content">
+    <RouterView />
+  </div>
   <TheFooter></TheFooter>
 </template>
 
@@ -55,9 +57,10 @@ nav a:first-of-type {
 
 @media (min-width: 1024px) {
   header {
-    display: flex;
+    /* display: flex;
     place-items: center;
     padding-right: calc(var(--section-gap) / 2);
+ */
   }
 
   .logo {
@@ -77,6 +80,10 @@ nav a:first-of-type {
 
     padding: 1rem 0;
     margin-top: 1rem;
+  }
+
+  #content {
+    padding: 1.5rem;
   }
 }
 </style>

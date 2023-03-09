@@ -18,11 +18,14 @@ export default {
 footer {
   width: 100%;
   text-align: center;
-  background-color: darkgreen;
+  background-color: #7ab370;
   color: aliceblue;
+  border-top: 3px solid #edb421;
+  padding: 2rem 0;
 }
 p {
   margin: 0;
   padding: 0;
+  font-weight: 200;
 }
 </style>
