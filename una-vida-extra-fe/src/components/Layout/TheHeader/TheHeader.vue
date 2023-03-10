@@ -79,6 +79,10 @@ header {
 #header-text {
 }
 
+#header-text h1 {
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
 .bottom-header {
   display: flex;
   justify-content: space-between;
