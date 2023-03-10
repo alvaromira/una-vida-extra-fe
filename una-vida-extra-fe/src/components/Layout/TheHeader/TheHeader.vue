@@ -3,10 +3,10 @@
     <div class="top-header">
       <RouterLink to="/products">
         <img
-          alt="Vue logo"
+          alt="1up logo"
           class="logo"
-          src="@/assets/logo.svg"
-          width="125"
+          src="@/assets/images/one-life-up-logo.png"
+          width="150"
           height="125"
       /></RouterLink>
       <div id="header-text">
