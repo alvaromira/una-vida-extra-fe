@@ -1,7 +1,15 @@
+<script setup>
+import UserLoginForm from "../../components/user/UserLoginForm.vue";
+</script>
+
 <template>
-  <div>
-    <h1>This is the login page</h1>
+  <div class="form-wrapper">
+    <UserLoginForm />
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.form-wrapper {
+  max-width: 50%;
+}
+</style>

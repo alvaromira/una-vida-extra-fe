@@ -20,11 +20,11 @@ const data = reactive({
     isValid: true,
   },
   password: {
-    val: null,
+    val: "",
     isValid: true,
   },
   passwordConfirmation: {
-    val: null,
+    val: "",
     isValid: true,
   },
   publicDetails: {
@@ -45,7 +45,7 @@ const formIsValid = ref(true);
 
 //methods
 
-//
+//get the user location coords using the default nav controls
 const getLocationCoords = () => {
   navigator.geolocation.getCurrentPosition(
     (position) => {
@@ -65,24 +65,77 @@ const getLocationCoords = () => {
 };
 
 const clearValidity = (input) => {
+  console.log(`Setting valid to true: ${input}`);
   data[input].isValid = true;
 };
 
 //specific validation of each of the registration forms included
 const validateForm = () => {
+  console.log("Running validation on registration form");
+
   formIsValid.value = true;
+
   if (data.firstName.val === "") {
     data.firstName.isValid = false;
     formIsValid.value = false;
   }
+
   if (data.lastName.val === "") {
     data.lastName.isValid = false;
     formIsValid.value = false;
   }
+
+  if (data.email.val === "") {
+    data.email.isValid = false;
+    formIsValid.value = false;
+  }
+
+  if (data.phone.val === "") {
+    data.phone.isValid = false;
+    formIsValid.value = false;
+  }
+
+  if (data.password.val === "") {
+    data.password.isValid = false;
+    formIsValid.value = false;
+  }
+
+  if (
+    data.passwordConfirmation.val === "" ||
+    data.passwordConfirmation.val !== data.password.val
+  ) {
+    data.passwordConfirmation.isValid = false;
+    formIsValid.value = false;
+  }
+
+  if (data.publicDetails.val === "") {
+    data.publicDetails.isValid = false;
+    formIsValid.value = false;
+  }
+
+  //validate long and lat together
+  if (
+    !data.longitude.val ||
+    !data.latitude.val ||
+    typeof data.longitude.val === "undefined" ||
+    typeof data.latitude.val === "undefined"
+  ) {
+    data.longitude.isValid = false;
+    data.latitude.isValid = false;
+    formIsValid.value = false;
+  }
+
+  /*
+    last: data.lastName.val,
+    phone: data.phone.val,
+    password: data.password.val,
+    publicDetails: data.publicDetails.val,
+    longitude: data.longitude.val,
+    latitude: data.latitude.val, */
 };
 
 const submitForm = () => {
-  console.log("Submitting");
+  console.log("Submitting form");
   validateForm();
 
   if (!formIsValid.value) {
@@ -92,13 +145,14 @@ const submitForm = () => {
   const formData = {
     first: data.firstName.val,
     last: data.lastName.val,
+    email: data.email.val,
     phone: data.phone.val,
     password: data.password.val,
     publicDetails: data.publicDetails.val,
     longitude: data.longitude.val,
     latitude: data.latitude.val,
   };
-
+  console.log("Form submitted");
   console.log(formData);
   // this.$emit("save-data", formData);
 };
@@ -111,141 +165,165 @@ export default {
 
 <template>
   <form @submit.prevent="submitForm">
-    <div>
-      <div class="form-control" :class="{ invalid: !data.firstName.isValid }">
-        <label for="firstname">Firstname</label>
-        <input
-          type="text"
-          id="firstname"
-          required
-          v-model.trim="data.firstName.val"
-          @blur="clearValidity('firstName')"
-        />
-        <p v-if="!data.firstName.isValid">Firstname must not be empty.</p>
-      </div>
-      <div class="form-control" :class="{ invalid: !data.lastName.isValid }">
-        <label for="lastname">Lastname</label>
-        <input
-          type="text"
-          id="lastname"
-          required
-          v-model.trim="data.lastName.val"
-          @blur="clearValidity('lastName')"
-        />
-        <p v-if="!data.lastName.isValid">Lastname must not be empty.</p>
-      </div>
-      <div class="form-control" :class="{ invalid: !data.email.isValid }">
-        <label for="email">email</label>
-        <input
-          type="email"
-          id="email"
-          required
-          v-model.trim="data.email.val"
-          @blur="clearValidity('email')"
-        />
-        <p v-if="!data.email.isValid">email must not be empty.</p>
-      </div>
-      <div class="form-control" :class="{ invalid: !data.phone.isValid }">
-        <label for="phone">phone</label>
-        <input
-          type="text"
-          id="phone"
-          required
-          v-model.trim="data.phone.val"
-          @blur="clearValidity('phone')"
-        />
-        <p v-if="!data.phone.isValid">phone must not be empty.</p>
-      </div>
-      <div class="form-control" :class="{ invalid: !data.password.isValid }">
-        <label for="password">password</label>
-        <input
-          type="password"
-          id="password"
-          required
-          v-model.trim="data.password.val"
-          @blur="clearValidity('password')"
-        />
-        <p v-if="!data.password.isValid">password must not be empty.</p>
-      </div>
-      <div
-        class="form-control"
-        :class="{ invalid: !data.passwordConfirmation.isValid }"
-      >
-        <label for="password-confirmation">password-confirmation</label>
-        <input
-          type="password"
-          id="password-confirmation"
-          required
-          v-model.trim="data.passwordConfirmation.val"
-          @blur="clearValidity('passwordConfirmation')"
-        />
-        <p v-if="!data.passwordConfirmation.isValid">
-          password-confirmation must not be empty.
+    <div class="form-left-side form-side">
+      <div>
+        <div class="form-control" :class="{ invalid: !data.firstName.isValid }">
+          <label for="firstname">Firstname</label>
+          <input
+            type="text"
+            id="firstname"
+            v-model.trim="data.firstName.val"
+            @blur="clearValidity('firstName')"
+          />
+          <p v-if="!data.firstName.isValid">Firstname must not be empty.</p>
+        </div>
+        <div class="form-control" :class="{ invalid: !data.lastName.isValid }">
+          <label for="lastname">Lastname</label>
+          <input
+            type="text"
+            id="lastname"
+            v-model.trim="data.lastName.val"
+            @blur="clearValidity('lastName')"
+          />
+          <p v-if="!data.lastName.isValid">Lastname must not be empty.</p>
+        </div>
+        <div class="form-control" :class="{ invalid: !data.email.isValid }">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            v-model.trim="data.email.val"
+            @blur="clearValidity('email')"
+          />
+          <p v-if="!data.email.isValid">email must not be empty.</p>
+        </div>
+        <div class="form-control" :class="{ invalid: !data.phone.isValid }">
+          <label for="phone">Phone</label>
+          <input
+            type="text"
+            id="phone"
+            v-model.trim="data.phone.val"
+            @blur="clearValidity('phone')"
+          />
+          <p v-if="!data.phone.isValid">phone must not be empty.</p>
+        </div>
+        <div class="form-control" :class="{ invalid: !data.password.isValid }">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            v-model.trim="data.password.val"
+            @blur="clearValidity('password')"
+          />
+          <p v-if="!data.password.isValid">password must not be empty.</p>
+        </div>
+        <div
+          class="form-control"
+          :class="{ invalid: !data.passwordConfirmation.isValid }"
+        >
+          <label for="password-confirmation">Password confirmation</label>
+          <input
+            type="password"
+            id="password-confirmation"
+            v-model.trim="data.passwordConfirmation.val"
+            @blur="clearValidity('passwordConfirmation')"
+          />
+          <p v-if="!data.passwordConfirmation.isValid">
+            password-confirmation must not be empty.
+          </p>
+        </div>
+        <div
+          class="form-control"
+          :class="{ invalid: !data.publicDetails.isValid }"
+        >
+          <label for="public-details">Public details</label>
+          <input
+            type="checkbox"
+            checked
+            id="public-details"
+            v-model.trim="data.publicDetails.val"
+            @blur="clearValidity('publicDetails')"
+          />
+          <p v-if="!data.publicDetails.isValid">
+            public-details must not be empty.
+          </p>
+        </div>
+
+        <p v-if="formIsValid.value === false">
+          Please fix the above errors and submit again.
         </p>
       </div>
-      <div
-        class="form-control"
-        :class="{ invalid: !data.publicDetails.isValid }"
-      >
-        <label for="public-details">public-details</label>
-        <input
-          type="checkbox"
-          id="public-details"
-          v-model.trim="data.publicDetails.val"
-          @blur="clearValidity('publicDetails')"
-        />
-        <p v-if="!data.publicDetails.isValid">
-          public-details must not be empty.
+    </div>
+    <div class="form-right-side form-side">
+      <div id="image-upload">
+        <img src="" class="profile-pic" />
+        <div>
+          <label for="profile-pic">Profile picture</label>
+          <input
+            type="file"
+            id="profile-pic"
+            name="profile-pic"
+            accept="image/png, image/jpeg"
+          />
+        </div>
+      </div>
+      <div id="coords-details">
+        <div class="form-control">
+          <label for="longitude">Longitude</label>
+          <input type="text" id="longitude" v-model.trim="data.longitude.val" />
+          <p v-if="!data.longitude.isValid">longitude must not be empty.</p>
+        </div>
+        <div class="form-control">
+          <label for="latitude">Latitude</label>
+          <input type="text" id="latitude" v-model.trim="data.latitude.val" />
+          <p v-if="!data.latitude.isValid">latitude must not be empty.</p>
+        </div>
+        <button @click.prevent="getLocationCoords">Get my Location</button>
+        <p class="note">
+          We need your location to make sure that proximity is considered when
+          donating products.Thanks!
         </p>
       </div>
 
-      <p v-if="!formIsValid.value">
-        Please fix the above errors and submit again.
-      </p>
+      <button>Register</button>
     </div>
-
-    <div id="coords-details">
-      <p>
-        We need your location to make sure that proximity is considered when
-        donating products.Thanks!
-      </p>
-      <div class="form-control">
-        <label for="longitude">Longitude</label>
-        <input type="number" id="longitude" v-model.trim="data.longitude.val" />
-        <p v-if="!data.longitude.isValid">longitude must not be empty.</p>
-      </div>
-      <div class="form-control">
-        <label for="latitude">latitude</label>
-        <input type="number" id="latitude" v-model.trim="data.latitude.val" />
-        <p v-if="!data.latitude.isValid">latitude must not be empty.</p>
-      </div>
-      <button @click="getLocationCoords">Get my Location</button>
-    </div>
-
-    <div id="image-upload">
-      <label for="profile-pic">Choose a profile picture:</label>
-
-      <input
-        type="file"
-        id="profile-pic"
-        name="profile-pic"
-        accept="image/png, image/jpeg"
-      />
-    </div>
-
-    <button>Register</button>
   </form>
 </template>
 
 <style scoped>
+form {
+  border: #edb421 solid thin;
+  box-shadow: rgba(17, 17, 26, 0.2) 0px 2px 4px;
+  background-color: #fff;
+  padding: 0;
+  display: flex;
+}
+.form-side {
+  flex: 1;
+  padding: 2rem;
+}
 .form-control {
-  margin: 0.5rem 0;
+  margin: 1.5rem 0;
+  display: flex;
+}
+
+.profile-pic {
+  background-color: gray;
+  width: 125px;
+  height: 125px;
+
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+}
+#image-upload input {
+  margin: 0;
 }
 
 label {
   font-weight: bold;
   display: block;
-  margin-bottom: 0.5rem;
+  /*margin-bottom: 0.5rem;*/
+  color: #edb421;
 }
 
 input[type="checkbox"] + label {
@@ -258,8 +336,11 @@ input,
 textarea {
   display: block;
   width: 100%;
-  border: 1px solid #ccc;
+  border: thin solid #edb421;
+  border-radius: 3px;
   font: inherit;
+  box-shadow: rgba(17, 17, 26, 0.2) 0px 2px 4px;
+  margin-inline-start: 1.5rem;
 }
 
 input:focus,
@@ -291,5 +372,12 @@ h3 {
 .invalid input,
 .invalid textarea {
   border: 1px solid red;
+}
+#image-upload {
+  display: flex;
+}
+
+.note {
+  color: rgb(139, 138, 138);
 }
 </style>

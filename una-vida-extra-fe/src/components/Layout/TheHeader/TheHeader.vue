@@ -55,11 +55,7 @@
   </header>
 </template>
 
-<script>
-export default {
-  name: "TheHeader",
-};
-</script>
+<script setup></script>
 
 <style scoped>
 header {
