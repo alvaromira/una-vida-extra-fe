@@ -125,4 +125,10 @@ header {
   border: 1px solid #f391e3;
   font-weight: bolder;
 }
+
+h1,
+h2,
+h3 {
+  color: #fff;
+}
 </style>
