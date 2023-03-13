@@ -100,6 +100,9 @@ const submitForm = () => {
       <BaseButton>Login</BaseButton>
     </div>
   </form>
+  <div id="forgot-password">
+    <a href="">Forgot your password?</a>
+  </div>
 </template>
 
 <style scoped>
@@ -122,6 +125,7 @@ label {
   display: block;
   /*margin-bottom: 0.5rem;*/
   color: #edb421;
+  min-width: 75px;
 }
 
 input[type="checkbox"] + label {
@@ -179,5 +183,22 @@ h3 {
 
 .form-submit-button {
   text-align: right;
+}
+
+#forgot-password {
+  padding-top: 1.5rem;
+  text-align: right;
+}
+
+#forgot-password a:link,
+#forgot-password a:visited {
+  color: #edb421;
+}
+#forgot-password a:hover {
+  color: edb421;
+  opacity: 0.7;
+}
+#forgot-password a:active {
+  color: #edb421;
 }
 </style>

@@ -176,8 +176,11 @@ export default {
             v-model.trim="data.firstName.val"
             @blur="clearValidity('firstName')"
           />
-          <p v-if="!data.firstName.isValid">Firstname must not be empty.</p>
         </div>
+        <div v-if="!data.firstName.isValid" class="validation-error-container">
+          <p>Firstname must not be empty.</p>
+        </div>
+
         <div class="form-control" :class="{ invalid: !data.lastName.isValid }">
           <label for="lastname">Lastname</label>
           <input
@@ -186,8 +189,11 @@ export default {
             v-model.trim="data.lastName.val"
             @blur="clearValidity('lastName')"
           />
-          <p v-if="!data.lastName.isValid">Lastname must not be empty.</p>
         </div>
+        <div v-if="!data.lastName.isValid" class="validation-error-container">
+          <p>Lastname must not be empty.</p>
+        </div>
+
         <div class="form-control" :class="{ invalid: !data.email.isValid }">
           <label for="email">Email</label>
           <input
@@ -196,8 +202,11 @@ export default {
             v-model.trim="data.email.val"
             @blur="clearValidity('email')"
           />
-          <p v-if="!data.email.isValid">email must not be empty.</p>
         </div>
+        <div v-if="!data.email.isValid" class="validation-error-container">
+          <p>Email must not be empty.</p>
+        </div>
+
         <div class="form-control" :class="{ invalid: !data.phone.isValid }">
           <label for="phone">Phone</label>
           <input
@@ -206,8 +215,11 @@ export default {
             v-model.trim="data.phone.val"
             @blur="clearValidity('phone')"
           />
-          <p v-if="!data.phone.isValid">phone must not be empty.</p>
         </div>
+        <div v-if="!data.phone.isValid" class="validation-error-container">
+          <p>Phone must not be empty.</p>
+        </div>
+
         <div class="form-control" :class="{ invalid: !data.password.isValid }">
           <label for="password">Password</label>
           <input
@@ -216,8 +228,11 @@ export default {
             v-model.trim="data.password.val"
             @blur="clearValidity('password')"
           />
-          <p v-if="!data.password.isValid">password must not be empty.</p>
         </div>
+        <div v-if="!data.password.isValid" class="validation-error-container">
+          <p>Password must not be empty.</p>
+        </div>
+
         <div
           class="form-control"
           :class="{ invalid: !data.passwordConfirmation.isValid }"
@@ -229,9 +244,12 @@ export default {
             v-model.trim="data.passwordConfirmation.val"
             @blur="clearValidity('passwordConfirmation')"
           />
-          <p v-if="!data.passwordConfirmation.isValid">
-            password-confirmation must not be empty.
-          </p>
+        </div>
+        <div
+          v-if="!data.passwordConfirmation.isValid"
+          class="validation-error-container"
+        >
+          <p>Password confirmation must not be empty.</p>
         </div>
         <div
           class="form-control"
@@ -272,12 +290,16 @@ export default {
         <div class="form-control">
           <label for="longitude">Longitude</label>
           <input type="text" id="longitude" v-model.trim="data.longitude.val" />
-          <p v-if="!data.longitude.isValid">longitude must not be empty.</p>
+        </div>
+        <div v-if="!data.longitude.isValid" class="validation-error-container">
+          <p>Longitude must not be empty.</p>
         </div>
         <div class="form-control">
           <label for="latitude">Latitude</label>
           <input type="text" id="latitude" v-model.trim="data.latitude.val" />
-          <p v-if="!data.latitude.isValid">latitude must not be empty.</p>
+        </div>
+        <div v-if="!data.latitude.isValid" class="validation-error-container">
+          <p>Latitude must not be empty.</p>
         </div>
         <BaseButton @click.prevent="getLocationCoords" mode="outline"
           >Get my Location</BaseButton
@@ -373,14 +395,32 @@ h3 {
   font-size: 1rem;
 }
 
-.invalid label {
+.validation-error-container p {
+  color: rgb(110 105 105);
+  background-color: rgba(237, 219, 219, 0.5);
+  border: red solid 2px;
+  border-radius: 3px;
+  padding: 0.5rem;
+  position: relative;
+}
+.validation-error-container p:before {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 25%;
+  top: -10px;
+  border-bottom: 10px solid red;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+}
+/*.invalid label {
   color: red;
 }
 
 .invalid input,
 .invalid textarea {
   border: 1px solid red;
-}
+}*/
 #image-upload {
   display: flex;
 }

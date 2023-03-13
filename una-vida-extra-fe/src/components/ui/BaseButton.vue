@@ -58,10 +58,16 @@ button:hover,
 button:active {
   opacity: 0.7;
 }
+.router-link-active {
+  border: #fff solid 1px;
+}
 
 .outline {
   color: #edb421;
   border: #edb421 solid 1px;
   background-color: #fff;
+}
+.outline:active {
+  border: #fff solid 1px;
 }
 </style>
