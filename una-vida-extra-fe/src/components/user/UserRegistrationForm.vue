@@ -1,5 +1,6 @@
 <script setup>
 import { ref, reactive } from "vue";
+import BaseButton from "../ui/BaseButton.vue";
 
 //data
 const data = reactive({
@@ -278,14 +279,17 @@ export default {
           <input type="text" id="latitude" v-model.trim="data.latitude.val" />
           <p v-if="!data.latitude.isValid">latitude must not be empty.</p>
         </div>
-        <button @click.prevent="getLocationCoords">Get my Location</button>
+        <BaseButton @click.prevent="getLocationCoords" mode="outline"
+          >Get my Location</BaseButton
+        >
         <p class="note">
           We need your location to make sure that proximity is considered when
           donating products.Thanks!
         </p>
       </div>
-
-      <button>Register</button>
+      <div class="form-submit-button">
+        <BaseButton>Register</BaseButton>
+      </div>
     </div>
   </form>
 </template>
@@ -317,6 +321,8 @@ form {
 }
 #image-upload input {
   margin: 0;
+  border: none;
+  box-shadow: none;
 }
 
 label {
@@ -354,6 +360,7 @@ input[type="checkbox"] {
   display: inline;
   width: auto;
   border: none;
+  box-shadow: none;
 }
 
 input[type="checkbox"]:focus {
@@ -379,5 +386,9 @@ h3 {
 
 .note {
   color: rgb(139, 138, 138);
+}
+
+.form-submit-button {
+  text-align: right;
 }
 </style>
