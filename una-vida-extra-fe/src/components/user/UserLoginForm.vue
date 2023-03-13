@@ -1,5 +1,6 @@
 <script setup>
 import { ref, reactive } from "vue";
+import BaseButton from "../ui/BaseButton.vue";
 
 //data
 const data = reactive({
@@ -59,34 +60,45 @@ const submitForm = () => {
 <template>
   <form @submit.prevent="submitForm">
     <div>
-      <div class="form-control" :class="{ invalid: !data.email.isValid }">
-        <label for="email">Email</label>
-        <input
-          type="email"
-          id="email"
-          v-model.trim="data.email.val"
-          @blur="clearValidity('email')"
-        />
-        <p v-if="!data.email.isValid">email must not be empty.</p>
+      <div class="form-field">
+        <div class="form-control" :class="{ invalid: !data.email.isValid }">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            v-model.trim="data.email.val"
+            @blur="clearValidity('email')"
+          />
+        </div>
+        <div v-if="!data.email.isValid" class="validation-error-container">
+          <p>Email must not be empty.</p>
+        </div>
       </div>
 
-      <div class="form-control" :class="{ invalid: !data.password.isValid }">
-        <label for="password">Password</label>
-        <input
-          type="password"
-          id="password"
-          v-model.trim="data.password.val"
-          @blur="clearValidity('password')"
-        />
-        <p v-if="!data.password.isValid">password must not be empty.</p>
-      </div>
+      <div class="form-field">
+        <div class="form-control" :class="{ invalid: !data.password.isValid }">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            v-model.trim="data.password.val"
+            @blur="clearValidity('password')"
+          />
+        </div>
 
-      <p v-if="formIsValid.value === false">
-        Please fix the above errors and submit again.
-      </p>
+        <div v-if="!data.password.isValid" class="validation-error-container">
+          <p>Password must not be empty.</p>
+        </div>
+
+        <p v-if="formIsValid.value === false">
+          Please fix the above errors and submit again.
+        </p>
+      </div>
     </div>
 
-    <button>Login</button>
+    <div class="form-submit-button">
+      <BaseButton>Login</BaseButton>
+    </div>
   </form>
 </template>
 
@@ -127,23 +139,7 @@ textarea {
   font: inherit;
   box-shadow: rgba(17, 17, 26, 0.2) 0px 2px 4px;
   margin-inline-start: 1.5rem;
-}
-
-input:focus,
-textarea:focus {
-  background-color: #f0e6fd;
-  outline: none;
-  border-color: #3d008d;
-}
-
-input[type="checkbox"] {
-  display: inline;
-  width: auto;
-  border: none;
-}
-
-input[type="checkbox"]:focus {
-  outline: #3d008d solid 1px;
+  color: gray;
 }
 
 h3 {
@@ -151,6 +147,26 @@ h3 {
   font-size: 1rem;
 }
 
+.validation-error-container p {
+  color: rgb(110 105 105);
+  background-color: rgba(237, 219, 219, 0.5);
+  border: red solid 2px;
+  border-radius: 3px;
+  padding: 0.5rem;
+  position: relative;
+}
+.validation-error-container p:before {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 25%;
+  top: -10px;
+  border-bottom: 10px solid red;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+}
+
+/*
 .invalid label {
   color: red;
 }
@@ -158,8 +174,10 @@ h3 {
 .invalid input,
 .invalid textarea {
   border: 1px solid red;
-}
-#image-upload {
-  display: flex;
+  opacity: 0.7;
+}*/
+
+.form-submit-button {
+  text-align: right;
 }
 </style>

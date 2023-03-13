@@ -19,7 +19,7 @@
         ><span class="product-card-product-actual-date">{{ date }}</span>
       </div>
       <div class="product-card-button">
-        <button @click="moreInfo">More info</button>
+        <BaseButton @click="moreInfo">More info</BaseButton>
       </div>
     </section>
   </div>
@@ -28,6 +28,7 @@
 <script setup>
 import { ref, defineProps } from "vue";
 import IconLocation from "../../icons/iconLocation.vue";
+import BaseButton from "../BaseButton.vue";
 
 //Aceppted properties for the card items
 const props = defineProps({
@@ -81,14 +82,14 @@ const showLocation = () => {
   text-align: right;
   padding-top: 1rem;
 }
-.product-card-button button {
+/*.product-card-button button {
   background-color: #edb421;
   color: #fff;
   border: none;
   padding: 0.25rem 0.5rem;
   font-weight: bold;
   cursor: pointer;
-}
+}*/
 .hidden {
   display: none;
 }

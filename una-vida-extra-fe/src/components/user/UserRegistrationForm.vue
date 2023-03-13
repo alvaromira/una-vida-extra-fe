@@ -347,6 +347,7 @@ textarea {
   font: inherit;
   box-shadow: rgba(17, 17, 26, 0.2) 0px 2px 4px;
   margin-inline-start: 1.5rem;
+  color: gray;
 }
 
 input:focus,

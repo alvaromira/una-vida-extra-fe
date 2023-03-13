@@ -42,10 +42,10 @@
           <ul class="user-menu-list">
             <!-- if not logged in-->
             <li class="user-menu-item">
-              <RouterLink to="/register">Register</RouterLink>
+              <BaseButton to="/register" link="true">Register</BaseButton>
             </li>
             <li class="user-menu-item">
-              <RouterLink to="/login">Login</RouterLink>
+              <BaseButton to="/login" link="true">Login</BaseButton>
             </li>
             <!--For logged in users -->
           </ul>
@@ -55,7 +55,9 @@
   </header>
 </template>
 
-<script setup></script>
+<script setup>
+import BaseButton from "../../ui/BaseButton.vue";
+</script>
 
 <style scoped>
 header {
