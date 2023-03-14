@@ -1,5 +1,5 @@
 <template>
-  <div class="product-card-wrapper">
+  <div class="product-card-wrapper" :id="id">
     <section class="product-top">
       <div class="product-card-image">
         <img :src="image" />
@@ -36,6 +36,7 @@ const props = defineProps({
   title: String,
   date: String,
   location: Object,
+  id: String,
 });
 
 //methods or functionality

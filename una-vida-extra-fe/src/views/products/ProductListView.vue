@@ -4,6 +4,8 @@
     <section class="product-card-container">
       <div v-for="product in products">
         <ProductCard
+          :key="product.id"
+          :id="product.id"
           :image="product.image"
           :title="product.title"
           :date="product.date"
@@ -36,6 +38,7 @@ import ProductsSummary from "../../components/ui/product/ProductsSummary.vue";
 //ref for accessing anything through .value, or reactive for accessing Objects only with the var name but without the value
 const products = ref([
   {
+    id: 1,
     image: "https://via.placeholder.com/250x250/cccccc/969696",
     title: "My product",
     date: "01/01/2023",
@@ -45,6 +48,7 @@ const products = ref([
     },
   },
   {
+    id: 2,
     image: "https://via.placeholder.com/250x250/cccccc/969696",
     title: "My product Two",
     date: "01/02/2023",
@@ -54,6 +58,7 @@ const products = ref([
     },
   },
   {
+    id: 3,
     image: "https://via.placeholder.com/250x250/cccccc/969696",
     title: "My product Three",
     date: "02/02/2023",
