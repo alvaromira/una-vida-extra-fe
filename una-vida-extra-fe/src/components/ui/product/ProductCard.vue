@@ -36,7 +36,7 @@ const props = defineProps({
   title: String,
   date: String,
   location: Object,
-  id: String,
+  id: Number,
 });
 
 //methods or functionality
