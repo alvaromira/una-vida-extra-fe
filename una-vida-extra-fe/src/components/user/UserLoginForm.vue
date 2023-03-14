@@ -1,6 +1,7 @@
 <script setup>
-import { ref, reactive } from "vue";
+import { ref, reactive, computed } from "vue";
 import BaseButton from "../ui/BaseButton.vue";
+import { useStore } from "vuex";
 
 //data
 const data = reactive({
@@ -16,8 +17,20 @@ const data = reactive({
 
 const formIsValid = ref(true);
 
-//methods
+//vuex
+const store = useStore();
 
+//using computed property derived from Vuex
+const getUserStatus = computed(() => {
+  return store.state.userLoggedIn;
+});
+
+const logUserIn = () => {
+  store.commit("logUserIn");
+  console.log("Logged user IN");
+};
+
+//methods
 const clearValidity = (input) => {
   console.log(`Setting valid to true: ${input}`);
   data[input].isValid = true;
@@ -52,6 +65,7 @@ const submitForm = () => {
     password: data.password.val,
   };
   console.log("Form submitted");
+  logUserIn();
   console.log(formData);
   // this.$emit("save-data", formData);
 };

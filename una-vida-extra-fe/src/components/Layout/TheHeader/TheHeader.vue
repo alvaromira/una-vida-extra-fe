@@ -41,13 +41,25 @@
         <nav id="user-menu">
           <ul class="user-menu-list">
             <!-- if not logged in-->
-            <li class="user-menu-item">
+            <li v-if="!getUserStatus" class="user-menu-item">
               <BaseButton to="/register" link="true">Register</BaseButton>
             </li>
-            <li class="user-menu-item">
+            <li v-if="!getUserStatus" class="user-menu-item">
               <BaseButton to="/login" link="true">Login</BaseButton>
             </li>
             <!--For logged in users -->
+            <li v-if="getUserStatus" class="user-menu-item">
+              <!--<BaseButton>My Account</BaseButton>-->
+              <div class="dropdown">
+                <BaseButton>My Account</BaseButton>
+                <div class="dropdown-content">
+                  <a>My Products</a>
+                  <a>My Requests</a>
+                  <a>My Profile</a>
+                  <a @click="logUserOut">Log Out</a>
+                </div>
+              </div>
+            </li>
           </ul>
         </nav>
       </div>
@@ -57,6 +69,21 @@
 
 <script setup>
 import BaseButton from "../../ui/BaseButton.vue";
+import { computed } from "vue";
+import { useStore } from "vuex";
+
+const store = useStore();
+
+//using computed property derived from Vuex
+const getUserStatus = computed(() => {
+  return store.state.userLoggedIn;
+});
+
+//getters and setter for Vuex
+const logUserOut = () => {
+  store.commit("logUserOut");
+  console.log("Logged user OUT");
+};
 </script>
 
 <style scoped>
@@ -132,5 +159,47 @@ h1,
 h2,
 h3 {
   color: #fff;
+}
+
+/* dropdown-related */
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #fff;
+
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  width: 100%;
+}
+
+/* Links inside the dropdown */
+.user-menu-list .dropdown-content a {
+  border-radius: 0;
+  text-decoration: none;
+  display: block;
+  padding: 0.5rem 1rem;
+  color: #fff;
+  background-color: #edb421;
+  min-width: initial;
+  text-align: center;
+  cursor: pointer;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {
+  opacity: 0.7;
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
 }
 </style>
