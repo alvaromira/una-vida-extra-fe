@@ -84,6 +84,9 @@ nav a:first-of-type {
 
   #content {
     padding: 4rem 0;
+    max-width: 80%;
+    width: auto;
+    margin: 0 auto;
   }
 }
 </style>

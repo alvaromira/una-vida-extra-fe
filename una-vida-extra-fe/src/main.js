@@ -10,8 +10,8 @@ import './assets/main.css'
 const store = createStore({
     state() {
         return {
-            userLoggedIn: false,
-            userIsAdmin: true,
+            userLoggedIn: true,
+            userIsAdmin: false,
         };
     },
     mutations: {

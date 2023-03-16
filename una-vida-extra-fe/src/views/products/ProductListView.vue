@@ -17,16 +17,6 @@
       <ProductsSummary></ProductsSummary>
     </section>
   </div>
-  <!--
-    Header
-    Main
-      Section (products)
-        Title
-        3 latest products
-      Section (meta) 
-        Product consumption summary
-    Footer
-  -->
 </template>
 
 <script setup>
