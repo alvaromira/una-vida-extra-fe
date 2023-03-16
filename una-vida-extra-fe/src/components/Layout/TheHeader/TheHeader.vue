@@ -48,13 +48,21 @@
               <BaseButton to="/login" link="true">Login</BaseButton>
             </li>
             <!--For logged in users -->
+
             <li v-if="getUserStatus" class="user-menu-item">
               <!--<BaseButton>My Account</BaseButton>-->
               <div class="dropdown">
                 <BaseButton>My Account</BaseButton>
-                <div class="dropdown-content">
+                <div v-if="!isUserAdmin" class="dropdown-content">
                   <a>My Products</a>
                   <a>My Requests</a>
+                  <a>My Profile</a>
+                  <a @click="logUserOut">Log Out</a>
+                </div>
+                <div v-else class="dropdown-content">
+                  <a>Manage Users</a>
+                  <a>Manage Products</a>
+                  <a>Manage Requests</a>
                   <a>My Profile</a>
                   <a @click="logUserOut">Log Out</a>
                 </div>
@@ -77,6 +85,9 @@ const store = useStore();
 //using computed property derived from Vuex
 const getUserStatus = computed(() => {
   return store.state.userLoggedIn;
+});
+const isUserAdmin = computed(() => {
+  return store.state.userIsAdmin;
 });
 
 //getters and setter for Vuex

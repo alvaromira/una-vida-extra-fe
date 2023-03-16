@@ -11,7 +11,7 @@ const store = createStore({
     state() {
         return {
             userLoggedIn: false,
-            userIsAdmin: false,
+            userIsAdmin: true,
         };
     },
     mutations: {
