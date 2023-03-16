@@ -27,6 +27,13 @@ const router = createRouter({
       //add a new product
     },
     {
+      path: '/my-products',
+      name: 'userProducts',
+      component: () => import('../views/products/UserProductListView.vue')
+      //Children
+      //add a new product
+    },
+    {
       path: '/products/:id',
       name: 'product',
       component: () => import('../views/products/ProductDetailView.vue'),
@@ -53,6 +60,11 @@ const router = createRouter({
       path: '/register',
       name: 'register',
       component: () => import('../views/user/UserRegisterView.vue')
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: () => import('../views/user/ProfileView.vue')
     },
     {
       //catch all

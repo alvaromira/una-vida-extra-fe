@@ -3,7 +3,6 @@ import { ref, defineProps } from "vue";
 import IconLocation from "../../icons/iconLocation.vue";
 import IconAvailable from "../../icons/IconAvailable.vue";
 import IconNotAvailable from "../../icons/IconNotAvailable.vue";
-import BaseButton from "../BaseButton.vue";
 
 //Aceppted properties for the card items
 const props = defineProps({
@@ -43,5 +42,9 @@ const props = defineProps({
 .request-card-item {
   flex: 1;
   text-align: center;
+}
+
+.request-message {
+  color: gray;
 }
 </style>

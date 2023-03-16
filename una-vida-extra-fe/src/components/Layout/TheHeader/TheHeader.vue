@@ -54,9 +54,10 @@
               <div class="dropdown">
                 <BaseButton>My Account</BaseButton>
                 <div v-if="!isUserAdmin" class="dropdown-content">
-                  <a>My Products</a>
-                  <RouterLink to="/requests">My Requests</RouterLink>
-                  <a>My Profile</a>
+                  <RouterLink to="/my-products">Products</RouterLink>
+                  <RouterLink to="/requests">Requests</RouterLink>
+                  <RouterLink to="/profile">Profile</RouterLink>
+
                   <a @click="logUserOut">Log Out</a>
                 </div>
                 <div v-else class="dropdown-content">
