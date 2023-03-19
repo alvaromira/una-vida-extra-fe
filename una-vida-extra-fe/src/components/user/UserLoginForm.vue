@@ -2,6 +2,7 @@
 import { ref, reactive, computed } from "vue";
 import BaseButton from "../ui/BaseButton.vue";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
 //data
 const data = reactive({
@@ -19,6 +20,7 @@ const formIsValid = ref(true);
 
 //vuex
 const store = useStore();
+const router = useRouter();
 
 //using computed property derived from Vuex
 const getUserStatus = computed(() => {
@@ -66,7 +68,9 @@ const submitForm = () => {
   };
   console.log("Form submitted");
   logUserIn();
+  router.push("/products");
   console.log(formData);
+
   // this.$emit("save-data", formData);
 };
 </script>

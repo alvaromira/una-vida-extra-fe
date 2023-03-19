@@ -1,7 +1,7 @@
 <template>
   <header>
     <div class="top-header">
-      <RouterLink to="/products">
+      <RouterLink :to="{ name: 'products' }">
         <img
           alt="1up logo"
           class="logo"
@@ -19,19 +19,19 @@
       <div>
         <nav id="main-menu">
           <ul class="menu-list">
-            <!--<li><RouterLink to="/">Home</RouterLink></li>
-          <li><RouterLink to="/about">About</RouterLink></li>-->
+            <!--<li><RouterLink :to="{ name: ''}">Home</RouterLink></li>
+          <li><RouterLink :to="{ name: 'about'}">About</RouterLink></li>-->
             <li class="menu-item">
-              <RouterLink to="/products">Products</RouterLink>
+              <RouterLink :to="{ name: 'products' }">Products</RouterLink>
             </li>
             <li class="menu-item">
-              <RouterLink to="/sponsors">Sponsors</RouterLink>
+              <RouterLink :to="{ name: 'sponsors' }">Sponsors</RouterLink>
             </li>
             <li class="menu-item">
-              <RouterLink to="/project">Project</RouterLink>
+              <RouterLink :to="{ name: 'project' }">Project</RouterLink>
             </li>
-            <!--<li><RouterLink to="/login">Login</RouterLink></li>
-          <li><RouterLink to="/register">Register</RouterLink></li>-->
+            <!--<li><RouterLink :to="{ name: 'login'}">Login</RouterLink></li>
+          <li><RouterLink :to="{ name: 'register'}">Register</RouterLink></li>-->
           </ul>
           <!-- <label for="site-search">Search the site:</label>
         <input type="search" id="site-search" name="q" />-->
@@ -42,10 +42,12 @@
           <ul class="user-menu-list">
             <!-- if not logged in-->
             <li v-if="!getUserStatus" class="user-menu-item">
-              <BaseButton to="/register" link="true">Register</BaseButton>
+              <BaseButton :to="{ name: 'register' }" link="true"
+                >Register</BaseButton
+              >
             </li>
             <li v-if="!getUserStatus" class="user-menu-item">
-              <BaseButton to="/login" link="true">Login</BaseButton>
+              <BaseButton :to="{ name: 'login' }" link="true">Login</BaseButton>
             </li>
             <!--For logged in users -->
 
@@ -54,9 +56,11 @@
               <div class="dropdown">
                 <BaseButton>My Account</BaseButton>
                 <div v-if="!isUserAdmin" class="dropdown-content">
-                  <RouterLink to="/my-products">Products</RouterLink>
-                  <RouterLink to="/requests">Requests</RouterLink>
-                  <RouterLink to="/profile">Profile</RouterLink>
+                  <RouterLink :to="{ name: 'userProducts' }"
+                    >Products</RouterLink
+                  >
+                  <RouterLink :to="{ name: 'requests' }">Requests</RouterLink>
+                  <RouterLink :to="{ name: 'profile' }">Profile</RouterLink>
 
                   <a @click="logUserOut">Log Out</a>
                 </div>

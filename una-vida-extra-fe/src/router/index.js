@@ -29,17 +29,18 @@ const router = createRouter({
     {
       path: '/my-products',
       name: 'userProducts',
-      component: () => import('../views/products/UserProductListView.vue')
-      //Children
-      //add a new product
+      component: () => import('../views/products/UserProductListView.vue'),
+    },
+    {
+      path: '/products/add',
+      name: 'addProduct',
+      component: () => import('../views/products/AddNewProduct.vue'),
     },
     {
       path: '/products/:id',
       name: 'product',
+      props: true,
       component: () => import('../views/products/ProductDetailView.vue'),
-      //children: [
-      //   path: 'new', component: () => import('../views/RequestView.vue'),
-      // ]
     },
     {
       path: '/requests',

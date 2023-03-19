@@ -1,10 +1,5 @@
 <template>
   <div>
-    <div id="user-product-addition">
-      <section>
-        <BaseButton>Add New Product</BaseButton>
-      </section>
-    </div>
     <div id="user-product-list">
       <section class="product-card-container">
         <div v-for="product in products">
@@ -20,12 +15,20 @@
       </section>
     </div>
   </div>
+  <div id="user-product-addition">
+    <section>
+      <BaseButton :to="{ name: 'addProduct' }" link="true"
+        >Add New Product
+      </BaseButton>
+    </section>
+  </div>
 </template>
 
 <script setup>
 import { ref, defineProps, computed } from "vue";
 import BaseButton from "../../components/ui/BaseButton.vue";
 import ProductCard from "../../components/ui/product/ProductCard.vue";
+import AddNewProduct from "./AddNewProduct.vue";
 
 const products = ref([
   {

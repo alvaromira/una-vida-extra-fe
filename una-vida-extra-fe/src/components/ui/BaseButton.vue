@@ -22,7 +22,7 @@ const props = defineProps({
 const props = defineProps({
   mode: String,
   link: String,
-  to: String,
+  to: Object,
 });
 </script>
 
