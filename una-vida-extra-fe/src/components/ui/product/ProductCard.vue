@@ -19,7 +19,9 @@
         ><span class="product-card-product-actual-date">{{ date }}</span>
       </div>
       <div class="product-card-button">
-        <BaseButton @click="moreInfo">More info</BaseButton>
+        <BaseButton :to="{ name: 'product', params: { id: id } }" link="true"
+          >More info</BaseButton
+        >
       </div>
     </section>
   </div>

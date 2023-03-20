@@ -30,7 +30,7 @@ const products = ref([
   {
     id: 1,
     image: "https://via.placeholder.com/250x250/cccccc/969696",
-    title: "My product",
+    title: "Used pans",
     date: "01/01/2023",
     location: {
       lat: 36.72,
@@ -40,7 +40,7 @@ const products = ref([
   {
     id: 2,
     image: "https://via.placeholder.com/250x250/cccccc/969696",
-    title: "My product Two",
+    title: "Large Vase",
     date: "01/02/2023",
     location: {
       lat: 36.72,
@@ -50,7 +50,7 @@ const products = ref([
   {
     id: 3,
     image: "https://via.placeholder.com/250x250/cccccc/969696",
-    title: "My product Three",
+    title: "Gold bar",
     date: "02/02/2023",
     location: {
       lat: 36.72,
