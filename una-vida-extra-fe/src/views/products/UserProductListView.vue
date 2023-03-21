@@ -3,7 +3,7 @@
     <div id="user-product-list">
       <section class="product-card-container">
         <div v-for="product in products">
-          <ProductCard
+          <product-card
             :key="product.id"
             :id="product.id"
             :image="product.image"
