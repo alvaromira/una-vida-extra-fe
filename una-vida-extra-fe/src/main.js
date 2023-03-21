@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import { createStore } from 'vuex';
 import App from './App.vue'
 import router from './router'
+import axios from 'axios'
 
 //import base collection of css
 import './assets/main.css'
