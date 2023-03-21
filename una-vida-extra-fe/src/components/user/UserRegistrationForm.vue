@@ -1,6 +1,7 @@
 <script setup>
 import { ref, reactive } from "vue";
 import BaseButton from "../ui/BaseButton.vue";
+import axios from "axios";
 
 //data
 const data = reactive({
@@ -144,17 +145,46 @@ const submitForm = () => {
   }
 
   const formData = {
-    first: data.firstName.val,
-    last: data.lastName.val,
+    name: data.firstName.val,
+    surname: data.lastName.val,
     email: data.email.val,
     phone: data.phone.val,
     password: data.password.val,
-    publicDetails: data.publicDetails.val,
-    longitude: data.longitude.val,
-    latitude: data.latitude.val,
+    password_confirmation: data.passwordConfirmation.val,
+    // publicDetails: data.publicDetails.val,
+    // longitude: data.longitude.val,
+    // latitude: data.latitude.val,
   };
   console.log("Form submitted");
   console.log(formData);
+
+  //axios request
+
+  const sendRegistrationRequest = async () => {
+    try {
+      const resp = await axios.post(
+        "http://localhost:8000/api1/register",
+        formData
+      );
+      console.log(resp);
+    } catch (err) {
+      // Handle Error Here
+      console.error(err);
+    }
+  };
+
+  sendRegistrationRequest();
+
+  /*
+  axios
+    .post("http://127.0.0.1:8000/api1/register", formData)
+    .then((result) => {
+      console.log(result);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+*/
   // this.$emit("save-data", formData);
 };
 
