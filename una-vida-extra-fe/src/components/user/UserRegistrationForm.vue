@@ -2,6 +2,7 @@
 import { ref, reactive } from "vue";
 import BaseButton from "../ui/BaseButton.vue";
 import axios from "axios";
+import router from "../../router";
 
 //data
 const data = reactive({
@@ -167,6 +168,7 @@ const submitForm = () => {
         formData
       );
       console.log(resp);
+      router.push({ name: "products", query: { registration: "success" } });
     } catch (err) {
       // Handle Error Here
       console.error(err);
