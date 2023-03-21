@@ -4,18 +4,42 @@ import BaseButton from "../BaseButton.vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
+
+const props = {
+  productName: {
+    type: String,
+    required: false,
+  },
+  description: {
+    type: String,
+    required: false,
+  },
+  tags: {
+    type: Array,
+    required: false,
+  },
+  category: {
+    type: String,
+    required: false,
+  },
+  id: {
+    type: String,
+    required: true,
+  },
+};
+
 //data
 const data = reactive({
   productName: {
-    val: "",
+    val: "Optio repudiandae dolorem ad temporibus.",
     isValid: true,
   },
   description: {
-    val: "",
+    val: "Tempore minus voluptates consequatur soluta.",
     isValid: true,
   },
   tags: {
-    val: "",
+    val: "car, red",
     isValid: true,
   },
   category: {
@@ -105,105 +129,107 @@ export default {
 </script>
 
 <template>
-  <h2>Add a New Product</h2>
-  <form @submit.prevent="submitForm">
-    <div class="form-left-side form-side">
-      <div>
-        <div
-          class="form-control"
-          :class="{ invalid: !data.productName.isValid }"
-        >
-          <label for="productName">Name:</label>
-          <input
-            type="text"
-            id="productName"
-            v-model.trim="data.productName.val"
-            @blur="clearValidity('productName')"
-            placeholder="Name of your product"
-          />
-        </div>
-        <div
-          v-if="!data.productName.isValid"
-          class="validation-error-container"
-        >
-          <p>productName must not be empty.</p>
-        </div>
-
-        <div
-          class="form-control"
-          :class="{ invalid: !data.description.isValid }"
-        >
-          <label for="description">Description</label>
-          <textarea
-            type="text"
-            id="description"
-            rows="5"
-            v-model.trim="data.description.val"
-            @blur="clearValidity('description')"
-            placeholder="Description of your product"
-          ></textarea>
-        </div>
-        <div
-          v-if="!data.description.isValid"
-          class="validation-error-container"
-        >
-          <p>Description must not be empty.</p>
-        </div>
-      </div>
-    </div>
-    <div class="form-right-side form-side">
-      <div id="image-upload">
-        <img src="" class="profile-pic" />
+  <div>
+    <h2>Edit your Product</h2>
+    <form @submit.prevent="submitForm">
+      <div class="form-left-side form-side">
         <div>
-          <label for="profile-pic">Product image</label>
-          <input
-            type="file"
-            id="profile-pic"
-            name="profile-pic"
-            accept="image/png, image/jpeg"
-          />
+          <div
+            class="form-control"
+            :class="{ invalid: !data.productName.isValid }"
+          >
+            <label for="productName">Name:</label>
+            <input
+              type="text"
+              id="productName"
+              v-model.trim="data.productName.val"
+              @blur="clearValidity('productName')"
+              placeholder="Name of your product"
+            />
+          </div>
+          <div
+            v-if="!data.productName.isValid"
+            class="validation-error-container"
+          >
+            <p>productName must not be empty.</p>
+          </div>
+
+          <div
+            class="form-control"
+            :class="{ invalid: !data.description.isValid }"
+          >
+            <label for="description">Description</label>
+            <textarea
+              type="text"
+              id="description"
+              rows="5"
+              v-model.trim="data.description.val"
+              @blur="clearValidity('description')"
+              placeholder="Description of your product"
+            ></textarea>
+          </div>
+          <div
+            v-if="!data.description.isValid"
+            class="validation-error-container"
+          >
+            <p>Description must not be empty.</p>
+          </div>
         </div>
       </div>
+      <div class="form-right-side form-side">
+        <div id="image-upload">
+          <img src="" class="profile-pic" />
+          <div>
+            <label for="profile-pic">Product image</label>
+            <input
+              type="file"
+              id="profile-pic"
+              name="profile-pic"
+              accept="image/png, image/jpeg"
+            />
+          </div>
+        </div>
 
-      <div class="form-control" :class="{ invalid: !data.tags.isValid }">
-        <label for="tags">Tags:</label>
-        <input
-          type="text"
-          id="tags"
-          v-model.trim="data.tags.val"
-          @blur="clearValidity('tags')"
-          placeholder="Insert the tags for your product, separate them with commmas"
-        />
-      </div>
-      <div v-if="!data.tags.isValid" class="validation-error-container">
-        <p>tags must not be empty.</p>
-      </div>
+        <div class="form-control" :class="{ invalid: !data.tags.isValid }">
+          <label for="tags">Tags:</label>
+          <input
+            type="text"
+            id="tags"
+            v-model.trim="data.tags.val"
+            @blur="clearValidity('tags')"
+            placeholder="Insert the tags for your product, separate them with commmas"
+          />
+        </div>
+        <div v-if="!data.tags.isValid" class="validation-error-container">
+          <p>tags must not be empty.</p>
+        </div>
 
-      <div class="form-control" :class="{ invalid: !data.category.isValid }">
-        <label for="categories">Category:</label><br />
+        <div class="form-control" :class="{ invalid: !data.category.isValid }">
+          <label for="categories">Category:</label><br />
 
-        <select
-          name="categories"
-          id="category"
-          v-model.trim="data.category.val"
-          @blur="clearValidity('category')"
-        >
-          <option value="volvo">Volvo</option>
-          <option value="saab">Saab</option>
-          <option value="mercedes">Mercedes</option>
-          <option value="audi">Audi</option>
-        </select>
-      </div>
-      <div v-if="!data.category.isValid" class="validation-error-container">
-        <p>Category must not be empty.</p>
-      </div>
+          <select
+            name="categories"
+            id="category"
+            v-model.trim="data.category.val"
+            @blur="clearValidity('category')"
+          >
+            <option value="volvo">Volvo</option>
+            <option value="saab">Saab</option>
+            <option value="mercedes">Mercedes</option>
+            <option value="audi">Audi</option>
+          </select>
+        </div>
+        <div v-if="!data.category.isValid" class="validation-error-container">
+          <p>Category must not be empty.</p>
+        </div>
 
-      <div class="form-submit-button">
-        <!-- <BaseButton mode="outline" @click="clearForm">Clear</BaseButton>-->
-        <BaseButton @submit.prevent="submitForm">Publish</BaseButton>
+        <div class="form-submit-button">
+          <!-- <BaseButton mode="outline" @click="clearForm">Clear</BaseButton>-->
+          <BaseButton @submit.prevent="submitForm">Save</BaseButton>
+        </div>
       </div>
-    </div>
-  </form>
+    </form>
+  </div>
 </template>
 
 <style scoped>

@@ -39,7 +39,12 @@
           link="true"
           >Request it!</BaseButton
         >
-        <BaseButton v-else>Edit</BaseButton>
+        <BaseButton
+          v-else
+          :to="{ name: 'editProduct', params: { id: id } }"
+          link="true"
+          >Edit</BaseButton
+        >
       </div>
     </section>
   </div>
@@ -58,7 +63,7 @@ const props = defineProps({
   date: String,
   location: Object,
   id: String,
-  userId: String,
+  userId: Number,
   editable: Boolean,
 });
 

@@ -29,7 +29,7 @@ const productId = computed(() => {
 });
 
 const editableProduct = computed(() => {
-  return false;
+  return true;
 });
 
 //test data
