@@ -1,8 +1,9 @@
 <script setup>
-import { ref, reactive } from "vue";
+import { ref, reactive, computed } from "vue";
 import BaseButton from "../ui/BaseButton.vue";
 import axios from "axios";
 import router from "../../router";
+import BaseSpinner from "../ui/BaseSpinner.vue";
 
 //data
 const data = reactive({
@@ -45,6 +46,22 @@ const data = reactive({
 });
 
 const formIsValid = ref(true);
+const isLoading = ref(false);
+const requestError = ref(false);
+const errorDetails = reactive({
+  code: "",
+  message: "",
+  errors: [],
+});
+
+//computed
+const apiErrorsFound = computed(() => {
+  return errorDetails.message.length;
+});
+
+const apiErrorsCaptured = computed(() => {
+  return errorDetails.errors.length > 0;
+});
 
 //methods
 
@@ -98,7 +115,7 @@ const validateForm = () => {
     formIsValid.value = false;
   }
 
-  if (data.password.val === "") {
+  if (data.password.val === "" || data.password.val.length < 9) {
     data.password.isValid = false;
     formIsValid.value = false;
   }
@@ -139,12 +156,16 @@ const validateForm = () => {
 
 const submitForm = () => {
   console.log("Submitting form");
+
   validateForm();
 
   if (!formIsValid.value) {
     return;
   }
 
+  requestError.value = false;
+  isLoading.value = true;
+  errorDetails.errors.length = 0;
   const formData = {
     name: data.firstName.val,
     surname: data.lastName.val,
@@ -168,25 +189,47 @@ const submitForm = () => {
         formData
       );
       console.log(resp);
+      isLoading.value = false;
+      requestError.value = false;
       router.push({ name: "products", query: { registration: "success" } });
-    } catch (err) {
+    } catch (error) {
       // Handle Error Here
-      console.error(err);
+      //console.error(error);
+      isLoading.value = false;
+      requestError.value = true;
+
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error("Error data", error.response.data);
+        console.error("Error status", error.response.status);
+        errorDetails.code = error.response.status;
+        errorDetails.message = error.message;
+        if (error.response.data.errors) {
+          let requestRecivedErrors = error.response.data.errors;
+          for (const property in requestRecivedErrors) {
+            // console.log(`${property}: ${requestRecivedErrors[property]}`);
+            errorDetails.errors.push(requestRecivedErrors[property].toString());
+          }
+        }
+        //console.log(error.response.headers);
+        // } else if (error.request) {
+        // The request was made but no response was received
+        // `error.request` is an instance of XMLHttpRequest in the browser
+        // and an instance of http.ClientRequest in node.js
+        //   console.log(error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error("Error message", error.message);
+        console.error("Error code", error.code);
+        errorDetails.code = error.code;
+        errorDetails.message = error.message;
+      }
     }
   };
 
   sendRegistrationRequest();
 
-  /*
-  axios
-    .post("http://127.0.0.1:8000/api1/register", formData)
-    .then((result) => {
-      console.log(result);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-*/
   // this.$emit("save-data", formData);
 };
 
@@ -197,162 +240,230 @@ export default {
 </script>
 
 <template>
-  <form @submit.prevent="submitForm">
-    <div class="form-left-side form-side">
-      <div>
-        <div class="form-control" :class="{ invalid: !data.firstName.isValid }">
-          <label for="firstname">Firstname</label>
-          <input
-            type="text"
-            id="firstname"
-            v-model.trim="data.firstName.val"
-            @blur="clearValidity('firstName')"
-          />
-        </div>
-        <div v-if="!data.firstName.isValid" class="validation-error-container">
-          <p>Firstname must not be empty.</p>
-        </div>
+  <div class="form-component-container">
+    <div class="form-container">
+      <form @submit.prevent="submitForm">
+        <div class="form-left-side form-side">
+          <div>
+            <div
+              class="form-control"
+              :class="{ invalid: !data.firstName.isValid }"
+            >
+              <label for="firstname">Firstname</label>
+              <input
+                type="text"
+                id="firstname"
+                v-model.trim="data.firstName.val"
+                @blur="clearValidity('firstName')"
+              />
+            </div>
+            <div
+              v-if="!data.firstName.isValid"
+              class="validation-error-container"
+            >
+              <p>Firstname must not be empty.</p>
+            </div>
 
-        <div class="form-control" :class="{ invalid: !data.lastName.isValid }">
-          <label for="lastname">Lastname</label>
-          <input
-            type="text"
-            id="lastname"
-            v-model.trim="data.lastName.val"
-            @blur="clearValidity('lastName')"
-          />
-        </div>
-        <div v-if="!data.lastName.isValid" class="validation-error-container">
-          <p>Lastname must not be empty.</p>
-        </div>
+            <div
+              class="form-control"
+              :class="{ invalid: !data.lastName.isValid }"
+            >
+              <label for="lastname">Lastname</label>
+              <input
+                type="text"
+                id="lastname"
+                v-model.trim="data.lastName.val"
+                @blur="clearValidity('lastName')"
+              />
+            </div>
+            <div
+              v-if="!data.lastName.isValid"
+              class="validation-error-container"
+            >
+              <p>Lastname must not be empty.</p>
+            </div>
 
-        <div class="form-control" :class="{ invalid: !data.email.isValid }">
-          <label for="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            v-model.trim="data.email.val"
-            @blur="clearValidity('email')"
-          />
-        </div>
-        <div v-if="!data.email.isValid" class="validation-error-container">
-          <p>Email must not be empty.</p>
-        </div>
+            <div class="form-control" :class="{ invalid: !data.email.isValid }">
+              <label for="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                v-model.trim="data.email.val"
+                @blur="clearValidity('email')"
+              />
+            </div>
+            <div v-if="!data.email.isValid" class="validation-error-container">
+              <p>Email must not be empty.</p>
+            </div>
 
-        <div class="form-control" :class="{ invalid: !data.phone.isValid }">
-          <label for="phone">Phone</label>
-          <input
-            type="text"
-            id="phone"
-            v-model.trim="data.phone.val"
-            @blur="clearValidity('phone')"
-          />
-        </div>
-        <div v-if="!data.phone.isValid" class="validation-error-container">
-          <p>Phone must not be empty.</p>
-        </div>
+            <div class="form-control" :class="{ invalid: !data.phone.isValid }">
+              <label for="phone">Phone</label>
+              <input
+                type="text"
+                id="phone"
+                v-model.trim="data.phone.val"
+                @blur="clearValidity('phone')"
+              />
+            </div>
+            <div v-if="!data.phone.isValid" class="validation-error-container">
+              <p>Phone must not be empty.</p>
+            </div>
 
-        <div class="form-control" :class="{ invalid: !data.password.isValid }">
-          <label for="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            v-model.trim="data.password.val"
-            @blur="clearValidity('password')"
-          />
-        </div>
-        <div v-if="!data.password.isValid" class="validation-error-container">
-          <p>Password must not be empty.</p>
-        </div>
+            <div
+              class="form-control"
+              :class="{ invalid: !data.password.isValid }"
+            >
+              <label for="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                v-model.trim="data.password.val"
+                @blur="clearValidity('password')"
+              />
+            </div>
+            <div
+              v-if="!data.password.isValid"
+              class="validation-error-container"
+            >
+              <p>Password must not be empty.</p>
+            </div>
 
-        <div
-          class="form-control"
-          :class="{ invalid: !data.passwordConfirmation.isValid }"
-        >
-          <label for="password-confirmation">Password confirmation</label>
-          <input
-            type="password"
-            id="password-confirmation"
-            v-model.trim="data.passwordConfirmation.val"
-            @blur="clearValidity('passwordConfirmation')"
-          />
-        </div>
-        <div
-          v-if="!data.passwordConfirmation.isValid"
-          class="validation-error-container"
-        >
-          <p>Password confirmation must not be empty.</p>
-        </div>
-        <div
-          class="form-control"
-          :class="{ invalid: !data.publicDetails.isValid }"
-        >
-          <label for="public-details">Public details</label>
-          <input
-            type="checkbox"
-            checked
-            id="public-details"
-            v-model.trim="data.publicDetails.val"
-            @blur="clearValidity('publicDetails')"
-          />
-          <p v-if="!data.publicDetails.isValid">
-            public-details must not be empty.
-          </p>
-        </div>
+            <div
+              class="form-control"
+              :class="{ invalid: !data.passwordConfirmation.isValid }"
+            >
+              <label for="password-confirmation">Password confirmation</label>
+              <input
+                type="password"
+                id="password-confirmation"
+                v-model.trim="data.passwordConfirmation.val"
+                @blur="clearValidity('passwordConfirmation')"
+              />
+            </div>
+            <div
+              v-if="!data.passwordConfirmation.isValid"
+              class="validation-error-container"
+            >
+              <p>Password confirmation must not be empty.</p>
+            </div>
+            <div
+              class="form-control"
+              :class="{ invalid: !data.publicDetails.isValid }"
+            >
+              <label for="public-details">Public details</label>
+              <input
+                type="checkbox"
+                checked
+                id="public-details"
+                v-model.trim="data.publicDetails.val"
+                @blur="clearValidity('publicDetails')"
+              />
+              <p v-if="!data.publicDetails.isValid">
+                public-details must not be empty.
+              </p>
+            </div>
 
-        <p v-if="formIsValid.value === false">
-          Please fix the above errors and submit again.
+            <p v-if="formIsValid.value === false">
+              Please fix the above errors and submit again.
+            </p>
+          </div>
+        </div>
+        <div class="form-right-side form-side">
+          <div id="image-upload">
+            <img src="" class="profile-pic" />
+            <div>
+              <label for="profile-pic">Profile picture</label>
+              <input
+                type="file"
+                id="profile-pic"
+                name="profile-pic"
+                accept="image/png, image/jpeg"
+              />
+            </div>
+          </div>
+          <div id="coords-details">
+            <div class="form-control">
+              <label for="longitude">Longitude</label>
+              <input
+                type="text"
+                id="longitude"
+                v-model.trim="data.longitude.val"
+              />
+            </div>
+            <div
+              v-if="!data.longitude.isValid"
+              class="validation-error-container"
+            >
+              <p>Longitude must not be empty.</p>
+            </div>
+            <div class="form-control">
+              <label for="latitude">Latitude</label>
+              <input
+                type="text"
+                id="latitude"
+                v-model.trim="data.latitude.val"
+              />
+            </div>
+            <div
+              v-if="!data.latitude.isValid"
+              class="validation-error-container"
+            >
+              <p>Latitude must not be empty.</p>
+            </div>
+            <BaseButton @click.prevent="getLocationCoords" mode="outline"
+              >Get my Location</BaseButton
+            >
+            <p class="note">
+              We need your location to make sure that proximity is considered
+              when donating products.Thanks!
+            </p>
+          </div>
+          <div class="form-submit-button">
+            <BaseButton>Register</BaseButton>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="request-status">
+      <div class="loading" v-show="isLoading">
+        <base-spinner></base-spinner>
+      </div>
+      <div class="request-errors" v-show="requestError">
+        <p>
+          There was an error when trying to perform the registration. Please try
+          again.
         </p>
+        <div v-if="apiErrorsFound">
+          <p>Details:</p>
+          <ul>
+            <li>
+              Code:
+              <pre>{{ errorDetails.code }}</pre>
+            </li>
+            <li>
+              Message:
+              <pre>{{ errorDetails.message }}</pre>
+            </li>
+            <li v-if="apiErrorsCaptured">
+              Errors:
+              <ul>
+                <li v-for="e in errorDetails.errors">{{ e }}</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
-    <div class="form-right-side form-side">
-      <div id="image-upload">
-        <img src="" class="profile-pic" />
-        <div>
-          <label for="profile-pic">Profile picture</label>
-          <input
-            type="file"
-            id="profile-pic"
-            name="profile-pic"
-            accept="image/png, image/jpeg"
-          />
-        </div>
-      </div>
-      <div id="coords-details">
-        <div class="form-control">
-          <label for="longitude">Longitude</label>
-          <input type="text" id="longitude" v-model.trim="data.longitude.val" />
-        </div>
-        <div v-if="!data.longitude.isValid" class="validation-error-container">
-          <p>Longitude must not be empty.</p>
-        </div>
-        <div class="form-control">
-          <label for="latitude">Latitude</label>
-          <input type="text" id="latitude" v-model.trim="data.latitude.val" />
-        </div>
-        <div v-if="!data.latitude.isValid" class="validation-error-container">
-          <p>Latitude must not be empty.</p>
-        </div>
-        <BaseButton @click.prevent="getLocationCoords" mode="outline"
-          >Get my Location</BaseButton
-        >
-        <p class="note">
-          We need your location to make sure that proximity is considered when
-          donating products.Thanks!
-        </p>
-      </div>
-      <div class="form-submit-button">
-        <BaseButton>Register</BaseButton>
-      </div>
-    </div>
-  </form>
+  </div>
 </template>
 
 <style scoped>
-form {
+.form-component-container {
   border: #edb421 solid thin;
   box-shadow: rgba(17, 17, 26, 0.2) 0px 2px 4px;
   background-color: #fff;
+}
+form {
   padding: 0;
   display: flex;
 }
@@ -463,5 +574,28 @@ h3 {
 
 .form-submit-button {
   text-align: right;
+}
+.request-errors {
+  color: red;
+  opacity: 0.7;
+  padding: 1rem;
+  background-color: rgba(237, 219, 219, 0.5);
+  border: red solid 2px;
+}
+.request-errors pre {
+  display: inline-block;
+}
+
+.request-status {
+  padding: 2rem;
+}
+.request-status p {
+  margin: 0;
+}
+.request-status ul {
+  line-height: 1rem;
+}
+.request-status ul li {
+  line-height: 1rem;
 }
 </style>
