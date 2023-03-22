@@ -1,5 +1,8 @@
 <template>
   <div>
+    <div v-if="registrationRedirection">
+      <p>User successfully registered!</p>
+    </div>
     <h2>Check the latest additions!</h2>
     <section class="product-card-container">
       <div v-for="product in products">
@@ -20,9 +23,75 @@
 </template>
 
 <script setup>
-import { ref, defineProps, computed } from "vue";
+import { ref, defineProps, computed, reactive } from "vue";
 import ProductCard from "../../components/ui/product/ProductCard.vue";
 import ProductsSummary from "../../components/ui/product/ProductsSummary.vue";
+import { useRouter, useRoute } from "vue-router";
+import axios from "axios";
+
+const route = useRoute();
+
+//computed
+const registrationRedirection = computed(() => {
+  return route.query.registration === "success";
+});
+
+const isLoading = ref(false);
+const requestError = ref(false);
+const errorDetails = reactive({
+  code: "",
+  message: "",
+  errors: [],
+});
+
+//fetch products from the public api
+
+const getProductRequests = async () => {
+  try {
+    const resp = await axios.post(
+      "http://localhost:8000/api1/products",
+      formData
+    );
+    console.log(resp);
+    //isLoading.value = false;
+    requestError.value = false;
+    //router.push({ name: "products", query: { registration: "success" } });
+  } catch (error) {
+    // Handle Error Here
+    console.error(error);
+    //isLoading.value = false;
+    requestError.value = true;
+
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.error("Error data", error.response.data);
+      console.error("Error status", error.response.status);
+      errorDetails.code = error.response.status;
+      errorDetails.message = error.message;
+      if (error.response.data.errors) {
+        let requestRecivedErrors = error.response.data.errors;
+        for (const property in requestRecivedErrors) {
+          errorDetails.errors.push(requestRecivedErrors[property].toString());
+        }
+      }
+      //console.log(error.response.headers);
+      // } else if (error.request) {
+      // The request was made but no response was received
+      // `error.request` is an instance of XMLHttpRequest in the browser
+      // and an instance of http.ClientRequest in node.js
+      //   console.log(error.request);
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.error("Error message", error.message);
+      console.error("Error code", error.code);
+      errorDetails.code = error.code;
+      errorDetails.message = error.message;
+    }
+  }
+};
+
+getProductRequests();
 
 //Data attributes
 //ref for accessing anything through .value, or reactive for accessing Objects only with the var name but without the value
