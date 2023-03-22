@@ -1,7 +1,11 @@
 <template>
   <div>
     <div v-if="registrationRedirection">
-      <p>User successfully registered!</p>
+      <!--<p>User successfully registered!</p>-->
+      <flash-message
+        text="User successfully registered!"
+        type="success"
+      ></flash-message>
     </div>
     <h2>Check the latest additions!</h2>
     <section class="product-card-container">
@@ -26,6 +30,7 @@
 import { ref, defineProps, computed, reactive } from "vue";
 import ProductCard from "../../components/ui/product/ProductCard.vue";
 import ProductsSummary from "../../components/ui/product/ProductsSummary.vue";
+import FlashMessage from "../../components/ui/FlashMessage.vue";
 import { useRouter, useRoute } from "vue-router";
 import axios from "axios";
 
@@ -48,10 +53,7 @@ const errorDetails = reactive({
 
 const getProductRequests = async () => {
   try {
-    const resp = await axios.post(
-      "http://localhost:8000/api1/products",
-      formData
-    );
+    const resp = await axios.get("http://localhost:8000/api1/products");
     console.log(resp);
     //isLoading.value = false;
     requestError.value = false;
