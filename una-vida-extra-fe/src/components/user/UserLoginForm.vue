@@ -3,6 +3,7 @@ import { ref, reactive, computed } from "vue";
 import BaseButton from "../ui/BaseButton.vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import axios from "axios";
 
 //data
 const data = reactive({
@@ -67,12 +68,42 @@ const submitForm = () => {
     password: data.password.val,
   };
   console.log("Form submitted");
-  logUserIn();
-  router.push("/products");
+  //logUserIn();
+  login();
+
   console.log(formData);
 
   // this.$emit("save-data", formData);
 };
+
+async function login() {
+  // this.processing = true
+  await axios.get("http://127.0.0.1:8000/sanctum/csrf-cookie");
+  await axios
+    .post("http://127.0.0.1:8000/api1/login", {
+      email: data.email.val,
+      password: data.password.val,
+    })
+    .then(({ data }) => {
+      // this.signIn()
+      console.log(data);
+      store.commit("logUserIn");
+      router.push("/products");
+    })
+    .catch(({ response }) => {
+      if (response.status === 422) {
+        //this.validationErrors = response.data.errors
+        console.log(response.data.errors);
+      } else {
+        //this.validationErrors = {}
+        //alert(response.data.message)
+        console.log(response.data.message);
+      }
+    })
+    .finally(() => {
+      // this.processing = false
+    });
+}
 </script>
 
 <template>

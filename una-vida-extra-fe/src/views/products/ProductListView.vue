@@ -48,10 +48,7 @@ const errorDetails = reactive({
 
 const getProductRequests = async () => {
   try {
-    const resp = await axios.post(
-      "http://localhost:8000/api1/products",
-      formData
-    );
+    const resp = await axios.get("http://localhost:8000/api1/products");
     console.log(resp);
     //isLoading.value = false;
     requestError.value = false;
