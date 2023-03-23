@@ -62,14 +62,14 @@
                   <RouterLink :to="{ name: 'requests' }">Requests</RouterLink>
                   <RouterLink :to="{ name: 'profile' }">Profile</RouterLink>
 
-                  <a @click="logUserOut">Log Out</a>
+                  <RouterLink :to="{ name: 'logout' }">Log Out</RouterLink>
                 </div>
                 <div v-else class="dropdown-content">
                   <a>Manage Users</a>
                   <a>Manage Products</a>
                   <a>Manage Requests</a>
                   <a>My Profile</a>
-                  <a @click="logUserOut">Log Out</a>
+                  <RouterLink :to="{ name: 'logout' }">Log Out</RouterLink>
                 </div>
               </div>
             </li>
@@ -94,12 +94,6 @@ const getUserStatus = computed(() => {
 const isUserAdmin = computed(() => {
   return store.state.userIsAdmin;
 });
-
-//getters and setter for Vuex
-const logUserOut = () => {
-  store.commit("logUserOut");
-  console.log("Logged user OUT");
-};
 </script>
 
 <style scoped>
