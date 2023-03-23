@@ -184,6 +184,9 @@ const submitForm = () => {
 
   const sendRegistrationRequest = async () => {
     try {
+      const cookie = await axios.get(
+        "http://localhost:8000/sanctum/csrf-cookie"
+      );
       const resp = await axios.post(
         "http://localhost:8000/api1/register",
         formData
@@ -325,7 +328,10 @@ export default {
               v-if="!data.password.isValid"
               class="validation-error-container"
             >
-              <p>Password must not be empty.</p>
+              <p>
+                Password must not be empty and it must be 8 characters in
+                length.
+              </p>
             </div>
 
             <div
@@ -344,7 +350,10 @@ export default {
               v-if="!data.passwordConfirmation.isValid"
               class="validation-error-container"
             >
-              <p>Password confirmation must not be empty.</p>
+              <p>
+                Password confirmation must not be empty and must be at least 8
+                characters.
+              </p>
             </div>
             <div
               class="form-control"
