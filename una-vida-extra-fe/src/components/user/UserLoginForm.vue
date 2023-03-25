@@ -66,7 +66,7 @@ const submitForm = () => {
   //logUserIn();
   login();
 
-  console.log(formData);
+  //console.log(formData);
 
   // this.$emit("save-data", formData);
 };
@@ -85,6 +85,7 @@ async function login() {
     //console.log(call);
     console.log("Login response", resp);
     store.dispatch("login").then(() => {
+      //console.log(loginCheck);
       router.push("/products");
     });
   } catch (response) {

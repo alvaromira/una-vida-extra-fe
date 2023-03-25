@@ -2,7 +2,7 @@
 import { ref, reactive, computed } from "vue";
 import BaseButton from "../ui/BaseButton.vue";
 import axios from "axios";
-import router from "../../router";
+import { useRouter } from "vue-router";
 import BaseSpinner from "../ui/BaseSpinner.vue";
 
 //data
@@ -45,6 +45,7 @@ const data = reactive({
   },
 });
 
+const router = useRouter();
 const formIsValid = ref(true);
 const isLoading = ref(false);
 const requestError = ref(false);
@@ -115,7 +116,7 @@ const validateForm = () => {
     formIsValid.value = false;
   }
 
-  if (data.password.val === "" || data.password.val.length < 9) {
+  if (data.password.val === "" || data.password.val.length < 8) {
     data.password.isValid = false;
     formIsValid.value = false;
   }
@@ -178,7 +179,7 @@ const submitForm = () => {
     // latitude: data.latitude.val,
   };
   console.log("Form submitted");
-  console.log(formData);
+  // console.log(formData);
 
   //axios request
 
@@ -191,10 +192,13 @@ const submitForm = () => {
         "http://localhost:8000/api1/register",
         formData
       );
-      console.log(resp);
-      isLoading.value = false;
-      requestError.value = false;
-      router.push({ name: "products", query: { registration: "success" } });
+      //console.log(resp);
+
+      if (resp.status === 201) {
+        isLoading.value = false;
+        requestError.value = false;
+        router.push({ name: "products", query: { registration: "success" } });
+      }
     } catch (error) {
       // Handle Error Here
       //console.error(error);

@@ -39,7 +39,7 @@ const store = createStore({
     actions: {
         login({ commit }) {
             return axios.get('http://localhost:8000/api1/user').then(({ data }) => {
-                commit('SET_USER', data)
+                commit('SET_USER', data.data) //the response is a user object wrapped in data
                 commit('SET_AUTHENTICATED', true)
 
             }).catch(({ response }) => {
