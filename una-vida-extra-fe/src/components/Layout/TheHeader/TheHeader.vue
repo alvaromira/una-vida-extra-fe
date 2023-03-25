@@ -89,7 +89,7 @@ const store = useStore();
 
 //using computed property derived from Vuex
 const getUserStatus = computed(() => {
-  return store.state.userLoggedIn;
+  return store.state.authenticated;
 });
 const isUserAdmin = computed(() => {
   return store.state.userIsAdmin;

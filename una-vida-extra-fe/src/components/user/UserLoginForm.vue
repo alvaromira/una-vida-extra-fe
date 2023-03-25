@@ -25,13 +25,8 @@ const router = useRouter();
 
 //using computed property derived from Vuex
 const getUserStatus = computed(() => {
-  return store.state.userLoggedIn;
+  return store.state.authenticated;
 });
-
-const logUserIn = () => {
-  store.commit("logUserIn");
-  console.log("Logged user IN");
-};
 
 //methods
 const clearValidity = (input) => {
@@ -86,9 +81,12 @@ async function login() {
       email: data.email.val,
       password: data.password.val,
     });
-    console.log(resp);
-    //store.commit("logUserIn");
-    //router.push("/products");
+    //const call = await axios.get("http://localhost:8000/api1/user");
+    //console.log(call);
+    console.log("Login response", resp);
+    store.dispatch("login").then(() => {
+      router.push("/products");
+    });
   } catch (response) {
     if (response.status === 422) {
       //this.validationErrors = response.data.errors

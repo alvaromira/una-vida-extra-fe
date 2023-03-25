@@ -2,11 +2,15 @@
 import axios from "axios";
 import { useRouter } from "vue-router";
 import { onMounted } from "vue";
+import store from "../../store";
 
 onMounted(() => {
   axios.post("http://localhost:8000/api1/logout");
+  //store.commit("logUserIn");
 
   const router = useRouter();
+  store.dispatch("logout");
+
   //using replace to avoid potential issues with back and forth logging in and out
   router.replace({ name: "login" });
 });
