@@ -26,7 +26,7 @@ const store = createStore({
          logUserOut(state) {
              state.userLoggedIn = false;
          },*/
-        setUserIsAdmin(state, status) {
+        SET_USER_IS_ADMIN(state, status) {
             state.userIsAdmin = status
         },
         SET_AUTHENTICATED(state, value) {
@@ -41,16 +41,21 @@ const store = createStore({
             return axios.get('http://localhost:8000/api1/user').then(({ data }) => {
                 commit('SET_USER', data.data) //the response is a user object wrapped in data
                 commit('SET_AUTHENTICATED', true)
+                if (data.data.user_is_admin) {
+                    commit('SET_USER_IS_ADMIN', true)
+                }
 
             }).catch(({ response }) => {
                 console.log("Error, ", response)
                 commit('SET_USER', {})
                 commit('SET_AUTHENTICATED', false)
+                commit('SET_USER_IS_ADMIN', false)
             })
         },
         logout({ commit }) {
             commit('SET_USER', {})
             commit('SET_AUTHENTICATED', false)
+            commit('SET_USER_IS_ADMIN', false)
         }
     }
 
