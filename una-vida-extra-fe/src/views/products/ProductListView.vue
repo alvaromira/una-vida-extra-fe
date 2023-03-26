@@ -5,7 +5,7 @@
     </div>
     <h2>Check the latest additions!</h2>
     <section class="product-card-container">
-      <div v-for="product in products">
+      <div v-for="product in prods">
         <ProductCard
           :key="product.id"
           :id="product.id"
@@ -49,7 +49,12 @@ const errorDetails = reactive({
 const getProductRequests = async () => {
   try {
     const resp = await axios.get("http://localhost:8000/api1/products");
-    console.log(resp);
+    //console.log(resp);
+    prods.value = resp.data.data;
+
+    console.log(resp.data.data);
+
+    console.log(prods);
     //isLoading.value = false;
     requestError.value = false;
     //router.push({ name: "products", query: { registration: "success" } });
@@ -89,7 +94,7 @@ const getProductRequests = async () => {
 };
 
 getProductRequests();
-
+const prods = ref([]);
 //Data attributes
 //ref for accessing anything through .value, or reactive for accessing Objects only with the var name but without the value
 const products = ref([

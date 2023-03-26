@@ -2,12 +2,12 @@
   <div class="product-card-wrapper" :id="id">
     <section class="product-top">
       <div class="product-card-image">
-        <img :src="image" />
+        <img :src="imagePath" />
       </div>
       <div class="location-icon">
         <IconLocation @click="showLocation" />
-        <span class="lat hidden">{{ location.lat }}</span>
-        <span class="long hidden">{{ location.long }}</span>
+        <span class="lat hidden">{{ location.latitude }}</span>
+        <span class="long hidden">{{ location.longitude }}</span>
       </div>
     </section>
     <section class="product-bottom">
@@ -28,7 +28,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps } from "vue";
+import { ref, defineProps, computed } from "vue";
 import IconLocation from "../../icons/iconLocation.vue";
 import BaseButton from "../BaseButton.vue";
 
@@ -42,6 +42,14 @@ const props = defineProps({
 });
 
 //methods or functionality
+
+const imagePath = computed(() => {
+  if (props.image == null || props.image === undefined) {
+    return "https://via.placeholder.com/250x250/cccccc/969696";
+  } else {
+    return props.image;
+  }
+});
 
 const moreInfo = () => {
   console.log("You just clicked on the product card");
