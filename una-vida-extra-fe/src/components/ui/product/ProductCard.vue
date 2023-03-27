@@ -4,7 +4,7 @@
       <div class="product-card-image">
         <img :src="imagePath" />
       </div>
-      <div class="location-icon">
+      <div class="location-icon" v-if="locationAvailable">
         <IconLocation @click="showLocation" />
         <span class="lat hidden">{{ location.latitude }}</span>
         <span class="long hidden">{{ location.longitude }}</span>
@@ -48,6 +48,14 @@ const imagePath = computed(() => {
     return "https://via.placeholder.com/250x250/cccccc/969696";
   } else {
     return props.image;
+  }
+});
+
+const locationAvailable = computed(() => {
+  if (props.location == null || props.location === undefined) {
+    return false;
+  } else {
+    return true;
   }
 });
 

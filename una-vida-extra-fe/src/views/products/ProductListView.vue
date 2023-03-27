@@ -6,12 +6,12 @@
     <h2>Check the latest additions!</h2>
     <section class="product-card-container">
       <div v-for="product in prods">
-        <ProductCard
+        <product-card
           :key="product.id"
           :id="product.id"
           :image="product.image"
           :title="product.title"
-          :date="product.date"
+          :date="product.created_at"
           :location="product.location"
         />
       </div>

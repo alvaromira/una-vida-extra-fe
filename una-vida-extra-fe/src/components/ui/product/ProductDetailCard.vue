@@ -1,40 +1,46 @@
 <template>
-  <div class="product-detail-card-wrapper" :id="id">
+  <div class="product-detail-card-wrapper" :id="props.id" :key="props.key">
     <section class="product-detail-card-left product-detail-card-side">
       <div class="product-detail-card-image">
-        <img :src="image" />
+        <img :src="props.image" />
         <div class="location-icon">
           <IconLocation @click="showLocation" />
-          <span class="lat hidden">{{ location.lat }}</span>
-          <span class="long hidden">{{ location.long }}</span>
+          <span class="lat hidden"></span>
+          <span class="long hidden"></span>
         </div>
       </div>
     </section>
     <section class="product-detail-card-right product-detail-card-side">
       <div class="product-detail-card-top">
         <div class="product-card-product-title">
-          <h2>{{ title }}</h2>
+          <h2>{{ props.title }}</h2>
         </div>
         <div class="product-card-detail-publication-details">
           <p>
             Published by
-            <span class="publication-details-owner"> {{ userId }}</span> on
-            <span class="product-card-product-actual-date">{{ date }}</span
+            <span class="publication-details-owner"> {{ props.owner }}</span>
+            on
+            <span class="product-card-product-actual-date">{{
+              props.date
+            }}</span
             >.
           </p>
         </div>
         <div class="product-detail-description">
-          <p>{{ description }}</p>
+          <p>{{ props.description }}</p>
         </div>
         <div class="product-detail-location">
           <p>
-            Localidad: <span class="product-detail-location-city">Malaga</span>
+            Localidad:
+            <span class="product-detail-location-city">{{
+              props.location
+            }}</span>
           </p>
         </div>
       </div>
       <div class="product-card-button product-detail-card-bottom">
         <BaseButton
-          v-if="!editable"
+          v-if="!loggedUserIsOwner"
           :to="{ name: 'requestProduct', params: { id: id } }"
           link="true"
           >Request it!</BaseButton
@@ -51,26 +57,38 @@
 </template>
 
 <script setup>
-import { defineProps } from "vue";
+import { defineProps, ref, computed } from "vue";
 import IconLocation from "../../icons/iconLocation.vue";
 import BaseButton from "../BaseButton.vue";
+import { useStore } from "vuex";
 
 //Aceppted properties for the card items
 const props = defineProps({
+  id: String,
+  key: String,
   image: String,
   title: String,
-  description: String,
   date: String,
   location: Object,
-  id: String,
-  userId: Number,
-  editable: Boolean,
+  owner: Number,
+  description: String,
 });
 
+const store = useStore();
 //methods or functionality
 const showLocation = () => {
-  console.log("Displaying location");
+  console.log("Displaying location", prodDetail.location);
 };
+
+//a product is only editable if the user is authenticated and the product owner matches the logged-in user id
+
+const loggedUserIsOwner = computed(() => {
+  if (store.state.user.id === props.owner) {
+    return true;
+  } else {
+    return false;
+  }
+});
 </script>
 
 <style scoped>
