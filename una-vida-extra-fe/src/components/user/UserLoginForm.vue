@@ -2,8 +2,17 @@
 import { ref, reactive, computed } from "vue";
 import BaseButton from "../ui/BaseButton.vue";
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import axios from "axios";
+
+const route = useRoute();
+
+//computed
+const loginRedirection = computed(() => {
+  return route.query.from;
+});
+
+console.log("LoginRedirection", route.query.from);
 
 //data
 const data = reactive({
@@ -85,8 +94,11 @@ async function login() {
     //console.log(call);
     console.log("Login response", resp);
     store.dispatch("login").then(() => {
-      //console.log(loginCheck);
-      router.push("/products");
+      if (route.query.from != undefined && route.query.from.length > 0) {
+        router.replace(route.query.from);
+      } else {
+        router.push("/products");
+      }
     });
   } catch (response) {
     if (response.status === 422) {

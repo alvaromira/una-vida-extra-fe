@@ -177,7 +177,7 @@ router.beforeEach((to, from, next) => {
       next()
     } else {
       console.log(`VISITING AN NOT AUTH ROUTE ${to.name}, you are NOT authenticated`)
-      next({ name: "login" })
+      next({ name: "login", query: { from: from.fullPath } })
     }
   }
 })
