@@ -12,7 +12,7 @@
         </div>
       </div>
       <div class="request-detail-card-bottom">
-        <request-form />
+        <request-form :id="id" />
       </div>
     </section>
   </div>

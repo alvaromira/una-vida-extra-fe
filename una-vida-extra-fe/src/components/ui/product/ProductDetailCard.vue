@@ -41,7 +41,13 @@
       <div class="product-card-button product-detail-card-bottom">
         <BaseButton
           v-if="!loggedUserIsOwner"
-          :to="{ name: 'requestProduct', params: { id: id } }"
+          :to="{
+            name: 'requestProduct',
+            params: {
+              id: id,
+              state: { title: props.title, image: props.image },
+            },
+          }"
           link="true"
           >Request it!</BaseButton
         >

@@ -1,70 +1,3 @@
-<script setup>
-import { ref, reactive } from "vue";
-import BaseButton from "../BaseButton.vue";
-import { useRouter } from "vue-router";
-
-const router = useRouter();
-//data
-const data = reactive({
-  message: {
-    val: "",
-    isValid: true,
-  },
-});
-
-const formIsValid = ref(true);
-
-//methods
-
-const clearValidity = (input) => {
-  console.log(`Setting valid to true: ${input}`);
-  data[input].isValid = true;
-};
-
-//specific validation of each of the registration forms included
-const validateForm = () => {
-  console.log("Running validation on registration form");
-
-  formIsValid.value = true;
-
-  if (data.message.val === "" || data.message.val.length > 400) {
-    data.message.isValid = false;
-    formIsValid.value = false;
-  }
-};
-
-const clearForm = () => {
-  console.log("Clearing form");
-
-  data.message.val === "";
-  data.message.isValid = true;
-
-  formIsValid.value = true;
-};
-
-const submitForm = () => {
-  console.log("Submitting form");
-  validateForm();
-
-  if (!formIsValid.value) {
-    return;
-  }
-
-  const formData = {
-    message: data.message.val,
-  };
-  console.log("Form submitted");
-  router.push({ name: "requests" });
-  console.log(formData);
-  // this.$emit("save-data", formData);
-};
-
-/*
-export default {
-  // emits: ["save-data"],
-};*/
-</script>
-
 <template>
   <form @submit.prevent="submitForm">
     <div>
@@ -92,6 +25,119 @@ export default {
     </div>
   </form>
 </template>
+
+<script setup>
+import { ref, reactive, computed, defineProps } from "vue";
+import BaseButton from "../BaseButton.vue";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
+import axios from "axios";
+
+const props = defineProps({
+  id: String,
+});
+
+//data
+const data = reactive({
+  message: {
+    val: "",
+    isValid: true,
+  },
+});
+
+const formIsValid = ref(true);
+
+//vuex
+const store = useStore();
+const router = useRouter();
+
+//using computed property derived from Vuex
+const getUserStatus = computed(() => {
+  return store.state.authenticated;
+});
+
+//methods
+const clearValidity = (input) => {
+  console.log(`Setting valid to true: ${input}`);
+  data[input].isValid = true;
+};
+
+//specific validation of each of the registration forms included
+const validateForm = () => {
+  console.log("Running validation on request form");
+
+  formIsValid.value = true;
+
+  if (data.message.val === "" || data.message.val.length > 400) {
+    data.message.isValid = false;
+    formIsValid.value = false;
+  }
+};
+
+const activeUserId = computed(() => {
+  return store.state.user.id;
+});
+
+const submitForm = async () => {
+  console.log("Submitting form");
+  validateForm();
+
+  if (!formIsValid.value) {
+    return;
+  }
+
+  const formData = {
+    message: data.message.val,
+    request_date: "2023-11-11 16:12:49",
+    is_active: true,
+    product_id: props.id,
+    user_id: activeUserId.value,
+  };
+  console.log("Form submitted");
+  //logUserIn();
+  const r = await sendProdRequest(formData);
+
+  //router.push({ name: "requests" });
+
+  //console.log(formData);
+
+  // this.$emit("save-data", formData);
+};
+
+async function sendProdRequest(requestData) {
+  // this.processing = true
+  console.log("sending...", requestData);
+
+  try {
+    //const cookie = await axios.get("http://localhost:8000/sanctum/csrf-cookie");
+
+    const resp = await axios.post("http://localhost:8000/api1/requests", {
+      ...requestData,
+    });
+    //const call = await axios.get("http://localhost:8000/api1/user");
+    //console.log(call);
+    console.log("Request response", resp);
+    /*store.dispatch("login").then(() => {
+      if (route.query.from != undefined && route.query.from.length > 0) {
+        router.replace(route.query.from);
+      } else {
+        router.push("/products");
+      }
+    });*/
+  } catch (err) {
+    if (err.status === 422) {
+      //this.validationErrors = err.data.errors
+      console.log(err.data.errors);
+    } else {
+      //this.validationErrors = {}
+      //alert(err.data.message)
+      console.log(err);
+    }
+  } finally {
+    console.log("request creation function over.");
+  }
+}
+</script>
 
 <style scoped>
 form {
