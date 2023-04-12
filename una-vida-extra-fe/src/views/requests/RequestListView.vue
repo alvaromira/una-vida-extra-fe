@@ -96,7 +96,7 @@ const requests = ref([
 ]);
 
 const numberOfRequests = computed(() => {
-  return numberOfRequests < 1;
+  return prodRequests.value.length;
 });
 </script>
 
@@ -104,19 +104,19 @@ const numberOfRequests = computed(() => {
   <div>
     <h2>My requests</h2>
     <section>
-      <div v-if="numberOfRequests">
+      <div v-if="!numberOfRequests">
         <p>You don't not have any active requests.</p>
       </div>
 
-      <div v-else v-for="request in requests">
+      <div v-else v-for="request in prodRequests">
         <RequestCard
           :key="request.id"
           :id="request.id"
           :message="request.message"
           :distance="request.distance"
-          :date="request.date"
-          :isActive="request.isActive"
-          :productId="request.productId"
+          :date="request.request_date"
+          :isActive="request.is_active"
+          :productId="request.product_id"
         />
       </div>
     </section>
