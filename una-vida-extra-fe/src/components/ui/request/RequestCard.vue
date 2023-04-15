@@ -1,8 +1,15 @@
 <script setup>
-import { ref, defineProps } from "vue";
+import { ref, defineProps, computed } from "vue";
 import IconLocation from "../../icons/iconLocation.vue";
 import IconAvailable from "../../icons/IconAvailable.vue";
 import IconNotAvailable from "../../icons/IconNotAvailable.vue";
+import BaseButton from "../BaseButton.vue";
+import { useStore } from "vuex";
+
+const store = useStore();
+const activeUserId = computed(() => {
+  return store.state.user.id;
+});
 
 //Aceppted properties for the card items
 const props = defineProps({
@@ -13,6 +20,13 @@ const props = defineProps({
   isActive: Boolean,
   productId: Number,
 });
+
+//function
+const cancelMyRequest = () => {
+  console.log(
+    `User ${activeUserId.value} is cancelling request with id ${props.id}`
+  );
+};
 </script>
 
 <template>
@@ -26,6 +40,9 @@ const props = defineProps({
     <div class="request-status request-card-item">
       <span v-if="isActive"><IconAvailable /></span>
       <span v-else><IconNotAvailable /></span>
+    </div>
+    <div class="request-cancel-button">
+      <BaseButton @click="cancelMyRequest">Cancel</BaseButton>
     </div>
   </div>
 </template>

@@ -76,25 +76,6 @@ getProductRequests();
 
 const prodRequests = ref([]);
 
-const requests = ref([
-  {
-    id: 1,
-    date: "01/01/2023",
-    message: "Voluptas sed qui et aut consectetur esse facilis o.",
-    distance: "34 km",
-    isActive: true,
-    productId: 13,
-  },
-  {
-    id: 2,
-    date: "02/02/2023",
-    message: "Ut et vel quasi quia et assumenda.",
-    distance: "450 m",
-    isActive: false,
-    productId: 8,
-  },
-]);
-
 const numberOfRequests = computed(() => {
   return prodRequests.value.length;
 });
