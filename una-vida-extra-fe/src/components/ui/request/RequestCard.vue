@@ -64,14 +64,7 @@ const closeModal = () => {
       <BaseButton @click="cancelMyRequest">Cancel</BaseButton>
     </div>
   </div>
-  <!-- <RequestCardMap
-    :productId="productId"
-    :userLat="activeUserLocation.latitude"
-    :userLong="activeUserLocation.longitude"
-    v-show="isModalVisible"
-    @close="closeModal"
-  >
-  </RequestCardMap>-->
+
   <ModalWithMap
     :productId="productId"
     :userLat="activeUserLocation.latitude"
