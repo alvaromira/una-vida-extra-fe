@@ -76,7 +76,7 @@ const closeModal = () => {
     :productId="productId"
     :userLat="activeUserLocation.latitude"
     :userLong="activeUserLocation.longitude"
-    v-show="isModalVisible"
+    v-if="isModalVisible"
     @close="closeModal"
   >
     <!--<template #header>Location of product {{ productId }} with map</template>
