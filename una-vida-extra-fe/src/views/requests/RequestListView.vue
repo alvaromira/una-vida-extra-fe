@@ -89,19 +89,41 @@ const numberOfRequests = computed(() => {
         <p>You don't not have any active requests.</p>
       </div>
 
-      <div v-else v-for="request in prodRequests">
-        <RequestCard
-          :key="request.id"
-          :id="request.id"
-          :message="request.message"
-          :distance="request.distance"
-          :date="request.request_date"
-          :isActive="request.is_active"
-          :productId="request.product_id"
-        />
+      <div v-else>
+        <div class="request-card-wrapper">
+          <div class="request-product-id request-card-item">Product Id</div>
+          <div class="request-message request-card-item">Message</div>
+          <div class="request-date request-card-item">Date</div>
+          <div class="request-distance request-card-item">Location</div>
+          <div class="request-status request-card-item">Availability</div>
+          <div class="request-cancel-button">Cancel</div>
+        </div>
+        <div v-for="request in prodRequests">
+          <RequestCard
+            :key="request.id"
+            :id="request.id"
+            :message="request.message"
+            :distance="request.distance"
+            :date="request.request_date"
+            :isActive="request.is_active"
+            :productId="request.product_id"
+          />
+        </div>
       </div>
     </section>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.request-card-wrapper {
+  display: flex;
+  padding: 1.5rem;
+  padding-bottom: 0.25rem;
+  margin-top: 2rem;
+  margin-bottom: 0rem;
+}
+.request-card-item {
+  flex: 1;
+  text-align: center;
+}
+</style>

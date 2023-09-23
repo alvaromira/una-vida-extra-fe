@@ -5,11 +5,17 @@ import IconAvailable from "../../icons/IconAvailable.vue";
 import IconNotAvailable from "../../icons/IconNotAvailable.vue";
 import BaseButton from "../BaseButton.vue";
 import { useStore } from "vuex";
+import ModalWithMap from "../ModalWithMap.vue";
+import RequestCardMap from "./RequestCardMap.vue";
 
 const store = useStore();
 const activeUserId = computed(() => {
   return store.state.user.id;
 });
+const activeUserLocation = computed(() => {
+  return store.state.user.user_location;
+});
+const isModalVisible = ref(false);
 
 //Aceppted properties for the card items
 const props = defineProps({
@@ -27,6 +33,19 @@ const cancelMyRequest = () => {
     `User ${activeUserId.value} is cancelling request with id ${props.id}`
   );
 };
+
+const showLocation = () => {
+  console.log("Displaying location");
+  showModal();
+};
+//modal
+const showModal = () => {
+  isModalVisible.value = true;
+};
+const closeModal = () => {
+  console.log("modal emit received, closing modal visibilty");
+  isModalVisible.value = false;
+};
 </script>
 
 <template>
@@ -35,7 +54,7 @@ const cancelMyRequest = () => {
     <div class="request-message request-card-item">{{ message }}</div>
     <div class="request-date request-card-item">{{ date }}</div>
     <div class="request-distance request-card-item">
-      <IconLocation />{{ distance }}
+      <IconLocation @click="showLocation" />{{ distance }}
     </div>
     <div class="request-status request-card-item">
       <span v-if="isActive"><IconAvailable /></span>
@@ -45,6 +64,28 @@ const cancelMyRequest = () => {
       <BaseButton @click="cancelMyRequest">Cancel</BaseButton>
     </div>
   </div>
+  <!-- <RequestCardMap
+    :productId="productId"
+    :userLat="activeUserLocation.latitude"
+    :userLong="activeUserLocation.longitude"
+    v-show="isModalVisible"
+    @close="closeModal"
+  >
+  </RequestCardMap>-->
+  <ModalWithMap
+    :productId="productId"
+    :userLat="activeUserLocation.latitude"
+    :userLong="activeUserLocation.longitude"
+    v-show="isModalVisible"
+    @close="closeModal"
+  >
+    <!--<template #header>Location of product {{ productId }} with map</template>
+    <template #body
+      >Lat: {{ activeUserLocation.latitude }}, long:
+      {{ activeUserLocation.longitude }}
+    </template>
+    <template #footer>Passed footer</template>-->
+  </ModalWithMap>
 </template>
 
 <style scoped>
