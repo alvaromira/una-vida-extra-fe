@@ -1,12 +1,11 @@
 <script setup>
-import { ref, defineProps, computed } from "vue";
+import { ref, defineProps, computed, defineEmits } from "vue";
 import IconLocation from "../../icons/iconLocation.vue";
 import IconAvailable from "../../icons/IconAvailable.vue";
 import IconNotAvailable from "../../icons/IconNotAvailable.vue";
 import BaseButton from "../BaseButton.vue";
 import { useStore } from "vuex";
 import ModalWithMap from "../ModalWithMap.vue";
-import RequestCardMap from "./RequestCardMap.vue";
 
 const store = useStore();
 const activeUserId = computed(() => {
@@ -27,11 +26,19 @@ const props = defineProps({
   productId: Number,
 });
 
+const emit = defineEmits(["removed-request"]);
+
 //function
 const cancelMyRequest = () => {
-  console.log(
-    `User ${activeUserId.value} is cancelling request with id ${props.id}`
-  );
+  //TODO:
+  //modal for confirmation
+  //place request to cancel
+  //if success, emit event to parent with ID, remove it
+  // $emit('removedRequest', props.id)
+  emit("removed-request", activeUserId.value, props.id);
+  //console.log(
+  //  `User ${activeUserId.value} is cancelling request with id ${props.id}`
+  //);
 };
 
 const showLocation = () => {

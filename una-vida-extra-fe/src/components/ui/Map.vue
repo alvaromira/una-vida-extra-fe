@@ -17,7 +17,12 @@ import {
   onUnmounted,
 } from "vue";
 
-const center = ref([36.72, 4.42]);
+const props = defineProps({
+  RequestedProductCoords: Array,
+  UserCoords: Array,
+});
+
+const center = ref([props.UserCoords[0], props.UserCoords[1]]);
 let mapDiv = null;
 
 const setupLeafletMap = () => {
@@ -30,6 +35,17 @@ const setupLeafletMap = () => {
         '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     })
     .addTo(mapDiv);
+  //user marker
+  let userMarker = L.marker([props.UserCoords[0], props.UserCoords[1]]).addTo(
+    mapDiv
+  );
+  userMarker.bindPopup("User location.");
+  //prod marker
+  let prodMarker = L.marker([
+    props.RequestedProductCoords[0],
+    props.RequestedProductCoords[1],
+  ]).addTo(mapDiv);
+  prodMarker.bindPopup("Product location.");
 };
 
 const removeLeafletMap = () => {};
@@ -58,7 +74,7 @@ onUnmounted(() => console.log("Unmounting Map component"));
 </script>
 <style scoped>
 #mapContainer {
-  width: 80vw;
-  height: 100vh;
+  width: auto;
+  height: 300px;
 }
 </style>

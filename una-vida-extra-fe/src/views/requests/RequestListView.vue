@@ -31,9 +31,9 @@ const getProductRequests = async () => {
     prodRequests.value = resp.data.data;
     requestCurrentPage.value = resp.data.current_page;
 
-    console.log(resp.data.data);
+    //console.log(resp.data.data);
 
-    console.log(prodRequests);
+    //console.log(prodRequests);
     //isLoading.value = false;
     requestError.value = false;
     //router.push({ name: "products", query: { registration: "success" } });
@@ -79,6 +79,20 @@ const prodRequests = ref([]);
 const numberOfRequests = computed(() => {
   return prodRequests.value.length;
 });
+
+const removeChildComponentById = (id) => {
+  const index = prodRequests.value.findIndex((child) => child.id === id);
+  if (index !== -1) {
+    prodRequests.value.splice(index, 1);
+  }
+};
+
+const removeCancelledRequest = (userId, reqId) => {
+  console.log(
+    `Parent removing card ${reqId} from the list of requests. Action triggered by ${userId}`
+  );
+  removeChildComponentById(reqId);
+};
 </script>
 
 <template>
@@ -107,6 +121,7 @@ const numberOfRequests = computed(() => {
             :date="request.request_date"
             :isActive="request.is_active"
             :productId="request.product_id"
+            @removed-request="removeCancelledRequest"
           />
         </div>
       </div>

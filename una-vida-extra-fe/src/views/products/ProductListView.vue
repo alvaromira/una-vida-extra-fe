@@ -51,7 +51,6 @@ const getProductRequests = async () => {
     const resp = await axios.get("http://localhost:8000/api1/products");
     //console.log(resp);
     prods.value = resp.data.data;
-
     console.log(resp.data.data);
 
     console.log(prods);
