@@ -60,7 +60,10 @@
         >
         <BaseButton
           v-else
-          :to="{ name: 'editProduct', params: { id: id } }"
+          :to="{
+            name: 'editProduct',
+            params: { id: id, productObject: props.location },
+          }"
           link="true"
           >Edit</BaseButton
         >
@@ -85,7 +88,7 @@ const props = defineProps({
   location: Object,
   owner: Number,
   description: String,
-  category: String,
+  category: Number,
 });
 
 const store = useStore();

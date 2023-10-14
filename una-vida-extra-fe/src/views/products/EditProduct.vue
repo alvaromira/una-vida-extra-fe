@@ -15,4 +15,7 @@ const route = useRoute();
 const productId = computed(() => {
   return route.params.id;
 });
+const productDetails = computed(() => {
+  return route.params.productObject;
+});
 </script>
