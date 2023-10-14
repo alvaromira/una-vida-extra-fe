@@ -35,7 +35,7 @@ const cancelMyRequest = () => {
   //place request to cancel
   //if success, emit event to parent with ID, remove it
   // $emit('removedRequest', props.id)
-  emit("removed-request", activeUserId.value, props.id);
+  emit("removed-request", activeUserId.value, props.id, props.productId);
   //console.log(
   //  `User ${activeUserId.value} is cancelling request with id ${props.id}`
   //);

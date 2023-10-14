@@ -1,5 +1,6 @@
 <template>
   <div>
+    <p>These are the products you currently have listed:</p>
     <div id="user-product-list">
       <section class="product-card-container">
         <div v-for="product in userProducts">
@@ -10,6 +11,8 @@
             :title="product.title"
             :date="product.date"
             :location="product.location"
+            :category="product.category"
+            :description="product.description"
           />
         </div>
       </section>
@@ -59,10 +62,6 @@ const getUserProducts = async () => {
     //console.log(resp);
     userProducts.value = resp.data.data;
     requestCurrentPage.value = resp.data.current_page;
-
-    console.log(resp.data.data);
-
-    console.log(userProducts);
     //isLoading.value = false;
     requestError.value = false;
     //router.push({ name: "products", query: { registration: "success" } });

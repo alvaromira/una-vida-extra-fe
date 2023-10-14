@@ -16,10 +16,17 @@
           <h2>{{ props.title }}</h2>
         </div>
         <div class="product-card-detail-publication-details">
-          <p>
+          <p v-if="!loggedUserIsOwner">
             Published by
             <span class="publication-details-owner"> {{ props.owner }}</span>
             on
+            <span class="product-card-product-actual-date">{{
+              props.date
+            }}</span
+            >.
+          </p>
+          <p v-else>
+            You published this item on
             <span class="product-card-product-actual-date">{{
               props.date
             }}</span
@@ -78,6 +85,7 @@ const props = defineProps({
   location: Object,
   owner: Number,
   description: String,
+  category: String,
 });
 
 const store = useStore();

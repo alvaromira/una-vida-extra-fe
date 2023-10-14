@@ -4,9 +4,28 @@ import RequestCard from "../../components/ui/request/RequestCard.vue";
 import { useRouter, useRoute } from "vue-router";
 import axios from "axios";
 import { useStore } from "vuex";
+//import ModalConfirmationDialog from "../../components/ui/ModalConfirmationDialog.vue";
 
 const route = useRoute();
 const store = useStore();
+/*
+//Modal related
+const isModalVisible = ref(false);
+// Setter for isModalVisible
+const setIsModalVisible = (value) => {
+  isModalVisible.value = value;
+};
+
+const requestDeletionConfirmed = ref(false);
+// Getter for requestDeletionConfirmed
+const getRequestDeletionConfirmed = computed(() => {
+  return requestDeletionConfirmed.value;
+});
+
+// Setter for requestDeletionConfirmed
+const setRequestDeletionConfirmed = (value) => {
+  requestDeletionConfirmed.value = value;
+};*/
 
 const isLoading = ref(false);
 const requestError = ref(false);
@@ -87,12 +106,44 @@ const removeChildComponentById = (id) => {
   }
 };
 
-const removeCancelledRequest = (userId, reqId) => {
+//when removing a request, received from a request card
+const removeCancelledRequest = (userId, reqId, prodId) => {
   console.log(
     `Parent removing card ${reqId} from the list of requests. Action triggered by ${userId}`
   );
-  removeChildComponentById(reqId);
+  //todo, do it with a modal
+  if (
+    confirm(
+      `Are you sure you want to deleted your request for product with ID ${prodId}`
+    ) == true
+  ) {
+    removeChildComponentById(reqId);
+  }
+
+  /*
+  if (getRequestDeletionConfirmed.value) {
+    console.log("Modal confirmed, removing...");
+    removeChildComponentById(reqId);
+  } else {
+    console.log("Modal cancelled");
+  }*/
+
+  //TO DO show toast with result
 };
+
+/*
+function onConfirm() {
+  setIsModalVisible(false);
+  console.log("Deleting requests");
+  //TO do, remove with api request, if all good, then remove component
+  removeChildComponentById(reqId);
+  setRequestDeletionConfirmed(true);
+}
+
+function onModalClose() {
+  setIsModalVisible(false);
+  setRequestDeletionConfirmed(false);
+}*/
 </script>
 
 <template>
@@ -112,19 +163,27 @@ const removeCancelledRequest = (userId, reqId) => {
           <div class="request-status request-card-item">Availability</div>
           <div class="request-cancel-button">Cancel</div>
         </div>
-        <div v-for="request in prodRequests">
-          <RequestCard
-            :key="request.id"
-            :id="request.id"
-            :message="request.message"
-            :distance="request.distance"
-            :date="request.request_date"
-            :isActive="request.is_active"
-            :productId="request.product_id"
-            @removed-request="removeCancelledRequest"
-          />
-        </div>
+        <transition-group name="list" tag="div">
+          <div v-for="request in prodRequests">
+            <RequestCard
+              :key="request.id"
+              :id="request.id"
+              :message="request.message"
+              :distance="request.distance"
+              :date="request.request_date"
+              :isActive="request.is_active"
+              :productId="request.product_id"
+              @removed-request="removeCancelledRequest"
+            /></div
+        ></transition-group>
       </div>
+
+      <!--<ModalConfirmationDialog
+        v-if="isModalVisible"
+        @confirmed="onConfirm"
+        @close="onModalClose"
+        >asdasdfas</ModalConfirmationDialog
+      >-->
     </section>
   </div>
 </template>
@@ -140,5 +199,14 @@ const removeCancelledRequest = (userId, reqId) => {
 .request-card-item {
   flex: 1;
   text-align: center;
+}
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
 }
 </style>

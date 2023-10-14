@@ -2,6 +2,7 @@
 import { ref, reactive } from "vue";
 import BaseButton from "../BaseButton.vue";
 import { useRouter } from "vue-router";
+import axios from "axios";
 
 const router = useRouter();
 
@@ -31,11 +32,11 @@ const props = {
 //data
 const data = reactive({
   productName: {
-    val: "Optio repudiandae dolorem ad temporibus.",
+    val: "default",
     isValid: true,
   },
   description: {
-    val: "Tempore minus voluptates consequatur soluta.",
+    val: "default",
     isValid: true,
   },
   tags: {
@@ -126,6 +127,50 @@ const submitForm = () => {
 export default {
   // emits: ["save-data"],
 };*/
+
+//categories
+const errorDetails = reactive({
+  code: "",
+  message: "",
+  errors: [],
+});
+const requestError = ref(false);
+const prodCategories = ref([]);
+//fetch product requests from the public api
+const getProductCategories = async () => {
+  try {
+    const resp = await axios.get(`http://localhost:8000/api1/categories`);
+    //console.log(resp);
+    prodCategories.value = resp.data.data;
+    console.log(prodCategories);
+    requestError.value = false;
+  } catch (error) {
+    requestError.value = true;
+
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.error("Error data", error.response.data);
+      console.error("Error status", error.response.status);
+      errorDetails.code = error.response.status;
+      errorDetails.message = error.message;
+      if (error.response.data.errors) {
+        let requestRecivedErrors = error.response.data.errors;
+        for (const property in requestRecivedErrors) {
+          errorDetails.errors.push(requestRecivedErrors[property].toString());
+        }
+      }
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.error("Error message", error.message);
+      console.error("Error code", error.code);
+      errorDetails.code = error.code;
+      errorDetails.message = error.message;
+    }
+  }
+};
+
+getProductCategories();
 </script>
 
 <template>
@@ -213,10 +258,19 @@ export default {
             v-model.trim="data.category.val"
             @blur="clearValidity('category')"
           >
+            <option
+              v-for="category in prodCategories"
+              :key="category.id"
+              :id="category.id"
+              :value="category.name"
+            >
+              {{ category.name }}
+            </option>
+            <!--</option>
             <option value="volvo">Volvo</option>
             <option value="saab">Saab</option>
             <option value="mercedes">Mercedes</option>
-            <option value="audi">Audi</option>
+            <option value="audi">Audi</option>-->
           </select>
         </div>
         <div v-if="!data.category.isValid" class="validation-error-container">
