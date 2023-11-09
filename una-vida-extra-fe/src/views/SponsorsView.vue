@@ -57,11 +57,6 @@
       id interdum lacus! Nulla!
     </p>
   </div>
-  <div>
-    <Map></Map>
-  </div>
 </template>
-<script setup>
-import Map from "../components/ui/Map.vue";
-</script>
+<script setup></script>
 <style scoped></style>

@@ -52,7 +52,7 @@
             name: 'requestProduct',
             params: {
               id: id,
-              state: { title: props.title, image: props.image },
+              //state: { title: props.title, image: props.image },
             },
           }"
           link="true"
@@ -62,7 +62,10 @@
           v-else
           :to="{
             name: 'editProduct',
-            params: { id: id, productObject: props.location },
+            params: {
+              id: id,
+              // state: { title: props.title, image: props.image },
+            },
           }"
           link="true"
           >Edit</BaseButton

@@ -84,7 +84,11 @@ async function login() {
   // this.processing = true
 
   try {
-    const cookie = await axios.get("http://localhost:8000/sanctum/csrf-cookie");
+    const csrfCookie = await axios.get(
+      "http://localhost:8000/sanctum/csrf-cookie"
+    );
+
+    console.log(csrfCookie);
 
     const resp = await axios.post("http://localhost:8000/api1/login", {
       email: data.email.val,
