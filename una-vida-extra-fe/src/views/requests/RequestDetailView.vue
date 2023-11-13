@@ -20,10 +20,10 @@ const route = useRoute();
 //No props because of https://router.vuejs.org/guide/essentials/passing-props.html#boolean-mode
 
 //test data
-const testData = ref({
+/*const testData = ref({
   image: "https://via.placeholder.com/250x250/cccccc/969696",
   title: "Used pans",
-});
+});*/
 
 //computed
 const productId = computed(() => {
@@ -36,7 +36,7 @@ const prodDetail = ref([]);
 
 const getProductData = async () => {
   try {
-    const targetURL = `http://127.0.0.1:8000/api1/products/${route.params.id}`;
+    const targetURL = `http://localhost:8000/api1/products/${route.params.id}`;
     const response = await axios.get(targetURL);
     prodDetail.value = response.data.data;
   } catch (err) {

@@ -1,9 +1,12 @@
 <script setup>
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import BaseButton from "../BaseButton.vue";
 import { useRouter } from "vue-router";
+import axios from "axios";
+import { useStore } from "vuex";
 
 const router = useRouter();
+const store = useStore();
 //data
 const data = reactive({
   productName: {
@@ -24,7 +27,14 @@ const data = reactive({
   },
 });
 
+const loggedInUser = ref(store.state.user.id);
+onMounted(() => {
+  loggedInUser.value = store.state.user.id;
+});
+
 const formIsValid = ref(true);
+const image = ref(); //move to Data
+const imageURL = ref();
 
 //methods
 
@@ -34,7 +44,7 @@ const clearValidity = (input) => {
 };
 
 //specific validation of each of the registration forms included
-const validateForm = () => {
+const validateForm = async () => {
   console.log("Running validation on registration form");
 
   formIsValid.value = true;
@@ -78,30 +88,136 @@ const clearForm = () => {
   formIsValid.value = true;
 };
 
-const submitForm = () => {
+const submitForm = async () => {
   console.log("Submitting form");
-  validateForm();
+
+  await validateForm();
 
   if (!formIsValid.value) {
     return;
   }
 
-  const formData = {
-    productName: data.productName.val,
+  const formData = new FormData();
+  formData.append("image", image.value);
+  formData.append("title", data.productName.val);
+  formData.append("description", data.description.val);
+  //formData.append('tags', data.tags.val);
+  formData.append("category_id", data.category.val);
+  formData.append("user_id", loggedInUser.value);
+  formData.append("available", 1);
+  formData.append("end_date", "2023-12-08 16:12:49");
+
+  /* const formData = {
+    title: data.productName.val,
     description: data.description.val,
-    tags: data.tags.val,
-    category: data.category.val,
-  };
-  console.log("Form submitted");
-  router.push({ name: "userProducts" });
+    //tags: data.tags.val,
+    category_id: data.category.val,
+    user_id: loggedInUser.value,
+    available: 1,
+    end_date: "2023-12-08 16:12:49",
+    image: image.value,
+  };*/
+
   console.log(formData);
-  // this.$emit("save-data", formData);
+
+  try {
+    const responseData = await createProduct(formData);
+    console.log(responseData);
+    //TO DO, show loader
+    console.log("Form submitted, redirecting to userProducts");
+    //TO DO show toast
+    router.push({ name: "userProducts" });
+  } catch (error) {
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.error("Error data", error.response.data);
+      console.error("Error status", error.response.status);
+      //errorDetails.code = error.response.status;
+      //errorDetails.message = error.message;
+      if (error.response.data.errors) {
+        let requestRecivedErrors = error.response.data.errors;
+        for (const property in requestRecivedErrors) {
+          //errorDetails.errors.push(requestRecivedErrors[property].toString());
+          console.log(requestRecivedErrors[property].toString());
+        }
+      }
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.error("Error message", error.message);
+      console.error("Error code", error.code);
+      //errorDetails.code = error.code;
+      //errorDetails.message = error.message;
+    }
+  }
 };
 
-/*
-export default {
-  // emits: ["save-data"],
-};*/
+const createProduct = async (payload) => {
+  try {
+    const response = await axios.post(
+      `http://localhost:8000/api1/products`,
+      payload,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error; // rethrow the error to be handled in the component
+  }
+};
+const requestError = ref(false);
+const prodCategories = ref([]);
+//fetch product requests from the public api
+const getProductCategories = async () => {
+  try {
+    const resp = await axios.get(`http://localhost:8000/api1/categories`);
+    //console.log(resp);
+    prodCategories.value = resp.data.data;
+    console.log(prodCategories);
+    requestError.value = false;
+  } catch (error) {
+    requestError.value = true;
+
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.error("Error data", error.response.data);
+      console.error("Error status", error.response.status);
+      errorDetails.code = error.response.status;
+      errorDetails.message = error.message;
+      if (error.response.data.errors) {
+        let requestRecivedErrors = error.response.data.errors;
+        for (const property in requestRecivedErrors) {
+          errorDetails.errors.push(requestRecivedErrors[property].toString());
+        }
+      }
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.error("Error message", error.message);
+      console.error("Error code", error.code);
+      errorDetails.code = error.code;
+      errorDetails.message = error.message;
+    }
+  }
+};
+
+getProductCategories();
+
+const onImageChange = (e) => {
+  console.log(e.target.files[0]);
+
+  if (e.target.files[0]) {
+    image.value = e.target.files[0];
+    imageURL.value = URL.createObjectURL(e.target.files[0]); //todo check how to do this differently
+  } else {
+    image.value = "";
+    imageURL.value = "";
+    console.log("No file selected");
+  }
+};
 </script>
 
 <template>
@@ -153,14 +269,16 @@ export default {
     </div>
     <div class="form-right-side form-side">
       <div id="image-upload">
-        <img src="" class="profile-pic" />
+        <img :src="imageURL" class="product-image" />
         <div>
-          <label for="profile-pic">Product image</label>
+          <label for="product-image">Product image</label>
           <input
             type="file"
-            id="profile-pic"
-            name="profile-pic"
+            id="product-image"
+            name="product-image"
             accept="image/png, image/jpeg"
+            v-on:change="onImageChange"
+            enctype="multipart/form-data"
           />
         </div>
       </div>
@@ -185,13 +303,17 @@ export default {
         <select
           name="categories"
           id="category"
-          v-model.trim="data.category.val"
           @blur="clearValidity('category')"
+          v-model="data.category.val"
         >
-          <option value="volvo">Volvo</option>
-          <option value="saab">Saab</option>
-          <option value="mercedes">Mercedes</option>
-          <option value="audi">Audi</option>
+          <option
+            v-for="category in prodCategories"
+            :key="category.id"
+            :id="category.id"
+            :value="category.id"
+          >
+            {{ category.name }}
+          </option>
         </select>
       </div>
       <div v-if="!data.category.isValid" class="validation-error-container">
@@ -223,7 +345,7 @@ form {
   margin: 1.5rem 0;
 }
 
-.profile-pic {
+.product-image {
   background-color: gray;
   width: 125px;
   height: 125px;

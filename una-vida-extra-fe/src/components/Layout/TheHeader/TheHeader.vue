@@ -57,9 +57,11 @@
                 <BaseButton>My Account</BaseButton>
                 <div v-if="!isUserAdmin" class="dropdown-content">
                   <RouterLink :to="{ name: 'userProducts' }"
-                    >Products</RouterLink
+                    >My Products</RouterLink
                   >
-                  <RouterLink :to="{ name: 'requests' }">Requests</RouterLink>
+                  <RouterLink :to="{ name: 'requests' }"
+                    >My Requests</RouterLink
+                  >
                   <RouterLink :to="{ name: 'profile' }">Profile</RouterLink>
 
                   <RouterLink :to="{ name: 'logout' }">Log Out</RouterLink>

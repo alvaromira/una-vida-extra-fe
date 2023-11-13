@@ -35,9 +35,13 @@ import BaseButton from "../BaseButton.vue";
 //Aceppted properties for the card items
 const props = defineProps({
   image: String,
+  key: String,
   title: String,
   date: String,
   location: Object,
+  category: String,
+  description: String,
+  tags: Object,
   id: Number,
 });
 

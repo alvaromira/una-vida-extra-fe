@@ -1,49 +1,56 @@
 <script setup>
-import { ref, reactive } from "vue";
+import { ref, reactive, toRefs, onMounted, watch, computed } from "vue";
 import BaseButton from "../BaseButton.vue";
 import { useRouter } from "vue-router";
+import axios from "axios";
 
 const router = useRouter();
 
-const props = {
-  productName: {
+const props = defineProps({
+  initialProductName: {
     type: String,
     required: false,
   },
-  description: {
+  initialDescription: {
     type: String,
     required: false,
   },
-  tags: {
+  initialTags: {
     type: Array,
     required: false,
   },
-  category: {
-    type: String,
+  initialCategory: {
+    type: Number,
     required: false,
   },
   id: {
     type: String,
     required: true,
   },
-};
+});
+
+// Create a reactive reference to the props object
+const { initialProductName } = toRefs(props);
+const { initialCategory } = toRefs(props);
+const { initialTags } = toRefs(props);
+const { initialDescription } = toRefs(props);
 
 //data
 const data = reactive({
   productName: {
-    val: "Optio repudiandae dolorem ad temporibus.",
+    val: props.initialProductName,
     isValid: true,
   },
   description: {
-    val: "Tempore minus voluptates consequatur soluta.",
+    val: props.initialDescription,
     isValid: true,
   },
   tags: {
-    val: "car, red",
+    val: props.initialTags,
     isValid: true,
   },
   category: {
-    val: null,
+    val: props.initialCategory,
     isValid: true,
   },
 });
@@ -58,7 +65,7 @@ const clearValidity = (input) => {
 };
 
 //specific validation of each of the registration forms included
-const validateForm = () => {
+const validateForm = async () => {
   console.log("Running validation on registration form");
 
   formIsValid.value = true;
@@ -102,30 +109,165 @@ const clearForm = () => {
   formIsValid.value = true;
 };
 
-const submitForm = () => {
+const submitForm = async () => {
   console.log("Submitting form");
-  validateForm();
+  await validateForm();
 
   if (!formIsValid.value) {
     return;
   }
 
   const formData = {
-    productName: data.productName.val,
+    title: data.productName.val,
     description: data.description.val,
-    tags: data.tags.val,
-    category: data.category.val,
+    //tags: data.tags.val,
+    category_id: data.category.val,
   };
-  console.log("Form submitted");
-  router.push({ name: "userProducts" });
-  console.log(formData);
-  // this.$emit("save-data", formData);
+
+  try {
+    const responseData = await updateProduct(formData);
+    console.log(responseData);
+    //TO DO, show loader
+    console.log("Form submitted, redirecting to userProducts");
+    //TO DO show toast
+    router.push({ name: "userProducts" });
+  } catch (error) {
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.error("Error data", error.response.data);
+      console.error("Error status", error.response.status);
+      //errorDetails.code = error.response.status;
+      //errorDetails.message = error.message;
+      if (error.response.data.errors) {
+        let requestRecivedErrors = error.response.data.errors;
+        for (const property in requestRecivedErrors) {
+          //errorDetails.errors.push(requestRecivedErrors[property].toString());
+          console.log(requestRecivedErrors[property].toString());
+        }
+      }
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.error("Error message", error.message);
+      console.error("Error code", error.code);
+      //errorDetails.code = error.code;
+      //errorDetails.message = error.message;
+    }
+  }
 };
 
 /*
 export default {
   // emits: ["save-data"],
 };*/
+
+//categories
+const errorDetails = reactive({
+  code: "",
+  message: "",
+  errors: [],
+});
+const requestError = ref(false);
+const prodCategories = ref([]);
+//fetch product requests from the public api
+const getProductCategories = async () => {
+  try {
+    const resp = await axios.get(`http://localhost:8000/api1/categories`);
+    //console.log(resp);
+    prodCategories.value = resp.data.data;
+    console.log(prodCategories);
+    requestError.value = false;
+  } catch (error) {
+    requestError.value = true;
+
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.error("Error data", error.response.data);
+      console.error("Error status", error.response.status);
+      errorDetails.code = error.response.status;
+      errorDetails.message = error.message;
+      if (error.response.data.errors) {
+        let requestRecivedErrors = error.response.data.errors;
+        for (const property in requestRecivedErrors) {
+          errorDetails.errors.push(requestRecivedErrors[property].toString());
+        }
+      }
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.error("Error message", error.message);
+      console.error("Error code", error.code);
+      errorDetails.code = error.code;
+      errorDetails.message = error.message;
+    }
+  }
+};
+
+getProductCategories();
+
+// Watch for changes in the initial props and update the data properties
+const watchInitialProp = (initialProp, dataProp) => {
+  watch(initialProp, (newVal) => {
+    data[dataProp].val = newVal;
+    console.log(`New value for ${dataProp} is ${newVal}`);
+  });
+};
+
+// Update productName when the prop changes
+onMounted(() => {
+  watchInitialProp(initialProductName, "productName");
+  watchInitialProp(initialCategory, "category");
+  watchInitialProp(initialTags, "tags");
+  watchInitialProp(initialDescription, "description");
+
+  /*
+  // Watch for changes in the initialProductName prop
+  watch(initialProductName, (newVal) => {
+    // Update the productName value in the reactive data object
+    data.productName.val = newVal;
+  });
+  watch(initialCategory, (newVal) => {
+    // Update the productName value in the reactive data object
+    console.log(`newval is ${newVal}`);
+    data.category.val = newVal;
+
+    // computed property to get the category name by ID
+    /* const activeCategory = computed(() => {
+      const item = prodCategories.value.find(
+        (item) => item.id === props.initialCategory
+      );
+      return item ? item.name : "Not found";
+    });
+  });
+  watch(initialTags, (newVal) => {
+    // Update the productName value in the reactive data object
+    console.log(`newval is ${newVal}`);
+    data.tags.val = newVal;
+  });
+  watch(initialDescription, (newVal) => {
+    // Update the productName value in the reactive data object
+    console.log(`newval is ${newVal}`);
+    data.description.val = newVal;
+  });*/
+});
+
+const updateProduct = async (payload) => {
+  try {
+    const headers = {
+      "Content-Type": "application/json",
+    };
+    const response = await axios.put(
+      `http://localhost:8000/api1/products/${props.id}`,
+      payload,
+      {
+        headers: headers,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error; // rethrow the error to be handled in the component
+  }
+};
 </script>
 
 <template>
@@ -210,13 +352,22 @@ export default {
           <select
             name="categories"
             id="category"
-            v-model.trim="data.category.val"
             @blur="clearValidity('category')"
+            v-model="data.category.val"
           >
+            <option
+              v-for="category in prodCategories"
+              :key="category.id"
+              :id="category.id"
+              :value="category.id"
+            >
+              {{ category.name }}
+            </option>
+            <!--</option>
             <option value="volvo">Volvo</option>
             <option value="saab">Saab</option>
             <option value="mercedes">Mercedes</option>
-            <option value="audi">Audi</option>
+            <option value="audi">Audi</option>-->
           </select>
         </div>
         <div v-if="!data.category.isValid" class="validation-error-container">
