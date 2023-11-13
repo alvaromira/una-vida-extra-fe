@@ -21,13 +21,17 @@
     </div>
 
     <div class="form-submit-button">
-      <BaseButton @submit.prevent="submitForm">Submit Request</BaseButton>
+      <BaseButton
+        @submit.prevent="submitForm"
+        v-bind:isDisabled="isProductedAlreadyRequestedByUser"
+        >Submit Request</BaseButton
+      >
     </div>
   </form>
 </template>
 
 <script setup>
-import { ref, reactive, computed, defineProps } from "vue";
+import { ref, reactive, computed, defineProps, onBeforeMount } from "vue";
 import BaseButton from "../BaseButton.vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
@@ -36,6 +40,10 @@ import axios from "axios";
 const props = defineProps({
   id: String,
 });
+
+//to store the productIDs already requested by the user
+const userActiveRequests = ref([]);
+const isProductedAlreadyRequestedByUser = ref(false);
 
 //data
 const data = reactive({
@@ -104,6 +112,14 @@ const submitForm = async () => {
   // this.$emit("save-data", formData);
 };
 
+//to do handle pagination
+async function getUserRequestedProducts(user_id) {
+  const resp = await axios.get(
+    "http://127.0.0.1:8000/api1/users/" + user_id + "/requests"
+  );
+  return resp.data;
+}
+
 async function sendProdRequest(requestData) {
   // this.processing = true
   console.log("sending...", requestData);
@@ -117,6 +133,11 @@ async function sendProdRequest(requestData) {
     //const call = await axios.get("http://localhost:8000/api1/user");
     //console.log(call);
     console.log("Request response", resp);
+
+    //TODO Show toast
+    router.push({ name: "requests" });
+
+    //TO DO handle errors properly
     /*store.dispatch("login").then(() => {
       if (route.query.from != undefined && route.query.from.length > 0) {
         router.replace(route.query.from);
@@ -137,6 +158,32 @@ async function sendProdRequest(requestData) {
     console.log("request creation function over.");
   }
 }
+
+//the list of products already requested
+onBeforeMount(async () => {
+  console.log(
+    "Component is about to be mounted. Checking products for " +
+      activeUserId.value
+  );
+  const requestedProds = await getUserRequestedProducts(activeUserId.value);
+  console.log(requestedProds.data);
+
+  if (requestedProds.data) {
+    const filteredData = requestedProds.data.filter(
+      (item) =>
+        item.product_id == props.id && item.user_id == activeUserId.value
+    );
+    if (filteredData.length) {
+      isProductedAlreadyRequestedByUser.value = true;
+    }
+
+    console.log(
+      `Is this already requested? ${isProductedAlreadyRequestedByUser.value}`
+    );
+  }
+
+  // You can perform additional setup or actions here
+});
 </script>
 
 <style scoped>

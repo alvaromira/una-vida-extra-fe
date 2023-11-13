@@ -20,6 +20,10 @@ const props = defineProps({
 });*/
 //Aceppted properties for the card items
 const props = defineProps({
+  isDisabled: {
+    type: Boolean,
+    default: false, // Set the default value to false
+  },
   mode: String,
   link: String,
   to: Object,
@@ -27,10 +31,15 @@ const props = defineProps({
 </script>
 
 <template>
-  <button v-if="!link" :class="mode">
+  <button
+    v-if="!link"
+    :class="mode"
+    :disabled="props.isDisabled"
+    :title="props.isDisabled ? 'You have already requested this product' : ''"
+  >
     <slot></slot>
   </button>
-  <RouterLink v-else :to="to" :class="mode">
+  <RouterLink v-else :to="to" :class="mode" :disabled="props.isDisabled">
     <slot></slot>
   </RouterLink>
 </template>
@@ -51,7 +60,11 @@ a {
   text-align: center;
   transition: 0.3s;
 }
-
+button:disabled {
+  background-color: #c0c0c0;
+  color: #808080;
+  cursor: not-allowed; /* Show not-allowed cursor for disabled state */
+}
 a:hover,
 a:active,
 button:hover,
