@@ -23,7 +23,7 @@
     <div class="form-submit-button">
       <BaseButton
         @submit.prevent="submitForm"
-        v-bind:isDisabled="isProductedAlreadyRequestedByUser"
+        :isDisabled="isProductedAlreadyRequestedByUser"
         >Submit Request</BaseButton
       >
     </div>
