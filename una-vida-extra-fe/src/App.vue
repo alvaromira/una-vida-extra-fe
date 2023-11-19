@@ -2,6 +2,7 @@
 import { RouterLink, RouterView } from "vue-router";
 import TheFooter from "./components/Layout/TheFooter/TheFooter.vue";
 import TheHeader from "./components/Layout/TheHeader/TheHeader.vue";
+import Toasts from "./components/ui/Toasts.vue";
 
 //export default {
 //  components: {
@@ -16,6 +17,7 @@ import TheHeader from "./components/Layout/TheHeader/TheHeader.vue";
     <RouterView />
   </div>
   <TheFooter></TheFooter>
+  <Toasts />
 </template>
 
 <style scoped>

@@ -23,14 +23,15 @@
 </template>
 
 <script setup>
-import { ref, defineProps, computed, reactive } from "vue";
+import { ref, defineProps, computed, reactive, onMounted } from "vue";
 import ProductCard from "../../components/ui/product/ProductCard.vue";
 import ProductsSummary from "../../components/ui/product/ProductsSummary.vue";
 import { useRouter, useRoute } from "vue-router";
 import axios from "axios";
+import { useStore } from "vuex";
 
 const route = useRoute();
-
+const store = useStore();
 //computed
 const registrationRedirection = computed(() => {
   return route.query.registration === "success";
@@ -96,7 +97,7 @@ getProductRequests();
 const prods = ref([]);
 //Data attributes
 //ref for accessing anything through .value, or reactive for accessing Objects only with the var name but without the value
-const products = ref([
+/*const products = ref([
   {
     id: 1,
     image: "https://via.placeholder.com/250x250/cccccc/969696",
@@ -128,7 +129,7 @@ const products = ref([
     },
   },
 ]);
-
+*/
 //Computed
 const total = computed(() => {
   return "foo";
@@ -136,6 +137,31 @@ const total = computed(() => {
 //export default {
 //  name: "Produts",
 //};
+
+// Lifecycle hook using `onMounted`
+onMounted(() => {
+  /*
+  //Testing toasts
+  store.commit("addToast", {
+    title: "Hello Vuex!",
+    type: "success",
+    message: "It looks like you have successfully set up Vuex.",
+  });
+
+  store.commit("addToast", {
+    title: "System Error",
+    type: "error",
+    message:
+      "Our API is currently experiencing issues - please try again in a couple minutes.",
+  });
+
+  store.commit("addToast", {
+    title: "New Mention in Post",
+    type: "info",
+    message:
+      "One of your followers mentioned you in a new post. Click here to see it.",
+  });*/
+});
 </script>
 <style scoped>
 .product-card-container {
