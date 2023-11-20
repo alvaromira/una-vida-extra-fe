@@ -30,7 +30,7 @@ onMounted(() => {
   // Logic to execute on component mount
   // Automatically dismiss toast after 5 seconds
   setTimeout(() => {
-    dismissToast();
+    //   dismissToast();
   }, 5000);
 });
 </script>
@@ -44,23 +44,27 @@ onMounted(() => {
   color: #ffffff;
 }
 
-.success {
+h3 {
+  color: #ffffff;
+}
+
+div.toast > div.header.success {
   background-color: #009900;
 }
 
-.info {
-  background-color: #009999;
+div.toast > div.header.info {
+  background-color: #edb421;
 }
 
-.error {
+div.toast > div.header.error {
   background-color: #990000;
 }
 
 .toast {
   width: 500px;
   min-height: 50px;
-  display: flex;
-  flex-direction: row;
+  display: block;
+
   margin-bottom: 1rem;
   padding: 1rem;
   box-sizing: border-box;
@@ -94,7 +98,7 @@ onMounted(() => {
 
 .toast .content {
   flex-direction: column;
-  align-items: center;
+  align-items: start;
   justify-content: center;
   padding-left: 1rem;
   box-sizing: border-box;

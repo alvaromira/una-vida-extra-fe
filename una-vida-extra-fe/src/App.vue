@@ -12,12 +12,12 @@ import Toasts from "./components/ui/Toasts.vue";
 </script>
 
 <template>
+  <Toasts />
   <TheHeader></TheHeader>
   <div id="content">
     <RouterView />
   </div>
   <TheFooter></TheFooter>
-  <Toasts />
 </template>
 
 <style scoped>
