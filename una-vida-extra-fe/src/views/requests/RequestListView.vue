@@ -149,6 +149,7 @@ function onModalClose() {
 <template>
   <div>
     <h2>My requests</h2>
+    <p>This is is the list of requests you have placed.</p>
     <section>
       <div v-if="!numberOfRequests">
         <p>You don't not have any active requests.</p>

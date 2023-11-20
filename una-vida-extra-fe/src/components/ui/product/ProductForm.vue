@@ -126,6 +126,13 @@ const submitForm = async () => {
     //TO DO, show loader
     console.log("Form submitted, redirecting to userProducts");
     //TO DO show toast
+
+    store.commit("addToast", {
+      title: "Product added",
+      type: "success",
+      message: "You have successfully added a new product",
+    });
+
     router.push({ name: "userProducts" });
   } catch (error) {
     if (error.response) {
