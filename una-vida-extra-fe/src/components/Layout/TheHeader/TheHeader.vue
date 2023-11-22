@@ -53,6 +53,9 @@
 
             <li v-if="getUserStatus" class="user-menu-item">
               <!--<BaseButton>My Account</BaseButton>-->
+              <div>
+                <ProfileImage :userEmail="activeUserEmail" />
+              </div>
               <div class="dropdown">
                 <BaseButton>My Account</BaseButton>
                 <div v-if="!isUserAdmin" class="dropdown-content">
@@ -84,10 +87,16 @@
 
 <script setup>
 import BaseButton from "../../ui/BaseButton.vue";
-import { computed } from "vue";
+import { computed, ref, onMounted } from "vue";
 import { useStore } from "vuex";
+import ProfileImage from "../../ui/ProfileImage.vue";
+import md5 from "md5";
 
 const store = useStore();
+
+const activeUserEmail = computed(() => {
+  return store.state.user.email;
+});
 
 //using computed property derived from Vuex
 const getUserStatus = computed(() => {
@@ -139,6 +148,8 @@ header {
 .menu-item,
 .user-menu-item {
   margin: 0 0.5rem;
+  display: flex;
+  align-items: center;
 }
 
 .user-menu-list .user-menu-item a {
