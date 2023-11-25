@@ -1,5 +1,5 @@
 <template>
-  <div class="profile-picture">
+  <div class="profile-picture" :class="mode">
     <img :src="gravatarUrl" alt="Profile" />
   </div>
 </template>
@@ -8,7 +8,13 @@
 import { ref, onMounted } from "vue";
 import md5 from "md5";
 
-const props = defineProps(["userEmail"]);
+const props = defineProps({
+  userEmail: String,
+  mode: {
+    type: String,
+    default: "small", // Default value for the isEnabled prop
+  },
+});
 const isGravatarValid = ref(false);
 const gravatarUrl = ref("");
 
@@ -67,10 +73,24 @@ const generateGravatarUrl = async (email) => {
 
 <style scoped>
 .profile-picture {
-  width: 35px; /* Adjust the size as needed */
-  height: 35px; /* Adjust the size as needed */
   border-radius: 50%;
   overflow: hidden;
+  margin-inline-end: 3px;
+}
+
+.small {
+  width: 35px; /* Adjust the size as needed */
+  height: 35px; /* Adjust the size as needed */
+}
+
+.medium {
+  width: 75px; /* Adjust the size as needed */
+  height: 75px; /* Adjust the size as needed */
+}
+
+.large {
+  width: 125px; /* Adjust the size as needed */
+  height: 125px; /* Adjust the size as needed */
 }
 
 .profile-picture img {

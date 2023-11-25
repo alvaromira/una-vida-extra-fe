@@ -1,6 +1,14 @@
 <script setup>
-import { ref, reactive } from "vue";
+import { ref, reactive, computed } from "vue";
 import BaseButton from "../ui/BaseButton.vue";
+import { useStore } from "vuex";
+import ProfileImage from "../ui/ProfileImage.vue";
+
+const store = useStore();
+
+const activeUserEmail = computed(() => {
+  return store.state.user.email;
+});
 
 //to do: read data from logged in user to populate values
 //data
@@ -215,7 +223,10 @@ export default {
     </div>
     <div class="form-right-side form-side">
       <div id="image-upload">
-        <img src="" class="profile-pic" />
+        <div>
+          <ProfileImage :userEmail="activeUserEmail" :mode="'small'" />
+        </div>
+        <!-- <img src="" class="profile-pic" />
         <div>
           <label for="profile-pic">Profile picture</label>
           <input
@@ -224,7 +235,7 @@ export default {
             name="profile-pic"
             accept="image/png, image/jpeg"
           />
-        </div>
+        </div>-->
       </div>
       <div id="coords-details">
         <div class="form-control">
