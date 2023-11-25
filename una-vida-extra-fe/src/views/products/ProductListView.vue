@@ -141,6 +141,7 @@ const total = computed(() => {
 // Lifecycle hook using `onMounted`
 onMounted(() => {
   //Testing toasts
+  /*
   store.commit("addToast", {
     title: "Hello Vuex!",
     type: "success",
@@ -159,7 +160,7 @@ onMounted(() => {
     type: "info",
     message:
       "One of your followers mentioned you in a new post. Click here to see it.",
-  });
+  });*/
 });
 </script>
 <style scoped>
