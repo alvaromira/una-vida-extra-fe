@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed } from "vue";
+import { ref, reactive, computed, onMounted } from "vue";
 import BaseButton from "../ui/BaseButton.vue";
 import { useStore } from "vuex";
 import ProfileImage from "../ui/ProfileImage.vue";
@@ -10,23 +10,33 @@ const activeUserEmail = computed(() => {
   return store.state.user.email;
 });
 
+onMounted(() => {
+  //set all data from user store
+  data.firstName.val = store.state.user.name;
+  data.lastName.val = store.state.user.surname;
+  data.phone.val = store.state.user.phone;
+  data.email.val = store.state.user.email;
+  data.latitude.val = store.state.user.user_location.latitude;
+  data.longitude.val = store.state.user.user_location.longitude;
+});
+
 //to do: read data from logged in user to populate values
 //data
 const data = reactive({
   firstName: {
-    val: "John",
+    val: null,
     isValid: true,
   },
   lastName: {
-    val: "Martin",
+    val: null,
     isValid: true,
   },
   phone: {
-    val: "676 33 44 00",
+    val: null,
     isValid: true,
   },
   email: {
-    val: "foo@gmail.com",
+    val: null,
     isValid: true,
   },
   publicDetails: {
@@ -224,18 +234,8 @@ export default {
     <div class="form-right-side form-side">
       <div id="image-upload">
         <div>
-          <ProfileImage :userEmail="activeUserEmail" :mode="'small'" />
+          <ProfileImage :userEmail="activeUserEmail" :mode="'large'" />
         </div>
-        <!-- <img src="" class="profile-pic" />
-        <div>
-          <label for="profile-pic">Profile picture</label>
-          <input
-            type="file"
-            id="profile-pic"
-            name="profile-pic"
-            accept="image/png, image/jpeg"
-          />
-        </div>-->
       </div>
       <div id="coords-details">
         <div class="form-control">
@@ -374,6 +374,7 @@ h3 {
 }*/
 #image-upload {
   display: flex;
+  justify-content: center;
 }
 
 .note {
