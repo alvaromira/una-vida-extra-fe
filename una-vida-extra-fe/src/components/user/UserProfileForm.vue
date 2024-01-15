@@ -4,6 +4,7 @@ import BaseButton from "../ui/BaseButton.vue";
 import { useStore } from "vuex";
 import ProfileImage from "../ui/ProfileImage.vue";
 
+
 const store = useStore();
 
 const activeUserEmail = computed(() => {

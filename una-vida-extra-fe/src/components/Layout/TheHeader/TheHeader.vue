@@ -54,7 +54,11 @@
             <li v-if="getUserStatus" class="user-menu-item">
               <!--<BaseButton>My Account</BaseButton>-->
               <div>
-                <ProfileImage :userEmail="activeUserEmail" :mode="'small'" />
+                <ProfileImage
+                  :userEmail="activeUserEmail"
+                  @gravatarInfo="false"
+                  :mode="'small'"
+                />
               </div>
               <div class="dropdown">
                 <BaseButton>My Account</BaseButton>

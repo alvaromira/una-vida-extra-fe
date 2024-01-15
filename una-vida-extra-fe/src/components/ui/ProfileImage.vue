@@ -2,11 +2,28 @@
   <div class="profile-picture" :class="mode">
     <img :src="gravatarUrl" alt="Profile" />
   </div>
+  <!--to do, show only when registering not, when logged in-->
+  <div v-if="props.gravatarInfo">
+    <p>
+      Since we are about re-using, we use the
+      <a href="https://gravatar.com/" target="_blank">gravatar</a> linked to
+      your email address once you register. &#128522;
+    </p>
+  </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import md5 from "md5";
+
+const message = ref("");
+
+// Watch for changes in the inputValue
+watch(message, (newValue, oldValue) => {
+  console.log(`userEmail value changed from ${oldValue} to ${newValue}`);
+  // You can perform additional actions based on the input value change
+  //updateMessage(newValue);
+});
 
 const props = defineProps({
   userEmail: String,
@@ -14,11 +31,16 @@ const props = defineProps({
     type: String,
     default: "small", // Default value for the isEnabled prop
   },
+  gravatarInfo: {
+    type: Boolean,
+    default: true,
+  },
 });
 const isGravatarValid = ref(false);
 const gravatarUrl = ref("");
 
 onMounted(() => {
+  message.value = props.userEmail;
   gravatarUrl.value = generateGravatarUrl(props.userEmail);
 });
 

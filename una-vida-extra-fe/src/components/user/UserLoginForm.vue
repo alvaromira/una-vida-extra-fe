@@ -90,13 +90,13 @@ async function login() {
 
     console.log(csrfCookie);
 
-    const resp = await axios.post("http://localhost:8000/api1/login", {
+    const response = await axios.post("http://localhost:8000/api1/login", {
       email: data.email.val,
       password: data.password.val,
     });
     //const call = await axios.get("http://localhost:8000/api1/user");
     //console.log(call);
-    console.log("Login response", resp);
+    console.log("Login response", response);
     store.dispatch("login").then(() => {
       if (route.query.from != undefined && route.query.from.length > 0) {
         router.replace(route.query.from);
@@ -105,13 +105,27 @@ async function login() {
       }
     });
   } catch (response) {
-    if (response.status === 422) {
+    if (response.response.status === 422) {
       //this.validationErrors = response.data.errors
-      console.log(response.data.errors);
+      console.log(response.response.data.errors);
+      //show toast with error message
+      store.commit("addToast", {
+        title: "Login Error",
+        type: "error",
+        message:
+          "Wrong credentials provided. Please check your email and password.",
+      });
     } else {
       //this.validationErrors = {}
       //alert(response.data.message)
-      console.log(response);
+      //console.log(response);
+      //show toast with error message
+      store.commit("addToast", {
+        title: "Login Error",
+        type: "error",
+        message:
+          "There was en error while logging you in. Please check your email and password and try again.",
+      });
     }
   } finally {
     console.log("login function over.");

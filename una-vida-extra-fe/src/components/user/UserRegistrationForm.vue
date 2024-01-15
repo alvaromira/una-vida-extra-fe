@@ -4,6 +4,13 @@ import BaseButton from "../ui/BaseButton.vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
 import BaseSpinner from "../ui/BaseSpinner.vue";
+import ProfileImage from "../ui/ProfileImage.vue";
+const store = useStore();
+import { useStore } from "vuex";
+
+const activeUserEmail = computed(() => {
+  return data.email.val;
+});
 
 //data
 const data = reactive({
@@ -197,7 +204,14 @@ const submitForm = () => {
       if (resp.status === 201) {
         isLoading.value = false;
         requestError.value = false;
-        router.push({ name: "products", query: { registration: "success" } });
+
+        store.commit("addToast", {
+          title: "User registered",
+          type: "success",
+          message: "You have successfully registered. You can now log in.",
+        });
+
+        router.push({ name: "products" });
       }
     } catch (error) {
       // Handle Error Here
@@ -383,15 +397,8 @@ export default {
         </div>
         <div class="form-right-side form-side">
           <div id="image-upload">
-            <img src="" class="profile-pic" />
             <div>
-              <label for="profile-pic">Profile picture</label>
-              <input
-                type="file"
-                id="profile-pic"
-                name="profile-pic"
-                accept="image/png, image/jpeg"
-              />
+              <ProfileImage :userEmail="activeUserEmail" :mode="'large'" />
             </div>
           </div>
           <div id="coords-details">
@@ -579,8 +586,8 @@ h3 {
 }*/
 #image-upload {
   display: flex;
+  justify-content: center;
 }
-
 .note {
   color: rgb(139, 138, 138);
 }
