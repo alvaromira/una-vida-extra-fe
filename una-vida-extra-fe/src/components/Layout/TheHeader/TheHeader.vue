@@ -56,7 +56,7 @@
               <div>
                 <ProfileImage
                   :userEmail="activeUserEmail"
-                  @gravatarInfo="false"
+                  :gravatarInfo="false"
                   :mode="'small'"
                 />
               </div>
