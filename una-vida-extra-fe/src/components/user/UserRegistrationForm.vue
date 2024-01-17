@@ -448,31 +448,29 @@ export default {
       <div class="loading" v-show="isLoading">
         <base-spinner></base-spinner>
       </div>
-      <div class="request-errors" v-show="requestError">
-        <p>
-          There was an error when trying to perform the registration. Please try
-          again.
-        </p>
-        <div v-if="apiErrorsFound">
-          <p>Details:</p>
-          <ul>
-            <li>
+      <transition name="request-errors">
+        <div class="request-errors" v-show="requestError">
+          <p>
+            There was an error when trying to perform the registration. Please
+            try again.
+          </p>
+          <div v-if="apiErrorsFound">
+            <p>Details:</p>
+            <ul v-if="apiErrorsCaptured">
+              <!--<li>
               Code:
               <pre>{{ errorDetails.code }}</pre>
             </li>
             <li>
               Message:
               <pre>{{ errorDetails.message }}</pre>
-            </li>
-            <li v-if="apiErrorsCaptured">
-              Errors:
-              <ul>
-                <li v-for="e in errorDetails.errors">{{ e }}</li>
-              </ul>
-            </li>
-          </ul>
+            </li>-->
+
+              <li v-for="e in errorDetails.errors">{{ e }}</li>
+            </ul>
+          </div>
         </div>
-      </div>
+      </transition>
     </div>
   </div>
 </template>
@@ -604,6 +602,15 @@ h3 {
 }
 .request-errors pre {
   display: inline-block;
+}
+
+.request-errors-enter-active,
+.request-errors-leave-active {
+  transition: opacity 0.5s;
+}
+.request-errors-enter,
+.request-errors-leave-to {
+  opacity: 0;
 }
 
 .request-status {

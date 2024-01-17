@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, computed } from "vue";
 import md5 from "md5";
 
 const message = ref("");
@@ -38,6 +38,10 @@ const props = defineProps({
 });
 const isGravatarValid = ref(false);
 const gravatarUrl = ref("");
+
+const uEmail = computed(() => {
+  gravatarUrl.value = generateGravatarUrl(props.userEmail);
+});
 
 onMounted(() => {
   message.value = props.userEmail;
