@@ -61,7 +61,7 @@ const errorDetails = reactive({
   message: "",
   errors: [],
 });
-
+const userCity = ref("");
 //computed
 const apiErrorsFound = computed(() => {
   return errorDetails.message.length;
@@ -83,6 +83,11 @@ const getLocationCoords = () => {
       console.log(position.coords.longitude);
       data.longitude.val = position.coords.longitude;
       data.longitude.isValid = true;
+
+      const cityName = getCityNameFromCoords(
+        position.coords.longitude,
+        position.coords.latitude
+      );
     },
     (error) => {
       console.log(
@@ -90,6 +95,25 @@ const getLocationCoords = () => {
       );
     }
   );
+};
+
+//Get city from coords
+const getCityNameFromCoords = async (lon, lat) => {
+  let OSMReverseURL =
+    "https://nominatim.openstreetmap.org/reverse?lat=" +
+    lat +
+    "&lon=" +
+    lon +
+    "&format=json";
+
+  try {
+    const response = await axios.get(OSMReverseURL, { withCredentials: false });
+    console.log(response.data.address.city);
+    userCity.value = response.data.address.city;
+    //return response.data.address.city;
+  } catch (error) {
+    throw error; // rethrow the error to be handled in the component
+  }
 };
 
 const clearValidity = (input) => {
@@ -429,6 +453,9 @@ export default {
               class="validation-error-container"
             >
               <p>Latitude must not be empty.</p>
+            </div>
+            <div id="user-city" v-if="userCity !== ''">
+              <p>You are based around {{ userCity }}</p>
             </div>
             <BaseButton @click.prevent="getLocationCoords" mode="outline"
               >Get my Location</BaseButton
