@@ -16,14 +16,14 @@
 import { ref, onMounted, watch, computed } from "vue";
 import md5 from "md5";
 
-const message = ref("");
-
-// Watch for changes in the inputValue
-watch(message, (newValue, oldValue) => {
-  console.log(`userEmail value changed from ${oldValue} to ${newValue}`);
-  // You can perform additional actions based on the input value change
-  //updateMessage(newValue);
-});
+//What the prop received and update the gravatar url
+watch(
+  () => props.userEmail,
+  (newValue, oldValue) => {
+    gravatarUrl.value = generateGravatarUrl(newValue);
+    // Do something when myProp changes
+  }
+);
 
 const props = defineProps({
   userEmail: String,
@@ -39,12 +39,7 @@ const props = defineProps({
 const isGravatarValid = ref(false);
 const gravatarUrl = ref("");
 
-const uEmail = computed(() => {
-  gravatarUrl.value = generateGravatarUrl(props.userEmail);
-});
-
 onMounted(() => {
-  message.value = props.userEmail;
   gravatarUrl.value = generateGravatarUrl(props.userEmail);
 });
 
