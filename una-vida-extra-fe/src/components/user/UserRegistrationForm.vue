@@ -12,6 +12,8 @@ const activeUserEmail = computed(() => {
   return data.email.val;
 });
 
+const showPassword = ref(false);
+
 //data
 const data = reactive({
   firstName: {
@@ -36,6 +38,10 @@ const data = reactive({
   },
   passwordConfirmation: {
     val: "",
+    isValid: true,
+  },
+  matchingPasswords: {
+    val: false,
     isValid: true,
   },
   publicDetails: {
@@ -147,20 +153,32 @@ const validateForm = () => {
     formIsValid.value = false;
   }
 
-  if (data.password.val === "" || data.password.val.length < 8) {
+  if (
+    data.password.val === "" ||
+    validatePassword(data.password.val) == false
+  ) {
     data.password.isValid = false;
     formIsValid.value = false;
   }
 
   if (
     data.passwordConfirmation.val === "" ||
-    data.passwordConfirmation.val !== data.password.val
+    validatePassword(data.passwordConfirmation.val) == false
   ) {
     data.passwordConfirmation.isValid = false;
     formIsValid.value = false;
   }
 
-  if (data.publicDetails.val === "") {
+  if (data.passwordConfirmation.val !== data.password.val) {
+    data.matchingPasswords.val = false;
+    data.matchingPasswords.isValid = false;
+    formIsValid.value = false;
+  } else {
+    data.matchingPasswords.val = true;
+    data.matchingPasswords.isValid = true;
+  }
+
+  if (data.publicDetails.val === "" || data.publicDetails.val === false) {
     data.publicDetails.isValid = false;
     formIsValid.value = false;
   }
@@ -205,7 +223,7 @@ const submitForm = () => {
     phone: data.phone.val,
     password: data.password.val,
     password_confirmation: data.passwordConfirmation.val,
-    // publicDetails: data.publicDetails.val,
+    publicDetails: data.publicDetails.val,
     // longitude: data.longitude.val,
     // latitude: data.latitude.val,
   };
@@ -282,6 +300,40 @@ const submitForm = () => {
 export default {
   // emits: ["save-data"],
 };*/
+
+const togglePasswordVisibility = () => {
+  showPassword.value = !showPassword.value;
+};
+
+const validatePassword = (password) => {
+  // Check if the password is at least 8 characters long
+  if (password.length < 8) {
+    return false;
+  }
+
+  // Check if the password contains at least one uppercase letter
+  if (!/[A-Z]/.test(password)) {
+    return false;
+  }
+
+  // Check if the password contains at least one lowercase letter
+  if (!/[a-z]/.test(password)) {
+    return false;
+  }
+
+  // Check if the password contains at least one number
+  if (!/\d/.test(password)) {
+    return false;
+  }
+
+  // Check if the password contains at least one special character
+  if (!/[^a-zA-Z0-9]/.test(password)) {
+    return false;
+  }
+
+  // If all conditions are met, return true
+  return true;
+};
 </script>
 
 <template>
@@ -360,7 +412,7 @@ export default {
             >
               <label for="password">Password</label>
               <input
-                type="password"
+                :type="showPassword ? 'text' : 'password'"
                 id="password"
                 v-model.trim="data.password.val"
                 @blur="clearValidity('password')"
@@ -382,7 +434,7 @@ export default {
             >
               <label for="password-confirmation">Password confirmation</label>
               <input
-                type="password"
+                :type="showPassword ? 'text' : 'password'"
                 id="password-confirmation"
                 v-model.trim="data.passwordConfirmation.val"
                 @blur="clearValidity('passwordConfirmation')"
@@ -398,20 +450,41 @@ export default {
               </p>
             </div>
             <div
+              v-if="
+                data.passwordConfirmation.isValid &&
+                !data.matchingPasswords.isValid
+              "
+              class="validation-error-container"
+            >
+              <p>Your password and your password confirmation must match.</p>
+            </div>
+            <div class="form-control">
+              <BaseButton
+                @click.prevent="togglePasswordVisibility"
+                mode="outline"
+              >
+                {{ showPassword ? "Hide" : "Show" }} Password
+              </BaseButton>
+            </div>
+            <div
               class="form-control"
               :class="{ invalid: !data.publicDetails.isValid }"
             >
-              <label for="public-details">Public details</label>
+              <label for="public-details">Accept T&C</label>
               <input
                 type="checkbox"
                 checked
                 id="public-details"
                 v-model.trim="data.publicDetails.val"
+                @change="clearValidity('publicDetails')"
                 @blur="clearValidity('publicDetails')"
               />
-              <p v-if="!data.publicDetails.isValid">
-                public-details must not be empty.
-              </p>
+            </div>
+            <div
+              class="validation-error-container"
+              v-if="!data.publicDetails.isValid"
+            >
+              <p>You must accept our terms and conditions.</p>
             </div>
 
             <p v-if="formIsValid.value === false">
