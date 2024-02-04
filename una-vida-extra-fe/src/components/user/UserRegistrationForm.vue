@@ -69,6 +69,7 @@ const errorDetails = reactive({
   errors: [],
 });
 const userCity = ref("");
+const userCountry = ref("");
 //computed
 const apiErrorsFound = computed(() => {
   return errorDetails.message.length;
@@ -218,22 +219,6 @@ const submitForm = async () => {
   isLoading.value = true;
   errorDetails.errors.length = 0;
 
-  const formData = {
-    name: data.firstName.val,
-    surname: data.lastName.val,
-    email: data.email.val,
-    phone: data.phone.val,
-    password: data.password.val,
-    password_confirmation: data.passwordConfirmation.val,
-    termsAndConditions: data.publicDetails.val,
-    // longitude: data.longitude.val,
-    // latitude: data.latitude.val,
-  };
-  console.log("Form submitted");
-  // console.log(formData);
-
-  //axios request
-
   const sendRegistrationRequest = async () => {
     try {
       const cookie = await axios.get(
@@ -353,8 +338,22 @@ const submitForm = async () => {
       }
     }
   };
-
   locationId.value = await createUserLocation();
+
+  const formData = {
+    name: data.firstName.val,
+    surname: data.lastName.val,
+    email: data.email.val,
+    phone: data.phone.val,
+    password: data.password.val,
+    password_confirmation: data.passwordConfirmation.val,
+    termsAndConditions: data.publicDetails.val,
+    location_id: locationId.value,
+    // longitude: data.longitude.val,
+    // latitude: data.latitude.val,
+  };
+  console.log("Form submitted");
+  // console.log(formData);
 
   await sendRegistrationRequest();
 
