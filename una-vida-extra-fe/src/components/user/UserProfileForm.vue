@@ -4,7 +4,6 @@ import BaseButton from "../ui/BaseButton.vue";
 import { useStore } from "vuex";
 import ProfileImage from "../ui/ProfileImage.vue";
 
-
 const store = useStore();
 
 const activeUserEmail = computed(() => {
@@ -12,13 +11,28 @@ const activeUserEmail = computed(() => {
 });
 
 onMounted(() => {
-  //set all data from user store
-  data.firstName.val = store.state.user.name;
-  data.lastName.val = store.state.user.surname;
-  data.phone.val = store.state.user.phone;
-  data.email.val = store.state.user.email;
-  data.latitude.val = store.state.user.user_location.latitude;
-  data.longitude.val = store.state.user.user_location.longitude;
+  // Destructuring store state for cleaner code
+  const { name, surname, phone, email, user_location } = store.state.user;
+
+  // Helper function to check for null or empty values
+  const isValidValue = (value) => value !== null && value !== "";
+
+  // Assigning values to data properties after checking validity
+  data.firstName.val = isValidValue(name) ? name : "";
+  data.lastName.val = isValidValue(surname) ? surname : "";
+  data.phone.val = isValidValue(phone) ? phone : "";
+  data.email.val = isValidValue(email) ? email : "";
+
+  // Checking if user_location exists and its properties are valid
+  if (user_location && typeof user_location === "object") {
+    const { latitude, longitude } = user_location;
+    data.latitude.val = isValidValue(latitude) ? latitude : "";
+    data.longitude.val = isValidValue(longitude) ? longitude : "";
+  } else {
+    // Setting latitude and longitude to empty strings if user_location is invalid
+    data.latitude.val = "";
+    data.longitude.val = "";
+  }
 });
 
 //to do: read data from logged in user to populate values
@@ -38,10 +52,6 @@ const data = reactive({
   },
   email: {
     val: null,
-    isValid: true,
-  },
-  publicDetails: {
-    val: true,
     isValid: true,
   },
   longitude: {
@@ -105,11 +115,6 @@ const validateForm = () => {
 
   if (data.phone.val === "") {
     data.phone.isValid = false;
-    formIsValid.value = false;
-  }
-
-  if (data.publicDetails.val === "") {
-    data.publicDetails.isValid = false;
     formIsValid.value = false;
   }
 
@@ -210,7 +215,7 @@ export default {
           <p>Phone must not be empty.</p>
         </div>
 
-        <div
+        <!--<div
           class="form-control"
           :class="{ invalid: !data.publicDetails.isValid }"
         >
@@ -225,7 +230,7 @@ export default {
           <p v-if="!data.publicDetails.isValid">
             public-details must not be empty.
           </p>
-        </div>
+        </div>-->
 
         <p v-if="formIsValid.value === false">
           Please fix the above errors and submit again.

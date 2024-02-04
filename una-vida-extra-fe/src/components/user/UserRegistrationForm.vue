@@ -223,7 +223,7 @@ const submitForm = () => {
     phone: data.phone.val,
     password: data.password.val,
     password_confirmation: data.passwordConfirmation.val,
-    publicDetails: data.publicDetails.val,
+    termsAndConditions: data.publicDetails.val,
     // longitude: data.longitude.val,
     // latitude: data.latitude.val,
   };
