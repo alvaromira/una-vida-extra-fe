@@ -62,6 +62,7 @@ const router = useRouter();
 const formIsValid = ref(true);
 const isLoading = ref(false);
 const requestError = ref(false);
+const locationId = ref("");
 const errorDetails = reactive({
   code: "",
   message: "",
@@ -204,7 +205,7 @@ const validateForm = () => {
     latitude: data.latitude.val, */
 };
 
-const submitForm = () => {
+const submitForm = async () => {
   console.log("Submitting form");
 
   validateForm();
@@ -216,6 +217,7 @@ const submitForm = () => {
   requestError.value = false;
   isLoading.value = true;
   errorDetails.errors.length = 0;
+
   const formData = {
     name: data.firstName.val,
     surname: data.lastName.val,
@@ -291,7 +293,70 @@ const submitForm = () => {
     }
   };
 
-  sendRegistrationRequest();
+  const locationFormData = {
+    country: userCountry.value,
+    city: userCity.value,
+    latitude: data.latitude.val,
+    longitude: data.longitude.val,
+  };
+
+  const createUserLocation = async () => {
+    try {
+      /*  const cookie = await axios.get(
+        "http://localhost:8000/sanctum/csrf-cookie"
+      );*/
+      const resp = await axios.post(
+        "http://localhost:8000/api1/locations",
+        locationFormData
+      );
+      console.log(`Newly created Location ID: ${resp.data.data.id}`);
+
+      if (resp.status === 201) {
+        //isLoading.value = false;
+        requestError.value = false;
+
+        store.commit("addToast", {
+          title: "Location created",
+          type: "success",
+          message: "You have successfully created a location",
+        });
+
+        return resp.data.data.id;
+        // router.push({ name: "products" });
+      }
+    } catch (error) {
+      // Handle Error Here
+      //console.error(error);
+      //isLoading.value = false;
+      requestError.value = true;
+
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error("Error data", error.response.data);
+        console.error("Error status", error.response.status);
+        errorDetails.code = error.response.status;
+        errorDetails.message = error.message;
+        if (error.response.data.errors) {
+          let requestRecivedErrors = error.response.data.errors;
+          for (const property in requestRecivedErrors) {
+            // console.log(`${property}: ${requestRecivedErrors[property]}`);
+            errorDetails.errors.push(requestRecivedErrors[property].toString());
+          }
+        }
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error("Error message", error.message);
+        console.error("Error code", error.code);
+        errorDetails.code = error.code;
+        errorDetails.message = error.message;
+      }
+    }
+  };
+
+  locationId.value = await createUserLocation();
+
+  await sendRegistrationRequest();
 
   // this.$emit("save-data", formData);
 };
