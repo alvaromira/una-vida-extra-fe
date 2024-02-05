@@ -288,9 +288,9 @@ const submitForm = async () => {
 
   const createUserLocation = async () => {
     try {
-      /*  const cookie = await axios.get(
+      const cookie = await axios.get(
         "http://localhost:8000/sanctum/csrf-cookie"
-      );*/
+      );
       const resp = await axios.post(
         "http://localhost:8000/api1/locations",
         locationFormData
