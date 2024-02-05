@@ -220,15 +220,13 @@ const submitForm = async () => {
   isLoading.value = true;
   errorDetails.errors.length = 0;
 
-  const sendRegistrationRequest = async () => {
+  const sendRegistrationRequest = async (fd) => {
     try {
+      console.log(fd);
       const cookie = await axios.get(
         "http://localhost:8000/sanctum/csrf-cookie"
       );
-      const resp = await axios.post(
-        "http://localhost:8000/api1/register",
-        formData
-      );
+      const resp = await axios.post("http://localhost:8000/api1/register", fd);
       //console.log(resp);
 
       if (resp.status === 201) {
@@ -340,7 +338,11 @@ const submitForm = async () => {
       }
     }
   };
-  await createUserLocation();
+
+  //only create the user location if it has not been created already (e.g. server side validation errors)
+  if (locationId.value == null) {
+    await createUserLocation();
+  }
 
   const formData = {
     name: data.firstName.val,
@@ -357,7 +359,7 @@ const submitForm = async () => {
   console.log("Form submitted");
   // console.log(formData);
 
-  await sendRegistrationRequest();
+  await sendRegistrationRequest(formData);
 
   // this.$emit("save-data", formData);
 };
