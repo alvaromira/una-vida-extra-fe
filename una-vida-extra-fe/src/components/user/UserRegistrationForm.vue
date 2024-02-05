@@ -62,7 +62,7 @@ const router = useRouter();
 const formIsValid = ref(true);
 const isLoading = ref(false);
 const requestError = ref(false);
-const locationId = ref("");
+const locationId = ref(null);
 const errorDetails = reactive({
   code: "",
   message: "",
@@ -118,6 +118,7 @@ const getCityNameFromCoords = async (lon, lat) => {
     const response = await axios.get(OSMReverseURL, { withCredentials: false });
     console.log(response.data.address.city);
     userCity.value = response.data.address.city;
+    userCountry.value = response.data.address.country;
     //return response.data.address.city;
   } catch (error) {
     throw error; // rethrow the error to be handled in the component
@@ -306,6 +307,7 @@ const submitForm = async () => {
           message: "You have successfully created a location",
         });
 
+        locationId.value = resp.data.data.id;
         return resp.data.data.id;
         // router.push({ name: "products" });
       }
@@ -338,7 +340,7 @@ const submitForm = async () => {
       }
     }
   };
-  locationId.value = await createUserLocation();
+  await createUserLocation();
 
   const formData = {
     name: data.firstName.val,
