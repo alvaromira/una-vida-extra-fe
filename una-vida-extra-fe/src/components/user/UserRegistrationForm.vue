@@ -4,6 +4,15 @@ import BaseButton from "../ui/BaseButton.vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
 import BaseSpinner from "../ui/BaseSpinner.vue";
+import ProfileImage from "../ui/ProfileImage.vue";
+const store = useStore();
+import { useStore } from "vuex";
+
+const activeUserEmail = computed(() => {
+  return data.email.val;
+});
+
+const showPassword = ref(false);
 
 //data
 const data = reactive({
@@ -31,6 +40,10 @@ const data = reactive({
     val: "",
     isValid: true,
   },
+  matchingPasswords: {
+    val: false,
+    isValid: true,
+  },
   publicDetails: {
     val: false,
     isValid: true,
@@ -49,12 +62,14 @@ const router = useRouter();
 const formIsValid = ref(true);
 const isLoading = ref(false);
 const requestError = ref(false);
+const locationId = ref(null);
 const errorDetails = reactive({
   code: "",
   message: "",
   errors: [],
 });
-
+const userCity = ref("");
+const userCountry = ref("");
 //computed
 const apiErrorsFound = computed(() => {
   return errorDetails.message.length;
@@ -76,6 +91,11 @@ const getLocationCoords = () => {
       console.log(position.coords.longitude);
       data.longitude.val = position.coords.longitude;
       data.longitude.isValid = true;
+
+      const cityName = getCityNameFromCoords(
+        position.coords.longitude,
+        position.coords.latitude
+      );
     },
     (error) => {
       console.log(
@@ -83,6 +103,26 @@ const getLocationCoords = () => {
       );
     }
   );
+};
+
+//Get city from coords
+const getCityNameFromCoords = async (lon, lat) => {
+  let OSMReverseURL =
+    "https://nominatim.openstreetmap.org/reverse?lat=" +
+    lat +
+    "&lon=" +
+    lon +
+    "&format=json";
+
+  try {
+    const response = await axios.get(OSMReverseURL, { withCredentials: false });
+    console.log(response.data.address.city);
+    userCity.value = response.data.address.city;
+    userCountry.value = response.data.address.country;
+    //return response.data.address.city;
+  } catch (error) {
+    throw error; // rethrow the error to be handled in the component
+  }
 };
 
 const clearValidity = (input) => {
@@ -116,20 +156,32 @@ const validateForm = () => {
     formIsValid.value = false;
   }
 
-  if (data.password.val === "" || data.password.val.length < 8) {
+  if (
+    data.password.val === "" ||
+    validatePassword(data.password.val) == false
+  ) {
     data.password.isValid = false;
     formIsValid.value = false;
   }
 
   if (
     data.passwordConfirmation.val === "" ||
-    data.passwordConfirmation.val !== data.password.val
+    validatePassword(data.passwordConfirmation.val) == false
   ) {
     data.passwordConfirmation.isValid = false;
     formIsValid.value = false;
   }
 
-  if (data.publicDetails.val === "") {
+  if (data.passwordConfirmation.val !== data.password.val) {
+    data.matchingPasswords.val = false;
+    data.matchingPasswords.isValid = false;
+    formIsValid.value = false;
+  } else {
+    data.matchingPasswords.val = true;
+    data.matchingPasswords.isValid = true;
+  }
+
+  if (data.publicDetails.val === "" || data.publicDetails.val === false) {
     data.publicDetails.isValid = false;
     formIsValid.value = false;
   }
@@ -155,7 +207,7 @@ const validateForm = () => {
     latitude: data.latitude.val, */
 };
 
-const submitForm = () => {
+const submitForm = async () => {
   console.log("Submitting form");
 
   validateForm();
@@ -167,37 +219,27 @@ const submitForm = () => {
   requestError.value = false;
   isLoading.value = true;
   errorDetails.errors.length = 0;
-  const formData = {
-    name: data.firstName.val,
-    surname: data.lastName.val,
-    email: data.email.val,
-    phone: data.phone.val,
-    password: data.password.val,
-    password_confirmation: data.passwordConfirmation.val,
-    // publicDetails: data.publicDetails.val,
-    // longitude: data.longitude.val,
-    // latitude: data.latitude.val,
-  };
-  console.log("Form submitted");
-  // console.log(formData);
 
-  //axios request
-
-  const sendRegistrationRequest = async () => {
+  const sendRegistrationRequest = async (fd) => {
     try {
+      console.log(fd);
       const cookie = await axios.get(
         "http://localhost:8000/sanctum/csrf-cookie"
       );
-      const resp = await axios.post(
-        "http://localhost:8000/api1/register",
-        formData
-      );
+      const resp = await axios.post("http://localhost:8000/api1/register", fd);
       //console.log(resp);
 
       if (resp.status === 201) {
         isLoading.value = false;
         requestError.value = false;
-        router.push({ name: "products", query: { registration: "success" } });
+
+        store.commit("addToast", {
+          title: "User registered",
+          type: "success",
+          message: "You have successfully registered. You can now log in.",
+        });
+
+        router.push({ name: "products" });
       }
     } catch (error) {
       // Handle Error Here
@@ -235,7 +277,89 @@ const submitForm = () => {
     }
   };
 
-  sendRegistrationRequest();
+  const locationFormData = {
+    country: userCountry.value,
+    city: userCity.value,
+    latitude: data.latitude.val,
+    longitude: data.longitude.val,
+  };
+
+  const createUserLocation = async () => {
+    try {
+      const cookie = await axios.get(
+        "http://localhost:8000/sanctum/csrf-cookie"
+      );
+      const resp = await axios.post(
+        "http://localhost:8000/api1/locations",
+        locationFormData
+      );
+      console.log(`Newly created Location ID: ${resp.data.data.id}`);
+
+      if (resp.status === 201) {
+        //isLoading.value = false;
+        requestError.value = false;
+
+        store.commit("addToast", {
+          title: "Location created",
+          type: "success",
+          message: "You have successfully created a location",
+        });
+
+        locationId.value = resp.data.data.id;
+        return resp.data.data.id;
+        // router.push({ name: "products" });
+      }
+    } catch (error) {
+      // Handle Error Here
+      //console.error(error);
+      //isLoading.value = false;
+      requestError.value = true;
+
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error("Error data", error.response.data);
+        console.error("Error status", error.response.status);
+        errorDetails.code = error.response.status;
+        errorDetails.message = error.message;
+        if (error.response.data.errors) {
+          let requestRecivedErrors = error.response.data.errors;
+          for (const property in requestRecivedErrors) {
+            // console.log(`${property}: ${requestRecivedErrors[property]}`);
+            errorDetails.errors.push(requestRecivedErrors[property].toString());
+          }
+        }
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error("Error message", error.message);
+        console.error("Error code", error.code);
+        errorDetails.code = error.code;
+        errorDetails.message = error.message;
+      }
+    }
+  };
+
+  //only create the user location if it has not been created already (e.g. server side validation errors)
+  if (locationId.value == null) {
+    await createUserLocation();
+  }
+
+  const formData = {
+    name: data.firstName.val,
+    surname: data.lastName.val,
+    email: data.email.val,
+    phone: data.phone.val,
+    password: data.password.val,
+    password_confirmation: data.passwordConfirmation.val,
+    termsAndConditions: data.publicDetails.val,
+    location_id: locationId.value,
+    // longitude: data.longitude.val,
+    // latitude: data.latitude.val,
+  };
+  console.log("Form submitted");
+  // console.log(formData);
+
+  await sendRegistrationRequest(formData);
 
   // this.$emit("save-data", formData);
 };
@@ -244,6 +368,40 @@ const submitForm = () => {
 export default {
   // emits: ["save-data"],
 };*/
+
+const togglePasswordVisibility = () => {
+  showPassword.value = !showPassword.value;
+};
+
+const validatePassword = (password) => {
+  // Check if the password is at least 8 characters long
+  if (password.length < 8) {
+    return false;
+  }
+
+  // Check if the password contains at least one uppercase letter
+  if (!/[A-Z]/.test(password)) {
+    return false;
+  }
+
+  // Check if the password contains at least one lowercase letter
+  if (!/[a-z]/.test(password)) {
+    return false;
+  }
+
+  // Check if the password contains at least one number
+  if (!/\d/.test(password)) {
+    return false;
+  }
+
+  // Check if the password contains at least one special character
+  if (!/[^a-zA-Z0-9]/.test(password)) {
+    return false;
+  }
+
+  // If all conditions are met, return true
+  return true;
+};
 </script>
 
 <template>
@@ -322,7 +480,7 @@ export default {
             >
               <label for="password">Password</label>
               <input
-                type="password"
+                :type="showPassword ? 'text' : 'password'"
                 id="password"
                 v-model.trim="data.password.val"
                 @blur="clearValidity('password')"
@@ -344,7 +502,7 @@ export default {
             >
               <label for="password-confirmation">Password confirmation</label>
               <input
-                type="password"
+                :type="showPassword ? 'text' : 'password'"
                 id="password-confirmation"
                 v-model.trim="data.passwordConfirmation.val"
                 @blur="clearValidity('passwordConfirmation')"
@@ -360,20 +518,41 @@ export default {
               </p>
             </div>
             <div
+              v-if="
+                data.passwordConfirmation.isValid &&
+                !data.matchingPasswords.isValid
+              "
+              class="validation-error-container"
+            >
+              <p>Your password and your password confirmation must match.</p>
+            </div>
+            <div class="form-control">
+              <BaseButton
+                @click.prevent="togglePasswordVisibility"
+                mode="outline"
+              >
+                {{ showPassword ? "Hide" : "Show" }} Password
+              </BaseButton>
+            </div>
+            <div
               class="form-control"
               :class="{ invalid: !data.publicDetails.isValid }"
             >
-              <label for="public-details">Public details</label>
+              <label for="public-details">Accept T&C</label>
               <input
                 type="checkbox"
                 checked
                 id="public-details"
                 v-model.trim="data.publicDetails.val"
+                @change="clearValidity('publicDetails')"
                 @blur="clearValidity('publicDetails')"
               />
-              <p v-if="!data.publicDetails.isValid">
-                public-details must not be empty.
-              </p>
+            </div>
+            <div
+              class="validation-error-container"
+              v-if="!data.publicDetails.isValid"
+            >
+              <p>You must accept our terms and conditions.</p>
             </div>
 
             <p v-if="formIsValid.value === false">
@@ -383,15 +562,8 @@ export default {
         </div>
         <div class="form-right-side form-side">
           <div id="image-upload">
-            <img src="" class="profile-pic" />
             <div>
-              <label for="profile-pic">Profile picture</label>
-              <input
-                type="file"
-                id="profile-pic"
-                name="profile-pic"
-                accept="image/png, image/jpeg"
-              />
+              <ProfileImage :userEmail="activeUserEmail" :mode="'large'" />
             </div>
           </div>
           <div id="coords-details">
@@ -423,6 +595,9 @@ export default {
             >
               <p>Latitude must not be empty.</p>
             </div>
+            <div id="user-city" v-if="userCity !== ''">
+              <p>You are based around {{ userCity }}</p>
+            </div>
             <BaseButton @click.prevent="getLocationCoords" mode="outline"
               >Get my Location</BaseButton
             >
@@ -441,31 +616,29 @@ export default {
       <div class="loading" v-show="isLoading">
         <base-spinner></base-spinner>
       </div>
-      <div class="request-errors" v-show="requestError">
-        <p>
-          There was an error when trying to perform the registration. Please try
-          again.
-        </p>
-        <div v-if="apiErrorsFound">
-          <p>Details:</p>
-          <ul>
-            <li>
+      <transition name="request-errors">
+        <div class="request-errors" v-show="requestError">
+          <p>
+            There was an error when trying to perform the registration. Please
+            try again.
+          </p>
+          <div v-if="apiErrorsFound">
+            <p>Details:</p>
+            <ul v-if="apiErrorsCaptured">
+              <!--<li>
               Code:
               <pre>{{ errorDetails.code }}</pre>
             </li>
             <li>
               Message:
               <pre>{{ errorDetails.message }}</pre>
-            </li>
-            <li v-if="apiErrorsCaptured">
-              Errors:
-              <ul>
-                <li v-for="e in errorDetails.errors">{{ e }}</li>
-              </ul>
-            </li>
-          </ul>
+            </li>-->
+
+              <li v-for="e in errorDetails.errors">{{ e }}</li>
+            </ul>
+          </div>
         </div>
-      </div>
+      </transition>
     </div>
   </div>
 </template>
@@ -579,8 +752,8 @@ h3 {
 }*/
 #image-upload {
   display: flex;
+  justify-content: center;
 }
-
 .note {
   color: rgb(139, 138, 138);
 }
@@ -597,6 +770,15 @@ h3 {
 }
 .request-errors pre {
   display: inline-block;
+}
+
+.request-errors-enter-active,
+.request-errors-leave-active {
+  transition: opacity 0.5s;
+}
+.request-errors-enter,
+.request-errors-leave-to {
+  opacity: 0;
 }
 
 .request-status {

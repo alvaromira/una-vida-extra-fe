@@ -128,36 +128,9 @@ async function login() {
       });
     }
   } finally {
-    console.log("login function over.");
+    console.log("password reset function over.");
   }
 }
-/*
-  const cookie = await axios.get("http://localhost:8000/sanctum/csrf-cookie");
-  await axios
-    .post("http://localhost:8000/api1/login", {
-      email: data.email.val,
-      password: data.password.val,
-    })
-    .then(({ data }) => {
-      // this.signIn()
-      console.log(data);
-      store.commit("logUserIn");
-      router.push("/products");
-    })
-    .catch(({ response }) => {
-      if (response.status === 422) {
-        //this.validationErrors = response.data.errors
-        console.log(response.data.errors);
-      } else {
-        //this.validationErrors = {}
-        //alert(response.data.message)
-        console.log(response.data.message);
-      }
-    })
-    .finally(() => {
-      // this.processing = false
-    });
-}*/
 </script>
 
 <template>
@@ -178,7 +151,7 @@ async function login() {
         </div>
       </div>
 
-      <div class="form-field">
+      <!--  <div class="form-field">
         <div class="form-control" :class="{ invalid: !data.password.isValid }">
           <label for="password">Password</label>
           <input
@@ -196,18 +169,13 @@ async function login() {
         <p v-if="formIsValid.value === false">
           Please fix the above errors and submit again.
         </p>
-      </div>
+      </div>-->
     </div>
 
     <div class="form-submit-button">
-      <BaseButton>Login</BaseButton>
+      <BaseButton>Reset Password</BaseButton>
     </div>
   </form>
-  <div id="forgot-password">
-    <RouterLink :to="{ name: 'forgot-password' }"
-      >Forgot your password?</RouterLink
-    >
-  </div>
 </template>
 
 <style scoped>

@@ -54,7 +54,11 @@
             <li v-if="getUserStatus" class="user-menu-item">
               <!--<BaseButton>My Account</BaseButton>-->
               <div>
-                <ProfileImage :userEmail="activeUserEmail" :mode="'small'" />
+                <ProfileImage
+                  :userEmail="activeUserEmail"
+                  :gravatarInfo="false"
+                  :mode="'small'"
+                />
               </div>
               <div class="dropdown">
                 <BaseButton>My Account</BaseButton>
@@ -166,12 +170,12 @@ header {
 .menu-item a {
   text-decoration: none;
   padding: 0.5rem 1rem;
-  color: #7ab370;
-  background-color: #fff;
+  color: #fff;
+  background-color: #7ab370;
   border-radius: 5px;
-  min-width: 100px;
+  /*min-width: 100px;*/
   display: inline-block;
-  text-align: center;
+  text-align: start;
 }
 .menu-item a.router-link-active {
   border: 1px solid #f391e3;

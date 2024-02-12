@@ -1,23 +1,54 @@
 <script setup>
 import { ref, reactive, computed, onMounted } from "vue";
 import BaseButton from "../ui/BaseButton.vue";
-import { useStore } from "vuex";
 import ProfileImage from "../ui/ProfileImage.vue";
+import axios from "axios";
+import BaseSpinner from "../ui/BaseSpinner.vue";
+import { useStore } from "vuex";
 
 const store = useStore();
+
+const formIsValid = ref(true);
+const requestError = ref(false);
+const isLoading = ref(false);
+const errorDetails = reactive({
+  code: "",
+  message: "",
+  errors: [],
+});
+const userCity = ref("");
+const userCountry = ref("");
 
 const activeUserEmail = computed(() => {
   return store.state.user.email;
 });
+const apiErrorsFound = computed(() => {
+  return errorDetails.message.length;
+});
 
 onMounted(() => {
-  //set all data from user store
-  data.firstName.val = store.state.user.name;
-  data.lastName.val = store.state.user.surname;
-  data.phone.val = store.state.user.phone;
-  data.email.val = store.state.user.email;
-  data.latitude.val = store.state.user.user_location.latitude;
-  data.longitude.val = store.state.user.user_location.longitude;
+  // Destructuring store state for cleaner code
+  const { name, surname, phone, email, user_location } = store.state.user;
+
+  // Helper function to check for null or empty values
+  const isValidValue = (value) => value !== null && value !== "";
+
+  // Assigning values to data properties after checking validity
+  data.firstName.val = isValidValue(name) ? name : "";
+  data.lastName.val = isValidValue(surname) ? surname : "";
+  data.phone.val = isValidValue(phone) ? phone : "";
+  data.email.val = isValidValue(email) ? email : "";
+
+  // Checking if user_location exists and its properties are valid
+  if (user_location && typeof user_location === "object") {
+    const { latitude, longitude } = user_location;
+    data.latitude.val = isValidValue(latitude) ? latitude : "";
+    data.longitude.val = isValidValue(longitude) ? longitude : "";
+  } else {
+    // Setting latitude and longitude to empty strings if user_location is invalid
+    data.latitude.val = "";
+    data.longitude.val = "";
+  }
 });
 
 //to do: read data from logged in user to populate values
@@ -39,10 +70,6 @@ const data = reactive({
     val: null,
     isValid: true,
   },
-  publicDetails: {
-    val: true,
-    isValid: true,
-  },
   longitude: {
     val: null,
     isValid: true,
@@ -52,8 +79,6 @@ const data = reactive({
     isValid: true,
   },
 });
-
-const formIsValid = ref(true);
 
 //methods
 
@@ -67,6 +92,11 @@ const getLocationCoords = () => {
       console.log(position.coords.longitude);
       data.longitude.val = position.coords.longitude;
       data.longitude.isValid = true;
+
+      const cityName = getCityNameFromCoords(
+        position.coords.longitude,
+        position.coords.latitude
+      );
     },
     (error) => {
       console.log(
@@ -74,6 +104,27 @@ const getLocationCoords = () => {
       );
     }
   );
+};
+
+//Get city from coords
+const getCityNameFromCoords = async (lon, lat) => {
+  let OSMReverseURL =
+    "https://nominatim.openstreetmap.org/reverse?lat=" +
+    lat +
+    "&lon=" +
+    lon +
+    "&format=json";
+
+  try {
+    const response = await axios.get(OSMReverseURL, { withCredentials: false });
+    console.log(response.data.address.city);
+    console.log(response.data.address.country);
+    userCity.value = response.data.address.city;
+    userCountry.value = response.data.address.country;
+    //return response.data.address.city;
+  } catch (error) {
+    throw error; // rethrow the error to be handled in the component
+  }
 };
 
 const clearValidity = (input) => {
@@ -107,11 +158,6 @@ const validateForm = () => {
     formIsValid.value = false;
   }
 
-  if (data.publicDetails.val === "") {
-    data.publicDetails.isValid = false;
-    formIsValid.value = false;
-  }
-
   //validate long and lat together
   if (
     !data.longitude.val ||
@@ -125,7 +171,7 @@ const validateForm = () => {
   }
 };
 
-const submitForm = () => {
+const submitForm = async () => {
   console.log("Submitting form");
   validateForm();
 
@@ -138,13 +184,75 @@ const submitForm = () => {
     last: data.lastName.val,
     email: data.email.val,
     phone: data.phone.val,
-    publicDetails: data.publicDetails.val,
+    //publicDetails: data.publicDetails.val,
     longitude: data.longitude.val,
     latitude: data.latitude.val,
   };
   console.log("Form submitted");
   console.log(formData);
   // this.$emit("save-data", formData);
+
+  const locationFormData = {
+    country: userCountry.value,
+    city: userCity.value,
+    latitude: data.latitude.val,
+    longitude: data.longitude.val,
+  };
+
+  const createUserLocation = async () => {
+    try {
+      /*  const cookie = await axios.get(
+        "http://localhost:8000/sanctum/csrf-cookie"
+      );*/
+      const resp = await axios.post(
+        "http://localhost:8000/api1/locations",
+        locationFormData
+      );
+      console.log(`Newly created Location ID: ${resp.data.data.id}`);
+
+      if (resp.status === 201) {
+        //isLoading.value = false;
+        requestError.value = false;
+
+        store.commit("addToast", {
+          title: "Location created",
+          type: "success",
+          message: "You have successfully created a location",
+        });
+
+        // router.push({ name: "products" });
+      }
+    } catch (error) {
+      // Handle Error Here
+      //console.error(error);
+      //isLoading.value = false;
+      requestError.value = true;
+
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error("Error data", error.response.data);
+        console.error("Error status", error.response.status);
+        errorDetails.code = error.response.status;
+        errorDetails.message = error.message;
+        if (error.response.data.errors) {
+          let requestRecivedErrors = error.response.data.errors;
+          for (const property in requestRecivedErrors) {
+            // console.log(`${property}: ${requestRecivedErrors[property]}`);
+            errorDetails.errors.push(requestRecivedErrors[property].toString());
+          }
+        }
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error("Error message", error.message);
+        console.error("Error code", error.code);
+        errorDetails.code = error.code;
+        errorDetails.message = error.message;
+      }
+    }
+  };
+
+  const locationId = await createUserLocation();
 };
 
 /*
@@ -154,62 +262,76 @@ export default {
 </script>
 
 <template>
-  <form @submit.prevent="submitForm">
-    <div class="form-left-side form-side">
-      <div>
-        <div class="form-control" :class="{ invalid: !data.firstName.isValid }">
-          <label for="firstname">Firstname</label>
-          <input
-            type="text"
-            id="firstname"
-            v-model.trim="data.firstName.val"
-            @blur="clearValidity('firstName')"
-          />
-        </div>
-        <div v-if="!data.firstName.isValid" class="validation-error-container">
-          <p>Firstname must not be empty.</p>
-        </div>
+  <div class="form-component-container">
+    <div class="form-container">
+      <form @submit.prevent="submitForm">
+        <div class="form-left-side form-side">
+          <div>
+            <div
+              class="form-control"
+              :class="{ invalid: !data.firstName.isValid }"
+            >
+              <label for="firstname">Firstname</label>
+              <input
+                type="text"
+                id="firstname"
+                v-model.trim="data.firstName.val"
+                @blur="clearValidity('firstName')"
+              />
+            </div>
+            <div
+              v-if="!data.firstName.isValid"
+              class="validation-error-container"
+            >
+              <p>Firstname must not be empty.</p>
+            </div>
 
-        <div class="form-control" :class="{ invalid: !data.lastName.isValid }">
-          <label for="lastname">Lastname</label>
-          <input
-            type="text"
-            id="lastname"
-            v-model.trim="data.lastName.val"
-            @blur="clearValidity('lastName')"
-          />
-        </div>
-        <div v-if="!data.lastName.isValid" class="validation-error-container">
-          <p>Lastname must not be empty.</p>
-        </div>
+            <div
+              class="form-control"
+              :class="{ invalid: !data.lastName.isValid }"
+            >
+              <label for="lastname">Lastname</label>
+              <input
+                type="text"
+                id="lastname"
+                v-model.trim="data.lastName.val"
+                @blur="clearValidity('lastName')"
+              />
+            </div>
+            <div
+              v-if="!data.lastName.isValid"
+              class="validation-error-container"
+            >
+              <p>Lastname must not be empty.</p>
+            </div>
 
-        <div class="form-control" :class="{ invalid: !data.email.isValid }">
-          <label for="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            v-model.trim="data.email.val"
-            @blur="clearValidity('email')"
-          />
-        </div>
-        <div v-if="!data.email.isValid" class="validation-error-container">
-          <p>Email must not be empty.</p>
-        </div>
+            <div class="form-control" :class="{ invalid: !data.email.isValid }">
+              <label for="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                v-model.trim="data.email.val"
+                @blur="clearValidity('email')"
+              />
+            </div>
+            <div v-if="!data.email.isValid" class="validation-error-container">
+              <p>Email must not be empty.</p>
+            </div>
 
-        <div class="form-control" :class="{ invalid: !data.phone.isValid }">
-          <label for="phone">Phone</label>
-          <input
-            type="text"
-            id="phone"
-            v-model.trim="data.phone.val"
-            @blur="clearValidity('phone')"
-          />
-        </div>
-        <div v-if="!data.phone.isValid" class="validation-error-container">
-          <p>Phone must not be empty.</p>
-        </div>
+            <div class="form-control" :class="{ invalid: !data.phone.isValid }">
+              <label for="phone">Phone</label>
+              <input
+                type="text"
+                id="phone"
+                v-model.trim="data.phone.val"
+                @blur="clearValidity('phone')"
+              />
+            </div>
+            <div v-if="!data.phone.isValid" class="validation-error-container">
+              <p>Phone must not be empty.</p>
+            </div>
 
-        <div
+            <!--<div
           class="form-control"
           :class="{ invalid: !data.publicDetails.isValid }"
         >
@@ -224,47 +346,94 @@ export default {
           <p v-if="!data.publicDetails.isValid">
             public-details must not be empty.
           </p>
-        </div>
+        </div>-->
 
-        <p v-if="formIsValid.value === false">
-          Please fix the above errors and submit again.
-        </p>
-      </div>
+            <p v-if="formIsValid.value === false">
+              Please fix the above errors and submit again.
+            </p>
+          </div>
+        </div>
+        <div class="form-right-side form-side">
+          <div id="image-upload">
+            <div>
+              <ProfileImage :userEmail="activeUserEmail" :mode="'large'" />
+            </div>
+          </div>
+          <div id="coords-details">
+            <div class="form-control">
+              <label for="longitude">Longitude</label>
+              <input
+                type="text"
+                id="longitude"
+                v-model.trim="data.longitude.val"
+              />
+            </div>
+            <div
+              v-if="!data.longitude.isValid"
+              class="validation-error-container"
+            >
+              <p>Longitude must not be empty.</p>
+            </div>
+            <div class="form-control">
+              <label for="latitude">Latitude</label>
+              <input
+                type="text"
+                id="latitude"
+                v-model.trim="data.latitude.val"
+              />
+            </div>
+            <div
+              v-if="!data.latitude.isValid"
+              class="validation-error-container"
+            >
+              <p>Latitude must not be empty.</p>
+            </div>
+            <div id="user-city" v-if="userCity !== ''">
+              <p>You are based around {{ userCity }}</p>
+            </div>
+            <BaseButton @click.prevent="getLocationCoords" mode="outline"
+              >Get my Location</BaseButton
+            >
+            <p class="note">
+              We need your location to make sure that proximity is considered
+              when donating products.Thanks!
+            </p>
+          </div>
+          <div class="form-submit-button">
+            <BaseButton>Update</BaseButton>
+          </div>
+        </div>
+      </form>
     </div>
-    <div class="form-right-side form-side">
-      <div id="image-upload">
-        <div>
-          <ProfileImage :userEmail="activeUserEmail" :mode="'large'" />
-        </div>
+    <div class="request-status">
+      <div class="loading" v-show="isLoading">
+        <base-spinner></base-spinner>
       </div>
-      <div id="coords-details">
-        <div class="form-control">
-          <label for="longitude">Longitude</label>
-          <input type="text" id="longitude" v-model.trim="data.longitude.val" />
+      <transition name="request-errors">
+        <div class="request-errors" v-show="requestError">
+          <p>
+            There was an error when trying to perform the registration. Please
+            try again.
+          </p>
+          <div v-if="apiErrorsFound">
+            <p>Details:</p>
+            <ul v-if="apiErrorsCaptured">
+              <!--<li>
+              Code:
+              <pre>{{ errorDetails.code }}</pre>
+            </li>
+            <li>
+              Message:
+              <pre>{{ errorDetails.message }}</pre>
+            </li>-->
+
+              <li v-for="e in errorDetails.errors">{{ e }}</li>
+            </ul>
+          </div>
         </div>
-        <div v-if="!data.longitude.isValid" class="validation-error-container">
-          <p>Longitude must not be empty.</p>
-        </div>
-        <div class="form-control">
-          <label for="latitude">Latitude</label>
-          <input type="text" id="latitude" v-model.trim="data.latitude.val" />
-        </div>
-        <div v-if="!data.latitude.isValid" class="validation-error-container">
-          <p>Latitude must not be empty.</p>
-        </div>
-        <BaseButton @click.prevent="getLocationCoords" mode="outline"
-          >Get my Location</BaseButton
-        >
-        <p class="note">
-          We need your location to make sure that proximity is considered when
-          donating products.Thanks!
-        </p>
-      </div>
-      <div class="form-submit-button">
-        <BaseButton>Update</BaseButton>
-      </div>
+      </transition>
     </div>
-  </form>
+  </div>
 </template>
 
 <style scoped>
