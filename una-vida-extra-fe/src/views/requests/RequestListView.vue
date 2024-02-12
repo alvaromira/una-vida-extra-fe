@@ -1,14 +1,14 @@
 <script setup>
-import { ref, defineProps, computed, reactive } from "vue";
+import { ref, computed, reactive } from "vue";
 import RequestCard from "../../components/ui/request/RequestCard.vue";
 import { useRouter, useRoute } from "vue-router";
 import axios from "axios";
 import { useStore } from "vuex";
-//import ModalConfirmationDialog from "../../components/ui/ModalConfirmationDialog.vue";
+import ModalConfirmationDialog from "../../components/ui/ModalConfirmationDialog.vue";
 
 const route = useRoute();
 const store = useStore();
-/*
+
 //Modal related
 const isModalVisible = ref(false);
 // Setter for isModalVisible
@@ -25,7 +25,7 @@ const getRequestDeletionConfirmed = computed(() => {
 // Setter for requestDeletionConfirmed
 const setRequestDeletionConfirmed = (value) => {
   requestDeletionConfirmed.value = value;
-};*/
+};
 
 const isLoading = ref(false);
 const requestError = ref(false);
