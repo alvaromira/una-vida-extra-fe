@@ -20,7 +20,7 @@ const isModalVisible = ref(false);
 const props = defineProps({
   message: String,
   date: String,
-  distance: String,
+  distance: Number,
   id: Number,
   isActive: Boolean,
   productId: Number,

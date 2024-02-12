@@ -1,9 +1,10 @@
 <script setup>
-import { ref, computed, reactive } from "vue";
+import { ref, computed, reactive, watch } from "vue";
 import RequestCard from "../../components/ui/request/RequestCard.vue";
 import { useRouter, useRoute } from "vue-router";
 import axios from "axios";
 import { useStore } from "vuex";
+import BaseSpinner from "../../components/ui/BaseSpinner.vue";
 import ModalConfirmationDialog from "../../components/ui/ModalConfirmationDialog.vue";
 
 const route = useRoute();
@@ -27,6 +28,14 @@ const setRequestDeletionConfirmed = (value) => {
   requestDeletionConfirmed.value = value;
 };
 
+const requestIdToBeRemoved = ref(null);
+const setRequestIdToBeRemoved = (value) => {
+  requestIdToBeRemoved.value = value;
+};
+const getRequestIdToBeRemoved = computed(() => {
+  return requestIdToBeRemoved.value;
+});
+
 const isLoading = ref(false);
 const requestError = ref(false);
 const requestCurrentPage = ref(1);
@@ -42,6 +51,7 @@ const loggedInUser = computed(() => {
 
 //fetch product requests from the public api
 const getProductRequests = async () => {
+  isLoading.value = true;
   try {
     const resp = await axios.get(
       `http://localhost:8000/api1/users/${loggedInUser.value}/requests`
@@ -53,13 +63,13 @@ const getProductRequests = async () => {
     //console.log(resp.data.data);
 
     //console.log(prodRequests);
-    //isLoading.value = false;
+    isLoading.value = false;
     requestError.value = false;
     //router.push({ name: "products", query: { registration: "success" } });
   } catch (error) {
     // Handle Error Here
     console.error(error);
-    //isLoading.value = false;
+    isLoading.value = false;
     requestError.value = true;
 
     if (error.response) {
@@ -91,13 +101,40 @@ const getProductRequests = async () => {
   }
 };
 
-getProductRequests();
-
 const prodRequests = ref([]);
 
 const numberOfRequests = computed(() => {
   return prodRequests.value.length;
 });
+
+getProductRequests();
+
+const deleteProductRequests = async (deletionRequestID) => {
+  try {
+    const resp = await axios.delete(
+      `http://localhost:8000/api1/requests/${deletionRequestID}`
+    );
+    console.log(resp);
+    if (resp.status === 200 || resp.status === 204) {
+      console.log("Data successfully deleted");
+      return true;
+    }
+  } catch (error) {
+    // Handle Error Here
+    console.error("An error occurred while deleting the request:", error);
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.error("Error data  - request deletion", error.response.data);
+      console.error("Error status - request deletion", error.response.status);
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.error("Error message - request deletion", error.message);
+      console.error("Error code - request deletion", error.code);
+    }
+    return false;
+  }
+};
 
 const removeChildComponentById = (id) => {
   const index = prodRequests.value.findIndex((child) => child.id === id);
@@ -106,51 +143,67 @@ const removeChildComponentById = (id) => {
   }
 };
 
-//when removing a request, received from a request card
-const removeCancelledRequest = (userId, reqId, prodId) => {
-  console.log(
-    `Parent removing card ${reqId} from the list of requests. Action triggered by ${userId}`
+//behaviour for modal
+const onModalConfirm = async () => {
+  console.log("Deletion confirmed...");
+  setIsModalVisible(false);
+  //Remove with api request, if all good, reload list and show toast
+  const deletionResult = await deleteProductRequests(
+    requestIdToBeRemoved.value
   );
-  //todo, do it with a modal
-  if (
-    confirm(
-      `Are you sure you want to deleted your request for product with ID ${prodId}`
-    ) == true
-  ) {
-    removeChildComponentById(reqId);
-  }
-
-  /*
-  if (getRequestDeletionConfirmed.value) {
-    console.log("Modal confirmed, removing...");
-    removeChildComponentById(reqId);
+  if (deletionResult === true) {
+    store.commit("addToast", {
+      title: "Request deleted",
+      type: "success",
+      message: "You have successfully deleted the request.",
+    });
+    await getProductRequests();
   } else {
-    console.log("Modal cancelled");
-  }*/
+    store.commit("addToast", {
+      title: "Request deleted",
+      type: "error",
+      message:
+        "There was an error deleting the request. Try again. If the error persists, get in touch.",
+    });
+  }
+  //removeChildComponentById(reqId);
+  setRequestDeletionConfirmed(true);
+};
+const onModalClose = () => {
+  console.log("Modal closed, nothing confirmed...");
+  setIsModalVisible(false);
+  setRequestDeletionConfirmed(false);
+};
 
+//when removing a request, received from a request card
+const removeCancelledRequest = async (userId, reqId, prodId) => {
+  setRequestIdToBeRemoved(reqId);
+
+  console.log(
+    `Parent removing card for request ID ${reqId} from the list of requests. Action triggered by ${userId}`
+  );
+  setIsModalVisible(true);
+  //todo, do it with a modal
   //TO DO show toast with result
 };
 
-/*
-function onConfirm() {
-  setIsModalVisible(false);
-  console.log("Deleting requests");
-  //TO do, remove with api request, if all good, then remove component
-  removeChildComponentById(reqId);
-  setRequestDeletionConfirmed(true);
-}
-
-function onModalClose() {
-  setIsModalVisible(false);
-  setRequestDeletionConfirmed(false);
-}*/
+// Watcher to await modal closure
+watch(isModalVisible, (newValue) => {
+  if (!newValue) {
+    // Modal is closed, perform actions here
+    console.log("Modal closed, performing actions...");
+  }
+});
 </script>
 
 <template>
   <div>
     <h2>My requests</h2>
-    <p>This is is the list of requests you have placed.</p>
-    <section>
+
+    <div class="loading" v-show="isLoading">
+      <base-spinner></base-spinner>
+    </div>
+    <section v-if="!isLoading">
       <div v-if="!numberOfRequests">
         <p>You don't not have any active requests.</p>
       </div>
@@ -179,12 +232,18 @@ function onModalClose() {
         ></transition-group>
       </div>
 
-      <!--<ModalConfirmationDialog
+      <ModalConfirmationDialog
         v-if="isModalVisible"
-        @confirmed="onConfirm"
-        @close="onModalClose"
-        >asdasdfas</ModalConfirmationDialog
-      >-->
+        @modal-confirmed="onModalConfirm"
+        @modal-close="onModalClose"
+      >
+        <template #header>Remove request</template>
+        <template #body
+          ><p>
+            Are you sure you want to delete request {{ requestIdToBeRemoved }}?
+          </p></template
+        ></ModalConfirmationDialog
+      >
     </section>
   </div>
 </template>

@@ -65,14 +65,14 @@ import {
     },
   },
 };*/
-const emit = defineEmits(["close", "confirmed"]);
+const emit = defineEmits(["modal-close", "modal-confirmed"]);
 
 function onClose() {
-  emit("close");
+  emit("modal-close");
 }
 
 function onConfirm() {
-  emit("confirmed");
+  emit("modal-confirmed");
 }
 </script>
 
