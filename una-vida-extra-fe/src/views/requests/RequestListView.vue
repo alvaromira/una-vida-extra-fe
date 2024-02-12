@@ -1,13 +1,11 @@
 <script setup>
-import { ref, computed, reactive, watch } from "vue";
+import { ref, computed, reactive } from "vue";
 import RequestCard from "../../components/ui/request/RequestCard.vue";
-import { useRouter, useRoute } from "vue-router";
 import axios from "axios";
 import { useStore } from "vuex";
 import BaseSpinner from "../../components/ui/BaseSpinner.vue";
 import ModalConfirmationDialog from "../../components/ui/ModalConfirmationDialog.vue";
 
-const route = useRoute();
 const store = useStore();
 
 //Modal related
@@ -51,6 +49,7 @@ const loggedInUser = computed(() => {
 
 //fetch product requests from the public api
 const getProductRequests = async () => {
+  setRequestDeletionConfirmed(false);
   isLoading.value = true;
   try {
     const resp = await axios.get(
@@ -186,14 +185,6 @@ const removeCancelledRequest = async (userId, reqId, prodId) => {
   //todo, do it with a modal
   //TO DO show toast with result
 };
-
-// Watcher to await modal closure
-watch(isModalVisible, (newValue) => {
-  if (!newValue) {
-    // Modal is closed, perform actions here
-    console.log("Modal closed, performing actions...");
-  }
-});
 </script>
 
 <template>
