@@ -1,19 +1,21 @@
 <template>
-  <div class="toast">
-    <div class="header" :class="[toast.type, { 'fade-out': isFadingOut }]">
+  <div class="toast" :class="[toast.type, { 'fade-out': isFadingOut }]">
+    <div class="header">
       <h3>{{ toast.title }}</h3>
       <button @click="dismissToast(toast.title)">X</button>
     </div>
     <div class="content">
-      <p>{{ toast.message }}</p>
+      <p role="status">{{ toast.message }}</p>
     </div>
+    <CountdownBar :duration="10000"></CountdownBar>
   </div>
 </template>
 
 <script setup>
 // Import the necessary functions from Vue
-import { ref, onMounted, defineProps } from "vue";
+import { ref, onMounted } from "vue";
 import { useStore } from "vuex";
+import CountdownBar from "./CountdownBar.vue";
 
 // Define the props using the `defineProps` function
 const { props } = defineProps(["toast"]);
@@ -30,8 +32,8 @@ onMounted(() => {
   // Logic to execute on component mount
   // Automatically dismiss toast after 5 seconds
   setTimeout(() => {
-    //   dismissToast();
-  }, 5000);
+    dismissToast();
+  }, 10000);
 });
 </script>
 
@@ -48,16 +50,16 @@ h3 {
   color: #ffffff;
 }
 
-div.toast > div.header.success {
-  background-color: #009900;
+div.toast.success {
+  background-color: #4caf50;
 }
 
-div.toast > div.header.info {
-  background-color: #edb421;
+div.toast.info {
+  background-color: #ffc107;
 }
 
-div.toast > div.header.error {
-  background-color: #990000;
+div.toast.error {
+  background-color: #ff5252;
 }
 
 .toast {
@@ -68,12 +70,9 @@ div.toast > div.header.error {
   margin-bottom: 1rem;
   padding: 1rem;
   box-sizing: border-box;
-  background-color: #faf8f7;
   justify-content: center;
-  border-top-left-radius: 1rem;
-  border-bottom-right-radius: 1rem;
-  border-top-right-radius: 0.5rem;
-  box-shadow: 0 0 0.5rem #cccccc;
+  border-radius: 8px;
+  box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.1), 0 2px 15px 0 rgba(0, 0, 0, 0.05);
   opacity: 1;
   transition: opacity 0.5s ease-out; /* Added transition for fading-out effect */
 }
@@ -82,7 +81,7 @@ div.toast > div.header.error {
   opacity: 0;
 }
 .toast p {
-  font-weight: 100;
+  font-weight: 300;
 }
 
 .toast .sidebar {
@@ -100,33 +99,33 @@ div.toast > div.header.error {
   flex-direction: column;
   align-items: start;
   justify-content: center;
-  padding-left: 1rem;
+  /* padding-left: 1rem;*/
   box-sizing: border-box;
 }
-
 .toast .header,
 .toast .text {
   flex-direction: row;
   justify-content: flex-start;
   text-align: left;
 }
-
 .toast .header {
   height: 25px;
   margin-bottom: 1rem;
 }
-
 .toast .header button {
+  color: #ffffff;
+  background: transparent;
   margin-left: auto;
   text-decoration: none;
   border: none;
   cursor: pointer;
   background: none;
   font-size: 1rem;
+  opacity: 0.3;
 }
-
 .toast .header button:hover {
-  background: #e7e7e7;
+  /* background: #e7e7e7;*/
+  opacity: 0.75;
 }
 
 .toast .content {

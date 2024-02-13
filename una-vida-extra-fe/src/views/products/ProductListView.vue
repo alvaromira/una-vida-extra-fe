@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps, computed, reactive, onMounted } from "vue";
+import { ref, computed, reactive, onMounted } from "vue";
 import ProductCard from "../../components/ui/product/ProductCard.vue";
 import ProductsSummary from "../../components/ui/product/ProductsSummary.vue";
 import { useRouter, useRoute } from "vue-router";
@@ -46,7 +46,6 @@ const errorDetails = reactive({
 });
 
 //fetch products from the public api
-
 const getProductRequests = async () => {
   try {
     const resp = await axios.get("http://localhost:8000/api1/products");
@@ -92,57 +91,13 @@ const getProductRequests = async () => {
     }
   }
 };
-
 getProductRequests();
 const prods = ref([]);
-//Data attributes
-//ref for accessing anything through .value, or reactive for accessing Objects only with the var name but without the value
-/*const products = ref([
-  {
-    id: 1,
-    image: "https://via.placeholder.com/250x250/cccccc/969696",
-    title: "Used pans",
-    date: "01/01/2023",
-    location: {
-      lat: 36.72,
-      long: -4.42,
-    },
-  },
-  {
-    id: 2,
-    image: "https://via.placeholder.com/250x250/cccccc/969696",
-    title: "Large Vase",
-    date: "01/02/2023",
-    location: {
-      lat: 36.72,
-      long: -4.42,
-    },
-  },
-  {
-    id: 3,
-    image: "https://via.placeholder.com/250x250/cccccc/969696",
-    title: "Gold bar",
-    date: "02/02/2023",
-    location: {
-      lat: 36.72,
-      long: -4.42,
-    },
-  },
-]);
-*/
-//Computed
-const total = computed(() => {
-  return "foo";
-});
-//export default {
-//  name: "Produts",
-//};
 
 // Lifecycle hook using `onMounted`
 onMounted(() => {
   //Testing toasts
-  /*
-  store.commit("addToast", {
+  /* store.commit("addToast", {
     title: "Hello Vuex!",
     type: "success",
     message: "It looks like you have successfully set up Vuex.",
