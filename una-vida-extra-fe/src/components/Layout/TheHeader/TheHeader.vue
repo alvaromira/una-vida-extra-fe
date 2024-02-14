@@ -176,12 +176,37 @@ header {
   /*min-width: 100px;*/
   display: inline-block;
   text-align: start;
+  position: relative;
+}
+.menu-item a:hover::after {
+  border-top: 4px solid #dbd9d9;
+  left: 0;
+  right: 1px;
+  bottom: -4px;
+  content: "";
+  display: block;
+  position: absolute;
+  -webkit-transition: -webkit-transform 0.3s ease-in-out;
+  transition: transform 0.3s ease-in-out;
+  transform: translateY(-4px);
 }
 .menu-item a.router-link-active {
-  border: 1px solid #f391e3;
+  /* border: 1px solid #f391e3; */
   font-weight: bolder;
+  position: relative;
 }
-
+.menu-item a.router-link-active::after {
+  border-top: 4px solid #fff;
+  left: 0;
+  right: 1px;
+  bottom: -4px;
+  content: "";
+  display: block;
+  position: absolute;
+  -webkit-transition: -webkit-transform 0.3s ease-in-out;
+  transition: transform 0.3s ease-in-out;
+  transform: translateY(-4px);
+}
 h1,
 h2,
 h3 {

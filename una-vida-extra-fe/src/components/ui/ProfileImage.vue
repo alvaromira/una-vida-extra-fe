@@ -45,7 +45,7 @@ onMounted(() => {
 
 const generateGravatarUrl = async (email) => {
   const hash = md5(email.toLowerCase().trim());
-  console.log(hash);
+  // console.log(hash);
 
   try {
     const xhr = new XMLHttpRequest();
