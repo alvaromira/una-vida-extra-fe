@@ -51,7 +51,7 @@ const imagePath = computed(() => {
   if (props.image == null || props.image === undefined) {
     return "https://via.placeholder.com/250x250/cccccc/969696";
   } else {
-    return props.image;
+    return "http://127.0.0.1:8000/storage/" + props.image;
   }
 });
 
@@ -88,6 +88,8 @@ const showLocation = () => {
 .product-card-image img {
   margin-right: auto;
   margin-left: auto;
+  max-width: 100%;
+  height: auto;
 }
 .product-bottom {
   padding-top: 0.5rem;
