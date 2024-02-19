@@ -17,11 +17,12 @@
 
 <script setup>
 import { useRouter, useRoute } from "vue-router";
+import { onMounted } from "vue";
 import axios from "axios";
-
-import { computed, defineProps } from "vue";
+import { computed } from "vue";
 import { useStore } from "vuex";
 import { ref } from "vue";
+
 import ProductDetailCard from "../../components/ui/product/ProductDetailCard.vue";
 
 const router = useRouter();
@@ -46,14 +47,17 @@ const getProductData = async () => {
     console.log(err);
   }
 };
-getProductData();
 
 const imagePath = computed(() => {
-  if (prodDetail.image == null || prodDetail.image === undefined) {
+  if (prodDetail.value.image == null || prodDetail.value.image === undefined) {
     return "https://via.placeholder.com/250x250/cccccc/969696";
   } else {
-    return "http://127.0.0.1:8000/storage/" + prodDetail.image;
+    return "http://127.0.0.1:8000/storage/" + prodDetail.value.image;
   }
+});
+
+onMounted(() => {
+  getProductData();
 });
 
 //Aceppted properties for the card items
