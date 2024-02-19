@@ -28,7 +28,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps, computed } from "vue";
+import { ref, computed } from "vue";
 import IconLocation from "../../icons/iconLocation.vue";
 import BaseButton from "../BaseButton.vue";
 

@@ -58,18 +58,30 @@
           link="true"
           >Request it!</BaseButton
         >
-        <BaseButton
-          v-else
-          :to="{
-            name: 'editProduct',
-            params: {
-              id: id,
-              // state: { title: props.title, image: props.image },
-            },
-          }"
-          link="true"
-          >Edit</BaseButton
-        >
+        <div v-else>
+          <BaseButton
+            :to="{
+              name: 'editProduct',
+              params: {
+                id: id,
+                // state: { title: props.title, image: props.image },
+              },
+            }"
+            link="true"
+            >Edit</BaseButton
+          >
+          <BaseButton
+            :to="{
+              name: 'editProduct',
+              params: {
+                id: id,
+                // state: { title: props.title, image: props.image },
+              },
+            }"
+            link="true"
+            >Check Requests</BaseButton
+          >
+        </div>
       </div>
     </section>
   </div>
