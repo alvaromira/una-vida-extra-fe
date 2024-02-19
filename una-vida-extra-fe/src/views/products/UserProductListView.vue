@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p>These are the products you currently have listed:</p>
+    <h2>My Products</h2>
     <div id="user-product-list">
       <section class="product-card-container">
         <div v-for="product in userProducts">

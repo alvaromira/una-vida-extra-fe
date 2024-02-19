@@ -51,6 +51,8 @@ getProductData();
 const imagePath = computed(() => {
   if (prodDetail.image == null || prodDetail.image === undefined) {
     return "https://via.placeholder.com/250x250/cccccc/969696";
+  } else {
+    return "http://127.0.0.1:8000/storage/" + prodDetail.image;
   }
 });
 
