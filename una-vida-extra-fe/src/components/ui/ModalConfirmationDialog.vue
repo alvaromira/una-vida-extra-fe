@@ -27,7 +27,7 @@
         <footer class="modal-footer">
           <button
             type="button"
-            class="btn-green"
+            class="btn-confirm"
             @click="onConfirm"
             aria-label="Confirm deletion"
           >
@@ -35,7 +35,7 @@
           </button>
           <button
             type="button"
-            class="btn-green"
+            class="btn-cancel"
             @click="onClose"
             aria-label="Close modal"
           >
@@ -48,23 +48,8 @@
 </template>
 
 <script setup>
-import {
-  onBeforeMount,
-  onMounted,
-  onUnmounted,
-  defineEmits,
-  defineProps,
-  ref,
-  reactive,
-} from "vue";
-/*export default {
-  name: "ModalConfirmationDialog",
-  methods: {
-    close() {
-      this.$emit("close");
-    },
-  },
-};*/
+import { defineEmits } from "vue";
+
 const emit = defineEmits(["modal-close", "modal-confirmed"]);
 
 function onClose() {
@@ -91,37 +76,45 @@ function onConfirm() {
 
 .modal {
   background: #ffffff;
-  box-shadow: 2px 2px 20px 1px;
   overflow-x: auto;
   display: flex;
   flex-direction: column;
-  max-width: 35%;
+  max-width: 55%;
   width: 100%;
-  border-radius: 5px;
+
+  border-radius: 8px;
+  box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.1), 0 2px 15px 0 rgba(0, 0, 0, 0.05);
+  opacity: 1;
+  transition: opacity 0.5s ease-out; /* Added transition for fading-out effect */
 }
 
 .modal-header,
 .modal-footer {
-  padding: 15px;
+  padding: 1.5rem;
   display: flex;
 }
 
 .modal-header {
   position: relative;
   border-bottom: 1px solid #eeeeee;
-  color: #4aae9b;
+  color: #7ab370;
   justify-content: space-between;
 }
 
 .modal-footer {
   border-top: 1px solid #eeeeee;
-  flex-direction: column;
-  justify-content: flex-end;
+  justify-content: space-between;
 }
-
+.modal-footer button {
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  min-width: 100px;
+  display: inline-block;
+  text-align: center;
+}
 .modal-body {
   position: relative;
-  padding: 20px 10px;
+  padding: 1.5rem;
 }
 
 .btn-close {
@@ -130,17 +123,24 @@ function onConfirm() {
   right: 0;
   border: none;
   font-size: 20px;
-  padding: 10px;
+  padding: 1.5rem;
   cursor: pointer;
   font-weight: bold;
-  color: #4aae9b;
+  color: #7ab370;
   background: transparent;
 }
 
-.btn-green {
+.btn-cancel {
   color: white;
-  background: #4aae9b;
-  border: 1px solid #4aae9b;
+  background: #ff5252;
+  border: 1px solid #ff5252;
+  border-radius: 2px;
+  cursor: pointer;
+}
+.btn-confirm {
+  color: white;
+  background: #4caf50;
+  border: 1px solid #4caf50;
   border-radius: 2px;
   cursor: pointer;
 }
