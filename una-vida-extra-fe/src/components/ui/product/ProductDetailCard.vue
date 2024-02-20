@@ -72,7 +72,7 @@
           >
           <BaseButton
             :to="{
-              name: 'editProduct',
+              name: 'productRequests',
               params: {
                 id: id,
                 // state: { title: props.title, image: props.image },

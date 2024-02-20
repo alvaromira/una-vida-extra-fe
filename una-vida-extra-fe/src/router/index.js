@@ -98,6 +98,15 @@ const router = createRouter({
       component: () => import('../views/requests/RequestListView.vue')
     },
     {
+      path: '/requests/product/:id',
+      name: 'productRequests',
+      meta: {
+        middleware: "auth",
+        title: "Product Requests"
+      },
+      component: () => import('../views/requests/ProductRequestListView.vue')
+    },
+    {
       path: '/sponsors',
       name: 'sponsors',
       meta: {
