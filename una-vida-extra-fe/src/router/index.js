@@ -1,6 +1,8 @@
-import { createRouter, createWebHistory } from 'vue-router'
+
+import { createRouter, createWebHistory } from 'vue-router';
 import NotFound from '../views/NotFound.vue';
 import store from '../store';
+import { computed } from "vue";
 
 //const store = useStore();
 
@@ -175,26 +177,34 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
 
+  const isAuthenticated = computed(() => store.getters.authenticated);
+  const user = computed(() => store.getters.user);
+
   document.title = "1up - " + to.meta.title
   if (to.meta.middleware == "guest") {
-    if (store.state.authenticated) {
+    if (isAuthenticated.value) {
       //next({ name: "dashboard" })
       console.log("VISITING A GUEST ROUTE, you are authenticated already", to.name)
+      console.log(user);
     }
     else {
       console.log("VISITING A GUEST ROUTE, you are NOT authenticated", to.name)
+      console.log(user);
     }
     next()
   }
   else if (to.meta.middleware == "public") {
     console.log("VISITING A PUBLIC ROUTE ", to.name);
+    console.log(user);
     next()
   } else {
-    if (store.state.authenticated) {
+    if (isAuthenticated.value) {
       console.log("VISITING An AUTH ROUTE, you are authenticated")
+      console.log(user);
       next()
     } else {
       console.log(`VISITING AN NOT AUTH ROUTE ${to.name}, you are NOT authenticated`)
+      console.log(user);
       next({ name: "login", query: { from: from.fullPath } })
     }
   }
