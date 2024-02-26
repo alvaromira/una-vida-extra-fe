@@ -21,12 +21,6 @@ const store = createStore({
         }
     },
     mutations: {
-        /* logUserIn(state) {
-             state.userLoggedIn = true;
-         },
-         logUserOut(state) {
-             state.userLoggedIn = false;
-         },*/
         SET_USER_IS_ADMIN(state, status) {
             state.userIsAdmin = status
         },
@@ -45,26 +39,83 @@ const store = createStore({
         }
     },
     actions: {
-        login({ commit }) {
-            return axios.get('http://localhost:8000/api1/user').then(({ data }) => {
-                commit('SET_USER', data.data) //the response is a user object wrapped in data
-                commit('SET_AUTHENTICATED', true)
-                if (data.data.user_is_admin) {
-                    commit('SET_USER_IS_ADMIN', true)
-                }
+        async login({ commit }, { payload }) {
+            try {
+                // Get CSRF cookie
+                await axios.get("http://localhost:8000/sanctum/csrf-cookie");
 
-            }).catch(({ response }) => {
-                console.log("Error, ", response)
+                // Login request
+                const response = await axios.post("http://localhost:8000/api1/login", payload);
+
+                // Get user data
+                const userData = await axios.get('http://localhost:8000/api1/user');
+
+                // Commit mutations
+                commit('SET_USER', userData.data.data); // the response is a user object wrapped in data
+                commit('SET_AUTHENTICATED', true);
+
+                // Check if the user is admin
+                if (userData.data.data.user_is_admin) {
+                    commit('SET_USER_IS_ADMIN', true);
+                }
+            } catch (error) {
+                console.error("Error:", error.response);
+                // Handle error
+                commit('SET_USER', {});
+                commit('SET_AUTHENTICATED', false);
+                commit('SET_USER_IS_ADMIN', false);
+                // Re-throw the error so that the caller can handle it as well, if necessary
+                throw error;
+            }
+        },
+        async logout({ commit }) {
+            try {
+                await axios.post("http://localhost:8000/api1/logout");
                 commit('SET_USER', {})
                 commit('SET_AUTHENTICATED', false)
                 commit('SET_USER_IS_ADMIN', false)
-            })
+            } catch (error) {
+                // Re-throw the error so that the caller can handle it as well, if necessary
+                throw error;
+            }
+
         },
-        logout({ commit }) {
-            commit('SET_USER', {})
-            commit('SET_AUTHENTICATED', false)
-            commit('SET_USER_IS_ADMIN', false)
-        }
+        async getAuthUser({ commit }) {
+            try {
+                const response = await axios.get('http://localhost:8000/api1/user');
+
+                // Check for 401 (Unauthorized) or 419 (Authentication Timeout) status codes
+                if (response.status === 401 || response.status === 419) {
+                    commit('SET_USER', {});
+                    commit('SET_AUTHENTICATED', false);
+                    commit('SET_USER_IS_ADMIN', false);
+                    console.log("No valid session");
+                    //throw new Error("No valid session");
+                }
+
+                console.log("calling getAuthUser");
+                console.log(response.data.data);
+
+                // Commit mutations
+                commit('SET_USER', response.data.data); //the response is a user object wrapped in data
+                commit('SET_AUTHENTICATED', true);
+
+                // Check if the user is admin
+                if (response.data.data.user_is_admin) {
+                    commit('SET_USER_IS_ADMIN', true);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+
+                // Handle other errors
+                commit('SET_USER', {});
+                commit('SET_AUTHENTICATED', false);
+                commit('SET_USER_IS_ADMIN', false);
+
+                // Re-throw the error so that the caller can handle it as well, if necessary
+                //throw error;
+            }
+        },
     }
 
 });

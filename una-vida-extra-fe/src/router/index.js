@@ -175,39 +175,63 @@ const router = createRouter({
   ]
 });
 
-router.beforeEach((to, from, next) => {
+const isAuthenticated = computed(() => store.getters.authenticated);
+const user = computed(() => store.getters.user);
 
-  const isAuthenticated = computed(() => store.getters.authenticated);
-  const user = computed(() => store.getters.user);
-
-  document.title = "1up - " + to.meta.title
-  if (to.meta.middleware == "guest") {
+async function handleGuestRoute(to, next) {
+  //Check if the csrf token and session are valid, if so, redirect
+  //Todo (consider a redirection page)
+  store.dispatch("getAuthUser").then(() => {
     if (isAuthenticated.value) {
-      //next({ name: "dashboard" })
-      console.log("VISITING A GUEST ROUTE, you are authenticated already", to.name)
-      console.log(user);
-    }
-    else {
-      console.log("VISITING A GUEST ROUTE, you are NOT authenticated", to.name)
-      console.log(user);
-    }
-    next()
-  }
-  else if (to.meta.middleware == "public") {
-    console.log("VISITING A PUBLIC ROUTE ", to.name);
-    console.log(user);
-    next()
-  } else {
-    if (isAuthenticated.value) {
-      console.log("VISITING An AUTH ROUTE, you are authenticated")
-      console.log(user);
-      next()
+      console.log("VISITING A GUEST ROUTE, you are authenticated already", to.name);
+      next({ name: "products" });
+      //next();
     } else {
-      console.log(`VISITING AN NOT AUTH ROUTE ${to.name}, you are NOT authenticated`)
-      console.log(user);
-      next({ name: "login", query: { from: from.fullPath } })
+      console.log("VISITING A GUEST ROUTE, you are NOT authenticated", to.name);
+      next();
     }
+  })
+}
+
+function handlePublicRoute(to, next) {
+  console.log("VISITING A PUBLIC ROUTE ", to.name);
+  next();
+}
+
+async function handleAuthRoute(to, from, next) {
+  const routePath = to.fullPath;
+  if (isAuthenticated.value) {
+    console.log("VISITING An AUTH ROUTE, you are authenticated");
+    next();
+  } else {
+    store.dispatch("getAuthUser").then(() => {
+      if (isAuthenticated.value) {
+        console.log("VISITING An AUTH ROUTE, you were NOT authenticated, but you are now re-authenticated from your valid session");
+        next();
+      } else {
+        console.log(`VISITING AN AUTH ROUTE ${to.name}, you are NOT authenticated`);
+        store.commit("addToast", {
+          title: "You need to log in",
+          type: "info",
+          message:
+            "You need to log in to access " + routePath,
+        });
+        next({ name: "login" });
+      }
+    });
   }
-})
+}
+router.beforeEach((to, from, next) => {
+  document.title = "1up - " + to.meta.title;
+
+  if (to.meta.middleware === "guest") {
+    handleGuestRoute(to, next);
+  } else if (to.meta.middleware === "public") {
+    handlePublicRoute(to, next);
+  } else {
+    handleAuthRoute(to, from, next);
+  }
+});
+
 
 export default router
