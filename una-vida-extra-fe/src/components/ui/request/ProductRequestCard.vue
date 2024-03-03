@@ -48,8 +48,8 @@ const closeModal = () => {
 <template>
   <div class="request-card-wrapper" :id="id">
     <div class="request-product-id request-card-item">{{ userId }}</div>
-    <div class="request-message request-card-item">{{ message }}</div>
-    <div class="request-date request-card-item">{{ date }}</div>
+    <!--<div class="request-message request-card-item">{{ message }}</div>
+    <div class="request-date request-card-item">{{ date }}</div>-->
     <div class="request-distance request-card-item">
       <IconLocation @click="showLocation" />{{ distance }}
     </div>

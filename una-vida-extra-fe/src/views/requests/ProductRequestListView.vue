@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, reactive } from "vue";
+import { ref, computed, reactive, onBeforeMount } from "vue";
 import ProductRequestCard from "../../components/ui/request/ProductRequestCard.vue";
 import axios from "axios";
 import { useStore } from "vuex";
@@ -14,6 +14,15 @@ const isModalVisible = ref(false);
 // Setter for isModalVisible
 const setIsModalVisible = (value) => {
   isModalVisible.value = value;
+};
+
+const productId = computed(() => {
+  return route.params.id;
+});
+
+const productTitle = ref();
+const setIsproductTitle = (value) => {
+  productTitle.value = value;
 };
 
 const requestDeletionConfirmed = ref(false);
@@ -56,15 +65,15 @@ const getProductRequests = async () => {
     const resp = await axios.get(
       `http://localhost:8000/api1/products/${route.params.id}/?include_tags=true&include_requests=true`
     );
-    console.log(resp.data.data.product_request);
+    // console.log(resp.data.data.product_request);
     prodRequests.value = resp.data.data.product_request;
 
-    const frutas = ["guindas", "manzanas", "bananas"];
-    frutas.sort(); // ['bananas', 'guindas', 'manzanas']
-    console.log(frutas);
+    // const frutas = ["guindas", "manzanas", "bananas"];
+    // frutas.sort(); // ['bananas', 'guindas', 'manzanas']
+    // console.log(frutas);
 
     //Sort the received data by the distance
-    /*prodRequests.value = prodRequests.value.sort((a, b) => {
+    prodRequests.value = prodRequests.value.sort((a, b) => {
       // Convert distance to numeric values for comparison
       const distanceA = parseFloat(a.distance.value);
       const distanceB = parseFloat(b.distance.value);
@@ -78,7 +87,7 @@ const getProductRequests = async () => {
         return 0; // distances are equal
       }
     });
-*/
+
     isLoading.value = false;
     requestError.value = false;
     //router.push({ name: "products", query: { registration: "success" } });
@@ -213,28 +222,42 @@ const removeCancelledRequest = async (userId, reqId, prodId) => {
   //todo, do it with a modal
   //TO DO show toast with result
 };
+
+//get product info to get name before loading component
+onBeforeMount(async () => {
+  console.log("Before the component mounts");
+  try {
+    // Dispatch getProductData action with the product id
+    const data = await store.dispatch("getProductData", productId.value);
+    // Update the product variable with the returned data
+    console.log(data);
+    setIsproductTitle(data.title);
+  } catch (err) {
+    // Handle errors
+    console.log(err.message);
+  }
+});
 </script>
 
 <template>
   <div>
-    <h2>Requests received for product</h2>
-
     <div class="loading" v-show="isLoading">
       <base-spinner></base-spinner>
     </div>
     <section v-if="!isLoading">
       <div v-if="prodRequests.length < 1">
-        <p>You don't not have any active requests.</p>
+        <p>You don't have any active requests for {{ productTitle }}.</p>
       </div>
 
       <div v-else>
+        <h2>Requests received for product {{ productTitle }}</h2>
         <div class="request-card-wrapper">
-          <div class="request-product-id request-card-item">User Id</div>
+          <!--<div class="request-product-id request-card-item">User Id</div>
           <div class="request-message request-card-item">Message</div>
           <div class="request-date request-card-item">Date</div>
           <div class="request-distance request-card-item">Location</div>
           <div class="request-status request-card-item">Availability</div>
-          <div class="request-cancel-button">x</div>
+          <div class="request-cancel-button">x</div>-->
         </div>
         <transition-group name="list" tag="div">
           <div v-for="request in sortedRequests" :key="request.id">
@@ -261,8 +284,9 @@ const removeCancelledRequest = async (userId, reqId, prodId) => {
         <template #body
           ><p>
             Are you sure you want to Accept this request for your product? This
-            will mark the rest as inactive.
-          </p></template
+            will mark the rest of requests as inactive.
+          </p>
+          <p>This action cannot be undone.</p></template
         ></ModalConfirmationDialog
       >
     </section>
