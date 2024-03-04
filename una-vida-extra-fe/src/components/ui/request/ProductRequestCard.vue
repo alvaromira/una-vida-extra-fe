@@ -6,6 +6,7 @@ import IconNotAvailable from "../../icons/IconNotAvailable.vue";
 import BaseButton from "../BaseButton.vue";
 import { useStore } from "vuex";
 import ModalWithMap from "../ModalWithMap.vue";
+import ProfileImage from "../ProfileImage.vue";
 
 const store = useStore();
 const activeUserId = computed(() => {
@@ -47,17 +48,27 @@ const closeModal = () => {
 
 <template>
   <div class="request-card-wrapper" :id="id">
-    <div class="request-product-id request-card-item">{{ userId }}</div>
+    <div class="request-user-details request-card-item">
+      <span>
+        <ProfileImage
+          userEmail="alvaromira83@gmail.com"
+          :mode="'small'"
+          :gravatarInfo="false"
+        />
+      </span>
+      <span :data-user-id="userId">username</span>
+    </div>
     <!--<div class="request-message request-card-item">{{ message }}</div>
     <div class="request-date request-card-item">{{ date }}</div>-->
     <div class="request-distance request-card-item">
-      <IconLocation @click="showLocation" />{{ distance }}
+      <IconLocation @click="showLocation" />{{ distance }}&nbsp;km
     </div>
-    <div class="request-status request-card-item">
+    <div class="request-message request-card-item">{{ message }}</div>
+    <!--<div class="request-status request-card-item">
       <span v-if="isActive"><IconAvailable /></span>
       <span v-else><IconNotAvailable /></span>
-    </div>
-    <div class="request-cancel-button">
+    </div>-->
+    <div class="request-accept-button">
       <BaseButton @click="acceptRequest">Accept</BaseButton>
     </div>
   </div>
@@ -86,13 +97,20 @@ const closeModal = () => {
   background-color: #fff;
   margin-bottom: 1.5rem;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  max-width: 75%;
 }
 .request-card-item {
   flex: 1;
   text-align: center;
 }
+.request-user-details {
+  display: flex;
+  align-items: center;
+}
 
 .request-message {
   color: gray;
+  text-align: left;
+  padding-right: 0.25rem;
 }
 </style>

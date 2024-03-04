@@ -44,6 +44,11 @@ onMounted(() => {
 });
 
 const generateGravatarUrl = async (email) => {
+  if (!email || email.trim() === "") {
+    // Handle null or empty email case
+    return null;
+  }
+
   const hash = md5(email.toLowerCase().trim());
   // console.log(hash);
 
