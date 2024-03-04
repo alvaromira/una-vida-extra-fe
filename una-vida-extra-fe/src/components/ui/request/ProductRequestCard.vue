@@ -25,6 +25,8 @@ const props = defineProps({
   id: Number,
   isActive: Boolean,
   userId: Number,
+  userName: String,
+  userEmail: String,
   productId: Number,
 });
 
@@ -51,12 +53,12 @@ const closeModal = () => {
     <div class="request-user-details request-card-item">
       <span>
         <ProfileImage
-          userEmail="alvaromira83@gmail.com"
+          :userEmail="props.userEmail"
           :mode="'small'"
           :gravatarInfo="false"
         />
       </span>
-      <span :data-user-id="userId">username</span>
+      <span :data-user-id="userId">{{ props.userName }}</span>
     </div>
     <!--<div class="request-message request-card-item">{{ message }}</div>
     <div class="request-date request-card-item">{{ date }}</div>-->

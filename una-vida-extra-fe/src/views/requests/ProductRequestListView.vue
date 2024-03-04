@@ -224,6 +224,8 @@ onBeforeMount(async () => {
               :isActive="request.is_active"
               :productId="request.product_id"
               :userId="request.user_id"
+              :userEmail="request.user_details.email"
+              :userName="request.user_details.name"
               @accepted-request="removeCancelledRequest"
             /></div
         ></transition-group>
