@@ -24,9 +24,19 @@ const props = defineProps({
 
 const center = ref([props.UserCoords[0], props.UserCoords[1]]);
 let mapDiv = null;
-
+const greenIcon = new L.Icon({
+  iconUrl:
+    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});
 const setupLeafletMap = () => {
   console.log("Preparing map...");
+
   mapDiv = leaflet.map("mapContainer").setView(center.value, 5);
   leaflet
     .tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -41,10 +51,10 @@ const setupLeafletMap = () => {
   );
   userMarker.bindPopup("User location.");
   //prod marker
-  let prodMarker = L.marker([
-    props.RequestedProductCoords[0],
-    props.RequestedProductCoords[1],
-  ]).addTo(mapDiv);
+  let prodMarker = L.marker(
+    [props.RequestedProductCoords[0], props.RequestedProductCoords[1]],
+    { icon: greenIcon }
+  ).addTo(mapDiv);
   prodMarker.bindPopup("Product location.");
 };
 

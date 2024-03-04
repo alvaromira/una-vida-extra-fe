@@ -15,6 +15,7 @@ const activeUserId = computed(() => {
 const activeUserLocation = computed(() => {
   return store.state.user.user_location;
 });
+
 const isModalVisible = ref(false);
 
 //Aceppted properties for the card items
@@ -27,6 +28,7 @@ const props = defineProps({
   userId: Number,
   userName: String,
   userEmail: String,
+  userCoords: Object,
   productId: Number,
 });
 
@@ -76,9 +78,10 @@ const closeModal = () => {
   </div>
 
   <ModalWithMap
-    :productId="productId"
     :userLat="activeUserLocation.latitude"
     :userLong="activeUserLocation.longitude"
+    :prodLat="userCoords.latitude"
+    :prodLong="userCoords.longitude"
     v-if="isModalVisible"
     @close="closeModal"
   >

@@ -226,6 +226,7 @@ onBeforeMount(async () => {
               :userId="request.user_id"
               :userEmail="request.user_details.email"
               :userName="request.user_details.name"
+              :user-coords="request.user_details.coords[0]"
               @accepted-request="removeCancelledRequest"
             /></div
         ></transition-group>
