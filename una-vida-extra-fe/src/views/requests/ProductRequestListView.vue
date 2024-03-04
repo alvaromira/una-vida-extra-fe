@@ -53,79 +53,6 @@ const errorDetails = reactive({
   errors: [],
 });
 
-const loggedInUser = computed(() => {
-  return store.state.user.id;
-});
-
-//fetch product requests from the public api
-const getProductRequests = async () => {
-  setRequestDeletionConfirmed(false);
-  isLoading.value = true;
-  try {
-    const resp = await axios.get(
-      `http://localhost:8000/api1/products/${route.params.id}/?include_tags=true&include_requests=true`
-    );
-    // console.log(resp.data.data.product_request);
-    prodRequests.value = resp.data.data.product_request;
-
-    // const frutas = ["guindas", "manzanas", "bananas"];
-    // frutas.sort(); // ['bananas', 'guindas', 'manzanas']
-    // console.log(frutas);
-
-    //Sort the received data by the distance
-    prodRequests.value = prodRequests.value.sort((a, b) => {
-      // Convert distance to numeric values for comparison
-      const distanceA = parseFloat(a.distance.value);
-      const distanceB = parseFloat(b.distance.value);
-
-      // Compare distances
-      if (distanceA < distanceB) {
-        return -1; // a should come before b
-      } else if (distanceA > distanceB) {
-        return 1; // b should come before a
-      } else {
-        return 0; // distances are equal
-      }
-    });
-
-    isLoading.value = false;
-    requestError.value = false;
-    //router.push({ name: "products", query: { registration: "success" } });
-  } catch (error) {
-    // Handle Error Here
-    console.error(error);
-    isLoading.value = false;
-    requestError.value = true;
-
-    if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.error("Error data", error.response.data);
-      console.error("Error status", error.response.status);
-      errorDetails.code = error.response.status;
-      errorDetails.message = error.message;
-      if (error.response.data.errors) {
-        let requestRecivedErrors = error.response.data.errors;
-        for (const property in requestRecivedErrors) {
-          errorDetails.errors.push(requestRecivedErrors[property].toString());
-        }
-      }
-      //console.log(error.response.headers);
-      // } else if (error.request) {
-      // The request was made but no response was received
-      // `error.request` is an instance of XMLHttpRequest in the browser
-      // and an instance of http.ClientRequest in node.js
-      //   console.log(error.request);
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.error("Error message", error.message);
-      console.error("Error code", error.code);
-      errorDetails.code = error.code;
-      errorDetails.message = error.message;
-    }
-  }
-};
-
 const prodRequests = ref([]);
 // Computed property to sort the prodRequests array by distance
 const sortedRequests = computed(() => {
@@ -139,8 +66,6 @@ const sortedRequests = computed(() => {
 const numberOfRequests = computed(() => {
   return prodRequests.length;
 });
-
-getProductRequests();
 
 const deleteProductRequests = async (deletionRequestID) => {
   try {
@@ -226,15 +151,44 @@ const removeCancelledRequest = async (userId, reqId, prodId) => {
 //get product info to get name before loading component
 onBeforeMount(async () => {
   console.log("Before the component mounts");
+  //fetch product requests from the public api
   try {
+    setRequestDeletionConfirmed(false);
+    isLoading.value = true;
     // Dispatch getProductData action with the product id
-    const data = await store.dispatch("getProductData", productId.value);
+    const data = await store.dispatch("getProductRequests", productId.value);
     // Update the product variable with the returned data
     console.log(data);
     setIsproductTitle(data.title);
-  } catch (err) {
-    // Handle errors
-    console.log(err.message);
+    prodRequests.value = data.product_request;
+    isLoading.value = false;
+    requestError.value = false;
+  } catch (error) {
+    // Handle Error Here
+    console.error(error);
+    isLoading.value = false;
+    requestError.value = true;
+
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.error("Error data", error.response.data);
+      console.error("Error status", error.response.status);
+      errorDetails.code = error.response.status;
+      errorDetails.message = error.message;
+      if (error.response.data.errors) {
+        let requestRecivedErrors = error.response.data.errors;
+        for (const property in requestRecivedErrors) {
+          errorDetails.errors.push(requestRecivedErrors[property].toString());
+        }
+      }
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.error("Error message", error.message);
+      console.error("Error code", error.code);
+      errorDetails.code = error.code;
+      errorDetails.message = error.message;
+    }
   }
 });
 </script>

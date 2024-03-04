@@ -90,6 +90,15 @@ const store = createStore({
                 throw error;
             }
         },
+        async getProductRequests({ commit }, id) {
+            try {
+                const targetURL = `http://localhost:8000/api1/products/${id}?include_tags=true&include_requests=true`;
+                const response = await axios.get(targetURL);
+                return response.data.data;
+            } catch (error) {
+                throw error;
+            }
+        },
         async getAuthUser({ commit }) {
             try {
                 const response = await axios.get('http://localhost:8000/api1/user');
