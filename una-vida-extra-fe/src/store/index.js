@@ -80,7 +80,6 @@ const store = createStore({
             }
 
         },
-
         async getProductData({ commit }, id) {
             try {
                 const targetURL = `http://localhost:8000/api1/products/${id}?include_tags=true`;
@@ -94,6 +93,15 @@ const store = createStore({
             try {
                 const targetURL = `http://localhost:8000/api1/products/${id}?include_tags=true&include_requests=true`;
                 const response = await axios.get(targetURL);
+                return response.data.data;
+            } catch (error) {
+                throw error;
+            }
+        },
+        async massRequestDeactivation({ commit }, { payload }) {
+            try {
+                const targetURL = `http://localhost:8000/api1/requests/deactivation`;
+                const response = await axios.put(targetURL, payload);
                 return response.data.data;
             } catch (error) {
                 throw error;

@@ -62,7 +62,7 @@ const closeModal = () => {
         />
       </span>
       <span :data-user-id="userId">{{ props.userName }}</span>
-      <IconInfo v-if="!props.isActive"></IconInfo>
+      <IconInfo></IconInfo>
     </div>
     <!--<div class="request-message request-card-item">{{ message }}</div>
     <div class="request-date request-card-item">{{ date }}</div>-->

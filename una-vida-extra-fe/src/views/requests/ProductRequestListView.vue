@@ -32,16 +32,16 @@ const getRequestDeletionConfirmed = computed(() => {
 });
 
 // Setter for requestDeletionConfirmed
-const setRequestDeletionConfirmed = (value) => {
+const setRequestAccepted = (value) => {
   requestDeletionConfirmed.value = value;
 };
 
-const requestIdToBeRemoved = ref(null);
-const setRequestIdToBeRemoved = (value) => {
-  requestIdToBeRemoved.value = value;
+const acceptedRequestId = ref(null);
+const setAcceptedRequestId = (value) => {
+  acceptedRequestId.value = value;
 };
-const getRequestIdToBeRemoved = computed(() => {
-  return requestIdToBeRemoved.value;
+const getAcceptedRequestId = computed(() => {
+  return acceptedRequestId.value;
 });
 
 const isLoading = ref(false);
@@ -63,10 +63,17 @@ const sortedRequests = computed(() => {
   return sortedArray;
 });
 
+const getIdsExceptGivenOne = (id) => {
+  return sortedRequests.value
+    .filter((request) => request.id !== id)
+    .map((request) => request.id);
+};
+
 const numberOfRequests = computed(() => {
   return prodRequests.length;
 });
 
+/*
 const deleteProductRequests = async (deletionRequestID) => {
   try {
     const resp = await axios.delete(
@@ -93,7 +100,7 @@ const deleteProductRequests = async (deletionRequestID) => {
     return false;
   }
 };
-
+*/
 /*const removeChildComponentById = (id) => {
   const index = prodRequests.value.findIndex((child) => child.id === id);
   if (index !== -1) {
@@ -106,13 +113,37 @@ const deleteProductRequests = async (deletionRequestID) => {
 //Check all requests, set all of them as not available but the one acceptes
 //reload
 const onModalConfirm = async () => {
-  console.log("Deletion confirmed...");
+  console.log("Requested confirmed...");
   setIsModalVisible(false);
+  try {
+    setRequestAccepted(false);
+    isLoading.value = true;
+    const idsForDeactivation = getIdsExceptGivenOne(acceptedRequestId.value);
+    const payload = {
+      ids: idsForDeactivation,
+      product_id: productId.value,
+    };
+    // Dispatch getProductData action with the product id and the IDs to be deactivated
+    const data = await store.dispatch("massRequestDeactivation", { payload });
+
+    //if there is no error, get the products again to get up to date information
+    const updatedProdRequestData = await store.dispatch(
+      "getProductRequests",
+      productId.value
+    );
+    // Update the product variable with the returned data
+    prodRequests.value = updatedProdRequestData.product_request;
+
+    isLoading.value = false;
+    requestError.value = false;
+  } catch (error) {
+    handleRequestError(error);
+  }
   //Remove with api request, if all good, reload list and show toast
-  const deletionResult = await deleteProductRequests(
+  /* const deletionResult = await deleteProductRequests(
     requestIdToBeRemoved.value
-  );
-  if (deletionResult === true) {
+  );*/
+  /*if (deletionResult === true) {
     store.commit("addToast", {
       title: "Request deleted",
       type: "success",
@@ -126,26 +157,21 @@ const onModalConfirm = async () => {
       message:
         "There was an error deleting the request. Try again. If the error persists, get in touch.",
     });
-  }
+  }*/
   //removeChildComponentById(reqId);
-  setRequestDeletionConfirmed(true);
+  setRequestAccepted(true);
 };
 const onModalClose = () => {
   console.log("Modal closed, nothing confirmed...");
   setIsModalVisible(false);
-  setRequestDeletionConfirmed(false);
+  setRequestAccepted(false);
 };
 
 //when removing a request, received from a request card
-const removeCancelledRequest = async (userId, reqId, prodId) => {
-  setRequestIdToBeRemoved(reqId);
-
-  console.log(
-    `Parent removing card for request ID ${reqId} from the list of requests. Action triggered by ${userId}`
-  );
+const processRequestAcceptance = (userId, requestId, productId) => {
+  console.log(`Accepted request id ${requestId}`);
+  setAcceptedRequestId(requestId);
   setIsModalVisible(true);
-  //todo, do it with a modal
-  //TO DO show toast with result
 };
 
 //get product info to get name before loading component
@@ -153,7 +179,7 @@ onBeforeMount(async () => {
   console.log("Before the component mounts");
   //fetch product requests from the public api
   try {
-    setRequestDeletionConfirmed(false);
+    setRequestAccepted(false);
     isLoading.value = true;
     // Dispatch getProductData action with the product id
     const data = await store.dispatch("getProductRequests", productId.value);
@@ -164,33 +190,38 @@ onBeforeMount(async () => {
     isLoading.value = false;
     requestError.value = false;
   } catch (error) {
-    // Handle Error Here
-    console.error(error);
-    isLoading.value = false;
-    requestError.value = true;
-
-    if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.error("Error data", error.response.data);
-      console.error("Error status", error.response.status);
-      errorDetails.code = error.response.status;
-      errorDetails.message = error.message;
-      if (error.response.data.errors) {
-        let requestRecivedErrors = error.response.data.errors;
-        for (const property in requestRecivedErrors) {
-          errorDetails.errors.push(requestRecivedErrors[property].toString());
-        }
-      }
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.error("Error message", error.message);
-      console.error("Error code", error.code);
-      errorDetails.code = error.code;
-      errorDetails.message = error.message;
-    }
+    handleRequestError(error);
   }
 });
+
+// Define a function to handle errors
+const handleRequestError = (error) => {
+  // Handle Error Here
+  console.error(error);
+  isLoading.value = false;
+  requestError.value = true;
+
+  if (error.response) {
+    // The request was made and the server responded with a status code
+    // that falls out of the range of 2xx
+    console.error("Error data", error.response.data);
+    console.error("Error status", error.response.status);
+    store.commit("addToast", {
+      title: "Request deleted",
+      type: "error",
+      message: `There was an error while processing the requests. (Code: ${error.response.status})`,
+    });
+  } else {
+    // Something happened in setting up the request that triggered an Error
+    console.error("Error message", error.message);
+    console.error("Error code", error.code);
+    store.commit("addToast", {
+      title: "Request deleted",
+      type: "error",
+      message: `There was an error while processing the requests. (Code: ${error.code})`,
+    });
+  }
+};
 </script>
 
 <template>
@@ -227,7 +258,7 @@ onBeforeMount(async () => {
               :userEmail="request.user_details.email"
               :userName="request.user_details.name"
               :user-coords="request.user_details.coords[0]"
-              @accepted-request="removeCancelledRequest"
+              @accepted-request="processRequestAcceptance"
             /></div
         ></transition-group>
       </div>

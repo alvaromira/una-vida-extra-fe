@@ -62,8 +62,9 @@ a {
 }
 button:disabled {
   background-color: #c0c0c0;
-  color: #808080;
+  color: #f9f5f5;
   cursor: not-allowed; /* Show not-allowed cursor for disabled state */
+  border: 1px solid #808080;
 }
 a:hover,
 a:active,
