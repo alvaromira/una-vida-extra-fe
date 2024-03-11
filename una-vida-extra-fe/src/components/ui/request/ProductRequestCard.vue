@@ -7,6 +7,7 @@ import BaseButton from "../BaseButton.vue";
 import { useStore } from "vuex";
 import ModalWithMap from "../ModalWithMap.vue";
 import ProfileImage from "../ProfileImage.vue";
+import IconInfo from "../../icons/IconInfo.vue";
 
 const store = useStore();
 const activeUserId = computed(() => {
@@ -15,6 +16,7 @@ const activeUserId = computed(() => {
 const activeUserLocation = computed(() => {
   return store.state.user.user_location;
 });
+
 const isModalVisible = ref(false);
 
 //Aceppted properties for the card items
@@ -27,6 +29,7 @@ const props = defineProps({
   userId: Number,
   userName: String,
   userEmail: String,
+  userCoords: Object,
   productId: Number,
 });
 
@@ -59,11 +62,12 @@ const closeModal = () => {
         />
       </span>
       <span :data-user-id="userId">{{ props.userName }}</span>
+      <IconInfo v-if="!props.isActive"></IconInfo>
     </div>
     <!--<div class="request-message request-card-item">{{ message }}</div>
     <div class="request-date request-card-item">{{ date }}</div>-->
     <div class="request-distance request-card-item">
-      <IconLocation @click="showLocation" />{{ distance }}&nbsp;km
+      <IconLocation @click="showLocation" />&nbsp;{{ distance }}&nbsp;km
     </div>
     <div class="request-message request-card-item">{{ message }}</div>
     <!--<div class="request-status request-card-item">
@@ -71,14 +75,17 @@ const closeModal = () => {
       <span v-else><IconNotAvailable /></span>
     </div>-->
     <div class="request-accept-button">
-      <BaseButton @click="acceptRequest">Accept</BaseButton>
+      <BaseButton @click="acceptRequest" :isDisabled="!props.isActive"
+        >Accept</BaseButton
+      >
     </div>
   </div>
 
   <ModalWithMap
-    :productId="productId"
     :userLat="activeUserLocation.latitude"
     :userLong="activeUserLocation.longitude"
+    :prodLat="userCoords.latitude"
+    :prodLong="userCoords.longitude"
     v-if="isModalVisible"
     @close="closeModal"
   >

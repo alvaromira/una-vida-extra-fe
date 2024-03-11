@@ -9,31 +9,23 @@
         aria-describedby="modalDescription"
       >
         <header class="modal-header" id="modalTitle">
-          <div name="header">Information for {{ productId }}</div>
+          <div name="header">Location Data</div>
           <button
             type="button"
             class="btn-close"
             @click="$emit('close')"
-            aria-label="Close modal"
+            aria-label="Close"
           >
             x
           </button>
         </header>
 
         <section class="modal-body" id="modalDescription">
-          <div name="body">
-            <ul>
-              <li>User location latitutde: {{ userLat }}</li>
-              <li>User location longitude: {{ userLong }}</li>
-            </ul>
-          </div>
+          <div name="body"></div>
           <div v-if="prodReqDetailReady">
             <Map
               :-user-coords="[userLat, userLong]"
-              :-requested-product-coords="[
-                prodReqDetails.location.latitude,
-                prodReqDetails.location.longitude,
-              ]"
+              :-requested-product-coords="[prodLat, prodLong]"
             ></Map>
           </div>
           <div v-else>
@@ -46,14 +38,14 @@
         </section>
 
         <footer class="modal-footer">
-          <div name="footer">This is the default footer!</div>
+          <div name="footer"></div>
           <button
             type="button"
             class="btn-green"
             @click="$emit('close')"
-            aria-label="Close modal"
+            aria-label="Close"
           >
-            Close Modal
+            Close
           </button>
         </footer>
       </div>
@@ -75,15 +67,16 @@ import Map from "./Map.vue";
 import axios from "axios";
 
 const prodReqDetails = ref();
-const prodReqDetailReady = ref(false);
-const requestError = ref(false);
-const errorDetails = reactive({
+const prodReqDetailReady = ref(true); //use emit from Map itself to handle this
+//const requestError = ref(false);
+/*const errorDetails = reactive({
   code: "",
   message: "",
   errors: [],
-});
+});*/
 
 //get the details for the Product in the request
+/*
 const getProductDetails = async () => {
   try {
     const resp = await axios.get(
@@ -126,7 +119,7 @@ const getProductDetails = async () => {
     }
   }
 };
-
+*/
 const close = defineEmits(["close"]);
 //const close = () => {
 //  defineEmits(["close"]);
@@ -134,9 +127,11 @@ const close = defineEmits(["close"]);
 
 //Aceppted properties for the card items
 const props = defineProps({
-  productId: Number,
+  // productId: Number,
   userLat: String,
   userLong: String,
+  prodLat: String,
+  prodLong: String,
 });
 const handleKeyUp = (event) => {
   if (event.key === "Escape") {
@@ -147,15 +142,13 @@ const handleKeyUp = (event) => {
   }
 };
 
-onBeforeMount(() => {
+/*onBeforeMount(() => {
   getProductDetails();
-}),
-  onMounted(() => {
-    console.log("Adding the keyup listener");
-    document.addEventListener("keyup", handleKeyUp);
-  });
+}),*/
+onMounted(() => {
+  document.addEventListener("keyup", handleKeyUp);
+});
 onUnmounted(() => {
-  console.log("Removing the keyup listener");
   document.addEventListener("keyup", handleKeyUp);
 });
 </script>
@@ -168,6 +161,7 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   background-color: rgba(0, 0, 0, 0.3);
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -175,11 +169,12 @@ onUnmounted(() => {
 
 .modal {
   background: #ffffff;
-  box-shadow: 2px 2px 20px 1px;
+  box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.1), 0 2px 15px 0 rgba(0, 0, 0, 0.05);
+  /*box-shadow: 2px 2px 20px 1px;*/
   overflow-x: auto;
   display: flex;
   flex-direction: column;
-  max-width: 35%;
+  max-width: 50%;
   width: 100%;
   border-radius: 5px;
 }
@@ -193,7 +188,7 @@ onUnmounted(() => {
 .modal-header {
   position: relative;
   border-bottom: 1px solid #eeeeee;
-  color: #4aae9b;
+  color: #7ab370;
   justify-content: space-between;
 }
 
@@ -217,14 +212,14 @@ onUnmounted(() => {
   padding: 10px;
   cursor: pointer;
   font-weight: bold;
-  color: #4aae9b;
+  color: #7ab370;
   background: transparent;
 }
 
 .btn-green {
   color: white;
-  background: #4aae9b;
-  border: 1px solid #4aae9b;
+  background: #7ab370;
+  border: 1px solid #7ab370;
   border-radius: 2px;
   cursor: pointer;
 }

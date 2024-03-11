@@ -226,6 +226,7 @@ onBeforeMount(async () => {
               :userId="request.user_id"
               :userEmail="request.user_details.email"
               :userName="request.user_details.name"
+              :user-coords="request.user_details.coords[0]"
               @accepted-request="removeCancelledRequest"
             /></div
         ></transition-group>
@@ -240,7 +241,8 @@ onBeforeMount(async () => {
         <template #body
           ><p>
             Are you sure you want to Accept this request for your product? This
-            will mark the rest of requests as inactive.
+            will mark the rest of requests as inactive and your item will no
+            longer be listed.
           </p>
           <p>This action cannot be undone.</p></template
         ></ModalConfirmationDialog
