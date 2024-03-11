@@ -84,7 +84,7 @@ async function login() {
   // this.processing = true
 
   try {
-    const csrfCookie = await axios.get(
+    /*const csrfCookie = await axios.get(
       "http://localhost:8000/sanctum/csrf-cookie"
     );
 
@@ -93,17 +93,21 @@ async function login() {
     const response = await axios.post("http://localhost:8000/api1/login", {
       email: data.email.val,
       password: data.password.val,
-    });
+    });*/
     //const call = await axios.get("http://localhost:8000/api1/user");
     //console.log(call);
-    console.log("Login response", response);
-    store.dispatch("login").then(() => {
-      if (route.query.from != undefined && route.query.from.length > 0) {
-        router.replace(route.query.from);
-      } else {
-        router.push("/products");
-      }
-    });
+    //console.log("Login response", response);
+    store
+      .dispatch("login", {
+        payload: { email: data.email.val, password: data.password.val },
+      })
+      .then(() => {
+        if (route.query.from != undefined && route.query.from.length > 0) {
+          router.replace(route.query.from);
+        } else {
+          router.push("/products");
+        }
+      });
   } catch (response) {
     if (response.response.status === 422) {
       //this.validationErrors = response.data.errors

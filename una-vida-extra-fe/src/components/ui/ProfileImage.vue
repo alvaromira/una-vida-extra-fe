@@ -44,6 +44,11 @@ onMounted(() => {
 });
 
 const generateGravatarUrl = async (email) => {
+  if (!email || email.trim() === "") {
+    // Handle null or empty email case
+    return null;
+  }
+
   const hash = md5(email.toLowerCase().trim());
   // console.log(hash);
 
@@ -64,7 +69,7 @@ const generateGravatarUrl = async (email) => {
         }
       }
     };
-    xhr.open("GET", `https://gravatar.com/avatar/${hash}?d=404`, true);
+    xhr.open("GET", `https://gravatar.com/avatar/${hash}?d=robohash`, true);
     xhr.send();
 
     /*  const response = await axios.get(
