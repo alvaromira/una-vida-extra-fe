@@ -241,7 +241,8 @@ onBeforeMount(async () => {
         <template #body
           ><p>
             Are you sure you want to Accept this request for your product? This
-            will mark the rest of requests as inactive.
+            will mark the rest of requests as inactive and your item will no
+            longer be listed.
           </p>
           <p>This action cannot be undone.</p></template
         ></ModalConfirmationDialog

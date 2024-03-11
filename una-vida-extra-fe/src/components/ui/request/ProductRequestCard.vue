@@ -7,6 +7,7 @@ import BaseButton from "../BaseButton.vue";
 import { useStore } from "vuex";
 import ModalWithMap from "../ModalWithMap.vue";
 import ProfileImage from "../ProfileImage.vue";
+import IconInfo from "../../icons/IconInfo.vue";
 
 const store = useStore();
 const activeUserId = computed(() => {
@@ -61,11 +62,12 @@ const closeModal = () => {
         />
       </span>
       <span :data-user-id="userId">{{ props.userName }}</span>
+      <IconInfo v-if="!props.isActive"></IconInfo>
     </div>
     <!--<div class="request-message request-card-item">{{ message }}</div>
     <div class="request-date request-card-item">{{ date }}</div>-->
     <div class="request-distance request-card-item">
-      <IconLocation @click="showLocation" />{{ distance }}&nbsp;km
+      <IconLocation @click="showLocation" />&nbsp;{{ distance }}&nbsp;km
     </div>
     <div class="request-message request-card-item">{{ message }}</div>
     <!--<div class="request-status request-card-item">
@@ -73,7 +75,9 @@ const closeModal = () => {
       <span v-else><IconNotAvailable /></span>
     </div>-->
     <div class="request-accept-button">
-      <BaseButton @click="acceptRequest">Accept</BaseButton>
+      <BaseButton @click="acceptRequest" :isDisabled="!props.isActive"
+        >Accept</BaseButton
+      >
     </div>
   </div>
 
