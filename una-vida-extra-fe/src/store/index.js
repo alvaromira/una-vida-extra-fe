@@ -98,10 +98,10 @@ const store = createStore({
                 throw error;
             }
         },
-        async massRequestDeactivation({ commit }, { payload }) {
+        async acceptProductRequest({ commit }, { payload }) {
             try {
-                const targetURL = `http://localhost:8000/api1/requests/deactivation`;
-                const response = await axios.put(targetURL, payload);
+                const targetURL = `http://localhost:8000/api1/requests/actions/accept`;
+                const response = await axios.post(targetURL, payload);
                 return response.data.data;
             } catch (error) {
                 throw error;

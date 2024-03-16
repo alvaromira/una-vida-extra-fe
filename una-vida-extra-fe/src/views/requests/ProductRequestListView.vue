@@ -63,11 +63,11 @@ const sortedRequests = computed(() => {
   return sortedArray;
 });
 
-const getIdsExceptGivenOne = (id) => {
+/*const getIdsExceptGivenOne = (id) => {
   return sortedRequests.value
     .filter((request) => request.id !== id)
     .map((request) => request.id);
-};
+};*/
 
 const numberOfRequests = computed(() => {
   return prodRequests.length;
@@ -118,13 +118,13 @@ const onModalConfirm = async () => {
   try {
     setRequestAccepted(false);
     isLoading.value = true;
-    const idsForDeactivation = getIdsExceptGivenOne(acceptedRequestId.value);
+    //const idsForDeactivation = getIdsExceptGivenOne(acceptedRequestId.value);
     const payload = {
-      ids: idsForDeactivation,
+      request_id: acceptedRequestId.value,
       product_id: productId.value,
     };
     // Dispatch getProductData action with the product id and the IDs to be deactivated
-    const data = await store.dispatch("massRequestDeactivation", { payload });
+    const data = await store.dispatch("acceptProductRequest", { payload });
 
     //if there is no error, get the products again to get up to date information
     const updatedProdRequestData = await store.dispatch(
@@ -207,7 +207,7 @@ const handleRequestError = (error) => {
     console.error("Error data", error.response.data);
     console.error("Error status", error.response.status);
     store.commit("addToast", {
-      title: "Request deleted",
+      title: "Error Processing Requests",
       type: "error",
       message: `There was an error while processing the requests. (Code: ${error.response.status})`,
     });
@@ -216,7 +216,7 @@ const handleRequestError = (error) => {
     console.error("Error message", error.message);
     console.error("Error code", error.code);
     store.commit("addToast", {
-      title: "Request deleted",
+      title: "Error Processing Requests",
       type: "error",
       message: `There was an error while processing the requests. (Code: ${error.code})`,
     });
