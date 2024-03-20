@@ -11,6 +11,7 @@
       :owner="prodDetail.owner_id"
       :description="prodDetail.description"
       :category="prodDetail.category"
+      :available="prodDetail.available"
     />
   </div>
 </template>

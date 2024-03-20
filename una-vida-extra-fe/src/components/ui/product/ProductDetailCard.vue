@@ -3,11 +3,11 @@
     <section class="product-detail-card-left product-detail-card-side">
       <div class="product-detail-card-image">
         <img :src="props.image" />
-        <div class="location-icon">
+        <!--<div class="location-icon">
           <IconLocation @click="showLocation" />
           <span class="lat hidden"></span>
           <span class="long hidden"></span>
-        </div>
+        </div>-->
       </div>
     </section>
     <section class="product-detail-card-right product-detail-card-side">
@@ -36,13 +36,17 @@
         <div class="product-detail-description">
           <p>{{ props.description }}</p>
         </div>
-        <div class="product-detail-location">
+        <!--<div class="product-detail-location">
           <p>
             Localidad:
             <span class="product-detail-location-city">{{
               props.location
             }}</span>
           </p>
+        </div>-->
+        <div class="product-detail-availability" v-if="!props.available">
+          You have accepted a request for this product. Please mark the product
+          as taken when you have donated it.
         </div>
       </div>
       <div class="product-card-button product-detail-card-bottom">
@@ -60,15 +64,18 @@
         >
         <div v-else>
           <BaseButton
+            v-if="props.available"
             :to="{
               name: 'editProduct',
               params: {
                 id: id,
-                // state: { title: props.title, image: props.image },
               },
             }"
             link="true"
             >Edit</BaseButton
+          >
+          <BaseButton v-else @click="setIsModalVisible(true)"
+            >Mark as Taken</BaseButton
           >
           <BaseButton
             :to="{
@@ -85,6 +92,21 @@
       </div>
     </section>
   </div>
+  <ModalConfirmationDialog
+    v-if="isModalVisible"
+    @modal-confirmed="onModalConfirm"
+    @modal-close="onModalClose"
+  >
+    <template #header>Mark Product As Taken</template>
+    <template #body
+      ><p>
+        Are you sure you want to mark this product as taken? By doing so you
+        confirm the product has been donated and it will no longer be edited nor
+        listed to other users.
+      </p>
+      <p>This action cannot be undone.</p></template
+    ></ModalConfirmationDialog
+  >
 </template>
 
 <script setup>
@@ -92,6 +114,14 @@ import { defineProps, ref, computed } from "vue";
 import IconLocation from "../../icons/iconLocation.vue";
 import BaseButton from "../BaseButton.vue";
 import { useStore } from "vuex";
+import ModalConfirmationDialog from "../ModalConfirmationDialog.vue";
+
+//Modal related
+const isModalVisible = ref(false);
+// Setter for isModalVisible
+const setIsModalVisible = (value) => {
+  isModalVisible.value = value;
+};
 
 //Aceppted properties for the card items
 const props = defineProps({
@@ -104,12 +134,15 @@ const props = defineProps({
   owner: Number,
   description: String,
   category: Number,
+  available: Boolean,
 });
 
 const store = useStore();
 //methods or functionality
-const showLocation = () => {
-  console.log("Displaying location", prodDetail.location);
+
+const productIsTaken = ref(false);
+const setProductIsTaken = (value) => {
+  productIsTaken.value = value;
 };
 
 //a product is only editable if the user is authenticated and the product owner matches the logged-in user id
@@ -121,6 +154,18 @@ const loggedUserIsOwner = computed(() => {
     return false;
   }
 });
+
+const onModalClose = () => {
+  console.log("Modal closed, nothing confirmed...");
+  setProductIsTaken(false);
+  setIsModalVisible(false);
+  //setRequestAccepted(false);
+};
+const onModalConfirm = () => {
+  console.log("Modal closed, nothing confirmed...");
+  setProductIsTaken(true);
+  setIsModalVisible(false);
+};
 </script>
 
 <style scoped>

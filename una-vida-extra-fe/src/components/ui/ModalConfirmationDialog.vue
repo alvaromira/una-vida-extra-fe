@@ -117,6 +117,13 @@ function onConfirm() {
   padding: 1.5rem;
 }
 
+.modal-body p {
+  padding-bottom: 1rem;
+}
+.modal-body p:last-child {
+  padding-bottom: 0;
+}
+
 .btn-close {
   position: absolute;
   top: 0;
