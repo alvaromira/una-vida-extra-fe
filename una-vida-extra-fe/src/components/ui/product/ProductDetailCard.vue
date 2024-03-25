@@ -1,5 +1,10 @@
 <template>
-  <div class="product-detail-card-wrapper" :id="props.id" :key="props.key">
+  <div
+    class="product-detail-card-wrapper"
+    :id="props.id"
+    :key="props.key"
+    :class="{ taken: takenProduct }"
+  >
     <section class="product-detail-card-left product-detail-card-side">
       <div class="product-detail-card-image">
         <img :src="props.image" />
@@ -228,6 +233,9 @@ p {
   margin: 0 auto;
   display: flex;
 }
+.product-detail-card-wrapper.taken {
+  border: 2px solid lightgray;
+}
 
 .product-detail-card-side {
   flex: 1;
@@ -237,6 +245,9 @@ p {
 }
 .product-card-detail-publication-details p {
   margin-top: 0;
+}
+.taken p {
+  color: lightgray;
 }
 
 .product-detail-card-image {
@@ -250,6 +261,9 @@ p {
   max-width: 300px;
   height: auto;
 }
+.taken .product-detail-card-image img {
+  opacity: 0.5;
+}
 .product-detail-description,
 .product-detail-location {
   padding-top: 1rem;
@@ -261,6 +275,10 @@ p {
   padding: 0;
   color: #edb421;
   text-transform: uppercase;
+}
+
+.taken h2 {
+  color: lightgray;
 }
 .product-card-product-actual-date,
 .publication-details-owner,
