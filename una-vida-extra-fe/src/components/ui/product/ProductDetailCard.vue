@@ -3,16 +3,11 @@
     class="product-detail-card-wrapper"
     :id="props.id"
     :key="props.key"
-    :class="{ taken: takenProduct }"
+    :class="{ taken: productIsTaken }"
   >
     <section class="product-detail-card-left product-detail-card-side">
       <div class="product-detail-card-image">
         <img :src="props.image" />
-        <!--<div class="location-icon">
-          <IconLocation @click="showLocation" />
-          <span class="lat hidden"></span>
-          <span class="long hidden"></span>
-        </div>-->
       </div>
     </section>
     <section class="product-detail-card-right product-detail-card-side">
@@ -41,17 +36,9 @@
         <div class="product-detail-description">
           <p>{{ props.description }}</p>
         </div>
-        <!--<div class="product-detail-location">
-          <p>
-            Localidad:
-            <span class="product-detail-location-city">{{
-              props.location
-            }}</span>
-          </p>
-        </div>-->
         <div
           class="product-detail-availability"
-          v-if="!props.available && !takenProduct"
+          v-if="!props.available && !takenProduct && productIsTaken"
         >
           You have accepted a request for this product. Please mark the product
           as taken when you have donated it.
@@ -193,8 +180,13 @@ const onModalConfirm = async () => {
 
     console.log(data);
     //check if the product is really marked as taken
-    if (data.data.is_taken === true) {
+    if (data.is_taken === true) {
       setProductIsTaken(true);
+      store.commit("addToast", {
+        title: "Product Donated",
+        type: "success",
+        message: "You have correctly marked the product as donated.",
+      });
     } else {
       setProductIsTaken(false);
       store.commit("addToast", {
@@ -205,6 +197,7 @@ const onModalConfirm = async () => {
       });
     }
   } catch (error) {
+    console.log(error);
     store.commit("addToast", {
       title: "Error",
       type: "error",

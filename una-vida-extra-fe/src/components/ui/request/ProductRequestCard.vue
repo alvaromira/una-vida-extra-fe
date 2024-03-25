@@ -126,6 +126,13 @@ const closeModal = () => {
 .request-card-item {
   flex: 1;
   text-align: center;
+  display: flex;
+  align-items: center;
+}
+.request-accept-button {
+  text-align: center;
+  display: flex;
+  align-items: center;
 }
 .request-user-details {
   display: flex;
