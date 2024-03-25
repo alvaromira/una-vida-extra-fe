@@ -12,6 +12,7 @@
       :description="prodDetail.description"
       :category="prodDetail.category"
       :available="prodDetail.available"
+      :isTaken="prodDetail.is_taken"
     />
   </div>
 </template>

@@ -44,12 +44,18 @@
             }}</span>
           </p>
         </div>-->
-        <div class="product-detail-availability" v-if="!props.available">
+        <div
+          class="product-detail-availability"
+          v-if="!props.available && !takenProduct"
+        >
           You have accepted a request for this product. Please mark the product
           as taken when you have donated it.
         </div>
       </div>
-      <div class="product-card-button product-detail-card-bottom">
+      <div
+        v-if="!takenProduct"
+        class="product-card-button product-detail-card-bottom"
+      >
         <BaseButton
           v-if="!loggedUserIsOwner"
           :to="{
@@ -64,7 +70,7 @@
         >
         <div v-else>
           <BaseButton
-            v-if="props.available"
+            v-if="props.available && !takenProduct"
             :to="{
               name: 'editProduct',
               params: {
@@ -90,6 +96,7 @@
           >
         </div>
       </div>
+      <div v-else>This product has already been donated.</div>
     </section>
   </div>
   <ModalConfirmationDialog
@@ -110,7 +117,7 @@
 </template>
 
 <script setup>
-import { defineProps, ref, computed } from "vue";
+import { defineProps, ref, computed, onMounted } from "vue";
 import IconLocation from "../../icons/iconLocation.vue";
 import BaseButton from "../BaseButton.vue";
 import { useStore } from "vuex";
@@ -135,6 +142,7 @@ const props = defineProps({
   description: String,
   category: Number,
   available: Boolean,
+  isTaken: Boolean,
 });
 
 const store = useStore();
@@ -145,6 +153,9 @@ const setProductIsTaken = (value) => {
   productIsTaken.value = value;
 };
 
+//Use the props to set the product as taken appropriately
+setProductIsTaken(props.isTaken);
+
 //a product is only editable if the user is authenticated and the product owner matches the logged-in user id
 
 const loggedUserIsOwner = computed(() => {
@@ -154,6 +165,9 @@ const loggedUserIsOwner = computed(() => {
     return false;
   }
 });
+const takenProduct = computed(() => {
+  return props.isTaken;
+});
 
 const onModalClose = () => {
   console.log("Modal closed, nothing confirmed...");
@@ -161,9 +175,39 @@ const onModalClose = () => {
   setIsModalVisible(false);
   //setRequestAccepted(false);
 };
-const onModalConfirm = () => {
+const onModalConfirm = async () => {
   console.log("Modal closed, nothing confirmed...");
-  setProductIsTaken(true);
+
+  try {
+    const data = await store.dispatch("updateProductData", {
+      id: props.id,
+      payload: {
+        is_taken: 1,
+      },
+    });
+
+    console.log(data);
+    //check if the product is really marked as taken
+    if (data.data.is_taken === true) {
+      setProductIsTaken(true);
+    } else {
+      setProductIsTaken(false);
+      store.commit("addToast", {
+        title: "Error",
+        type: "error",
+        message:
+          "There was an error marking the product as taken. Please try again. If it does not work, please contact support.",
+      });
+    }
+  } catch (error) {
+    store.commit("addToast", {
+      title: "Error",
+      type: "error",
+      message:
+        "There was an error marking the product as taken. Please try again.",
+    });
+  }
+
   setIsModalVisible(false);
 };
 </script>
