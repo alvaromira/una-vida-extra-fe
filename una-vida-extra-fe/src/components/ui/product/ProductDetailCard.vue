@@ -36,6 +36,7 @@
         <div class="product-detail-description">
           <p>{{ props.description }}</p>
         </div>
+
         <div
           class="product-detail-availability"
           v-if="!props.available && !takenProduct && productIsTaken"
@@ -91,6 +92,7 @@
       <div v-else>This product has already been donated.</div>
     </section>
   </div>
+
   <ModalConfirmationDialog
     v-if="isModalVisible"
     @modal-confirmed="onModalConfirm"
@@ -140,13 +142,10 @@ const props = defineProps({
 const store = useStore();
 //methods or functionality
 
-const productIsTaken = ref(false);
+const productIsTaken = ref(props.isTaken);
 const setProductIsTaken = (value) => {
   productIsTaken.value = value;
 };
-
-//Use the props to set the product as taken appropriately
-setProductIsTaken(props.isTaken);
 
 //a product is only editable if the user is authenticated and the product owner matches the logged-in user id
 
