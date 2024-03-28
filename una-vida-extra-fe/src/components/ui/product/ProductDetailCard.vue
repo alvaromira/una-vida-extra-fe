@@ -39,14 +39,14 @@
 
         <div
           class="product-detail-availability"
-          v-if="!props.available && !takenProduct && productIsTaken"
+          v-if="!props.available && !productIsTaken"
         >
           You have accepted a request for this product. Please mark the product
           as taken when you have donated it.
         </div>
       </div>
       <div
-        v-if="!takenProduct"
+        v-if="!productIsTaken"
         class="product-card-button product-detail-card-bottom"
       >
         <BaseButton
@@ -63,7 +63,7 @@
         >
         <div v-else>
           <BaseButton
-            v-if="props.available && !takenProduct"
+            v-if="props.available && !productIsTaken"
             :to="{
               name: 'editProduct',
               params: {
@@ -111,7 +111,7 @@
 </template>
 
 <script setup>
-import { defineProps, ref, computed, onMounted } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import IconLocation from "../../icons/iconLocation.vue";
 import BaseButton from "../BaseButton.vue";
 import { useStore } from "vuex";
@@ -127,7 +127,6 @@ const setIsModalVisible = (value) => {
 //Aceppted properties for the card items
 const props = defineProps({
   id: String,
-  key: String,
   image: String,
   title: String,
   date: String,
@@ -147,6 +146,21 @@ const setProductIsTaken = (value) => {
   productIsTaken.value = value;
 };
 
+onMounted(() => {
+  // Code to execute once the DOM of ChildComponent is fully loaded
+  console.log("ChildComponent is fully loaded");
+  console.log("VAlue of productIsTaken: " + productIsTaken.value);
+});
+
+// Watch for changes in props.isTaken
+watch(
+  () => props.isTaken,
+  (newValue, oldValue) => {
+    setProductIsTaken(newValue);
+    console.log("isTaken prop changed from", oldValue, "to", newValue);
+  }
+);
+
 //a product is only editable if the user is authenticated and the product owner matches the logged-in user id
 
 const loggedUserIsOwner = computed(() => {
@@ -155,9 +169,6 @@ const loggedUserIsOwner = computed(() => {
   } else {
     return false;
   }
-});
-const takenProduct = computed(() => {
-  return props.isTaken;
 });
 
 const onModalClose = () => {
