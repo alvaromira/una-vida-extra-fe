@@ -1,13 +1,13 @@
 <template>
-  <div class="product-detail-card-wrapper" :id="props.id" :key="props.key">
+  <div
+    class="product-detail-card-wrapper"
+    :id="props.id"
+    :key="props.key"
+    :class="{ taken: productIsTaken }"
+  >
     <section class="product-detail-card-left product-detail-card-side">
       <div class="product-detail-card-image">
         <img :src="props.image" />
-        <div class="location-icon">
-          <IconLocation @click="showLocation" />
-          <span class="lat hidden"></span>
-          <span class="long hidden"></span>
-        </div>
       </div>
     </section>
     <section class="product-detail-card-right product-detail-card-side">
@@ -36,16 +36,19 @@
         <div class="product-detail-description">
           <p>{{ props.description }}</p>
         </div>
-        <div class="product-detail-location">
-          <p>
-            Localidad:
-            <span class="product-detail-location-city">{{
-              props.location
-            }}</span>
-          </p>
+
+        <div
+          class="product-detail-availability"
+          v-if="!props.available && !productIsTaken"
+        >
+          You have accepted a request for this product. Please mark the product
+          as taken when you have donated it.
         </div>
       </div>
-      <div class="product-card-button product-detail-card-bottom">
+      <div
+        v-if="!productIsTaken"
+        class="product-card-button product-detail-card-bottom"
+      >
         <BaseButton
           v-if="!loggedUserIsOwner"
           :to="{
@@ -60,15 +63,18 @@
         >
         <div v-else>
           <BaseButton
+            v-if="props.available && !productIsTaken"
             :to="{
               name: 'editProduct',
               params: {
                 id: id,
-                // state: { title: props.title, image: props.image },
               },
             }"
             link="true"
             >Edit</BaseButton
+          >
+          <BaseButton v-else @click="setIsModalVisible(true)"
+            >Mark as Taken</BaseButton
           >
           <BaseButton
             :to="{
@@ -83,20 +89,44 @@
           >
         </div>
       </div>
+      <div v-else>This product has already been donated.</div>
     </section>
   </div>
+
+  <ModalConfirmationDialog
+    v-if="isModalVisible"
+    @modal-confirmed="onModalConfirm"
+    @modal-close="onModalClose"
+  >
+    <template #header>Mark Product As Taken</template>
+    <template #body
+      ><p>
+        Are you sure you want to mark this product as taken? By doing so you
+        confirm the product has been donated and it will no longer be edited nor
+        listed to other users.
+      </p>
+      <p>This action cannot be undone.</p></template
+    ></ModalConfirmationDialog
+  >
 </template>
 
 <script setup>
-import { defineProps, ref, computed } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import IconLocation from "../../icons/iconLocation.vue";
 import BaseButton from "../BaseButton.vue";
 import { useStore } from "vuex";
+import ModalConfirmationDialog from "../ModalConfirmationDialog.vue";
+
+//Modal related
+const isModalVisible = ref(false);
+// Setter for isModalVisible
+const setIsModalVisible = (value) => {
+  isModalVisible.value = value;
+};
 
 //Aceppted properties for the card items
 const props = defineProps({
   id: String,
-  key: String,
   image: String,
   title: String,
   date: String,
@@ -104,13 +134,32 @@ const props = defineProps({
   owner: Number,
   description: String,
   category: Number,
+  available: Boolean,
+  isTaken: Boolean,
 });
 
 const store = useStore();
 //methods or functionality
-const showLocation = () => {
-  console.log("Displaying location", prodDetail.location);
+
+const productIsTaken = ref(props.isTaken);
+const setProductIsTaken = (value) => {
+  productIsTaken.value = value;
 };
+
+onMounted(() => {
+  // Code to execute once the DOM of ChildComponent is fully loaded
+  console.log("ChildComponent is fully loaded");
+  console.log("VAlue of productIsTaken: " + productIsTaken.value);
+});
+
+// Watch for changes in props.isTaken
+watch(
+  () => props.isTaken,
+  (newValue, oldValue) => {
+    setProductIsTaken(newValue);
+    console.log("isTaken prop changed from", oldValue, "to", newValue);
+  }
+);
 
 //a product is only editable if the user is authenticated and the product owner matches the logged-in user id
 
@@ -121,6 +170,54 @@ const loggedUserIsOwner = computed(() => {
     return false;
   }
 });
+
+const onModalClose = () => {
+  console.log("Modal closed, nothing confirmed...");
+  setProductIsTaken(false);
+  setIsModalVisible(false);
+  //setRequestAccepted(false);
+};
+const onModalConfirm = async () => {
+  console.log("Modal closed, nothing confirmed...");
+
+  try {
+    const data = await store.dispatch("updateProductData", {
+      id: props.id,
+      payload: {
+        is_taken: 1,
+      },
+    });
+
+    console.log(data);
+    //check if the product is really marked as taken
+    if (data.is_taken === true) {
+      setProductIsTaken(true);
+      store.commit("addToast", {
+        title: "Product Donated",
+        type: "success",
+        message: "You have correctly marked the product as donated.",
+      });
+    } else {
+      setProductIsTaken(false);
+      store.commit("addToast", {
+        title: "Error",
+        type: "error",
+        message:
+          "There was an error marking the product as taken. Please try again. If it does not work, please contact support.",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    store.commit("addToast", {
+      title: "Error",
+      type: "error",
+      message:
+        "There was an error marking the product as taken. Please try again.",
+    });
+  }
+
+  setIsModalVisible(false);
+};
 </script>
 
 <style scoped>
@@ -139,6 +236,9 @@ p {
   margin: 0 auto;
   display: flex;
 }
+.product-detail-card-wrapper.taken {
+  border: 2px solid lightgray;
+}
 
 .product-detail-card-side {
   flex: 1;
@@ -148,6 +248,9 @@ p {
 }
 .product-card-detail-publication-details p {
   margin-top: 0;
+}
+.taken p {
+  color: lightgray;
 }
 
 .product-detail-card-image {
@@ -161,6 +264,9 @@ p {
   max-width: 300px;
   height: auto;
 }
+.taken .product-detail-card-image img {
+  opacity: 0.5;
+}
 .product-detail-description,
 .product-detail-location {
   padding-top: 1rem;
@@ -172,6 +278,10 @@ p {
   padding: 0;
   color: #edb421;
   text-transform: uppercase;
+}
+
+.taken h2 {
+  color: lightgray;
 }
 .product-card-product-actual-date,
 .publication-details-owner,

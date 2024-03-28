@@ -253,6 +253,7 @@ const handleRequestError = (error) => {
               :distance="request.distance"
               :date="request.request_date"
               :isActive="request.is_active"
+              :isAccepted="request.is_accepted"
               :productId="request.product_id"
               :userId="request.user_id"
               :userEmail="request.user_details.email"

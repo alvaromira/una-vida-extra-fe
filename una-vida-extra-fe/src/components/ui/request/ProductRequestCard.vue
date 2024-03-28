@@ -26,6 +26,7 @@ const props = defineProps({
   distance: Number,
   id: Number,
   isActive: Boolean,
+  isAccepted: Boolean,
   userId: Number,
   userName: String,
   userEmail: String,
@@ -52,7 +53,11 @@ const closeModal = () => {
 </script>
 
 <template>
-  <div class="request-card-wrapper" :id="id">
+  <div
+    class="request-card-wrapper"
+    :id="id"
+    :class="{ accepted: props.isAccepted, inactive: !props.isActive }"
+  >
     <div class="request-user-details request-card-item">
       <span>
         <ProfileImage
@@ -62,21 +67,24 @@ const closeModal = () => {
         />
       </span>
       <span :data-user-id="userId">{{ props.userName }}</span>
-      <IconInfo></IconInfo>
+      <IconInfo v-if="props.isAccepted"></IconInfo>
     </div>
-    <!--<div class="request-message request-card-item">{{ message }}</div>
-    <div class="request-date request-card-item">{{ date }}</div>-->
     <div class="request-distance request-card-item">
       <IconLocation @click="showLocation" />&nbsp;{{ distance }}&nbsp;km
     </div>
     <div class="request-message request-card-item">{{ message }}</div>
-    <!--<div class="request-status request-card-item">
-      <span v-if="isActive"><IconAvailable /></span>
-      <span v-else><IconNotAvailable /></span>
-    </div>-->
     <div class="request-accept-button">
-      <BaseButton @click="acceptRequest" :isDisabled="!props.isActive"
+      <BaseButton
+        v-if="!props.isAccepted"
+        @click="acceptRequest"
+        :isDisabled="!props.isActive"
         >Accept</BaseButton
+      >
+      <BaseButton
+        v-else
+        :to="{ name: 'product', params: { id: props.productId } }"
+        link="true"
+        >Go to Product</BaseButton
       >
     </div>
   </div>
@@ -108,9 +116,23 @@ const closeModal = () => {
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   max-width: 75%;
 }
+.request-card-wrapper.accepted {
+  border: #7ab370 solid thin;
+}
+.request-card-wrapper.inactive {
+  border: #c0c0c0 solid thin;
+  opacity: 0.5;
+}
 .request-card-item {
   flex: 1;
   text-align: center;
+  display: flex;
+  align-items: center;
+}
+.request-accept-button {
+  text-align: center;
+  display: flex;
+  align-items: center;
 }
 .request-user-details {
   display: flex;
