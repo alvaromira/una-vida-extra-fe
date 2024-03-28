@@ -8,6 +8,7 @@
 </template>
 
 <style scoped>
+/* Taken from https://loading.io/css/ */
 .lds-ellipsis {
   display: block;
   position: relative;
