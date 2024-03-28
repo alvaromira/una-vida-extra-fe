@@ -1,7 +1,6 @@
 <template>
-  <div>
+  <div v-if="isDataLoaded">
     <product-detail-card
-      v-if="prodDetail"
       :id="productId"
       :key="productId"
       :image="imagePath"
@@ -15,21 +14,28 @@
       :isTaken="prodDetail.is_taken"
     />
   </div>
+  <div v-else class="loading" v-show="isLoading">
+    <base-spinner></base-spinner>
+  </div>
 </template>
 
 <script setup>
 import { useRouter, useRoute } from "vue-router";
-import { onMounted } from "vue";
+import { onMounted, onBeforeMount } from "vue";
 import axios from "axios";
 import { computed } from "vue";
 import { useStore } from "vuex";
 import { ref } from "vue";
+import BaseSpinner from "../../components/ui/BaseSpinner.vue";
 
 import ProductDetailCard from "../../components/ui/product/ProductDetailCard.vue";
 
 const router = useRouter();
 const route = useRoute();
 const store = useStore();
+
+// Define a ref to track if data is loaded
+const isDataLoaded = ref(false);
 
 //computed
 const productId = computed(() => {
@@ -45,6 +51,7 @@ const getProductData = async () => {
     const targetURL = `http://127.0.0.1:8000/api1/products/${route.params.id}`;
     const response = await axios.get(targetURL);
     prodDetail.value = response.data.data;
+    isDataLoaded.value = true; // Set data loaded to true once data is fetched
   } catch (err) {
     console.log(err);
   }
@@ -58,7 +65,7 @@ const imagePath = computed(() => {
   }
 });
 
-onMounted(() => {
+onBeforeMount(() => {
   getProductData();
 });
 
