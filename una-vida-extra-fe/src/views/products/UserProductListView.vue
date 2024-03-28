@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="isDataLoaded">
     <h2>My Products</h2>
     <div id="user-product-list">
       <section class="product-card-container">
@@ -17,6 +17,9 @@
         </div>
       </section>
     </div>
+  </div>
+  <div v-else class="loading">
+    <base-spinner></base-spinner>
   </div>
   <div id="user-product-addition">
     <section>
@@ -36,9 +39,13 @@ import RequestCard from "../../components/ui/request/RequestCard.vue";
 import { useRouter, useRoute } from "vue-router";
 import axios from "axios";
 import { useStore } from "vuex";
+import BaseSpinner from "../../components/ui/BaseSpinner.vue";
 
 const route = useRoute();
 const store = useStore();
+
+// Define a ref to track if data is loaded
+const isDataLoaded = ref(false);
 
 const isLoading = ref(false);
 const requestError = ref(false);
@@ -65,6 +72,7 @@ const getUserProducts = async () => {
     //isLoading.value = false;
     requestError.value = false;
     //router.push({ name: "products", query: { registration: "success" } });
+    isDataLoaded.value = true; // Set data loaded to true once data is fetched
   } catch (error) {
     // Handle Error Here
     console.error(error);
@@ -84,6 +92,8 @@ const getUserProducts = async () => {
           errorDetails.errors.push(requestRecivedErrors[property].toString());
         }
       }
+      isDataLoaded.value = true; // Set data loaded to true once data is fetched
+
       //console.log(error.response.headers);
       // } else if (error.request) {
       // The request was made but no response was received
@@ -96,7 +106,9 @@ const getUserProducts = async () => {
       console.error("Error code", error.code);
       errorDetails.code = error.code;
       errorDetails.message = error.message;
+      isDataLoaded.value = true; // Set data loaded to true once data is fetched
     }
+    isDataLoaded.value = true; // Set data loaded to true once data is fetched
   }
 };
 
