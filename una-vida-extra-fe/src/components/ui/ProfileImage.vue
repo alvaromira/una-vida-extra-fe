@@ -1,6 +1,6 @@
 <template>
   <div class="profile-picture" :class="mode">
-    <img :src="gravatarUrl" alt="Profile" />
+    <img v-show="isDataLoaded" :src="gravatarUrl" alt="Profile" />
   </div>
   <!--to do, show only when registering not, when logged in-->
   <div v-if="props.gravatarInfo">
@@ -15,6 +15,9 @@
 <script setup>
 import { ref, onMounted, watch, computed } from "vue";
 import md5 from "md5";
+
+// Define a ref to track if data is loaded
+const isDataLoaded = ref(false);
 
 //What the prop received and update the gravatar url
 watch(
@@ -60,10 +63,14 @@ const generateGravatarUrl = async (email) => {
           // Gravatar exists
           isGravatarValid.value = true;
           gravatarUrl.value = `https://gravatar.com/avatar/${hash}?d=identicon`;
+          isDataLoaded.value = true; // Set data loaded to true once data is fetched
+
           // document.getElementById('result').innerText = 'Gravatar exists!';
         } else {
           isGravatarValid.value = false;
           gravatarUrl.value = "https://ui-avatars.com/api/?name=" + email;
+          isDataLoaded.value = true; // Set data loaded to true once data is fetched
+
           // Gravatar does not exist
           //document.getElementById('result').innerText = 'Gravatar does not exist.';
         }
@@ -93,6 +100,7 @@ const generateGravatarUrl = async (email) => {
     console.error("Error checking the Gravatar:", error.message);
     isGravatarValid.value = false;
     gravatarUrl.value = "https://ui-avatars.com/api/?name=" + email;
+    isDataLoaded.value = true; // Set data loaded to true once data is fetched
   }
 };
 </script>
@@ -123,5 +131,6 @@ const generateGravatarUrl = async (email) => {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  background-color: white;
 }
 </style>

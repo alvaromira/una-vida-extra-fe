@@ -14,7 +14,7 @@
       :isTaken="prodDetail.is_taken"
     />
   </div>
-  <div v-else class="loading" v-show="isDataLoaded">
+  <div v-else class="loading">
     <base-spinner></base-spinner>
   </div>
 </template>
