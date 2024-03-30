@@ -47,12 +47,12 @@ const store = createStore({
                 // Login request
                 const response = await axios.post("http://localhost:8000/api1/login", payload);
 
-                // Get user data
+                // Get user data, if the login is successful
                 const userData = await axios.get('http://localhost:8000/api1/user');
 
                 // Commit mutations
-                commit('SET_USER', userData.data.data); // the response is a user object wrapped in data
                 commit('SET_AUTHENTICATED', true);
+                commit('SET_USER', userData.data.data); // the response is a user object wrapped in data
 
                 // Check if the user is admin
                 if (userData.data.data.user_is_admin) {
@@ -141,7 +141,7 @@ const store = createStore({
                     commit('SET_USER_IS_ADMIN', true);
                 }
             } catch (error) {
-                console.error("Error:", error);
+                //console.error("Error:", error);
 
                 // Handle other errors
                 commit('SET_USER', {});

@@ -3,16 +3,19 @@ import { ref, reactive, computed } from "vue";
 import BaseButton from "../ui/BaseButton.vue";
 import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
-import axios from "axios";
+import BaseSpinner from "../ui/BaseSpinner.vue";
 
 const route = useRoute();
 
+// Define a ref to track if data is loaded
+const isProcessing = ref(false);
+
+const loginError = ref(false);
+const errorCode = ref(null);
 //computed
 const loginRedirection = computed(() => {
   return route.query.from;
 });
-
-console.log("LoginRedirection", route.query.from);
 
 //data
 const data = reactive({
@@ -32,11 +35,6 @@ const formIsValid = ref(true);
 const store = useStore();
 const router = useRouter();
 
-//using computed property derived from Vuex
-const getUserStatus = computed(() => {
-  return store.state.authenticated;
-});
-
 //methods
 const clearValidity = (input) => {
   console.log(`Setting valid to true: ${input}`);
@@ -44,7 +42,7 @@ const clearValidity = (input) => {
 };
 
 //specific validation of each of the registration forms included
-const validateForm = () => {
+const validateForm = async () => {
   console.log("Running validation on registration form");
 
   formIsValid.value = true;
@@ -57,111 +55,48 @@ const validateForm = () => {
     data.password.isValid = false;
     formIsValid.value = false;
   }
+  loginError.value = false;
 };
 
-const submitForm = () => {
-  console.log("Submitting form");
-  validateForm();
-
+const submitForm = async () => {
+  await validateForm();
   if (!formIsValid.value) {
     return;
   }
-
-  const formData = {
-    email: data.email.val,
-    password: data.password.val,
-  };
-  console.log("Form submitted");
-  //logUserIn();
-  login();
-
-  //console.log(formData);
-
-  // this.$emit("save-data", formData);
+  await login();
 };
 
-async function login() {
-  // this.processing = true
-
+const login = async () => {
+  isProcessing.value = true; // Set data loaded to true once data is fetched
   try {
-    /*const csrfCookie = await axios.get(
-      "http://localhost:8000/sanctum/csrf-cookie"
-    );
-
-    console.log(csrfCookie);
-
-    const response = await axios.post("http://localhost:8000/api1/login", {
-      email: data.email.val,
-      password: data.password.val,
-    });*/
-    //const call = await axios.get("http://localhost:8000/api1/user");
-    //console.log(call);
-    //console.log("Login response", response);
-    store
-      .dispatch("login", {
-        payload: { email: data.email.val, password: data.password.val },
-      })
-      .then(() => {
-        if (route.query.from != undefined && route.query.from.length > 0) {
-          router.replace(route.query.from);
-        } else {
-          router.push("/products");
-        }
-      });
-  } catch (response) {
-    if (response.response.status === 422) {
-      //this.validationErrors = response.data.errors
-      console.log(response.response.data.errors);
-      //show toast with error message
-      store.commit("addToast", {
-        title: "Login Error",
-        type: "error",
-        message:
-          "Wrong credentials provided. Please check your email and password.",
-      });
-    } else {
-      //this.validationErrors = {}
-      //alert(response.data.message)
-      //console.log(response);
-      //show toast with error message
-      store.commit("addToast", {
-        title: "Login Error",
-        type: "error",
-        message:
-          "There was en error while logging you in. Please check your email and password and try again.",
-      });
-    }
-  } finally {
-    console.log("login function over.");
-  }
-}
-/*
-  const cookie = await axios.get("http://localhost:8000/sanctum/csrf-cookie");
-  await axios
-    .post("http://localhost:8000/api1/login", {
-      email: data.email.val,
-      password: data.password.val,
-    })
-    .then(({ data }) => {
-      // this.signIn()
-      console.log(data);
-      store.commit("logUserIn");
-      router.push("/products");
-    })
-    .catch(({ response }) => {
-      if (response.status === 422) {
-        //this.validationErrors = response.data.errors
-        console.log(response.data.errors);
-      } else {
-        //this.validationErrors = {}
-        //alert(response.data.message)
-        console.log(response.data.message);
-      }
-    })
-    .finally(() => {
-      // this.processing = false
+    await store.dispatch("login", {
+      payload: { email: data.email.val, password: data.password.val },
     });
-}*/
+    isProcessing.value = false; // Set data loaded to true once data is fetched
+    handleSuccessfulLogin();
+  } catch (error) {
+    isProcessing.value = false; // Set data loaded to true once data is fetched
+    loginError.value = true;
+    if (error.response.status) {
+      if (error.response.status && error.response.status === 422) {
+        errorCode.value = 422;
+      } else {
+        errorCode.value = error.response.status;
+      }
+    } else {
+      errorCode.value = 0;
+      console.error(error.message);
+    }
+  }
+};
+
+const handleSuccessfulLogin = () => {
+  if (route.query.from != undefined && route.query.from.length > 0) {
+    router.replace(route.query.from);
+  } else {
+    router.push("/products");
+  }
+};
 </script>
 
 <template>
@@ -177,7 +112,11 @@ async function login() {
             @blur="clearValidity('email')"
           />
         </div>
-        <div v-if="!data.email.isValid" class="validation-error-container">
+        <div
+          v-if="!data.email.isValid"
+          class="validation-error-container pointer-up"
+          :class="{ active: !data.email.isValid }"
+        >
           <p>Email must not be empty.</p>
         </div>
       </div>
@@ -193,7 +132,11 @@ async function login() {
           />
         </div>
 
-        <div v-if="!data.password.isValid" class="validation-error-container">
+        <div
+          v-if="!data.password.isValid"
+          class="validation-error-container pointer-up"
+          :class="{ active: !data.password.isValid }"
+        >
           <p>Password must not be empty.</p>
         </div>
 
@@ -204,7 +147,25 @@ async function login() {
     </div>
 
     <div class="form-submit-button">
-      <BaseButton>Login</BaseButton>
+      <BaseButton :disabled="isProcessing">Login</BaseButton>
+    </div>
+    <div v-if="!isProcessing">
+      <div
+        id="login-errors"
+        class="validation-error-container"
+        :class="{ active: loginError }"
+        v-if="loginError"
+      >
+        <p v-if="errorCode === 422" class="validation-error">
+          Wrong credentials provided. Please check your email and password.
+        </p>
+        <p v-else>
+          There was an error while logging you in. Please try again later.
+        </p>
+      </div>
+    </div>
+    <div v-else class="loading">
+      <base-spinner></base-spinner>
     </div>
   </form>
   <div id="forgot-password">
@@ -259,7 +220,18 @@ h3 {
   margin: 0.5rem 0;
   font-size: 1rem;
 }
+.validation-error-container {
+  opacity: 0;
+  transition: opacity 0.5s;
+}
 
+.validation-error-container.active {
+  opacity: 1;
+}
+
+.validation-error {
+  color: red;
+}
 .validation-error-container p {
   color: rgb(110 105 105);
   background-color: rgba(237, 219, 219, 0.5);
@@ -268,27 +240,17 @@ h3 {
   padding: 0.5rem;
   position: relative;
 }
-.validation-error-container p:before {
+
+.validation-error-container.pointer-up p:before {
   content: "";
   display: block;
   position: absolute;
-  left: 25%;
+  left: 50%;
   top: -10px;
   border-bottom: 10px solid red;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
 }
-
-/*
-.invalid label {
-  color: red;
-}
-
-.invalid input,
-.invalid textarea {
-  border: 1px solid red;
-  opacity: 0.7;
-}*/
 
 .form-submit-button {
   text-align: right;
