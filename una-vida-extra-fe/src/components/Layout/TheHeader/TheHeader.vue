@@ -114,10 +114,18 @@ const store = useStore();
 const searchTerm = ref("");
 
 const searchProducts = () => {
-  router.push({
-    name: "products",
-    query: { q: searchTerm.value },
-  });
+  const searchTermValue = searchTerm.value.trim(); // Trim whitespace
+
+  if (searchTermValue.length >= 3) {
+    // Check length
+    router.push({
+      name: "products",
+      query: { q: searchTermValue },
+    });
+  } else {
+    // Handle case where searchTerm is empty or less than 3 characters
+    console.log("Search term must be at least 3 characters long");
+  }
 };
 
 /*const searchProducts = async () => {
@@ -324,5 +332,11 @@ label[for="site-search"] {
   display: inline-block;
   text-align: center;
   cursor: pointer;
+}
+.search-button:hover {
+  background-color: #edb421; /* Change background color on hover */
+}
+.search-button:active {
+  background-color: #c49f00; /* Change background color when pressed */
 }
 </style>
