@@ -9,16 +9,20 @@ const store = createStore({
             userIsAdmin: false,
             authenticated: false,
             user: {},
-            toasts: []
+            toasts: [],
+            searchResults: [],
         };
     },
     getters: {
         authenticated(state) {
-            return state.authenticated
+            return state.authenticated;
         },
         user(state) {
-            return state.user
-        }
+            return state.user;
+        },
+        getSearchResults(state) {
+            return state.searchResults;
+        },
     },
     mutations: {
         SET_USER_IS_ADMIN(state, status) {
@@ -36,7 +40,10 @@ const store = createStore({
         clearToast(state, title) {
             const index = state.toasts.findIndex((toast) => toast.title === title); // find toast
             state.toasts.splice(index, 1); // remove toast from array
-        }
+        },
+        setSearchResults(state, results) {
+            state.searchResults = results;
+        },
     },
     actions: {
         async login({ commit }, { payload }) {
@@ -114,6 +121,18 @@ const store = createStore({
                 return response.data.data;
             } catch (error) {
                 throw error;
+            }
+        },
+        async searchProducts({ commit }, searchTerm) {
+            try {
+                //const response = await axios.get(`/api/products?search=${searchTerm}`);
+                console.log(`Searching for ${searchTerm}`);
+                const response = await axios.get(`http://localhost:8000/api1/products`);
+                commit('setSearchResults', response.data);
+            } catch (error) {
+                console.error('Error searching products:', error);
+                throw error;
+                // Handle error (e.g., show error message to user)
             }
         },
         async getAuthUser({ commit }) {

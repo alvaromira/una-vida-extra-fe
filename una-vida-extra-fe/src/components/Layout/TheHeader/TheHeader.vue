@@ -33,8 +33,19 @@
             <!--<li><RouterLink :to="{ name: 'login'}">Login</RouterLink></li>
           <li><RouterLink :to="{ name: 'register'}">Register</RouterLink></li>-->
           </ul>
-          <!-- <label for="site-search">Search the site:</label>
-        <input type="search" id="site-search" name="q" />-->
+          <div>
+            <form @submit.prevent="searchProducts" class="search-form">
+              <label for="site-search">Search the site:</label>
+              <input
+                type="search"
+                id="site-search"
+                name="site-search"
+                v-model="searchTerm"
+                class="search-input"
+              />
+              <button type="submit" class="search-button">Search</button>
+            </form>
+          </div>
         </nav>
       </div>
       <div>
@@ -97,6 +108,15 @@ import ProfileImage from "../../ui/ProfileImage.vue";
 import md5 from "md5";
 
 const store = useStore();
+const searchTerm = ref("");
+
+const searchProducts = async () => {
+  await store.dispatch("searchProducts", searchTerm.value);
+};
+
+const searchResults = computed(() => {
+  return store.getters["getSearchResults"];
+});
 
 const activeUserEmail = computed(() => {
   return store.state.user.email;
@@ -253,5 +273,46 @@ h3 {
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {
   display: block;
+}
+
+label[for="site-search"] {
+  display: none;
+}
+#main-menu {
+  display: flex;
+}
+
+.search-form {
+  display: flex; /* Use flexbox layout */
+  align-items: center; /* Align items vertically */
+  border: none;
+  border-radius: 5px;
+  overflow: hidden;
+  background-color: white;
+}
+
+.search-input {
+  flex: 1; /* Expand input field to fill available space */
+  height: 40px; /* Set desired height */
+  padding: 0.5rem; /* Add padding for better appearance */
+  border-radius: 5px 0px 0px 5px;
+  border: none;
+  padding: 0.5rem;
+  color: gray;
+}
+
+.search-button {
+  height: 100%; /* Match the height of the input field */
+  text-decoration: none;
+  padding: 1rem;
+  color: #fff;
+  /*background-color: #edb421;*/
+  color: gray;
+  border-radius: 0px;
+  min-width: 100px;
+  border: none;
+  display: inline-block;
+  text-align: center;
+  cursor: pointer;
 }
 </style>
