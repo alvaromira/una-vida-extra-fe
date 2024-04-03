@@ -3,6 +3,8 @@
     <div v-if="registrationRedirection">
       <p>User successfully registered!</p>
     </div>
+    <h2 v-if="sText">Results for: {{ sText }}.</h2>
+
     <h2>Check the latest additions!</h2>
     <section class="product-card-container">
       <div v-for="product in prods">
@@ -35,6 +37,18 @@ const store = useStore();
 //computed
 const registrationRedirection = computed(() => {
   return route.query.registration === "success";
+});
+
+//computed
+/*const searchText = computed(() => {
+  return route.query.q;
+});*/
+
+//This the props from the router
+//const searchText = ref("");
+
+defineProps({
+  sText: String,
 });
 
 const isLoading = ref(false);

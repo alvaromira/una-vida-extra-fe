@@ -38,7 +38,9 @@ const router = createRouter({
         middleware: "public",
         title: "Products"
       },
-      component: () => import('../views/products/ProductListView.vue')
+      component: () => import('../views/products/ProductListView.vue'),
+      props: route => ({ sText: route.query.q || false })
+
       //Children
       //add a new product
     },

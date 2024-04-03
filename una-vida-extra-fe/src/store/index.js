@@ -123,11 +123,10 @@ const store = createStore({
                 throw error;
             }
         },
-        async searchProducts({ commit }, searchTerm) {
+        async searchProducts({ commit }, q) {
             try {
-                //const response = await axios.get(`/api/products?search=${searchTerm}`);
-                console.log(`Searching for ${searchTerm}`);
-                const response = await axios.get(`http://localhost:8000/api1/products`);
+                const targetURL = `http://localhost:8000/api1/products/search?search=${q}`;
+                const response = await axios.get(targetURL);
                 commit('setSearchResults', response.data);
             } catch (error) {
                 console.error('Error searching products:', error);

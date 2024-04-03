@@ -106,17 +106,27 @@ import { computed, ref, onMounted } from "vue";
 import { useStore } from "vuex";
 import ProfileImage from "../../ui/ProfileImage.vue";
 import md5 from "md5";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const store = useStore();
 const searchTerm = ref("");
 
-const searchProducts = async () => {
-  await store.dispatch("searchProducts", searchTerm.value);
+const searchProducts = () => {
+  router.push({
+    name: "products",
+    query: { q: searchTerm.value },
+  });
+};
+
+/*const searchProducts = async () => {
+  await store.dispatch("searchProducts", searchTerm.value.trim());
 };
 
 const searchResults = computed(() => {
   return store.getters["getSearchResults"];
-});
+});*/
 
 const activeUserEmail = computed(() => {
   return store.state.user.email;
