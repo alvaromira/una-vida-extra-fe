@@ -39,7 +39,7 @@ const router = createRouter({
         title: "Products"
       },
       component: () => import('../views/products/ProductListView.vue'),
-      props: route => ({ sText: route.query.q || false })
+      props: route => ({ sText: route.query.q })
 
       //Children
       //add a new product

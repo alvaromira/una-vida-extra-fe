@@ -5,19 +5,24 @@
     </div>
     <h2 v-if="sText">Results for: {{ sText }}.</h2>
 
-    <h2>Check the latest additions!</h2>
-    <section class="product-card-container">
-      <div v-for="product in prods">
-        <product-card
-          :key="product.id"
-          :id="product.id"
-          :image="product.image"
-          :title="product.title"
-          :date="product.created_at"
-          :location="product.location"
-        />
-      </div>
-    </section>
+    <h2 v-else>Check the latest additions!</h2>
+    <div v-if="isDataLoaded">
+      <section class="product-card-container">
+        <div v-for="product in prods">
+          <product-card
+            :key="product.id"
+            :id="product.id"
+            :image="product.image"
+            :title="product.title"
+            :date="product.created_at"
+            :location="product.location"
+          />
+        </div>
+      </section>
+    </div>
+    <div v-else class="loading">
+      <base-spinner></base-spinner>
+    </div>
     <section id="products-data-summary">
       <ProductsSummary></ProductsSummary>
     </section>
@@ -25,12 +30,22 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive, onMounted } from "vue";
+import {
+  ref,
+  computed,
+  reactive,
+  onMounted,
+  onUnmounted,
+  onBeforeMount,
+  onUpdated,
+  watch,
+} from "vue";
 import ProductCard from "../../components/ui/product/ProductCard.vue";
 import ProductsSummary from "../../components/ui/product/ProductsSummary.vue";
 import { useRouter, useRoute } from "vue-router";
 import axios from "axios";
 import { useStore } from "vuex";
+import BaseSpinner from "../../components/ui/BaseSpinner.vue";
 
 const route = useRoute();
 const store = useStore();
@@ -47,11 +62,26 @@ const registrationRedirection = computed(() => {
 //This the props from the router
 //const searchText = ref("");
 
-defineProps({
-  sText: String,
+const props = defineProps({
+  sText: {
+    type: String,
+    default: "",
+  },
 });
 
-const isLoading = ref(false);
+watch(
+  () => props.sText,
+  (newValue, oldValue) => {
+    console.log("sText prop changed:", newValue);
+    isDataLoaded.value = false;
+    getProductRequests(props.sText);
+
+    // Do something with the new value or old value
+  }
+);
+
+// Define a ref to track if data is loaded
+const isDataLoaded = ref(false);
 const requestError = ref(false);
 const errorDetails = reactive({
   code: "",
@@ -59,77 +89,73 @@ const errorDetails = reactive({
   errors: [],
 });
 
-//fetch products from the public api
-const getProductRequests = async () => {
+const getProductRequests = async (s) => {
   try {
-    const resp = await axios.get("http://localhost:8000/api1/products");
-    //console.log(resp);
-    prods.value = resp.data.data;
-    console.log(resp.data.data);
-
-    console.log(prods);
-    //isLoading.value = false;
-    requestError.value = false;
-    //router.push({ name: "products", query: { registration: "success" } });
-  } catch (error) {
-    // Handle Error Here
-    console.error(error);
-    //isLoading.value = false;
-    requestError.value = true;
-
-    if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.error("Error data", error.response.data);
-      console.error("Error status", error.response.status);
-      errorDetails.code = error.response.status;
-      errorDetails.message = error.message;
-      if (error.response.data.errors) {
-        let requestRecivedErrors = error.response.data.errors;
-        for (const property in requestRecivedErrors) {
-          errorDetails.errors.push(requestRecivedErrors[property].toString());
-        }
-      }
-      //console.log(error.response.headers);
-      // } else if (error.request) {
-      // The request was made but no response was received
-      // `error.request` is an instance of XMLHttpRequest in the browser
-      // and an instance of http.ClientRequest in node.js
-      //   console.log(error.request);
+    //fetch products or perform product search depending on route params
+    if (s) {
+      const resp = await store.dispatch("searchProducts", s);
+      prods.value = resp.data;
     } else {
-      // Something happened in setting up the request that triggered an Error
-      console.error("Error message", error.message);
-      console.error("Error code", error.code);
-      errorDetails.code = error.code;
-      errorDetails.message = error.message;
+      const resp = await store.dispatch("getProducts");
+      // You can also pass a page number if needed
+      // await store.dispatch('getProducts', 1);
+      prods.value = resp.data;
     }
+    isDataLoaded.value = true; // Set data loaded to true once data is fetched
+    //requestError.value = false;
+  } catch (error) {
+    isDataLoaded.value = true; // Set data loaded to true once data is fetched
+    handleRequestError(error);
   }
 };
-getProductRequests();
+
+// Define a function to handle errors
+const handleRequestError = (error) => {
+  // Handle Error Here
+  console.error(error);
+  isDataLoaded.value = true; // Set data loaded to true once data is fetched
+  requestError.value = true;
+
+  if (error.response) {
+    // The request was made and the server responded with a status code
+    // that falls out of the range of 2xx
+    console.error("Error data", error.response.data);
+    console.error("Error status", error.response.status);
+    store.commit("addToast", {
+      title: "Error Processing Requests",
+      type: "error",
+      message: `There was an error while processing the requests. (Code: ${error.response.status})`,
+    });
+  } else {
+    // Something happened in setting up the request that triggered an Error
+    console.error("Error message", error.message);
+    console.error("Error code", error.code);
+    store.commit("addToast", {
+      title: "Error Processing Requests",
+      type: "error",
+      message: `There was an error while processing the requests. (Code: ${error.code})`,
+    });
+  }
+};
+
 const prods = ref([]);
+onMounted(async () => {
+  console.log("onmounted");
+  isDataLoaded.value = false;
 
-// Lifecycle hook using `onMounted`
-onMounted(() => {
-  //Testing toasts
-  /* store.commit("addToast", {
-    title: "Hello Vuex!",
-    type: "success",
-    message: "It looks like you have successfully set up Vuex.",
-  });
-
-  store.commit("addToast", {
-    title: "System Error",
-    type: "error",
-    message:
-      "Our API is currently experiencing issues - please try again in a couple minutes.",
-  });
-
-  store.commit("addToast", {
-    title: "New Mention in Post",
-    type: "info",
-    message:
-      "One of your followers mentioned you in a new post. Click here to see it.",
-  });*/
+  await getProductRequests(props.sText);
+  console.log(props.sText);
+});
+onBeforeMount(async () => {
+  console.log("Before mount");
+  // await getProductRequests();
+});
+onUnmounted(() => {
+  console.log(`Unmounting component and clearing store products`);
+});
+onUpdated(async () => {
+  console.log(`onUpdated`);
+  // await getProductRequests();
 });
 </script>
 <style scoped>

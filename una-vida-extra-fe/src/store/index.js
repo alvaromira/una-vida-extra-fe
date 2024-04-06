@@ -10,7 +10,7 @@ const store = createStore({
             authenticated: false,
             user: {},
             toasts: [],
-            searchResults: [],
+            productResults: [],
         };
     },
     getters: {
@@ -20,8 +20,8 @@ const store = createStore({
         user(state) {
             return state.user;
         },
-        getSearchResults(state) {
-            return state.searchResults;
+        getProductResults(state) {
+            return state.productResults;
         },
     },
     mutations: {
@@ -41,8 +41,8 @@ const store = createStore({
             const index = state.toasts.findIndex((toast) => toast.title === title); // find toast
             state.toasts.splice(index, 1); // remove toast from array
         },
-        setSearchResults(state, results) {
-            state.searchResults = results;
+        setProductResults(state, results) {
+            state.productResults = results;
         },
     },
     actions: {
@@ -123,11 +123,28 @@ const store = createStore({
                 throw error;
             }
         },
+        async getProducts({ commit }, page) {
+            try {
+                let targetURL = 'http://localhost:8000/api1/products';
+
+                if (page !== undefined && typeof page === 'number') {
+                    targetURL += `?page=${page}`;
+                }
+                const response = await axios.get(targetURL);
+                commit('setProductResults', response.data);
+                return response.data;
+            } catch (error) {
+                console.error('Error fetching products:', error);
+                throw error;
+                // Handle error (e.g., show error message to user)
+            }
+        },
         async searchProducts({ commit }, q) {
             try {
                 const targetURL = `http://localhost:8000/api1/products/search?search=${q}`;
                 const response = await axios.get(targetURL);
-                commit('setSearchResults', response.data);
+                commit('setProductResults', response.data);
+                return response.data;
             } catch (error) {
                 console.error('Error searching products:', error);
                 throw error;
