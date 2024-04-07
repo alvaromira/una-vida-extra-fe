@@ -132,7 +132,7 @@ const store = createStore({
                 }
                 const response = await axios.get(targetURL);
                 commit('setProductResults', response.data);
-                return response.data;
+                // return response.data;
             } catch (error) {
                 console.error('Error fetching products:', error);
                 throw error;
@@ -144,7 +144,7 @@ const store = createStore({
                 const targetURL = `http://localhost:8000/api1/products/search?search=${q}`;
                 const response = await axios.get(targetURL);
                 commit('setProductResults', response.data);
-                return response.data;
+                // return response.data;
             } catch (error) {
                 console.error('Error searching products:', error);
                 throw error;

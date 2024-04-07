@@ -8,7 +8,7 @@
     <h2 v-else>Check the latest additions!</h2>
     <div v-if="isDataLoaded">
       <section class="product-card-container">
-        <div v-for="product in prods">
+        <div v-for="product in productResults.data">
           <product-card
             :key="product.id"
             :id="product.id"
@@ -46,6 +46,7 @@ import { useRouter, useRoute } from "vue-router";
 import axios from "axios";
 import { useStore } from "vuex";
 import BaseSpinner from "../../components/ui/BaseSpinner.vue";
+import { mapGetters } from "vuex";
 
 const route = useRoute();
 const store = useStore();
@@ -54,6 +55,10 @@ const registrationRedirection = computed(() => {
   return route.query.registration === "success";
 });
 
+// Map the productResults state to a local computed property
+const productResults = computed(() => store.state.productResults);
+// Map the getters to local computed properties
+//const { getProductResults } = mapGetters(['getProductResults']);
 //computed
 /*const searchText = computed(() => {
   return route.query.q;
@@ -94,12 +99,12 @@ const getProductRequests = async (s) => {
     //fetch products or perform product search depending on route params
     if (s) {
       const resp = await store.dispatch("searchProducts", s);
-      prods.value = resp.data;
+      //prods.value = resp.data;
     } else {
       const resp = await store.dispatch("getProducts");
       // You can also pass a page number if needed
       // await store.dispatch('getProducts', 1);
-      prods.value = resp.data;
+      //  prods.value = resp.data;
     }
     isDataLoaded.value = true; // Set data loaded to true once data is fetched
     //requestError.value = false;
