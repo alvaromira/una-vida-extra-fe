@@ -39,17 +39,19 @@ import ProductsSummary from "../../components/ui/product/ProductsSummary.vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import BaseSpinner from "../../components/ui/BaseSpinner.vue";
-
+// Access current route
 const route = useRoute();
+// Access Vuex store
 const store = useStore();
+// Computed property to check if there's a registration redirection query parameter
 const registrationRedirection = computed(() => {
   return route.query.registration === "success";
 });
-// Map the productResults state to a local computed property
+// Computed property to access product results state from the store
 const productResults = computed(() => store.state.productResults);
+// Reference to track if data is loaded
 const isDataLoaded = ref(false);
-//const requestError = ref(false);
-
+// Props definition for search text
 const props = defineProps({
   sText: {
     type: String,
@@ -57,31 +59,36 @@ const props = defineProps({
   },
 });
 
+// Watch for changes in search text prop
 watch(
   () => props.sText,
   (newValue, oldValue) => {
     console.log("sText prop changed:", newValue);
+    // Fetch products based on new search text
     getProductRequests(props.sText);
   }
 );
 
+// Function to fetch products based on search text
 const getProductRequests = async (s) => {
   try {
     isDataLoaded.value = false;
-    //fetch products or perform product search depending on route params
+    // Fetch products or perform product search depending on route params
     if (s) {
-      const resp = await store.dispatch("searchProducts", s);
+      await store.dispatch("searchProducts", s);
     } else {
-      const resp = await store.dispatch("getProducts");
+      await store.dispatch("getProducts");
     }
-    isDataLoaded.value = true; // Set data loaded to true once data is fetched
-    //requestError.value = false;
+    // Set data loaded to true once data is fetched
+    isDataLoaded.value = true;
   } catch (error) {
     isDataLoaded.value = true; // Set data loaded to true once data is fetched
+    // Handle request error
     handleRequestError(error);
   }
 };
 
+// Function to handle request errors
 const handleRequestError = (error) => {
   console.error(error);
   isDataLoaded.value = true;
@@ -89,6 +96,7 @@ const handleRequestError = (error) => {
     ? `There was an error while processing the requests. (Code: ${error.response.status})`
     : `There was an error while processing the requests. (Code: ${error.code})`;
 
+  // Dispatch toast message to Vuex store for error notification
   store.commit("addToast", {
     title: "Error Processing Requests",
     type: "error",
@@ -96,12 +104,14 @@ const handleRequestError = (error) => {
   });
 };
 
+// Fetch products on component mount
 onMounted(async () => {
   await getProductRequests(props.sText);
   console.log(props.sText);
 });
+
+// Reset productResults to an empty array on component unmount
 onUnmounted(() => {
-  // Call the mutation to set productResults to an empty array
   store.commit("setProductResults", []);
 });
 </script>
