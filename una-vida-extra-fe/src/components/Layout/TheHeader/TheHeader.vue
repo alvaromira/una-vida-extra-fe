@@ -42,6 +42,7 @@
                 name="site-search"
                 v-model="searchTerm"
                 class="search-input"
+                pattern=".{3,}"
               />
               <button type="submit" class="search-button">Search</button>
             </form>
