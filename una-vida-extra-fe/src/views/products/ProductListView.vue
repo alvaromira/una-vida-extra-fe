@@ -22,7 +22,23 @@
           />
         </div>
       </section>
+      <!-- Pagination controls -->
+      <div class="pagination-controls">
+        <BaseButton @click="loadPreviousPage" :disabled="currentPage === 1">
+          Previous
+        </BaseButton>
+        <span class="pagination-information"
+          >Page {{ currentPage }} of {{ totalPages }}</span
+        >
+        <BaseButton
+          @click="loadNextPage"
+          :disabled="currentPage === totalPages"
+        >
+          Next
+        </BaseButton>
+      </div>
     </div>
+
     <div v-else class="loading">
       <base-spinner></base-spinner>
     </div>
@@ -39,6 +55,7 @@ import ProductsSummary from "../../components/ui/product/ProductsSummary.vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import BaseSpinner from "../../components/ui/BaseSpinner.vue";
+import BaseButton from "../../components/ui/BaseButton.vue";
 // Access current route
 const route = useRoute();
 // Access Vuex store
@@ -59,6 +76,32 @@ const props = defineProps({
   },
 });
 
+// Pagination variables
+const currentPage = ref(1);
+const pageSize = 10; // Number of products per page
+const totalPages = computed(() => productResults.value.meta.last_page);
+
+// Load products for the current page
+const loadProducts = async () => {
+  await getProductRequests("", currentPage.value);
+};
+
+// Event handler to load the previous page of products
+const loadPreviousPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+    loadProducts();
+  }
+};
+
+// Event handler to load the next page of products
+const loadNextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+    loadProducts();
+  }
+};
+
 // Watch for changes in search text prop
 watch(
   () => props.sText,
@@ -70,14 +113,14 @@ watch(
 );
 
 // Function to fetch products based on search text
-const getProductRequests = async (s) => {
+const getProductRequests = async (search, page) => {
   try {
     isDataLoaded.value = false;
     // Fetch products or perform product search depending on route params
-    if (s) {
-      await store.dispatch("searchProducts", s);
+    if (search) {
+      await store.dispatch("searchProducts", search);
     } else {
-      await store.dispatch("getProducts");
+      await store.dispatch("getProducts", page);
     }
     // Set data loaded to true once data is fetched
     isDataLoaded.value = true;
@@ -106,7 +149,7 @@ const handleRequestError = (error) => {
 
 // Fetch products on component mount
 onMounted(async () => {
-  await getProductRequests(props.sText);
+  await getProductRequests(props.sText, currentPage);
   console.log(props.sText);
 });
 
@@ -116,6 +159,15 @@ onUnmounted(() => {
 });
 </script>
 <style scoped>
+.pagination-controls {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  text-align: center;
+}
+.pagination-information {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
 .product-card-container {
   display: flex;
 
