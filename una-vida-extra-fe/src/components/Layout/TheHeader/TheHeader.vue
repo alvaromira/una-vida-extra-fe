@@ -33,8 +33,20 @@
             <!--<li><RouterLink :to="{ name: 'login'}">Login</RouterLink></li>
           <li><RouterLink :to="{ name: 'register'}">Register</RouterLink></li>-->
           </ul>
-          <!-- <label for="site-search">Search the site:</label>
-        <input type="search" id="site-search" name="q" />-->
+          <div>
+            <form @submit.prevent="searchProducts" class="search-form">
+              <label for="site-search">Search the site:</label>
+              <input
+                type="search"
+                id="site-search"
+                name="site-search"
+                v-model="searchTerm"
+                class="search-input"
+                pattern=".{3,}"
+              />
+              <button type="submit" class="search-button">Search</button>
+            </form>
+          </div>
         </nav>
       </div>
       <div>
@@ -95,8 +107,35 @@ import { computed, ref, onMounted } from "vue";
 import { useStore } from "vuex";
 import ProfileImage from "../../ui/ProfileImage.vue";
 import md5 from "md5";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const store = useStore();
+const searchTerm = ref("");
+
+const searchProducts = () => {
+  const searchTermValue = searchTerm.value.trim(); // Trim whitespace
+
+  if (searchTermValue.length >= 3) {
+    // Check length
+    router.push({
+      name: "products",
+      query: { q: searchTermValue },
+    });
+  } else {
+    // Handle case where searchTerm is empty or less than 3 characters
+    console.log("Search term must be at least 3 characters long");
+  }
+};
+
+/*const searchProducts = async () => {
+  await store.dispatch("searchProducts", searchTerm.value.trim());
+};
+
+const searchResults = computed(() => {
+  return store.getters["getSearchResults"];
+});*/
 
 const activeUserEmail = computed(() => {
   return store.state.user.email;
@@ -253,5 +292,52 @@ h3 {
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {
   display: block;
+}
+
+label[for="site-search"] {
+  display: none;
+}
+#main-menu {
+  display: flex;
+}
+
+.search-form {
+  display: flex; /* Use flexbox layout */
+  align-items: center; /* Align items vertically */
+  border: none;
+  border-radius: 5px;
+  overflow: hidden;
+  background-color: white;
+}
+
+.search-input {
+  flex: 1; /* Expand input field to fill available space */
+  height: 40px; /* Set desired height */
+  padding: 0.5rem; /* Add padding for better appearance */
+  border-radius: 5px 0px 0px 5px;
+  border: none;
+  padding: 0.5rem;
+  color: gray;
+}
+
+.search-button {
+  height: 100%; /* Match the height of the input field */
+  text-decoration: none;
+  padding: 1rem;
+  color: #fff;
+  /*background-color: #edb421;*/
+  color: gray;
+  border-radius: 0px;
+  min-width: 100px;
+  border: none;
+  display: inline-block;
+  text-align: center;
+  cursor: pointer;
+}
+.search-button:hover {
+  background-color: #edb421; /* Change background color on hover */
+}
+.search-button:active {
+  background-color: #c49f00; /* Change background color when pressed */
 }
 </style>

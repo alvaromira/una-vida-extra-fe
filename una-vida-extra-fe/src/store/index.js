@@ -9,16 +9,20 @@ const store = createStore({
             userIsAdmin: false,
             authenticated: false,
             user: {},
-            toasts: []
+            toasts: [],
+            productResults: [],
         };
     },
     getters: {
         authenticated(state) {
-            return state.authenticated
+            return state.authenticated;
         },
         user(state) {
-            return state.user
-        }
+            return state.user;
+        },
+        getProductResults(state) {
+            return state.productResults;
+        },
     },
     mutations: {
         SET_USER_IS_ADMIN(state, status) {
@@ -36,7 +40,10 @@ const store = createStore({
         clearToast(state, title) {
             const index = state.toasts.findIndex((toast) => toast.title === title); // find toast
             state.toasts.splice(index, 1); // remove toast from array
-        }
+        },
+        setProductResults(state, results) {
+            state.productResults = results;
+        },
     },
     actions: {
         async login({ commit }, { payload }) {
@@ -114,6 +121,34 @@ const store = createStore({
                 return response.data.data;
             } catch (error) {
                 throw error;
+            }
+        },
+        async getProducts({ commit }, page) {
+            try {
+                let targetURL = 'http://localhost:8000/api1/products';
+
+                if (page !== undefined && typeof page === 'number') {
+                    targetURL += `?page=${page}`;
+                }
+                const response = await axios.get(targetURL);
+                commit('setProductResults', response.data);
+                // return response.data;
+            } catch (error) {
+                console.error('Error fetching products:', error);
+                throw error;
+                // Handle error (e.g., show error message to user)
+            }
+        },
+        async searchProducts({ commit }, q) {
+            try {
+                const targetURL = `http://localhost:8000/api1/products/search?search=${q}`;
+                const response = await axios.get(targetURL);
+                commit('setProductResults', response.data);
+                // return response.data;
+            } catch (error) {
+                console.error('Error searching products:', error);
+                throw error;
+                // Handle error (e.g., show error message to user)
             }
         },
         async getAuthUser({ commit }) {
