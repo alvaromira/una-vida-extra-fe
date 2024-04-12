@@ -2,7 +2,7 @@
   <div>
     <h2>Products</h2>
     <div v-if="isDataLoaded">
-      <table class="table">
+      <table class="table table-hover">
         <thead>
           <tr>
             <th scope="col">id</th>
@@ -36,7 +36,9 @@
             <td>{{ product.created_at }}</td>
             <td>{{ product.owner_id }}</td>
             <td><button @click="editProduct(product.id)">Edit</button></td>
-            <td><button @click="deleteProduct(product.id)">Delete</button></td>
+            <td>
+              <button @click="confirmDeletion(product.id)">Delete</button>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -74,6 +76,21 @@
       <base-spinner></base-spinner>
     </div>
   </div>
+  <ModalConfirmationDialog
+    v-if="isModalVisible"
+    @modal-confirmed="onModalConfirm"
+    @modal-close="onModalClose"
+  >
+    <template #header>Confirm Product Deletion</template>
+    <template #body
+      ><p>
+        Are you sure you want to delete this product? The product will no longer
+        be listed or visible to anybody. Any requests it may have will be
+        deleted as well.
+      </p>
+      <p>This action cannot be undone.</p></template
+    ></ModalConfirmationDialog
+  >
 </template>
 
 <script setup>
@@ -83,6 +100,7 @@ import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import BaseSpinner from "../../components/ui/BaseSpinner.vue";
 import BaseButton from "../../components/ui/BaseButton.vue";
+import ModalConfirmationDialog from "../../components/ui/ModalConfirmationDialog.vue";
 // Access current route
 const route = useRoute();
 // Access Vuex store
@@ -95,6 +113,18 @@ const registrationRedirection = computed(() => {
 const productResults = computed(() => store.state.productResults);
 // Reference to track if data is loaded
 const isDataLoaded = ref(false);
+
+//Modal related
+const isModalVisible = ref(false);
+// Setter for isModalVisible
+const setIsModalVisible = (value) => {
+  isModalVisible.value = value;
+};
+
+const productForDeletion = ref();
+const setproductForDeletion = (value) => {
+  productForDeletion.value = value;
+};
 
 // Pagination variables
 const currentPage = ref(1);
@@ -165,26 +195,31 @@ onUnmounted(() => {
   store.commit("setProductResults", []);
 });
 
+async function confirmDeletion(productId) {
+  setproductForDeletion(productId);
+  setIsModalVisible(true);
+}
+
 async function deleteProduct(productId) {
   try {
-    console.log("Deleting product");
-    /*  const response = await fetch(`http://your-api-endpoint/${productId}`, {
-      method: "DELETE",
+    //Delete the product by ID
+    await store.dispatch("deleteProduct", productId);
+
+    //let message = `Product ${productId} has been deleted`;
+    // Dispatch toast message to Vuex store for success notification
+    store.commit("addToast", {
+      title: "Product Deleted",
+      type: "success",
+      message: `Product ${productId} has been deleted. The product list will be reloaded.`,
     });
 
-    if (!response.ok) {
-      throw new Error(`Error deleting product: ${response.statusText}`);
-    }
-
-    const deletedProduct = await response.json();
-    products.value = products.value.filter(
-      (product) => product.id !== productId
-    );
-*/
-    // Display success message or handle deletion logic here (optional)
+    //reload all projects, using the first page
+    currentPage.value = 1;
+    await loadProducts();
   } catch (error) {
-    console.error("Error deleting product:", error);
-    // Display error message to user (optional)
+    isDataLoaded.value = true; // Set data loaded to true once data is fetched
+    // Handle request error
+    handleRequestError(error);
   }
 }
 async function editProduct(productId) {
@@ -209,6 +244,55 @@ async function editProduct(productId) {
     // Display error message to user (optional)
   }
 }
+
+const onModalClose = () => {
+  console.log("Modal closed, nothing confirmed...");
+  setproductForDeletion(null);
+  setIsModalVisible(false);
+};
+const onModalConfirm = async () => {
+  console.log("Modal closed, something confirmed...");
+
+  await deleteProduct(productForDeletion.value);
+
+  /*try {
+      const data = await store.dispatch("updateProductData", {
+      id: props.id,
+      payload: {
+        is_taken: 1,
+      },
+    });
+
+    console.log(data);
+    //check if the product is really marked as taken
+    if (data.is_taken === true) {
+      setProductIsTaken(true);
+      store.commit("addToast", {
+        title: "Product Donated",
+        type: "success",
+        message: "You have correctly marked the product as donated.",
+      });
+    } else {
+      setProductIsTaken(false);
+      store.commit("addToast", {
+        title: "Error",
+        type: "error",
+        message:
+          "There was an error marking the product as taken. Please try again. If it does not work, please contact support.",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    /*store.commit("addToast", {
+      title: "Error",
+      type: "error",
+      message:
+        "There was an error marking the product as taken. Please try again.",
+    });
+  }*/
+  setproductForDeletion(null);
+  setIsModalVisible(false);
+};
 </script>
 <style scoped>
 .pagination-controls {

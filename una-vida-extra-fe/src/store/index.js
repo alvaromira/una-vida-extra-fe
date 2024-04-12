@@ -96,6 +96,15 @@ const store = createStore({
                 throw error;
             }
         },
+        async deleteProduct({ commit }, id) {
+            try {
+                const targetURL = `http://localhost:8000/api1/products/${id}`;
+                const response = await axios.delete(targetURL);
+                return response.data.data;
+            } catch (error) {
+                throw error;
+            }
+        },
         async updateProductData({ commit }, { id, payload }) {
             try {
                 const targetURL = `http://localhost:8000/api1/products/${id}`;

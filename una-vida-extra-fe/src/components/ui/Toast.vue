@@ -1,13 +1,19 @@
 <template>
-  <div class="toast" :class="[toast.type, { 'fade-out': isFadingOut }]">
-    <div class="header">
+  <div
+    class="toast show"
+    role="alert"
+    aria-live="assertive"
+    aria-atomic="true"
+    :class="[toast.type, { 'fade-out': isFadingOut }]"
+  >
+    <div class="header toast-header">
       <h3>{{ toast.title }}</h3>
       <button @click="dismissToast(toast.title)">X</button>
     </div>
-    <div class="content">
+    <div class="content toast-body">
       <p role="status">{{ toast.message }}</p>
     </div>
-    <CountdownBar :duration="10000"></CountdownBar>
+    <CountdownBar :duration="toastDuration"></CountdownBar>
   </div>
 </template>
 
@@ -21,6 +27,8 @@ import CountdownBar from "./CountdownBar.vue";
 const { props } = defineProps(["toast"]);
 const isFadingOut = ref(false);
 
+const toastDuration = ref(10000);
+
 const store = useStore();
 const dismissToast = (m) => {
   isFadingOut.value = true;
@@ -30,10 +38,10 @@ const dismissToast = (m) => {
 // Lifecycle hook using `onMounted`
 onMounted(() => {
   // Logic to execute on component mount
-  // Automatically dismiss toast after 5 seconds
+  // Automatically dismiss toast after x seconds
   setTimeout(() => {
     dismissToast();
-  }, 10000);
+  }, toastDuration.value);
 });
 </script>
 
@@ -63,7 +71,7 @@ div.toast.error {
 }
 
 .toast {
-  width: 500px;
+  /* width: 500px;
   min-height: 50px;
   display: block;
 
@@ -71,10 +79,10 @@ div.toast.error {
   padding: 1rem;
   box-sizing: border-box;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: 8px;*/
   box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.1), 0 2px 15px 0 rgba(0, 0, 0, 0.05);
   opacity: 1;
-  transition: opacity 0.5s ease-out; /* Added transition for fading-out effect */
+  transition: opacity 0.5s ease-out;
 }
 
 .toast.fade-out {
@@ -99,7 +107,6 @@ div.toast.error {
   flex-direction: column;
   align-items: start;
   justify-content: center;
-  /* padding-left: 1rem;*/
   box-sizing: border-box;
 }
 .toast .header,
@@ -109,8 +116,9 @@ div.toast.error {
   text-align: left;
 }
 .toast .header {
-  height: 25px;
-  margin-bottom: 1rem;
+  /*height: 25px;
+  margin-bottom: 1rem;*/
+  background-color: unset;
 }
 .toast .header button {
   color: #ffffff;
@@ -124,8 +132,8 @@ div.toast.error {
   opacity: 0.3;
 }
 .toast .header button:hover {
-  /* background: #e7e7e7;*/
-  opacity: 0.75;
+  /* background: #e7e7e7;
+  opacity: 0.75;*/
 }
 
 .toast .content {
