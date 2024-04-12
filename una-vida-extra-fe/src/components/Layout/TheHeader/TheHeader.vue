@@ -86,10 +86,10 @@
                   <RouterLink :to="{ name: 'logout' }">Log Out</RouterLink>
                 </div>
                 <div v-else class="dropdown-content">
-                  <a>Manage Users</a>
-                  <a>Manage Products</a>
-                  <a>Manage Requests</a>
-                  <a>My Profile</a>
+                  <RouterLink :to="{ name: 'admin' }"
+                    >Admin Dashboard</RouterLink
+                  >
+                  <RouterLink :to="{ name: 'profile' }">Profile</RouterLink>
                   <RouterLink :to="{ name: 'logout' }">Log Out</RouterLink>
                 </div>
               </div>
