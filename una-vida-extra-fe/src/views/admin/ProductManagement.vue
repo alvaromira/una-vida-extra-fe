@@ -13,7 +13,7 @@
             <th scope="col">Taken</th>
             <th scope="col">Category</th>
             <th scope="col">Creation</th>
-            <th scope="col">Owner</th>
+            <th scope="col">Owner id</th>
             <th scope="col">Edit</th>
             <th scope="col">Delete</th>
           </tr>
@@ -35,7 +35,9 @@
             <td>{{ product.category }}</td>
             <td>{{ product.created_at }}</td>
             <td>{{ product.owner_id }}</td>
-            <td><button @click="editProduct(product.id)">Edit</button></td>
+            <td>
+              <button @click="confirmEdition(product)">Edit</button>
+            </td>
             <td>
               <button @click="confirmDeletion(product.id)">Delete</button>
             </td>
@@ -77,9 +79,10 @@
     </div>
   </div>
   <ModalConfirmationDialog
-    v-if="isModalVisible"
-    @modal-confirmed="onModalConfirm"
-    @modal-close="onModalClose"
+    v-if="isDeleteModalVisible"
+    @modal-confirmed="onDeleteModalConfirm"
+    @modal-close="onDeleteModalClose"
+    id="delete-user-modal"
   >
     <template #header>Confirm Product Deletion</template>
     <template #body
@@ -89,8 +92,126 @@
         deleted as well.
       </p>
       <p>This action cannot be undone.</p></template
-    ></ModalConfirmationDialog
+    >
+  </ModalConfirmationDialog>
+  <ModalConfirmationDialog
+    v-if="isEditModalVisible"
+    @modal-confirmed="onEditModalConfirm"
+    @modal-close="onEditModalClose"
+    id="edit-user-modal"
   >
+    <template #header>Product Editing</template>
+    <template #body>
+      <div class="container">
+        <h2>Edit Product</h2>
+        <form @submit.prevent="subitEditProductForm">
+          <!-- ID Field -->
+          <div class="mb-3">
+            <label for="id" class="form-label">ID</label>
+            <input
+              type="number"
+              class="form-control"
+              id="id"
+              :value="editProductFormData.id"
+              readonly
+              disabled
+            />
+          </div>
+
+          <!-- Image Field -->
+          <div class="mb-3">
+            <label for="image" class="form-label">Image</label>
+            <input type="file" class="form-control" id="image" />
+          </div>
+
+          <!-- Description Field -->
+          <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea
+              class="form-control"
+              id="description"
+              rows="3"
+              v-model="editProductFormData.description"
+            ></textarea>
+          </div>
+
+          <!-- Title Field -->
+          <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input
+              type="text"
+              class="form-control"
+              id="title"
+              v-model="editProductFormData.title"
+            />
+          </div>
+
+          <!-- Availability Field -->
+          <div class="mb-3">
+            <label for="availability" class="form-label">Is available?</label>
+            <input
+              type="checkbox"
+              class="form-check-input"
+              id="availability"
+              v-model="editProductFormData.available"
+            />
+          </div>
+
+          <!-- Taken Field -->
+          <div class="mb-3">
+            <label for="taken" class="form-label">Is donated already?</label>
+            <input
+              type="checkbox"
+              class="form-check-input"
+              id="taken"
+              v-model="editProductFormData.is_taken"
+            />
+          </div>
+
+          <!-- Category Field -->
+          <div class="mb-3">
+            <label for="category" class="form-label">Category</label>
+            <select
+              class="form-select"
+              id="category"
+              v-model="editProductFormData.category"
+            >
+              <option value="">Select a category...</option>
+              <option value="Category 1">Category 1</option>
+              <option value="Category 2">Category 2</option>
+              <option value="Category 3">Category 3</option>
+            </select>
+          </div>
+
+          <!-- Created At Field -->
+          <div class="mb-3">
+            <label for="created_at" class="form-label">Created At</label>
+            <input
+              type="datetime-local"
+              class="form-control"
+              id="created_at"
+              :value="editProductFormData.created_at"
+              readonly
+              disabled
+            />
+          </div>
+
+          <!-- Owner Field -->
+          <div class="mb-3">
+            <label for="owner-id" class="form-label">Owner</label>
+            <input
+              type="number"
+              class="form-control"
+              id="owner-id"
+              v-model="editProductFormData.owner_id"
+            />
+          </div>
+
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div></template
+    >
+  </ModalConfirmationDialog>
 </template>
 
 <script setup>
@@ -105,25 +226,63 @@ import ModalConfirmationDialog from "../../components/ui/ModalConfirmationDialog
 const route = useRoute();
 // Access Vuex store
 const store = useStore();
-// Computed property to check if there's a registration redirection query parameter
-const registrationRedirection = computed(() => {
-  return route.query.registration === "success";
-});
+
 // Computed property to access product results state from the store
 const productResults = computed(() => store.state.productResults);
 // Reference to track if data is loaded
 const isDataLoaded = ref(false);
 
 //Modal related
-const isModalVisible = ref(false);
-// Setter for isModalVisible
-const setIsModalVisible = (value) => {
-  isModalVisible.value = value;
+const isDeleteModalVisible = ref(false);
+// Setter for isDeleteModalVisible
+const setIsDeleteModalVisible = (value) => {
+  isDeleteModalVisible.value = value;
 };
+
+//Modal related
+const isEditModalVisible = ref(false);
+// Setter for isEditModalVisible
+const setIsEditModalVisible = (value) => {
+  isEditModalVisible.value = value;
+};
+
+const closeAllModals = () => {
+  setIsEditModalVisible(false);
+  setIsDeleteModalVisible(false);
+};
+
+// Watch to be used as safeguard to make sure both modals can never be visible at the same time
+watch(
+  () => isEditModalVisible.value,
+  (newValue, oldValue) => {
+    console.log(
+      "isEditModalVisible prop changed from",
+      oldValue,
+      "to",
+      newValue
+    );
+    if ((newValue = true)) {
+      setIsDeleteModalVisible(false);
+    }
+  }
+);
+watch(
+  () => isDeleteModalVisible.value,
+  (newValue, oldValue) => {
+    console.log("isDeleteModalVisible changed from", oldValue, "to", newValue);
+    if ((newValue = true)) {
+      setIsEditModalVisible(false);
+    }
+  }
+);
 
 const productForDeletion = ref();
 const setproductForDeletion = (value) => {
   productForDeletion.value = value;
+};
+const productForEdition = ref();
+const setProductForEdition = (value) => {
+  productForEdition.value = value;
 };
 
 // Pagination variables
@@ -197,7 +356,21 @@ onUnmounted(() => {
 
 async function confirmDeletion(productId) {
   setproductForDeletion(productId);
-  setIsModalVisible(true);
+  setIsEditModalVisible(false);
+  setIsDeleteModalVisible(true);
+}
+async function confirmEdition(prod) {
+  //feed all the product details to the form to be opened in the modal
+
+  for (const key in editProductFormData) {
+    if (prod.hasOwnProperty(key)) {
+      editProductFormData[key] = prod[key];
+    }
+  }
+
+  setProductForEdition(prod);
+  setIsDeleteModalVisible(false);
+  setIsEditModalVisible(true);
 }
 
 async function deleteProduct(productId) {
@@ -245,12 +418,22 @@ async function editProduct(productId) {
   }
 }
 
-const onModalClose = () => {
+const onDeleteModalClose = () => {
   console.log("Modal closed, nothing confirmed...");
   setproductForDeletion(null);
-  setIsModalVisible(false);
+  closeAllModals();
 };
-const onModalConfirm = async () => {
+const onEditModalClose = () => {
+  console.log("Edit Modal closed, nothing confirmed...");
+  setProductForEdition(null);
+  closeAllModals();
+};
+
+const onEditModalConfirm = async () => {
+  console.log("Edit modal closd, cofirming something...");
+};
+
+const onDeleteModalConfirm = async () => {
   console.log("Modal closed, something confirmed...");
 
   await deleteProduct(productForDeletion.value);
@@ -290,8 +473,25 @@ const onModalConfirm = async () => {
         "There was an error marking the product as taken. Please try again.",
     });
   }*/
-  setproductForDeletion(null);
-  setIsModalVisible(false);
+  setProductForEdition(null);
+  closeAllModals();
+};
+
+const editProductFormData = {
+  id: null,
+  image: null,
+  description: "",
+  title: "",
+  available: null,
+  is_taken: null,
+  category: "",
+  created_at: "",
+  owner_id: null,
+};
+
+const subitEditProductForm = () => {
+  // Submit form logic goes here
+  console.log(editProductFormData);
 };
 </script>
 <style scoped>
