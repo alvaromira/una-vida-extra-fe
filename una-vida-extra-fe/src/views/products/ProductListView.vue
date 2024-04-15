@@ -11,11 +11,11 @@
       <h2 v-else>Check the latest additions!</h2>
 
       <section class="product-card-container">
-        <div v-for="product in productResults.data">
+        <div v-for="product in productResults.data" :key="product.id">
           <product-card
-            :key="product.id"
             :id="product.id"
             :image="product.image"
+            :description="product.description"
             :title="product.title"
             :date="product.created_at"
             :location="product.location"
