@@ -119,8 +119,15 @@
 
           <!-- Image Field -->
           <div class="mb-3">
-            <label for="image" class="form-label">Image</label>
-            <input type="file" class="form-control" id="image" />
+            <!--<label for="image" class="form-label">Image</label>
+            <input type="file" class="form-control" id="image" />-->
+            <img
+              class="mini"
+              :src="
+                `http://127.0.0.1:8000/storage/` + editProductFormData.image
+              "
+              :alt="editProductFormData.title"
+            /><span>(not editable)</span>
           </div>
 
           <!-- Description Field -->
@@ -210,7 +217,7 @@
             />
           </div>
 
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <!--<button type="submit" class="btn btn-primary">Submit</button>-->
         </form>
       </div></template
     >
@@ -432,8 +439,9 @@ const onDeleteModalClose = () => {
   setproductForDeletion(null);
   closeAllModals();
 };
-const onEditModalClose = () => {
+const onEditModalClose = async () => {
   console.log("Edit Modal closed, nothing confirmed...");
+  await resetEditProductFormData();
   setProductForEdition(null);
   closeAllModals();
 };
@@ -496,6 +504,18 @@ const editProductFormData = {
   category: "",
   created_at: "",
   owner_id: null,
+};
+
+const resetEditProductFormData = async () => {
+  editProductFormData.id = null;
+  editProductFormData.image = null;
+  editProductFormData.description = "";
+  editProductFormData.title = "";
+  editProductFormData.available = null;
+  editProductFormData.is_taken = null;
+  editProductFormData.category = "";
+  editProductFormData.created_at = "";
+  editProductFormData.owner_id = null;
 };
 
 const subitEditProductForm = () => {
