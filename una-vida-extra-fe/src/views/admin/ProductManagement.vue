@@ -176,9 +176,13 @@
               v-model="editProductFormData.category"
             >
               <option value="">Select a category...</option>
-              <option value="Category 1">Category 1</option>
-              <option value="Category 2">Category 2</option>
-              <option value="Category 3">Category 3</option>
+              <option
+                v-for="category in productCategories"
+                :key="category.id"
+                :value="category.id"
+              >
+                {{ category.name }}
+              </option>
             </select>
           </div>
 
@@ -348,8 +352,9 @@ const handleRequestError = (error) => {
 // Fetch products on component mount
 onMounted(async () => {
   //get tags and categories
-  store.dispatch("getProductTags");
-  store.dispatch("getProductCategories");
+  await store.dispatch("getProductTags");
+  await store.dispatch("getProductCategories");
+  //and then the products
   await getProductRequests(currentPage);
 });
 
