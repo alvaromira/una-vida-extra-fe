@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h2>Products</h2>
     <div v-if="isDataLoaded">
       <table class="table table-hover">
         <thead>
@@ -229,6 +228,8 @@ const store = useStore();
 
 // Computed property to access product results state from the store
 const productResults = computed(() => store.state.productResults);
+const productTags = computed(() => store.state.productTags);
+const productCategories = computed(() => store.state.productCategories);
 // Reference to track if data is loaded
 const isDataLoaded = ref(false);
 
@@ -346,6 +347,9 @@ const handleRequestError = (error) => {
 
 // Fetch products on component mount
 onMounted(async () => {
+  //get tags and categories
+  store.dispatch("getProductTags");
+  store.dispatch("getProductCategories");
   await getProductRequests(currentPage);
 });
 
