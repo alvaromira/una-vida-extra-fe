@@ -378,13 +378,20 @@ async function confirmDeletion(productId) {
 async function confirmEdition(prod) {
   //feed all the product details to the form to be opened in the modal
 
+  //cast potential booleans to integers
+  const castedObject = {
+    ...prod,
+    available: prod.available ? 1 : 0,
+    is_taken: prod.is_taken ? 1 : 0,
+  };
+
   for (const key in editProductFormData) {
-    if (prod.hasOwnProperty(key)) {
-      editProductFormData[key] = prod[key];
+    if (castedObject.hasOwnProperty(key)) {
+      editProductFormData[key] = castedObject[key];
     }
   }
 
-  setProductForEdition(prod);
+  setProductForEdition(castedObject);
   setIsDeleteModalVisible(false);
   setIsEditModalVisible(true);
 }
@@ -404,6 +411,7 @@ async function deleteProduct(productId) {
 
     //reload all projects, using the first page
     currentPage.value = 1;
+    closeAllModals();
     await loadProducts();
   } catch (error) {
     isDataLoaded.value = true; // Set data loaded to true once data is fetched
@@ -413,24 +421,28 @@ async function deleteProduct(productId) {
 }
 async function editProduct(productId) {
   try {
-    console.log("Editing product");
-    /*  const response = await fetch(`http://your-api-endpoint/${productId}`, {
-      method: "DELETE",
+    //Edit the product by ID
+    await store.dispatch("updateProductData", {
+      id: editProductFormData.id,
+      payload: editProductFormData,
     });
 
-    if (!response.ok) {
-      throw new Error(`Error deleting product: ${response.statusText}`);
-    }
+    //let message = `Product ${productId} has been deleted`;
+    // Dispatch toast message to Vuex store for success notification
+    store.commit("addToast", {
+      title: "Product Updated",
+      type: "success",
+      message: `Product ${productId} has been updated. The product list will be reloaded.`,
+    });
 
-    const deletedProduct = await response.json();
-    products.value = products.value.filter(
-      (product) => product.id !== productId
-    );
-*/
-    // Display success message or handle deletion logic here (optional)
+    //reload all projects, using the first page
+    currentPage.value = 1;
+    closeAllModals();
+    await loadProducts();
   } catch (error) {
-    console.error("Error deleting product:", error);
-    // Display error message to user (optional)
+    isDataLoaded.value = true; // Set data loaded to true once data is fetched
+    // Handle request error
+    handleRequestError(error);
   }
 }
 
@@ -448,48 +460,15 @@ const onEditModalClose = async () => {
 
 const onEditModalConfirm = async () => {
   console.log("Edit modal closd, cofirming something...");
+  await editProduct(productForEdition);
+  setProductForEdition(null);
+  resetEditProductFormData();
 };
 
 const onDeleteModalConfirm = async () => {
   console.log("Modal closed, something confirmed...");
 
   await deleteProduct(productForDeletion.value);
-
-  /*try {
-      const data = await store.dispatch("updateProductData", {
-      id: props.id,
-      payload: {
-        is_taken: 1,
-      },
-    });
-
-    console.log(data);
-    //check if the product is really marked as taken
-    if (data.is_taken === true) {
-      setProductIsTaken(true);
-      store.commit("addToast", {
-        title: "Product Donated",
-        type: "success",
-        message: "You have correctly marked the product as donated.",
-      });
-    } else {
-      setProductIsTaken(false);
-      store.commit("addToast", {
-        title: "Error",
-        type: "error",
-        message:
-          "There was an error marking the product as taken. Please try again. If it does not work, please contact support.",
-      });
-    }
-  } catch (error) {
-    console.log(error);
-    /*store.commit("addToast", {
-      title: "Error",
-      type: "error",
-      message:
-        "There was an error marking the product as taken. Please try again.",
-    });
-  }*/
   setProductForEdition(null);
   closeAllModals();
 };
