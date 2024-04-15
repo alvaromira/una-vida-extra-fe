@@ -1,9 +1,11 @@
 <template>
-  <footer>
-    <p>Una Vida Extra {{ new Date().getFullYear() }}.</p>
+  <div class="container-fluid" id="footer-wrapper">
+    <footer>
+      <p>Una Vida Extra {{ new Date().getFullYear() }}.</p>
 
-    <p>Política de privacidad - Política de cookies - Contacto</p>
-  </footer>
+      <p>Política de privacidad - Política de cookies - Contacto</p>
+    </footer>
+  </div>
 </template>
 
 <script>
@@ -15,6 +17,9 @@ export default {
 </script>
 
 <style scoped>
+#footer-wrapper {
+  padding: 0;
+}
 footer {
   width: 100%;
   text-align: center;

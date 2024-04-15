@@ -1,104 +1,108 @@
 <template>
-  <header>
-    <div class="top-header">
-      <RouterLink :to="{ name: 'products' }">
-        <img
-          alt="1up logo"
-          class="logo"
-          src="@/assets/images/one-life-up-logo.png"
-          width="150"
-          height="125"
-      /></RouterLink>
-      <div id="header-text">
-        <h1>One Life Up</h1>
-        <h2>Reuse to protect the environment</h2>
+  <div class="container-fluid" id="header-wrapper">
+    <header>
+      <div class="top-header">
+        <RouterLink :to="{ name: 'products' }">
+          <img
+            alt="1up logo"
+            class="logo"
+            src="@/assets/images/one-life-up-logo.png"
+            width="150"
+            height="125"
+        /></RouterLink>
+        <div id="header-text">
+          <h1>One Life Up</h1>
+          <h2>Reuse to protect the environment</h2>
+        </div>
       </div>
-    </div>
 
-    <div class="bottom-header">
-      <div>
-        <nav id="main-menu">
-          <ul class="menu-list">
-            <!--<li><RouterLink :to="{ name: ''}">Home</RouterLink></li>
+      <div class="bottom-header">
+        <div>
+          <nav id="main-menu">
+            <ul class="menu-list">
+              <!--<li><RouterLink :to="{ name: ''}">Home</RouterLink></li>
           <li><RouterLink :to="{ name: 'about'}">About</RouterLink></li>-->
-            <li class="menu-item">
-              <RouterLink :to="{ name: 'products' }">Products</RouterLink>
-            </li>
-            <li class="menu-item">
-              <RouterLink :to="{ name: 'sponsors' }">Sponsors</RouterLink>
-            </li>
-            <li class="menu-item">
-              <RouterLink :to="{ name: 'project' }">Project</RouterLink>
-            </li>
-            <!--<li><RouterLink :to="{ name: 'login'}">Login</RouterLink></li>
+              <li class="menu-item">
+                <RouterLink :to="{ name: 'products' }">Products</RouterLink>
+              </li>
+              <li class="menu-item">
+                <RouterLink :to="{ name: 'sponsors' }">Sponsors</RouterLink>
+              </li>
+              <li class="menu-item">
+                <RouterLink :to="{ name: 'project' }">Project</RouterLink>
+              </li>
+              <!--<li><RouterLink :to="{ name: 'login'}">Login</RouterLink></li>
           <li><RouterLink :to="{ name: 'register'}">Register</RouterLink></li>-->
-          </ul>
-          <div>
-            <form @submit.prevent="searchProducts" class="search-form">
-              <label for="site-search">Search the site:</label>
-              <input
-                type="search"
-                id="site-search"
-                name="site-search"
-                v-model="searchTerm"
-                class="search-input"
-                pattern=".{3,}"
-              />
-              <button type="submit" class="search-button">Search</button>
-            </form>
-          </div>
-        </nav>
-      </div>
-      <div>
-        <nav id="user-menu">
-          <ul class="user-menu-list">
-            <!-- if not logged in-->
-            <li v-if="!getUserStatus" class="user-menu-item">
-              <BaseButton :to="{ name: 'register' }" link="true"
-                >Register</BaseButton
-              >
-            </li>
-            <li v-if="!getUserStatus" class="user-menu-item">
-              <BaseButton :to="{ name: 'login' }" link="true">Login</BaseButton>
-            </li>
-            <!--For logged in users -->
-
-            <li v-if="getUserStatus" class="user-menu-item">
-              <!--<BaseButton>My Account</BaseButton>-->
-              <div>
-                <ProfileImage
-                  :userEmail="activeUserEmail"
-                  :gravatarInfo="false"
-                  :mode="'small'"
+            </ul>
+            <div>
+              <form @submit.prevent="searchProducts" class="search-form">
+                <label for="site-search">Search the site:</label>
+                <input
+                  type="search"
+                  id="site-search"
+                  name="site-search"
+                  v-model="searchTerm"
+                  class="search-input"
+                  pattern=".{3,}"
                 />
-              </div>
-              <div class="dropdown">
-                <BaseButton>My Account</BaseButton>
-                <div v-if="!isUserAdmin" class="dropdown-content">
-                  <RouterLink :to="{ name: 'userProducts' }"
-                    >My Products</RouterLink
-                  >
-                  <RouterLink :to="{ name: 'requests' }"
-                    >My Requests</RouterLink
-                  >
-                  <RouterLink :to="{ name: 'profile' }">Profile</RouterLink>
+                <button type="submit" class="search-button">Search</button>
+              </form>
+            </div>
+          </nav>
+        </div>
+        <div>
+          <nav id="user-menu">
+            <ul class="user-menu-list">
+              <!-- if not logged in-->
+              <li v-if="!getUserStatus" class="user-menu-item">
+                <BaseButton :to="{ name: 'register' }" link="true"
+                  >Register</BaseButton
+                >
+              </li>
+              <li v-if="!getUserStatus" class="user-menu-item">
+                <BaseButton :to="{ name: 'login' }" link="true"
+                  >Login</BaseButton
+                >
+              </li>
+              <!--For logged in users -->
 
-                  <RouterLink :to="{ name: 'logout' }">Log Out</RouterLink>
+              <li v-if="getUserStatus" class="user-menu-item">
+                <!--<BaseButton>My Account</BaseButton>-->
+                <div>
+                  <ProfileImage
+                    :userEmail="activeUserEmail"
+                    :gravatarInfo="false"
+                    :mode="'small'"
+                  />
                 </div>
-                <div v-else class="dropdown-content">
-                  <RouterLink :to="{ name: 'admin' }"
-                    >Admin Dashboard</RouterLink
-                  >
-                  <RouterLink :to="{ name: 'profile' }">Profile</RouterLink>
-                  <RouterLink :to="{ name: 'logout' }">Log Out</RouterLink>
+                <div class="dropdown">
+                  <BaseButton>My Account</BaseButton>
+                  <div v-if="!isUserAdmin" class="dropdown-content">
+                    <RouterLink :to="{ name: 'userProducts' }"
+                      >My Products</RouterLink
+                    >
+                    <RouterLink :to="{ name: 'requests' }"
+                      >My Requests</RouterLink
+                    >
+                    <RouterLink :to="{ name: 'profile' }">Profile</RouterLink>
+
+                    <RouterLink :to="{ name: 'logout' }">Log Out</RouterLink>
+                  </div>
+                  <div v-else class="dropdown-content">
+                    <RouterLink :to="{ name: 'admin' }"
+                      >Admin Dashboard</RouterLink
+                    >
+                    <RouterLink :to="{ name: 'profile' }">Profile</RouterLink>
+                    <RouterLink :to="{ name: 'logout' }">Log Out</RouterLink>
+                  </div>
                 </div>
-              </div>
-            </li>
-          </ul>
-        </nav>
+              </li>
+            </ul>
+          </nav>
+        </div>
       </div>
-    </div>
-  </header>
+    </header>
+  </div>
 </template>
 
 <script setup>
@@ -339,5 +343,9 @@ label[for="site-search"] {
 }
 .search-button:active {
   background-color: #c49f00; /* Change background color when pressed */
+}
+
+#header-wrapper {
+  padding: 0;
 }
 </style>
