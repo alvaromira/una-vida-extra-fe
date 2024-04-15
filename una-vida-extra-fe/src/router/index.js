@@ -156,6 +156,24 @@ const router = createRouter({
       component: () => import('../views/user/ProfileView.vue')
     },
     {
+      path: '/admin',
+      name: 'admin',
+      children: [
+        { path: '', redirect: 'products' },
+        { path: 'products', component: () => import('../views/admin/ProductManagement.vue') },
+        { path: 'users', component: () => import('../views/admin/UserManagement.vue') },
+        { path: 'categories', component: () => import('../views/admin/CategoryManagement.vue') },
+        { path: 'tags', component: () => import('../views/admin/TagManagement.vue') },
+        { path: 'locations', component: () => import('../views/admin/LocationManagement.vue') },
+        { path: 'requests', component: () => import('../views/admin/RequestManagement.vue') },
+      ],
+      meta: {
+        middleware: "admin",
+        title: "Admin Dashboard"
+      },
+      component: () => import('../views/AdminDashboard.vue')
+    },
+    {
       path: '/forgot-password',
       name: 'forgot-password',
       meta: {
@@ -228,7 +246,10 @@ router.beforeEach((to, from, next) => {
 
   if (to.meta.middleware === "guest") {
     handleGuestRoute(to, next);
-  } else if (to.meta.middleware === "public") {
+  } else if (to.meta.middleware === "admin") {
+    handleAuthRoute(to, from, next);
+  }
+  else if (to.meta.middleware === "public") {
     handlePublicRoute(to, next);
   } else {
     handleAuthRoute(to, from, next);

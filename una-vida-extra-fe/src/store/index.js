@@ -11,6 +11,8 @@ const store = createStore({
             user: {},
             toasts: [],
             productResults: [],
+            productCategories: [],
+            productTags: []
         };
     },
     getters: {
@@ -23,6 +25,13 @@ const store = createStore({
         getProductResults(state) {
             return state.productResults;
         },
+
+        getProductCategories(state) {
+            return state.productCategories;
+        },
+        getProductTags(state) {
+            return state.productTags;
+        }
     },
     mutations: {
         SET_USER_IS_ADMIN(state, status) {
@@ -44,6 +53,12 @@ const store = createStore({
         setProductResults(state, results) {
             state.productResults = results;
         },
+        setProductCategories(state, categories) {
+            state.productCategories = categories;
+        },
+        setProductTags(state, tags) {
+            state.productTags = tags;
+        }
     },
     actions: {
         async login({ commit }, { payload }) {
@@ -96,6 +111,15 @@ const store = createStore({
                 throw error;
             }
         },
+        async deleteProduct({ commit }, id) {
+            try {
+                const targetURL = `http://localhost:8000/api1/products/${id}`;
+                const response = await axios.delete(targetURL);
+                return response.data.data;
+            } catch (error) {
+                throw error;
+            }
+        },
         async updateProductData({ commit }, { id, payload }) {
             try {
                 const targetURL = `http://localhost:8000/api1/products/${id}`;
@@ -137,6 +161,50 @@ const store = createStore({
                 console.error('Error fetching products:', error);
                 throw error;
                 // Handle error (e.g., show error message to user)
+            }
+        },
+        async getProductCategories({ commit }) {
+            try {
+                let allCategories = []; // Array to store all tags from all pages
+
+                let nextPage = 'http://localhost:8000/api1/categories'; // Start with the first page
+
+                while (nextPage) {
+                    // Fetch data from the next page
+                    const response = await axios.get(nextPage);
+                    // Add tags from the current page to the array
+                    allCategories = allCategories.concat(response.data.data);
+
+                    // Check if there's a next page
+                    nextPage = response.data.links.next;
+                }
+                commit('setProductCategories', allCategories);
+            } catch (error) {
+                console.error('Error fetching product categories:', error);
+                throw error;
+            }
+
+
+        },
+        async getProductTags({ commit }) {
+            try {
+                let allTags = []; // Array to store all tags from all pages
+
+                let nextPage = 'http://localhost:8000/api1/tags'; // Start with the first page
+
+                while (nextPage) {
+                    // Fetch data from the next page
+                    const response = await axios.get(nextPage);
+                    // Add tags from the current page to the array
+                    allTags = allTags.concat(response.data.data);
+
+                    // Check if there's a next page
+                    nextPage = response.data.links.next;
+                }
+                commit('setProductTags', allTags);
+            } catch (error) {
+                console.error('Error fetching product tags:', error);
+                throw error;
             }
         },
         async searchProducts({ commit }, q) {

@@ -1,8 +1,12 @@
 <template>
-  <div class="toasts-wrapper" v-if="toasts.length">
-    <TransitionGroup name="list" tag="div"
-      ><Toast v-for="(toast, index) of toasts" :key="index" :toast="toast" />
-    </TransitionGroup>
+  <div
+    class="toasts-wrapper toast-container position-absolute top-0 end-0 p-3"
+    v-if="toasts.length"
+  >
+    <!--  <TransitionGroup name="list" tag="div"
+      >-->
+    <Toast v-for="(toast, index) of toasts" :key="index" :toast="toast" />
+    <!--</TransitionGroup>-->
   </div>
 </template>
 
@@ -23,6 +27,7 @@ const toasts = computed(() => {
 </script>
 
 <style scoped>
+/*
 .toasts-wrapper {
   width: 600px;
   min-height: 150px;
@@ -42,5 +47,5 @@ const toasts = computed(() => {
 .list-leave-to {
   opacity: 0;
   transform: translateX(30px);
-}
+}*/
 </style>
