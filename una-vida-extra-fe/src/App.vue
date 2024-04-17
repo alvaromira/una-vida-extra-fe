@@ -5,19 +5,13 @@ import TheHeader from "./components/Layout/TheHeader/TheHeader.vue";
 import Toasts from "./components/ui/Toasts.vue";
 import "bootstrap/dist/css/bootstrap.css";
 
-//export default {
-//  components: {
-//    TheHeader,
-//  },
-//};
-
 import "bootstrap/dist/js/bootstrap.js";
 </script>
 
 <template>
   <Toasts />
   <TheHeader></TheHeader>
-  <div id="content">
+  <div id="content" class="container">
     <RouterView />
   </div>
   <TheFooter></TheFooter>

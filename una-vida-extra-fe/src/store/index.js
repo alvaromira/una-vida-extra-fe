@@ -120,10 +120,37 @@ const store = createStore({
                 throw error;
             }
         },
+        async deleteTag({ commit }, id) {
+            try {
+                const targetURL = `http://localhost:8000/api1/tags/${id}`;
+                const response = await axios.delete(targetURL);
+                return response.data.data;
+            } catch (error) {
+                throw error;
+            }
+        },
         async updateProductData({ commit }, { id, payload }) {
             try {
                 const targetURL = `http://localhost:8000/api1/products/${id}`;
                 const response = await axios.put(targetURL, payload);
+                return response.data.data;
+            } catch (error) {
+                throw error;
+            }
+        },
+        async updateTag({ commit }, { id, newname }) {
+            try {
+                const targetURL = `http://localhost:8000/api1/tags/${id}`;
+                const response = await axios.put(targetURL, { "name": newname });
+                return response.data.data;
+            } catch (error) {
+                throw error;
+            }
+        },
+        async createTag({ commit }, { name }) {
+            try {
+                const targetURL = `http://localhost:8000/api1/tags`;
+                const response = await axios.post(targetURL, { "name": name });
                 return response.data.data;
             } catch (error) {
                 throw error;

@@ -1,4 +1,22 @@
 <template>
+  <div class="card product-card-wrapper" style="width: 18rem">
+    <div class="location-icon" v-if="locationAvailable">
+      <IconLocation @click="showLocation" />
+      <span class="lat hidden">{{ location.latitude }}</span>
+      <span class="long hidden">{{ location.longitude }}</span>
+    </div>
+    <img :src="imagePath" class="card-img-top" :alt="title" />
+    <div class="card-body">
+      <h5 class="card-title">{{ title }}</h5>
+      <p class="card-text">{{ description }}</p>
+      <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+      <BaseButton :to="{ name: 'product', params: { id: id } }" link="true"
+        >More info</BaseButton
+      >
+    </div>
+  </div>
+
+  <!--
   <div class="product-card-wrapper" :id="id">
     <section class="product-top">
       <div class="product-card-image">
@@ -24,7 +42,7 @@
         >
       </div>
     </section>
-  </div>
+  </div>-->
 </template>
 
 <script setup>
@@ -73,12 +91,10 @@ const showLocation = () => {
 </script>
 
 <style scoped>
+.card {
+}
 .product-card-wrapper {
-  border: 2px solid #7ab370;
-  border-radius: 2px;
-  max-width: 250px;
-  width: 100%;
-  padding: 1rem;
+  border-color: #7ab370;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   background-color: #fff;
 }
