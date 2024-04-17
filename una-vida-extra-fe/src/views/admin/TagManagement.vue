@@ -1,6 +1,25 @@
 <template>
   <div>
     <div v-if="isDataLoaded">
+      <div>
+        <button @click="confirmAddition">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-plus-square"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"
+            />
+            <path
+              d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"
+            />
+          </svg>
+        </button>
+      </div>
       <table class="table table-hover">
         <thead>
           <tr>
@@ -109,6 +128,30 @@
         </form></div
     ></template>
   </ModalConfirmationDialog>
+  <ModalConfirmationDialog
+    v-if="isCreateModalVisible"
+    @modal-confirmed="onCreateModalConfirm"
+    @modal-close="onCreateModalClose"
+    id="create-tag-modal"
+  >
+    <template #header>Tag Creation</template>
+    <template #body>
+      <div class="container">
+        <h2>Create Tag</h2>
+        <form @submit.prevent="subitEditProductForm">
+          <!-- Name Field -->
+          <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <textarea
+              class="form-control"
+              id="name"
+              rows="3"
+              v-model="newTag"
+            ></textarea>
+          </div>
+        </form></div
+    ></template>
+  </ModalConfirmationDialog>
 </template>
 
 <script setup>
@@ -145,9 +188,17 @@ const setIsEditModalVisible = (value) => {
   isEditModalVisible.value = value;
 };
 
+const isCreateModalVisible = ref(false);
+const setIsCreateModalVisible = (value) => {
+  isCreateModalVisible.value = value;
+};
+
+const newTag = ref();
+
 const closeAllModals = () => {
   setIsEditModalVisible(false);
   setIsDeleteModalVisible(false);
+  setIsCreateModalVisible(false);
 };
 
 // Watch to be used as safeguard to make sure both modals can never be visible at the same time
@@ -162,6 +213,7 @@ watch(
     );
     if ((newValue = true)) {
       setIsDeleteModalVisible(false);
+      setIsCreateModalVisible(false);
     }
   }
 );
@@ -171,6 +223,17 @@ watch(
     console.log("isDeleteModalVisible changed from", oldValue, "to", newValue);
     if ((newValue = true)) {
       setIsEditModalVisible(false);
+      setIsCreateModalVisible(false);
+    }
+  }
+);
+watch(
+  () => isCreateModalVisible.value,
+  (newValue, oldValue) => {
+    console.log("isDeleteModalVisible changed from", oldValue, "to", newValue);
+    if ((newValue = true)) {
+      setIsEditModalVisible(false);
+      setIsDeleteModalVisible(false);
     }
   }
 );
@@ -227,9 +290,16 @@ onUnmounted(() => {
 
 async function confirmDeletion(tag) {
   setTagForDeletion(tag);
+  setIsCreateModalVisible(false);
   setIsEditModalVisible(false);
   setIsDeleteModalVisible(true);
 }
+async function confirmAddition() {
+  setIsEditModalVisible(false);
+  setIsDeleteModalVisible(false);
+  setIsCreateModalVisible(true);
+}
+
 async function confirmEdition(tag) {
   //feed all the tags details to the form to be opened in the modal
   for (const key in editTagFormData) {
@@ -240,6 +310,7 @@ async function confirmEdition(tag) {
   setTagForEdition(tag);
   setIsDeleteModalVisible(false);
   setIsEditModalVisible(true);
+  setIsCreateModalVisible(false);
 }
 
 async function deleteTag(tagId) {
@@ -264,6 +335,31 @@ async function deleteTag(tagId) {
     handleRequestError(error);
   }
 }
+
+async function createTag(tagName) {
+  try {
+    //Edit the product by ID
+    await store.dispatch("createTag", {
+      name: tagName,
+    });
+
+    // Dispatch toast message to Vuex store for success notification
+    store.commit("addToast", {
+      title: "Tag Created",
+      type: "success",
+      message: `The tag has been created. The tag list will be reloaded.`,
+    });
+
+    //reload all projects, using the first page
+    //currentPage.value = 1;
+    closeAllModals();
+    await getAllTags();
+  } catch (error) {
+    isDataLoaded.value = true; // Set data loaded to true once data is fetched
+    // Handle request error
+    handleRequestError(error);
+  }
+}
 async function editTag(tag) {
   try {
     //Edit the product by ID
@@ -272,14 +368,11 @@ async function editTag(tag) {
       newname: editTagFormData.name,
     });
 
-    //let message = `Product ${tag} has been deleted`;
     // Dispatch toast message to Vuex store for success notification
-    console.log(tag);
-    let tagId = tag.id;
     store.commit("addToast", {
       title: "Tag Updated",
       type: "success",
-      message: `Tag ${tagId} has been updated. The tag list will be reloaded.`,
+      message: `The tag has been updated. The tag list will be reloaded.`,
     });
 
     //reload all projects, using the first page
@@ -304,12 +397,23 @@ const onEditModalClose = async () => {
   setTagForEdition(null);
   closeAllModals();
 };
+const onCreateModalClose = () => {
+  console.log("Modal closed, nothing confirmed...");
+  newTag.value = null;
+  closeAllModals();
+};
 
 const onEditModalConfirm = async () => {
   console.log("Edit modal closd, cofirming something...");
   await editTag(tagForEdition);
   setTagForEdition(null);
   resetEditTagFormData();
+};
+
+const onCreateModalConfirm = async () => {
+  console.log("Edit modal closd, cofirming something...");
+  await createTag(newTag.value);
+  newTag.value = null;
 };
 
 const onDeleteModalConfirm = async () => {
