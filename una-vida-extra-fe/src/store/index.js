@@ -147,6 +147,15 @@ const store = createStore({
                 throw error;
             }
         },
+        async createTag({ commit }, { name }) {
+            try {
+                const targetURL = `http://localhost:8000/api1/tags`;
+                const response = await axios.post(targetURL, { "name": name });
+                return response.data.data;
+            } catch (error) {
+                throw error;
+            }
+        },
         async getProductRequests({ commit }, id) {
             try {
                 const targetURL = `http://localhost:8000/api1/products/${id}?include_tags=true&include_requests=true`;
