@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <h2>Admin Panel</h2>
-    <div class="admin-dashboard">
+    <div class="admin-dashboard-nav">
       <ul class="nav nav-pills">
         <li class="nav-item">
           <router-link
@@ -52,7 +52,9 @@
           >
         </li>
       </ul>
-      <router-view />
+      <div class="admin-view-wrapper">
+        <router-view />
+      </div>
     </div>
   </div>
 </template>
@@ -72,5 +74,11 @@ const currentPath = computed(() => route.path);
 }
 .nav-link {
   color: black;
+}
+.admin-dashboard-nav {
+  padding: 2rem 0;
+}
+.admin-view-wrapper {
+  padding: 2rem 0;
 }
 </style>
