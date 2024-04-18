@@ -68,58 +68,7 @@ import axios from "axios";
 
 const prodReqDetails = ref();
 const prodReqDetailReady = ref(true); //use emit from Map itself to handle this
-//const requestError = ref(false);
-/*const errorDetails = reactive({
-  code: "",
-  message: "",
-  errors: [],
-});*/
 
-//get the details for the Product in the request
-/*
-const getProductDetails = async () => {
-  try {
-    const resp = await axios.get(
-      "http://localhost:8000/api1/products/" + props.productId
-    );
-
-    prodReqDetails.value = resp.data.data;
-    prodReqDetailReady.value = true;
-    console.log(prodReqDetails.value);
-    console.log(prodReqDetailReady.value);
-
-    //isLoading.value = false;
-    requestError.value = false;
-    //router.push({ name: "products", query: { registration: "success" } });
-  } catch (error) {
-    // Handle Error Here
-    console.error(error);
-    //isLoading.value = false;
-    requestError.value = true;
-
-    if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.error("Error data", error.response.data);
-      console.error("Error status", error.response.status);
-      errorDetails.code = error.response.status;
-      errorDetails.message = error.message;
-      if (error.response.data.errors) {
-        let requestRecivedErrors = error.response.data.errors;
-        for (const property in requestRecivedErrors) {
-          errorDetails.errors.push(requestRecivedErrors[property].toString());
-        }
-      }
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.error("Error message", error.message);
-      console.error("Error code", error.code);
-      errorDetails.code = error.code;
-      errorDetails.message = error.message;
-    }
-  }
-};
-*/
 const close = defineEmits(["close"]);
 //const close = () => {
 //  defineEmits(["close"]);

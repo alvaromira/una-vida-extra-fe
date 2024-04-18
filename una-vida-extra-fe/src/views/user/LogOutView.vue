@@ -11,34 +11,6 @@ onMounted(async () => {
   //using replace to avoid potential issues with back and forth logging in and out
   router.replace({ name: "login" });
 });
-
-/*
-async function logout() {
-// this.processing = true
-
-try {
-  const cookie = await axios.get("http://localhost:8000/sanctum/csrf-cookie");
-
-  const resp = await axios.post("http://localhost:8000/api1/login", {
-    email: data.email.val,
-    password: data.password.val,
-  });
-  console.log(resp);
-  //store.commit("logUserIn");
-  //router.push("/products");
-} catch (response) {
-  if (response.status === 422) {
-    //this.validationErrors = response.data.errors
-    console.log(response.data.errors);
-  } else {
-    //this.validationErrors = {}
-    //alert(response.data.message)
-    console.log(response);
-  }
-} finally {
-  console.log("login function over.");
-}
-}*/
 </script>
 
 <template>
