@@ -3,7 +3,7 @@
   <transition name="modal-fade">
     <div class="modal-backdrop">
       <div
-        class="modal"
+        class="modal-container"
         role="dialog"
         aria-labelledby="modalTitle"
         aria-describedby="modalDescription"
@@ -15,9 +15,7 @@
             class="btn-close"
             @click="onClose"
             aria-label="Close modal"
-          >
-            x
-          </button>
+          ></button>
         </header>
 
         <section class="modal-body" id="modalDescription">
@@ -74,7 +72,7 @@ function onConfirm() {
   align-items: center;
 }
 
-.modal {
+.modal-container {
   background: #ffffff;
   overflow-x: auto;
   display: flex;
@@ -125,16 +123,7 @@ function onConfirm() {
 }
 
 .btn-close {
-  position: absolute;
-  top: 0;
-  right: 0;
-  border: none;
-  font-size: 20px;
-  padding: 1.5rem;
-  cursor: pointer;
-  font-weight: bold;
   color: #7ab370;
-  background: transparent;
 }
 
 .btn-cancel {

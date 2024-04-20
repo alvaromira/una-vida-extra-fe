@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="isDataLoaded">
-      <table class="table table-hover table-sm">
+      <table class="table table-striped table-hover table-sm product-table">
         <thead>
           <tr>
             <th scope="col">id</th>
@@ -12,9 +12,9 @@
             <th scope="col">Taken</th>
             <th scope="col">Category</th>
             <th scope="col">Creation</th>
-            <th scope="col">Owner id</th>
-            <th scope="col">Edit</th>
-            <th scope="col">Delete</th>
+            <th scope="col">Owner</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
@@ -23,7 +23,7 @@
             <td>
               <img
                 class="mini"
-                :src="`http://127.0.0.1:8000/storage/` + product.image"
+                :src="baseUrl + `/storage/` + product.image"
                 :alt="product.title"
               />
             </td>
@@ -132,7 +132,10 @@
     <template #body>
       <div class="container">
         <h2>Edit Product</h2>
-        <form @submit.prevent="subitEditProductForm">
+        <form
+          @submit.prevent="subitEditProductForm"
+          class="product-edition-form"
+        >
           <!-- ID Field -->
           <div class="mb-3">
             <label for="id" class="form-label">ID</label>
@@ -152,9 +155,7 @@
             <input type="file" class="form-control" id="image" />-->
             <img
               class="mini"
-              :src="
-                `http://127.0.0.1:8000/storage/` + editProductFormData.image
-              "
+              :src="baseUrl + `/storage/` + editProductFormData.image"
               :alt="editProductFormData.title"
             /><span>(not editable)</span>
           </div>
@@ -261,6 +262,9 @@ import { useStore } from "vuex";
 import BaseSpinner from "../../components/ui/BaseSpinner.vue";
 import BaseButton from "../../components/ui/BaseButton.vue";
 import ModalConfirmationDialog from "../../components/ui/ModalConfirmationDialog.vue";
+
+const baseUrl = import.meta.env.VITE_BASE_API_URL;
+
 // Access current route
 const route = useRoute();
 // Access Vuex store
@@ -560,5 +564,16 @@ h2 {
 img.mini {
   width: 50px;
   height: auto;
+}
+.product-edition-form {
+  overflow-y: scroll;
+  max-height: 400px;
+}
+.product-table tbody td {
+  font-size: 0.8rem;
+}
+.product-table thead th {
+  font-size: 0.9rem;
+  text-align: center;
 }
 </style>

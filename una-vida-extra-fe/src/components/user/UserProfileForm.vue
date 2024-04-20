@@ -6,6 +6,8 @@ import axios from "axios";
 import BaseSpinner from "../ui/BaseSpinner.vue";
 import { useStore } from "vuex";
 
+const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
+
 const store = useStore();
 
 const formIsValid = ref(true);
@@ -201,11 +203,8 @@ const submitForm = async () => {
 
   const createUserLocation = async () => {
     try {
-      /*  const cookie = await axios.get(
-        "http://localhost:8000/sanctum/csrf-cookie"
-      );*/
       const resp = await axios.post(
-        "http://localhost:8000/api1/locations",
+        `${baseApiUrl}/locations`,
         locationFormData
       );
       console.log(`Newly created Location ID: ${resp.data.data.id}`);

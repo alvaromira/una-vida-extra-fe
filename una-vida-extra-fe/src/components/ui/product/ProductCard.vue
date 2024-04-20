@@ -50,6 +50,9 @@ import { ref, computed } from "vue";
 import IconLocation from "../../icons/iconLocation.vue";
 import BaseButton from "../BaseButton.vue";
 
+const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
+const baseUrl = import.meta.env.VITE_BASE_URL;
+
 //Aceppted properties for the card items
 const props = defineProps({
   image: String,
@@ -69,7 +72,7 @@ const imagePath = computed(() => {
   if (props.image == null || props.image === undefined) {
     return "https://via.placeholder.com/250x250/cccccc/969696";
   } else {
-    return "http://127.0.0.1:8000/storage/" + props.image;
+    return baseUrl + "/storage/" + props.image;
   }
 });
 

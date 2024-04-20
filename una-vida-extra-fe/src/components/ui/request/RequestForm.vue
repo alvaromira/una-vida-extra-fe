@@ -114,9 +114,7 @@ const submitForm = async () => {
 
 //to do handle pagination
 async function getUserRequestedProducts(user_id) {
-  const resp = await axios.get(
-    "http://127.0.0.1:8000/api1/users/" + user_id + "/requests"
-  );
+  const resp = await axios.get(`${baseApiUrl}/users/${user_id}/requests`);
   return resp.data;
 }
 

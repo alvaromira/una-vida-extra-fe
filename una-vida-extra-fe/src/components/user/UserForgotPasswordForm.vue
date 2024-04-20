@@ -7,6 +7,9 @@ import axios from "axios";
 
 const route = useRoute();
 
+const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
+const baseUrl = import.meta.env.VITE_BASE_URL;
+
 //computed
 const loginRedirection = computed(() => {
   return route.query.from;
@@ -84,17 +87,14 @@ async function login() {
   // this.processing = true
 
   try {
-    const csrfCookie = await axios.get(
-      "http://localhost:8000/sanctum/csrf-cookie"
-    );
+    const csrfCookie = await axios.get(`${baseUrl}/sanctum/csrf-cookie`);
 
     console.log(csrfCookie);
 
-    const response = await axios.post("http://localhost:8000/api1/login", {
+    const response = await axios.post(`${baseApiUrl}/login`, {
       email: data.email.val,
       password: data.password.val,
     });
-    //const call = await axios.get("http://localhost:8000/api1/user");
     //console.log(call);
     console.log("Login response", response);
     store.dispatch("login").then(() => {

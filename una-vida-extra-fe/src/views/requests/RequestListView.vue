@@ -6,6 +6,8 @@ import { useStore } from "vuex";
 import BaseSpinner from "../../components/ui/BaseSpinner.vue";
 import ModalConfirmationDialog from "../../components/ui/ModalConfirmationDialog.vue";
 
+const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
+
 const store = useStore();
 
 //Modal related
@@ -53,7 +55,7 @@ const getProductRequests = async () => {
   isLoading.value = true;
   try {
     const resp = await axios.get(
-      `http://localhost:8000/api1/users/${loggedInUser.value}/requests`
+      `${baseApiUrl}/users/${loggedInUser.value}/requests`
     );
     //console.log(resp);
     prodRequests.value = resp.data.data;
@@ -111,7 +113,7 @@ getProductRequests();
 const deleteProductRequests = async (deletionRequestID) => {
   try {
     const resp = await axios.delete(
-      `http://localhost:8000/api1/requests/${deletionRequestID}`
+      `${baseApiUrl}/requests/${deletionRequestID}`
     );
     console.log(resp);
     if (resp.status === 200 || resp.status === 204) {
@@ -209,9 +211,8 @@ const removeCancelledRequest = async (userId, reqId, prodId) => {
           <div class="request-cancel-button">Cancel</div>
         </div>
         <transition-group name="list" tag="div">
-          <div v-for="request in prodRequests">
+          <div v-for="request in prodRequests" :key="request.id">
             <RequestCard
-              :key="request.id"
               :id="request.id"
               :message="request.message"
               :distance="request.distance"
