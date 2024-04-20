@@ -4,7 +4,7 @@
       <div id="new-category-container">
         <BaseButton @click="confirmAddition">Create new category</BaseButton>
       </div>
-      <table class="table table-hover">
+      <table class="table table-hover table-sm">
         <thead>
           <tr>
             <th scope="col">id</th>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="isDataLoaded">
-      <table class="table table-hover">
+      <table class="table table-hover table-sm">
         <thead>
           <tr>
             <th scope="col">id</th>
