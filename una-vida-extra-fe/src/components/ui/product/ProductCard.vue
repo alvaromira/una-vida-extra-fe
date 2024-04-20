@@ -1,10 +1,10 @@
 <template>
   <div class="card product-card-wrapper" style="width: 18rem">
-    <div class="location-icon" v-if="locationAvailable">
+    <!--<div class="location-icon" v-if="locationAvailable">
       <IconLocation @click="showLocation" />
       <span class="lat hidden">{{ location.latitude }}</span>
       <span class="long hidden">{{ location.longitude }}</span>
-    </div>
+    </div>-->
     <img :src="imagePath" class="card-img-top" :alt="title" />
     <div class="card-body">
       <h5 class="card-title">{{ title }}</h5>
@@ -49,6 +49,7 @@
 import { ref, computed } from "vue";
 import IconLocation from "../../icons/iconLocation.vue";
 import BaseButton from "../BaseButton.vue";
+import Map from "../Map.vue";
 
 const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
 const baseUrl = import.meta.env.VITE_BASE_URL;
@@ -89,7 +90,9 @@ const moreInfo = () => {
 };
 
 const showLocation = () => {
-  console.log("Displaying location");
+  console.log(
+    `Displaying location: ${props.location.latitude}, ${props.location.longitude}`
+  );
 };
 </script>
 

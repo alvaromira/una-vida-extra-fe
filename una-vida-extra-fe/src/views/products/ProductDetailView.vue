@@ -51,8 +51,7 @@ const getProductData = async () => {
   try {
     //const targetURL = `${baseApiUrl}/products/${route.params.id}`;
     //const response = await axios.get(targetURL);
-    const response = await store.dispatch("getProductData", route.params.id);
-    prodDetail.value = response.data;
+    prodDetail.value = await store.dispatch("getProductData", route.params.id);
     isDataLoaded.value = true; // Set data loaded to true once data is fetched
   } catch (err) {
     console.log(err);
@@ -63,7 +62,7 @@ const imagePath = computed(() => {
   if (prodDetail.value.image == null || prodDetail.value.image === undefined) {
     return "https://via.placeholder.com/250x250/cccccc/969696";
   } else {
-    return baseUrl + "/storage/" + prodDetail.value.image;
+    return `${baseUrl}/storage/${prodDetail.value.image}`;
   }
 });
 

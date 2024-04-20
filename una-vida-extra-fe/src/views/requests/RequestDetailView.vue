@@ -10,18 +10,25 @@
 
 <script setup>
 import { useRouter, useRoute } from "vue-router";
-import { ref, computed, defineProps } from "vue";
+import { ref, computed, defineProps, onBeforeMount } from "vue";
 import RequestProductCard from "../../components/ui/request/RequestProductCard.vue";
 import axios from "axios";
+import { useStore } from "vuex";
 
 const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const router = useRouter();
-const route = useRoute();/
+const route = useRoute();
+const store = useStore();
 
 //computed
 const productId = computed(() => {
   return route.params.id;
+});
+
+onBeforeMount(async () => {
+  await getProductData();
 });
 
 const prodDetail = ref([]);
@@ -30,18 +37,18 @@ const prodDetail = ref([]);
 
 const getProductData = async () => {
   try {
-    const targetURL = `${baseApiUrl}/products/${route.params.id}`;
-    const response = await axios.get(targetURL);
-    prodDetail.value = response.data.data;
+    prodDetail.value = await store.dispatch("getProductData", route.params.id);
+    //    isDataLoaded.value = true; // Set data loaded to true once data is fetched
   } catch (err) {
     console.log(err);
   }
 };
-getProductData();
 
 const imagePath = computed(() => {
-  if (prodDetail.image == null || prodDetail.image === undefined) {
+  if (prodDetail.value.image == null || prodDetail.value.image === undefined) {
     return "https://via.placeholder.com/250x250/cccccc/969696";
+  } else {
+    return `${baseUrl}/storage/${prodDetail.value.image}`;
   }
 });
 </script>

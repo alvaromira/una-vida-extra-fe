@@ -9,11 +9,22 @@
       <div class="product-detail-card-image">
         <img :src="props.image" />
       </div>
+      <div class="product-detail-card-map" v-show="isLocationDisplayed">
+        <Map
+          :-user-coords="[location.latitude, location.longitude]"
+          :-requested-product-coords="[location.latitude, location.longitude]"
+        ></Map>
+      </div>
     </section>
     <section class="product-detail-card-right product-detail-card-side">
+      <div class="location-icon">
+        <IconLocation @click="showLocation" />
+        <span class="lat hidden">{{ location.latitude }}</span>
+        <span class="long hidden">{{ location.longitude }}</span>
+      </div>
       <div class="product-detail-card-top">
         <div class="product-card-product-title">
-          <h2>{{ props.title }}</h2>
+          <h5>{{ props.title }}</h5>
         </div>
         <div class="product-card-detail-publication-details">
           <p v-if="!loggedUserIsOwner">
@@ -116,6 +127,24 @@ import IconLocation from "../../icons/iconLocation.vue";
 import BaseButton from "../BaseButton.vue";
 import { useStore } from "vuex";
 import ModalConfirmationDialog from "../ModalConfirmationDialog.vue";
+import Map from "../Map.vue";
+
+const locationAvailable = computed(() => {
+  if (props.location == null || props.location === undefined) {
+    return false;
+  } else {
+    return true;
+  }
+});
+
+let isLocationDisplayed = ref(false);
+
+const showLocation = () => {
+  console.log(
+    `Displaying location: ${props.location.latitude}, ${props.location.longitude}`
+  );
+  isLocationDisplayed.value = !isLocationDisplayed.value;
+};
 
 //Modal related
 const isModalVisible = ref(false);
@@ -241,6 +270,7 @@ p {
 }
 
 .product-detail-card-side {
+  position: relative;
   flex: 1;
 }
 
@@ -273,14 +303,14 @@ p {
   padding-bottom: 1rem;
 }
 
-.product-card-product-title h2 {
+.product-card-product-title h5 {
   margin: 0;
   padding: 0;
   color: #edb421;
   text-transform: uppercase;
 }
 
-.taken h2 {
+.taken h5 {
   color: lightgray;
 }
 .product-card-product-actual-date,
@@ -309,7 +339,7 @@ p {
 
 .location-icon {
   position: absolute;
-  top: 0.5rem;
-  left: 0.5rem;
+  top: -0.25rem;
+  right: -0.25rem;
 }
 </style>
