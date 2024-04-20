@@ -22,7 +22,28 @@ const props = defineProps({
   UserCoords: Array,
 });
 
-const center = ref([props.UserCoords[0], props.UserCoords[1]]);
+const isUserCoordsValid = computed(() => {
+  return props.UserCoords && props.UserCoords.length > 1;
+});
+const isRequestedProductCoordsValid = computed(() => {
+  return (
+    props.RequestedProductCoords && props.RequestedProductCoords.length > 1
+  );
+});
+
+let center;
+
+if (isUserCoordsValid) {
+  center = ref([props.UserCoords[0], props.UserCoords[1]]);
+} else if (isRequestedProductCoordsValid) {
+  center = ref([
+    props.RequestedProductCoords[0],
+    props.RequestedProductCoords[1],
+  ]);
+} else {
+  // If neither UserCoords nor RequestedProductCoords are valid, handle the case here
+  console.error("No valid coordinates provided.");
+}
 let mapDiv = null;
 const greenIcon = new L.Icon({
   iconUrl:
@@ -46,16 +67,21 @@ const setupLeafletMap = () => {
     })
     .addTo(mapDiv);
   //user marker
-  let userMarker = L.marker([props.UserCoords[0], props.UserCoords[1]]).addTo(
-    mapDiv
-  );
-  userMarker.bindPopup("User location.");
+  if (isUserCoordsValid) {
+    let userMarker = L.marker([props.UserCoords[0], props.UserCoords[1]]).addTo(
+      mapDiv
+    );
+    userMarker.bindPopup("User location.");
+  }
+
   //prod marker
-  let prodMarker = L.marker(
-    [props.RequestedProductCoords[0], props.RequestedProductCoords[1]],
-    { icon: greenIcon }
-  ).addTo(mapDiv);
-  prodMarker.bindPopup("Product location.");
+  if (isRequestedProductCoordsValid) {
+    let prodMarker = L.marker(
+      [props.RequestedProductCoords[0], props.RequestedProductCoords[1]],
+      { icon: greenIcon }
+    ).addTo(mapDiv);
+    prodMarker.bindPopup("Product location.");
+  }
 };
 
 const removeLeafletMap = () => {};

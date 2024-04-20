@@ -211,9 +211,8 @@ const removeCancelledRequest = async (userId, reqId, prodId) => {
           <div class="request-cancel-button">Cancel</div>
         </div>
         <transition-group name="list" tag="div">
-          <div v-for="request in prodRequests">
+          <div v-for="request in prodRequests" :key="request.id">
             <RequestCard
-              :key="request.id"
               :id="request.id"
               :message="request.message"
               :distance="request.distance"

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineProps, computed, defineEmits } from "vue";
+import { ref, defineProps, computed, defineEmits, onBeforeMount } from "vue";
 import IconLocation from "../../icons/iconLocation.vue";
 import IconAvailable from "../../icons/IconAvailable.vue";
 import IconNotAvailable from "../../icons/IconNotAvailable.vue";
@@ -24,6 +24,21 @@ const props = defineProps({
   id: Number,
   isActive: Boolean,
   productId: Number,
+  // productLocation: Object,
+});
+
+const requestedProductDetails = ref();
+const setRequestedProductDetails = (value) => {
+  requestedProductDetails.value = value;
+};
+//Before mounting, get product details
+onBeforeMount(async () => {
+  const response = await store.dispatch("getProductData", props.productId);
+  setRequestedProductDetails(response);
+});
+
+const requestedProductLocation = computed(() => {
+  return requestedProductDetails.value.location;
 });
 
 const emit = defineEmits(["removed-request"]);
@@ -42,7 +57,6 @@ const cancelMyRequest = () => {
 };
 
 const showLocation = () => {
-  console.log("Displaying location");
   showModal();
 };
 //modal
@@ -73,18 +87,13 @@ const closeModal = () => {
   </div>
 
   <ModalWithMap
-    :productId="productId"
     :userLat="activeUserLocation.latitude"
     :userLong="activeUserLocation.longitude"
+    :prodLat="requestedProductLocation.latitude"
+    :prodLong="requestedProductLocation.longitude"
     v-if="isModalVisible"
     @close="closeModal"
   >
-    <!--<template #header>Location of product {{ productId }} with map</template>
-    <template #body
-      >Lat: {{ activeUserLocation.latitude }}, long:
-      {{ activeUserLocation.longitude }}
-    </template>
-    <template #footer>Passed footer</template>-->
   </ModalWithMap>
 </template>
 

@@ -3,7 +3,7 @@
   <transition name="modal-fade">
     <div class="modal-backdrop">
       <div
-        class="modal"
+        class="modal-container"
         role="dialog"
         aria-labelledby="modalTitle"
         aria-describedby="modalDescription"
@@ -15,9 +15,7 @@
             class="btn-close"
             @click="$emit('close')"
             aria-label="Close"
-          >
-            x
-          </button>
+          ></button>
         </header>
 
         <section class="modal-body" id="modalDescription">
@@ -27,6 +25,10 @@
               :-user-coords="[userLat, userLong]"
               :-requested-product-coords="[prodLat, prodLong]"
             ></Map>
+            <div class="map-legend">
+              <div class="active-user-legend">Your location</div>
+              <div class="other-user-legend">User location</div>
+            </div>
           </div>
           <div v-else>
             <p>Loading map details...</p>
@@ -76,7 +78,6 @@ const close = defineEmits(["close"]);
 
 //Aceppted properties for the card items
 const props = defineProps({
-  // productId: Number,
   userLat: String,
   userLong: String,
   prodLat: String,
@@ -84,16 +85,10 @@ const props = defineProps({
 });
 const handleKeyUp = (event) => {
   if (event.key === "Escape") {
-    //emit("close");
-    //$emit('close')
-  } else {
-    console.log(`Key pressed ${event.key}`);
+    //handle closure
   }
 };
 
-/*onBeforeMount(() => {
-  getProductDetails();
-}),*/
 onMounted(() => {
   document.addEventListener("keyup", handleKeyUp);
 });
@@ -116,7 +111,7 @@ onUnmounted(() => {
   align-items: center;
 }
 
-.modal {
+.modal-container {
   background: #ffffff;
   box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.1), 0 2px 15px 0 rgba(0, 0, 0, 0.05);
   /*box-shadow: 2px 2px 20px 1px;*/
@@ -153,16 +148,7 @@ onUnmounted(() => {
 }
 
 .btn-close {
-  position: absolute;
-  top: 0;
-  right: 0;
-  border: none;
-  font-size: 20px;
-  padding: 10px;
-  cursor: pointer;
-  font-weight: bold;
   color: #7ab370;
-  background: transparent;
 }
 
 .btn-green {
@@ -181,5 +167,22 @@ onUnmounted(() => {
 .modal-fade-enter-active,
 .modal-fade-leave-active {
   transition: opacity 0.5s ease;
+}
+
+.active-user-legend:before,
+.other-user-legend:before {
+  content: "";
+  display: inline-block;
+  width: 20px; /* Adjust length of the line as needed */
+  height: 2px; /* Adjust thickness of the line as needed */
+  margin-right: 10px; /* Adjust spacing between line and text as needed */
+}
+
+.active-user-legend:before {
+  background-color: #2e84cb;
+}
+
+.other-user-legend:before {
+  background-color: #25ac21;
 }
 </style>

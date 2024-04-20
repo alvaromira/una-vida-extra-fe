@@ -123,16 +123,7 @@ function onConfirm() {
 }
 
 .btn-close {
-  /* position: absolute;
-  top: 0;
-  right: 0;
-  border: none;
-  font-size: 20px;
-  padding: 1.5rem;
-  cursor: pointer;
-  font-weight: bold;
   color: #7ab370;
-  background: transparent;*/
 }
 
 .btn-cancel {
