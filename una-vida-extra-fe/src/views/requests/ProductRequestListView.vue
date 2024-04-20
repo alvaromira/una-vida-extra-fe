@@ -73,41 +73,6 @@ const numberOfRequests = computed(() => {
   return prodRequests.length;
 });
 
-/*
-const deleteProductRequests = async (deletionRequestID) => {
-  try {
-    const resp = await axios.delete(
-      `http://localhost:8000/api1/requests/${deletionRequestID}`
-    );
-    console.log(resp);
-    if (resp.status === 200 || resp.status === 204) {
-      console.log("Data successfully deleted");
-      return true;
-    }
-  } catch (error) {
-    // Handle Error Here
-    console.error("An error occurred while deleting the request:", error);
-    if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.error("Error data  - request deletion", error.response.data);
-      console.error("Error status - request deletion", error.response.status);
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.error("Error message - request deletion", error.message);
-      console.error("Error code - request deletion", error.code);
-    }
-    return false;
-  }
-};
-*/
-/*const removeChildComponentById = (id) => {
-  const index = prodRequests.value.findIndex((child) => child.id === id);
-  if (index !== -1) {
-    prodRequests.value.splice(index, 1);
-  }
-};*/
-
 //behaviour for modal
 //To do
 //Check all requests, set all of them as not available but the one acceptes

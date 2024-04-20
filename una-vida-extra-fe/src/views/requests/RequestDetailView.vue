@@ -14,16 +14,10 @@ import { ref, computed, defineProps } from "vue";
 import RequestProductCard from "../../components/ui/request/RequestProductCard.vue";
 import axios from "axios";
 
+const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
+
 const router = useRouter();
-const route = useRoute();
-
-//No props because of https://router.vuejs.org/guide/essentials/passing-props.html#boolean-mode
-
-//test data
-/*const testData = ref({
-  image: "https://via.placeholder.com/250x250/cccccc/969696",
-  title: "Used pans",
-});*/
+const route = useRoute();/
 
 //computed
 const productId = computed(() => {
@@ -36,7 +30,7 @@ const prodDetail = ref([]);
 
 const getProductData = async () => {
   try {
-    const targetURL = `http://localhost:8000/api1/products/${route.params.id}`;
+    const targetURL = `${baseApiUrl}/products/${route.params.id}`;
     const response = await axios.get(targetURL);
     prodDetail.value = response.data.data;
   } catch (err) {

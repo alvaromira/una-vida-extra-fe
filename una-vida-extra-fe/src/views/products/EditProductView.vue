@@ -15,6 +15,8 @@ import { ref, computed, defineProps } from "vue";
 import EditProductForm from "../../components/ui/product/EditProductForm.vue";
 import axios from "axios";
 
+const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
+
 const router = useRouter();
 const route = useRoute();
 
@@ -29,7 +31,7 @@ const prodDetail = ref([]);
 
 const getProductData = async () => {
   try {
-    const targetURL = `http://localhost:8000/api1/products/${route.params.id}?include_tags=true`;
+    const targetURL = `${baseApiUrl}/products/${route.params.id}?include_tags=true`;
     const response = await axios.get(targetURL);
     prodDetail.value = response.data.data;
   } catch (err) {

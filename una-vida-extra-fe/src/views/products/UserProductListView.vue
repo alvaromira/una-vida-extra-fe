@@ -41,6 +41,8 @@ import axios from "axios";
 import { useStore } from "vuex";
 import BaseSpinner from "../../components/ui/BaseSpinner.vue";
 
+const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
+
 const route = useRoute();
 const store = useStore();
 
@@ -64,7 +66,7 @@ const loggedInUser = computed(() => {
 const getUserProducts = async () => {
   try {
     const resp = await axios.get(
-      `http://localhost:8000/api1/users/${loggedInUser.value}/products`
+      `${baseApiUrl}/users/${loggedInUser.value}/products`
     );
     //console.log(resp);
     userProducts.value = resp.data.data;

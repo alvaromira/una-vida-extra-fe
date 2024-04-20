@@ -5,8 +5,12 @@ import axios from "axios";
 import { useRouter } from "vue-router";
 import BaseSpinner from "../ui/BaseSpinner.vue";
 import ProfileImage from "../ui/ProfileImage.vue";
-const store = useStore();
 import { useStore } from "vuex";
+
+const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
+const baseUrl = import.meta.env.VITE_BASE_URL;
+
+const store = useStore();
 
 const activeUserEmail = computed(() => {
   return data.email.val;
@@ -223,10 +227,8 @@ const submitForm = async () => {
   const sendRegistrationRequest = async (fd) => {
     try {
       console.log(fd);
-      const cookie = await axios.get(
-        "http://localhost:8000/sanctum/csrf-cookie"
-      );
-      const resp = await axios.post("http://localhost:8000/api1/register", fd);
+      const cookie = await axios.get(`${baseUrl}/sanctum/csrf-cookie`);
+      const resp = await axios.post(`${baseApiUrl}/register`, fd);
       //console.log(resp);
 
       if (resp.status === 201) {
@@ -286,11 +288,9 @@ const submitForm = async () => {
 
   const createUserLocation = async () => {
     try {
-      const cookie = await axios.get(
-        "http://localhost:8000/sanctum/csrf-cookie"
-      );
+      const cookie = await axios.get(`${baseUrl}/sanctum/csrf-cookie`);
       const resp = await axios.post(
-        "http://localhost:8000/api1/locations",
+        `${baseApiUrl}/locations`,
         locationFormData
       );
       console.log(`Newly created Location ID: ${resp.data.data.id}`);
