@@ -29,7 +29,7 @@ import { ref } from "vue";
 import BaseSpinner from "../../components/ui/BaseSpinner.vue";
 import ProductDetailCard from "../../components/ui/product/ProductDetailCard.vue";
 
-const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const router = useRouter();
 const route = useRoute();
@@ -49,9 +49,10 @@ const prodDetail = ref([]);
 
 const getProductData = async () => {
   try {
-    const targetURL = `${baseApiUrl}/products/${route.params.id}`;
-    const response = await axios.get(targetURL);
-    prodDetail.value = response.data.data;
+    //const targetURL = `${baseApiUrl}/products/${route.params.id}`;
+    //const response = await axios.get(targetURL);
+    const response = await store.dispatch("getProductData", route.params.id);
+    prodDetail.value = response.data;
     isDataLoaded.value = true; // Set data loaded to true once data is fetched
   } catch (err) {
     console.log(err);
@@ -62,7 +63,7 @@ const imagePath = computed(() => {
   if (prodDetail.value.image == null || prodDetail.value.image === undefined) {
     return "https://via.placeholder.com/250x250/cccccc/969696";
   } else {
-    return baseApiUrl + "/storage/" + prodDetail.value.image;
+    return baseUrl + "/storage/" + prodDetail.value.image;
   }
 });
 
