@@ -1,8 +1,8 @@
 <template>
   <div class="container">
-    <h2>Admin Panel</h2>
-    <div class="admin-dashboard-nav">
-      <ul class="nav nav-pills">
+    <div class="admin-dashboard-nav row">
+      <ul class="nav nav-pills col-md-2">
+        <h2>Admin Panel</h2>
         <li class="nav-item">
           <router-link
             class="nav-link"
@@ -52,7 +52,7 @@
           >
         </li>
       </ul>
-      <div class="admin-view-wrapper">
+      <div class="admin-view-wrapper col-md-10">
         <router-view />
       </div>
     </div>
@@ -68,6 +68,10 @@ const route = useRoute();
 const currentPath = computed(() => route.path);
 </script>
 <style scoped>
+.nav-pills {
+  display: flex;
+  flex-direction: column;
+}
 .nav-pills .nav-link.active,
 .nav-pills .show > .nav-link {
   background-color: #edb421;
@@ -79,6 +83,5 @@ const currentPath = computed(() => route.path);
   padding: 2rem 0;
 }
 .admin-view-wrapper {
-  padding: 2rem 0;
 }
 </style>

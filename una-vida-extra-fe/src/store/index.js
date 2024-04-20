@@ -1,6 +1,9 @@
 import { createStore } from 'vuex';
 import axios from 'axios';
 
+const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
+const baseUrl = import.meta.env.VITE_BASE_URL;
+
 //vuex store init
 const store = createStore({
     state() {
@@ -64,13 +67,13 @@ const store = createStore({
         async login({ commit }, { payload }) {
             try {
                 // Get CSRF cookie
-                await axios.get("http://localhost:8000/sanctum/csrf-cookie");
+                await axios.get(`${baseUrl}/sanctum/csrf-cookie`);
 
                 // Login request
-                const response = await axios.post("http://localhost:8000/api1/login", payload);
+                const response = await axios.post(baseApiUrl + "/login", payload);
 
                 // Get user data, if the login is successful
-                const userData = await axios.get('http://localhost:8000/api1/user');
+                const userData = await axios.get(baseApiUrl + "/user");
 
                 // Commit mutations
                 commit('SET_AUTHENTICATED', true);
@@ -92,7 +95,7 @@ const store = createStore({
         },
         async logout({ commit }) {
             try {
-                await axios.post("http://localhost:8000/api1/logout");
+                await axios.post(baseApiUrl + "/logout");
                 commit('SET_USER', {})
                 commit('SET_AUTHENTICATED', false)
                 commit('SET_USER_IS_ADMIN', false)
@@ -104,7 +107,7 @@ const store = createStore({
         },
         async getProductData({ commit }, id) {
             try {
-                const targetURL = `http://localhost:8000/api1/products/${id}?include_tags=true`;
+                const targetURL = `${baseApiUrl}/products/${id}?include_tags=true`;
                 const response = await axios.get(targetURL);
                 return response.data.data;
             } catch (error) {
@@ -113,7 +116,7 @@ const store = createStore({
         },
         async deleteProduct({ commit }, id) {
             try {
-                const targetURL = `http://localhost:8000/api1/products/${id}`;
+                const targetURL = `${baseApiUrl}/products/${id}`;
                 const response = await axios.delete(targetURL);
                 return response.data.data;
             } catch (error) {
@@ -122,7 +125,16 @@ const store = createStore({
         },
         async deleteTag({ commit }, id) {
             try {
-                const targetURL = `http://localhost:8000/api1/tags/${id}`;
+                const targetURL = `${baseApiUrl}/tags/${id}`;
+                const response = await axios.delete(targetURL);
+                return response.data.data;
+            } catch (error) {
+                throw error;
+            }
+        },
+        async deleteCategory({ commit }, id) {
+            try {
+                const targetURL = `${baseApiUrl}/categories/${id}`;
                 const response = await axios.delete(targetURL);
                 return response.data.data;
             } catch (error) {
@@ -131,7 +143,7 @@ const store = createStore({
         },
         async updateProductData({ commit }, { id, payload }) {
             try {
-                const targetURL = `http://localhost:8000/api1/products/${id}`;
+                const targetURL = `${baseApiUrl}/products/${id}`;
                 const response = await axios.put(targetURL, payload);
                 return response.data.data;
             } catch (error) {
@@ -140,7 +152,16 @@ const store = createStore({
         },
         async updateTag({ commit }, { id, newname }) {
             try {
-                const targetURL = `http://localhost:8000/api1/tags/${id}`;
+                const targetURL = `${baseApiUrl}/tags/${id}`;
+                const response = await axios.put(targetURL, { "name": newname });
+                return response.data.data;
+            } catch (error) {
+                throw error;
+            }
+        },
+        async updateCategory({ commit }, { id, newname }) {
+            try {
+                const targetURL = `${baseApiUrl}/categories/${id}`;
                 const response = await axios.put(targetURL, { "name": newname });
                 return response.data.data;
             } catch (error) {
@@ -149,7 +170,16 @@ const store = createStore({
         },
         async createTag({ commit }, { name }) {
             try {
-                const targetURL = `http://localhost:8000/api1/tags`;
+                const targetURL = `${baseApiUrl}/tags`;
+                const response = await axios.post(targetURL, { "name": name });
+                return response.data.data;
+            } catch (error) {
+                throw error;
+            }
+        },
+        async createCategory({ commit }, { name }) {
+            try {
+                const targetURL = `${baseApiUrl}/categories`;
                 const response = await axios.post(targetURL, { "name": name });
                 return response.data.data;
             } catch (error) {
@@ -158,7 +188,7 @@ const store = createStore({
         },
         async getProductRequests({ commit }, id) {
             try {
-                const targetURL = `http://localhost:8000/api1/products/${id}?include_tags=true&include_requests=true`;
+                const targetURL = `${baseApiUrl}/products/${id}?include_tags=true&include_requests=true`;
                 const response = await axios.get(targetURL);
                 return response.data.data;
             } catch (error) {
@@ -167,7 +197,7 @@ const store = createStore({
         },
         async acceptProductRequest({ commit }, { payload }) {
             try {
-                const targetURL = `http://localhost:8000/api1/requests/actions/accept`;
+                const targetURL = `${baseApiUrl}/requests/actions/accept`;
                 const response = await axios.post(targetURL, payload);
                 return response.data.data;
             } catch (error) {
@@ -176,7 +206,7 @@ const store = createStore({
         },
         async getProducts({ commit }, page) {
             try {
-                let targetURL = 'http://localhost:8000/api1/products';
+                let targetURL = `${baseApiUrl}/products`;
 
                 if (page !== undefined && typeof page === 'number') {
                     targetURL += `?page=${page}`;
@@ -194,7 +224,7 @@ const store = createStore({
             try {
                 let allCategories = []; // Array to store all tags from all pages
 
-                let nextPage = 'http://localhost:8000/api1/categories'; // Start with the first page
+                let nextPage = `${baseApiUrl}/categories`; // Start with the first page
 
                 while (nextPage) {
                     // Fetch data from the next page
@@ -217,7 +247,7 @@ const store = createStore({
             try {
                 let allTags = []; // Array to store all tags from all pages
 
-                let nextPage = 'http://localhost:8000/api1/tags'; // Start with the first page
+                let nextPage = `${baseApiUrl}/tags`; // Start with the first page
 
                 while (nextPage) {
                     // Fetch data from the next page
@@ -236,7 +266,7 @@ const store = createStore({
         },
         async searchProducts({ commit }, q) {
             try {
-                const targetURL = `http://localhost:8000/api1/products/search?search=${q}`;
+                const targetURL = `${baseApiUrl}/products/search?search=${q}`;
                 const response = await axios.get(targetURL);
                 commit('setProductResults', response.data);
                 // return response.data;
@@ -248,7 +278,7 @@ const store = createStore({
         },
         async getAuthUser({ commit }) {
             try {
-                const response = await axios.get('http://localhost:8000/api1/user');
+                const response = await axios.get(`${baseApiUrl}/user`);
 
                 // Check for 401 (Unauthorized) or 419 (Authentication Timeout) status codes
                 if (response.status === 401 || response.status === 419) {

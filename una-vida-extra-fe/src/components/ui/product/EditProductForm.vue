@@ -4,6 +4,8 @@ import BaseButton from "../BaseButton.vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
 
+const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
+
 const router = useRouter();
 
 const props = defineProps({
@@ -172,7 +174,7 @@ const prodCategories = ref([]);
 //fetch product requests from the public api
 const getProductCategories = async () => {
   try {
-    const resp = await axios.get(`http://localhost:8000/api1/categories`);
+    const resp = await axios.get(`${baseApiUrl}/categories`);
     //console.log(resp);
     prodCategories.value = resp.data.data;
     console.log(prodCategories);
@@ -257,7 +259,7 @@ const updateProduct = async (payload) => {
       "Content-Type": "application/json",
     };
     const response = await axios.put(
-      `http://localhost:8000/api1/products/${props.id}`,
+      `${baseApiUrl}/products/${props.id}`,
       payload,
       {
         headers: headers,

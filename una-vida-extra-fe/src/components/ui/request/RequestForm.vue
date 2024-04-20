@@ -36,7 +36,7 @@ import BaseButton from "../BaseButton.vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import axios from "axios";
-
+const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
 const props = defineProps({
   id: String,
 });
@@ -125,13 +125,10 @@ async function sendProdRequest(requestData) {
   console.log("sending...", requestData);
 
   try {
-    //const cookie = await axios.get("http://localhost:8000/sanctum/csrf-cookie");
-
-    const resp = await axios.post("http://localhost:8000/api1/requests", {
+    const resp = await axios.post(`${baseApiUrl}/requests`, {
       ...requestData,
     });
-    //const call = await axios.get("http://localhost:8000/api1/user");
-    //console.log(call);
+
     console.log("Request response", resp);
 
     //TODO Show toast

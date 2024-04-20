@@ -4,7 +4,7 @@
       <div id="new-tag-container">
         <BaseButton @click="confirmAddition">Create new Tag</BaseButton>
       </div>
-      <table class="table table-hover">
+      <table class="table table-hover table-sm">
         <thead>
           <tr>
             <th scope="col">id</th>
@@ -451,5 +451,6 @@ img.mini {
 }
 #new-tag-container {
   text-align: right;
+  padding-bottom: 2rem;
 }
 </style>

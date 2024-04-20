@@ -4,6 +4,7 @@ import BaseButton from "../BaseButton.vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
 import { useStore } from "vuex";
+const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
 
 const router = useRouter();
 const store = useStore();
@@ -161,15 +162,11 @@ const submitForm = async () => {
 
 const createProduct = async (payload) => {
   try {
-    const response = await axios.post(
-      `http://localhost:8000/api1/products`,
-      payload,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    const response = await axios.post(`${baseApiUrl}/products`, payload, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response.data;
   } catch (error) {
     throw error; // rethrow the error to be handled in the component
@@ -180,7 +177,7 @@ const prodCategories = ref([]);
 //fetch product requests from the public api
 const getProductCategories = async () => {
   try {
-    const resp = await axios.get(`http://localhost:8000/api1/categories`);
+    const resp = await axios.get(`${baseApiUrl}/categories`);
     //console.log(resp);
     prodCategories.value = resp.data.data;
     console.log(prodCategories);
