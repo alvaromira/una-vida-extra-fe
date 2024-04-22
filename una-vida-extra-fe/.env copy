@@ -1,0 +1,4 @@
+VITE_SOME_KEY=123
+VITE_BASE_API_URL=https://una-vida-extra.site/api1
+VITE_BASE_URL=https://una-vida-extra.site
+VITE_BASE_IMG_URL=https://una-vida-extra.s3.us-east-2.amazonaws.com/

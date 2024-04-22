@@ -37,14 +37,14 @@
           Next
         </BaseButton>
       </div>
+      <section id="products-data-summary">
+        <ProductsSummary></ProductsSummary>
+      </section>
     </div>
 
     <div v-else class="loading">
       <base-spinner></base-spinner>
     </div>
-    <section id="products-data-summary">
-      <ProductsSummary></ProductsSummary>
-    </section>
   </div>
 </template>
 
@@ -150,7 +150,6 @@ const handleRequestError = (error) => {
 // Fetch products on component mount
 onMounted(async () => {
   await getProductRequests(props.sText, currentPage);
-  console.log(props.sText);
 });
 
 // Reset productResults to an empty array on component unmount

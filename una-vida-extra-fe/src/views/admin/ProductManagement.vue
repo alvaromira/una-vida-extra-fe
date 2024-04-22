@@ -23,7 +23,7 @@
             <td>
               <img
                 class="mini"
-                :src="baseUrl + `/storage/` + product.image"
+                :src="baseUrlImg + product.image"
                 :alt="product.title"
               />
             </td>
@@ -155,7 +155,7 @@
             <input type="file" class="form-control" id="image" />-->
             <img
               class="mini"
-              :src="baseUrl + `/storage/` + editProductFormData.image"
+              :src="baseUrlImg + editProductFormData.image"
               :alt="editProductFormData.title"
             /><span>(not editable)</span>
           </div>
@@ -264,6 +264,7 @@ import BaseButton from "../../components/ui/BaseButton.vue";
 import ModalConfirmationDialog from "../../components/ui/ModalConfirmationDialog.vue";
 
 const baseUrl = import.meta.env.VITE_BASE_API_URL;
+const baseUrlImg = import.meta.env.VITE_BASE_IMG_URL;
 
 // Access current route
 const route = useRoute();

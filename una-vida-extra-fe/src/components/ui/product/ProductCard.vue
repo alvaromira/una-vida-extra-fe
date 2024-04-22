@@ -53,6 +53,7 @@ import Map from "../Map.vue";
 
 const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
 const baseUrl = import.meta.env.VITE_BASE_URL;
+const baseImgURL = import.meta.env.VITE_BASE_IMG_URL;
 
 //Aceppted properties for the card items
 const props = defineProps({
@@ -73,7 +74,7 @@ const imagePath = computed(() => {
   if (props.image == null || props.image === undefined) {
     return "https://via.placeholder.com/250x250/cccccc/969696";
   } else {
-    return baseUrl + "/storage/" + props.image;
+    return baseImgURL + props.image;
   }
 });
 

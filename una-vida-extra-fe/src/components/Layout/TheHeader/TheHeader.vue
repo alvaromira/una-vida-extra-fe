@@ -81,7 +81,6 @@
               <!--For logged in users -->
 
               <li v-if="getUserStatus" class="user-menu-item">
-                <!--<BaseButton>My Account</BaseButton>-->
                 <div>
                   <ProfileImage
                     :userEmail="activeUserEmail"
@@ -90,7 +89,7 @@
                   />
                 </div>
                 <div class="dropdown">
-                  <BaseButton>My Account</BaseButton>
+                  <BaseButton>Hi, {{ activeUserEmail }}</BaseButton>
                   <div v-if="!isUserAdmin" class="dropdown-content">
                     <RouterLink :to="{ name: 'userProducts' }"
                       >My Products</RouterLink

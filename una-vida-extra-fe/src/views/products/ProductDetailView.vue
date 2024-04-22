@@ -30,6 +30,7 @@ import BaseSpinner from "../../components/ui/BaseSpinner.vue";
 import ProductDetailCard from "../../components/ui/product/ProductDetailCard.vue";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
+const baseUrlImg = import.meta.env.VITE_BASE_IMG_URL;
 
 const router = useRouter();
 const route = useRoute();
@@ -62,7 +63,7 @@ const imagePath = computed(() => {
   if (prodDetail.value.image == null || prodDetail.value.image === undefined) {
     return "https://via.placeholder.com/250x250/cccccc/969696";
   } else {
-    return `${baseUrl}/storage/${prodDetail.value.image}`;
+    return baseUrlImg + prodDetail.value.image;
   }
 });
 
