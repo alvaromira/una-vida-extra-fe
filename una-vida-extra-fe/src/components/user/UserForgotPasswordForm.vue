@@ -3,6 +3,7 @@ import { ref, reactive, computed } from "vue";
 import BaseButton from "../ui/BaseButton.vue";
 import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
+import BaseSpinner from "../ui/BaseSpinner.vue";
 import axios from "axios";
 
 const route = useRoute();
@@ -10,20 +11,13 @@ const route = useRoute();
 const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
-//computed
-const loginRedirection = computed(() => {
-  return route.query.from;
-});
-
-console.log("LoginRedirection", route.query.from);
+const isProcessing = ref(false);
+const loginError = ref(false);
+const errorCode = ref(null);
 
 //data
 const data = reactive({
   email: {
-    val: "",
-    isValid: true,
-  },
-  password: {
     val: "",
     isValid: true,
   },
@@ -56,10 +50,6 @@ const validateForm = () => {
     data.email.isValid = false;
     formIsValid.value = false;
   }
-  if (data.password.val === "") {
-    data.password.isValid = false;
-    formIsValid.value = false;
-  }
 };
 
 const submitForm = () => {
@@ -72,26 +62,18 @@ const submitForm = () => {
 
   const formData = {
     email: data.email.val,
-    password: data.password.val,
   };
   console.log("Form submitted");
-  //logUserIn();
-  login();
-
-  //console.log(formData);
-
-  // this.$emit("save-data", formData);
+  forgotPassword();
 };
 
-async function login() {
+async function forgotPassword() {
   // this.processing = true
 
   try {
-    const csrfCookie = await axios.get(`${baseUrl}/sanctum/csrf-cookie`);
-
-    console.log(csrfCookie);
-
-    const response = await axios.post(`${baseApiUrl}/login`, {
+    // const csrfCookie = await axios.get(`${baseUrl}/sanctum/csrf-cookie`);
+    // console.log(csrfCookie);
+    /*   const response = await axios.post(`${baseApiUrl}/login`, {
       email: data.email.val,
       password: data.password.val,
     });
@@ -103,9 +85,9 @@ async function login() {
       } else {
         router.push("/products");
       }
-    });
+    });*/
   } catch (response) {
-    if (response.response.status === 422) {
+    /*if (response.response.status === 422) {
       //this.validationErrors = response.data.errors
       console.log(response.response.data.errors);
       //show toast with error message
@@ -126,7 +108,7 @@ async function login() {
         message:
           "There was en error while logging you in. Please check your email and password and try again.",
       });
-    }
+    }*/
   } finally {
     console.log("password reset function over.");
   }
@@ -135,45 +117,55 @@ async function login() {
 
 <template>
   <form @submit.prevent="submitForm">
-    <div>
-      <div class="form-field">
-        <div class="form-control" :class="{ invalid: !data.email.isValid }">
+    <div class="container">
+      <div class="form-field row text-center">
+        <div class="col-3 form-label">
           <label for="email">Email</label>
+        </div>
+        <div class="col-9">
           <input
+            class="form-control col-8"
+            :class="{ invalid: !data.email.isValid }"
             type="email"
             id="email"
             v-model.trim="data.email.val"
             @blur="clearValidity('email')"
           />
         </div>
-        <div v-if="!data.email.isValid" class="validation-error-container">
+      </div>
+      <div
+        v-if="!data.email.isValid"
+        class="validation-error-container pointer-up row"
+        :class="{ active: !data.email.isValid }"
+      >
+        <div class="col">
           <p>Email must not be empty.</p>
         </div>
       </div>
 
-      <!--  <div class="form-field">
-        <div class="form-control" :class="{ invalid: !data.password.isValid }">
-          <label for="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            v-model.trim="data.password.val"
-            @blur="clearValidity('password')"
-          />
+      <div class="form-field row submit">
+        <div class="form-submit-button">
+          <BaseButton :disabled="isProcessing">Reset Password</BaseButton>
         </div>
-
-        <div v-if="!data.password.isValid" class="validation-error-container">
-          <p>Password must not be empty.</p>
+      </div>
+      <div v-if="!isProcessing">
+        <div
+          id="login-errors"
+          class="validation-error-container"
+          :class="{ active: loginError }"
+          v-if="loginError"
+        >
+          <p v-if="errorCode === 422" class="validation-error">
+            Wrong credentials provided. Please check your email and password.
+          </p>
+          <p v-else>
+            There was an error while logging you in. Please try again later.
+          </p>
         </div>
-
-        <p v-if="formIsValid.value === false">
-          Please fix the above errors and submit again.
-        </p>
-      </div>-->
-    </div>
-
-    <div class="form-submit-button">
-      <BaseButton>Reset Password</BaseButton>
+      </div>
+      <div v-else class="loading">
+        <base-spinner></base-spinner>
+      </div>
     </div>
   </form>
 </template>
@@ -184,46 +176,67 @@ form {
   box-shadow: rgba(17, 17, 26, 0.2) 0px 2px 4px;
   background-color: #fff;
   padding: 0;
-  display: block;
+  /* display: block; */
   padding: 2rem;
 }
 
+div.form-field {
+  padding-bottom: 2rem;
+}
+div.form-field.submit {
+  padding-bottom: 0rem;
+}
+
 .form-control {
-  margin: 1.5rem 0;
-  display: flex;
+  /* margin: 1.5rem 0;
+   display: flex;
+  border: none;*/
 }
 
 label {
-  font-weight: bold;
-  display: block;
+  /* font-weight: bold;
+  display: block; */
   /*margin-bottom: 0.5rem;*/
   color: #edb421;
-  min-width: 75px;
+  /*min-width: 75px;*/
 }
 
 input[type="checkbox"] + label {
   font-weight: normal;
-  display: inline;
-  margin: 0 0 0 0.5rem;
+  /*display: inline;
+  margin: 0 0 0 0.5rem;*/
 }
 
 input,
 textarea {
-  display: block;
-  width: 100%;
+  /*display: block;
+  width: 100%;*/
   border: thin solid #edb421;
   border-radius: 3px;
   font: inherit;
   box-shadow: rgba(17, 17, 26, 0.2) 0px 2px 4px;
-  margin-inline-start: 1.5rem;
+  /*margin-inline-start: 1.5rem;*/
   color: gray;
+  /*padding: 0.5rem;*/
 }
 
 h3 {
   margin: 0.5rem 0;
   font-size: 1rem;
 }
+.validation-error-container {
+  opacity: 0;
+  transition: opacity 0.5s;
+  padding-bottom: 2rem;
+}
 
+.validation-error-container.active {
+  opacity: 1;
+}
+
+.validation-error {
+  color: red;
+}
 .validation-error-container p {
   color: rgb(110 105 105);
   background-color: rgba(237, 219, 219, 0.5);
@@ -231,28 +244,26 @@ h3 {
   border-radius: 3px;
   padding: 0.5rem;
   position: relative;
+  margin-bottom: 0;
 }
-.validation-error-container p:before {
+
+.validation-error-container.pointer-up p:before {
   content: "";
   display: block;
   position: absolute;
-  left: 25%;
+  left: 50%;
   top: -10px;
   border-bottom: 10px solid red;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
 }
 
-/*
-.invalid label {
-  color: red;
+.form-label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
 }
-
-.invalid input,
-.invalid textarea {
-  border: 1px solid red;
-  opacity: 0.7;
-}*/
 
 .form-submit-button {
   text-align: right;
