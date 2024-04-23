@@ -103,7 +103,9 @@ const handleSuccessfulLogin = () => {
   <form @submit.prevent="submitForm" class="rounded">
     <div class="container">
       <div class="form-field row text-center">
-        <div class="col-3"><label for="email" class="col-4">Email</label></div>
+        <div class="col-3 form-label">
+          <label for="email">Email</label>
+        </div>
         <div class="col-9">
           <input
             class="form-control col-8"
@@ -126,8 +128,8 @@ const handleSuccessfulLogin = () => {
       </div>
 
       <div class="form-field row text-center">
-        <div class="col-3">
-          <label for="password" class="col-4">Password</label>
+        <div class="col-3 form-label">
+          <label for="password">Password</label>
         </div>
         <div class="col-9">
           <input
@@ -222,8 +224,8 @@ div.form-field.submit {
 }
 
 label {
-  font-weight: bold;
-  /* display: block; */
+  /* font-weight: bold;
+  display: block; */
   /*margin-bottom: 0.5rem;*/
   color: #edb421;
   /*min-width: 75px;*/
@@ -284,6 +286,13 @@ h3 {
   border-bottom: 10px solid red;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
+}
+
+.form-label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
 }
 
 .form-submit-button {

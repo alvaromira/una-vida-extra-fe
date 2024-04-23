@@ -129,6 +129,15 @@ const router = createRouter({
       component: () => import('../views/user/LoginView.vue')
     },
     {
+      path: '/forgot-password',
+      name: 'forgot-password',
+      meta: {
+        middleware: "guest",
+        title: 'Forgot Password'
+      },
+      component: () => import('../views/user/ForgotPasswordView.vue')
+    },
+    {
       path: '/register',
       name: 'register',
       meta: {
