@@ -138,6 +138,15 @@ const router = createRouter({
       component: () => import('../views/user/ForgotPasswordView.vue')
     },
     {
+      path: '/reset-password/:token',
+      name: 'reset-password',
+      meta: {
+        middleware: "guest",
+        title: 'Reset Password'
+      },
+      component: () => import('../views/user/ResetPasswordView.vue')
+    },
+    {
       path: '/register',
       name: 'register',
       meta: {

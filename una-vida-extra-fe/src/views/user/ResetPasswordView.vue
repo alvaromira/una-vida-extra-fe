@@ -1,5 +1,5 @@
 <script setup>
-import UserForgotPasswordForm from "../../components/user/UserForgotPasswordForm.vue";
+import UserResetPasswordForm from "../../components/user/UserResetPasswordForm.vue";
 </script>
 
 <template>
@@ -7,8 +7,7 @@ import UserForgotPasswordForm from "../../components/user/UserForgotPasswordForm
     <div class="row">
       <div class="col"><h2>Password Reset</h2></div>
     </div>
-
-    <UserForgotPasswordForm />
+    <UserResetPasswordForm></UserResetPasswordForm>
   </div>
 </template>
 

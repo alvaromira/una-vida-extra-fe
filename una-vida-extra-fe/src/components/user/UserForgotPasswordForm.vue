@@ -8,11 +8,8 @@ import axios from "axios";
 
 const route = useRoute();
 
-const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
-const baseUrl = import.meta.env.VITE_BASE_URL;
-
 const isProcessing = ref(false);
-const loginError = ref(false);
+const resetError = ref(false);
 const errorCode = ref(null);
 
 //data
@@ -29,9 +26,11 @@ const formIsValid = ref(true);
 const store = useStore();
 const router = useRouter();
 
-//using computed property derived from Vuex
-const getUserStatus = computed(() => {
-  return store.state.authenticated;
+const anyError = computed(() => {
+  if (data.email.isValid === false || resetError.value === true) {
+    return true;
+  }
+  return false;
 });
 
 //methods
@@ -53,64 +52,39 @@ const validateForm = () => {
 };
 
 const submitForm = () => {
-  console.log("Submitting form");
+  resetError.value = false;
   validateForm();
-
   if (!formIsValid.value) {
     return;
   }
-
-  const formData = {
-    email: data.email.val,
-  };
-  console.log("Form submitted");
   forgotPassword();
 };
 
-async function forgotPassword() {
-  // this.processing = true
+const handleSuccessfulReset = () => {
+  isProcessing.value = false;
+  //toast
+  store.commit("addToast", {
+    title: "Password Reset Requested",
+    type: "success",
+    message:
+      "You have requested a password reset. You will receive an email to process your password reset in a few minutes.",
+  });
+  router.push("/login");
+};
 
+async function forgotPassword() {
+  isProcessing.value = true;
   try {
-    // const csrfCookie = await axios.get(`${baseUrl}/sanctum/csrf-cookie`);
-    // console.log(csrfCookie);
-    /*   const response = await axios.post(`${baseApiUrl}/login`, {
+    await store.dispatch("forgotPassword", {
       email: data.email.val,
-      password: data.password.val,
     });
-    //console.log(call);
-    console.log("Login response", response);
-    store.dispatch("login").then(() => {
-      if (route.query.from != undefined && route.query.from.length > 0) {
-        router.replace(route.query.from);
-      } else {
-        router.push("/products");
-      }
-    });*/
+    handleSuccessfulReset();
   } catch (response) {
-    /*if (response.response.status === 422) {
-      //this.validationErrors = response.data.errors
-      console.log(response.response.data.errors);
-      //show toast with error message
-      store.commit("addToast", {
-        title: "Login Error",
-        type: "error",
-        message:
-          "Wrong credentials provided. Please check your email and password.",
-      });
-    } else {
-      //this.validationErrors = {}
-      //alert(response.data.message)
-      //console.log(response);
-      //show toast with error message
-      store.commit("addToast", {
-        title: "Login Error",
-        type: "error",
-        message:
-          "There was en error while logging you in. Please check your email and password and try again.",
-      });
-    }*/
+    isProcessing.value = false;
+    resetError.value = true;
+    errorCode.value = response.response.status;
   } finally {
-    console.log("password reset function over.");
+    isProcessing.value = false;
   }
 }
 </script>
@@ -118,6 +92,14 @@ async function forgotPassword() {
 <template>
   <form @submit.prevent="submitForm">
     <div class="container">
+      <div class="row instructions">
+        <div class="col">
+          <p>
+            Enter your email and we will email you a link to reset your
+            password.
+          </p>
+        </div>
+      </div>
       <div class="form-field row text-center">
         <div class="col-3 form-label">
           <label for="email">Email</label>
@@ -133,38 +115,35 @@ async function forgotPassword() {
           />
         </div>
       </div>
-      <div
-        v-if="!data.email.isValid"
-        class="validation-error-container pointer-up row"
-        :class="{ active: !data.email.isValid }"
-      >
-        <div class="col">
-          <p>Email must not be empty.</p>
+      <div v-if="anyError">
+        <div
+          class="validation-error-container pointer-up row"
+          :class="{ active: anyError }"
+        >
+          <div class="col" v-if="!data.email.isValid">
+            <p>Email must not be empty.</p>
+          </div>
+          <div class="col" v-if="resetError">
+            <div id="login-errors">
+              <p v-if="errorCode === 422" class="validation-error">
+                Wrong credentials provided. Please check your email and
+                password.
+              </p>
+              <p v-else>
+                There was an error while logging you in. Please try again later.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
+      <div v-if="isProcessing" class="loading">
+        <base-spinner></base-spinner>
+      </div>
       <div class="form-field row submit">
         <div class="form-submit-button">
-          <BaseButton :disabled="isProcessing">Reset Password</BaseButton>
+          <BaseButton :disabled="isProcessing">Send Link to Email</BaseButton>
         </div>
-      </div>
-      <div v-if="!isProcessing">
-        <div
-          id="login-errors"
-          class="validation-error-container"
-          :class="{ active: loginError }"
-          v-if="loginError"
-        >
-          <p v-if="errorCode === 422" class="validation-error">
-            Wrong credentials provided. Please check your email and password.
-          </p>
-          <p v-else>
-            There was an error while logging you in. Please try again later.
-          </p>
-        </div>
-      </div>
-      <div v-else class="loading">
-        <base-spinner></base-spinner>
       </div>
     </div>
   </form>
@@ -284,5 +263,9 @@ h3 {
 }
 #forgot-password a:active {
   color: #edb421;
+}
+.instructions {
+  padding-bottom: 2rem;
+  text-align: center;
 }
 </style>
