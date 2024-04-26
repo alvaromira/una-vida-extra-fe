@@ -276,6 +276,27 @@ const store = createStore({
                 // Handle error (e.g., show error message to user)
             }
         },
+        async forgotPassword({ commit }, { email }) {
+            try {
+                const csrf = await axios.get(`${baseUrl}/sanctum/csrf-cookie`); //including potential new csrf token, since non registered or logged in users may not have it
+
+                const targetURL = `${baseApiUrl}/forgot-password`;
+                const response = await axios.post(targetURL, { "email": email });
+
+            } catch (error) {
+                throw error;
+            }
+        },
+        async resetPassword({ commit }, { payload }) {
+            //the payload should consist of token, email, password and password_confirmation
+            try {
+                const csrf = await axios.get(`${baseUrl}/sanctum/csrf-cookie`); //including potential new csrf token, since non registered or logged in users may not have it
+                const targetURL = `${baseApiUrl}/reset-password`;
+                const response = await axios.post(targetURL, payload);
+            } catch (error) {
+                throw error;
+            }
+        },
         async getAuthUser({ commit }) {
             try {
                 const response = await axios.get(`${baseApiUrl}/user`);

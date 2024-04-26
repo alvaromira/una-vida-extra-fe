@@ -1,23 +1,31 @@
 <script setup>
-import { ref, reactive, computed } from "vue";
+import { ref, reactive, computed, onMounted } from "vue";
 import BaseButton from "../ui/BaseButton.vue";
 import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
 import BaseSpinner from "../ui/BaseSpinner.vue";
 
-const route = useRoute();
-
 // Define a ref to track if data is loaded
 const isProcessing = ref(false);
-
 const showPassword = ref(false);
 
-const togglePasswordVisibility = () => {
+/*const togglePasswordVisibility = () => {
   showPassword.value = !showPassword.value;
+};*/
+
+const togglePasswordVisibility = (event) => {
+  const inputId = event.target.dataset.target;
+  const input = document.getElementById(inputId);
+  if (input) {
+    input.type = input.type === "password" ? "text" : "password";
+  }
 };
 
 const resetError = ref(false);
 const errorCode = ref(null);
+const errorString = ref(
+  "Wrong credentials provided. Please check your email and password."
+);
 
 //data
 const data = reactive({
@@ -37,6 +45,10 @@ const data = reactive({
     val: false,
     isValid: true,
   },
+  token: {
+    val: "",
+    isValid: true,
+  },
 });
 
 const formIsValid = ref(true);
@@ -44,6 +56,26 @@ const formIsValid = ref(true);
 //vuex
 const store = useStore();
 const router = useRouter();
+const route = useRoute();
+
+//received from the route
+// Accessing query parameters
+const email = route.query.email;
+const token = route.params.token; // Assuming 'token' is a route parameter, not a query parameter
+
+//computed
+const emailParam = computed(() => {
+  return route.query.email;
+});
+//computed
+const tokenParam = computed(() => {
+  return route.params.token;
+});
+
+onMounted(() => {
+  data.email.val = emailParam.value;
+  data.token.val = tokenParam;
+});
 
 //methods
 const clearValidity = (input) => {
@@ -123,35 +155,48 @@ const submitForm = async () => {
   if (!formIsValid.value) {
     return;
   }
+  resetError.value = false;
   await resetPassword();
 };
 
 const resetPassword = async () => {
   console.log("resetting password");
-  //isProcessing.value = true; // Set data loaded to true once data is fetched
+  isProcessing.value = true; // Set data loaded to true once data is fetched
   try {
-    /* await store.dispatch("login", {
-      payload: { email: data.email.val, password: data.password.val },
+    const formData = {
+      email: data.email.val,
+      password: data.password.val,
+      password_confirmation: data.passwordConfirmation.val,
+      token: data.token.val,
+    };
+
+    await store.dispatch("resetPassword", {
+      payload: formData,
     });
     isProcessing.value = false; // Set data loaded to true once data is fetched
-    handleSuccessfulReset();*/
+    handleSuccessfulReset();
   } catch (error) {
-    /*isProcessing.value = false; // Set data loaded to true once data is fetched
-    resetError.value = true;
+    console.log(error);
+    isProcessing.value = false; // Set data loaded to true once data is fetched
+
     if (error.response.status) {
       if (error.response.status && error.response.status === 422) {
+        if (error.response.data.errors.email[0]) {
+          errorString.value = error.response.data.errors.email[0];
+        }
         errorCode.value = 422;
       } else {
         errorCode.value = error.response.status;
       }
     } else {
       errorCode.value = 0;
-      console.error(error.message);
-    }*/
+    }
+    resetError.value = true;
   }
 };
 
 const handleSuccessfulReset = () => {
+  isProcessing.value = false;
   //toast
   store.commit("addToast", {
     title: "Password Correctly Reset",
@@ -196,14 +241,23 @@ const handleSuccessfulReset = () => {
           <label for="password">Password</label>
         </div>
         <div class="col-9">
-          <input
-            class="form-control col-8"
-            :class="{ invalid: !data.password.isValid }"
-            :type="showPassword ? 'text' : 'password'"
-            id="password"
-            v-model.trim="data.password.val"
-            @blur="clearValidity('password')"
-          />
+          <div class="input-group">
+            <input
+              class="form-control"
+              :class="{ invalid: !data.password.isValid }"
+              :type="showPassword ? 'text' : 'password'"
+              id="password"
+              v-model.trim="data.password.val"
+              @blur="clearValidity('password')"
+            />
+            <span
+              class="input-group-text visibility-icon"
+              id="input-password-visibility"
+              data-target="password"
+              @click.prevent="togglePasswordVisibility"
+              >@</span
+            >
+          </div>
         </div>
       </div>
       <div
@@ -222,17 +276,26 @@ const handleSuccessfulReset = () => {
 
       <div class="form-field row text-center">
         <div class="col-3 form-label">
-          <label for="passwordConfirmation">Password Confirmation</label>
+          <label for="password-confirmation">Password Confirmation</label>
         </div>
         <div class="col-9">
-          <input
-            class="form-control col-8"
-            :class="{ invalid: !data.passwordConfirmation.isValid }"
-            :type="showPassword ? 'text' : 'password'"
-            id="passwordConfirmation"
-            v-model.trim="data.passwordConfirmation.val"
-            @blur="clearValidity('passwordConfirmation')"
-          />
+          <div class="input-group">
+            <input
+              class="form-control col-8"
+              :class="{ invalid: !data.passwordConfirmation.isValid }"
+              :type="showPassword ? 'text' : 'password'"
+              id="password-confirmation"
+              v-model.trim="data.passwordConfirmation.val"
+              @blur="clearValidity('passwordConfirmation')"
+            />
+            <span
+              class="input-group-text visibility-icon"
+              id="input-password-confirmation-visibility"
+              data-target="password-confirmation"
+              @click.prevent="togglePasswordVisibility"
+              >@</span
+            >
+          </div>
         </div>
       </div>
       <div
@@ -253,40 +316,37 @@ const handleSuccessfulReset = () => {
           <p>Please fix the above errors and submit again.</p>
         </div>
       </div>
-
-      <div class="form-field row submit">
-        <div class="col-md-6">
-          <BaseButton @click.prevent="togglePasswordVisibility" mode="outline">
-            {{ showPassword ? "Hide" : "Show" }} Password
-          </BaseButton>
-        </div>
-        <div class="form-submit-button col-md-6">
-          <BaseButton :disabled="isProcessing">Reset Password</BaseButton>
-        </div>
-      </div>
       <div v-if="!isProcessing">
         <div
           id="login-errors"
-          class="validation-error-container"
+          class="validation-error-container row"
           :class="{ active: resetError }"
           v-if="resetError"
         >
-          <p v-if="errorCode === 422" class="validation-error">
-            Wrong credentials provided. Please check your email and password.
-          </p>
-          <p v-else>
-            There was an error while logging you in. Please try again later.
+          <p class="validation-error col">
+            {{ errorString }}
           </p>
         </div>
       </div>
       <div v-else class="loading">
         <base-spinner></base-spinner>
       </div>
+      <div class="form-field row submit">
+        <div class="col-md-6">
+        </div>
+        <div class="form-submit-button col-md-6">
+          <BaseButton :disabled="isProcessing">Reset Password</BaseButton>
+        </div>
+      </div>
     </div>
   </form>
 </template>
 
 <style scoped>
+.visibility-icon {
+  border: #edb421 solid thin;
+  cursor: pointer;
+}
 form {
   border: #edb421 solid thin;
   box-shadow: rgba(17, 17, 26, 0.2) 0px 2px 4px;

@@ -3,7 +3,10 @@ import UserResetPasswordForm from "../../components/user/UserResetPasswordForm.v
 </script>
 
 <template>
-  <div class="form-wrapper">
+  <div class="form-wrapper container">
+    <div class="row">
+      <div class="col"><h2>Password Reset</h2></div>
+    </div>
     <UserResetPasswordForm></UserResetPasswordForm>
   </div>
 </template>
@@ -11,5 +14,9 @@ import UserResetPasswordForm from "../../components/user/UserResetPasswordForm.v
 <style scoped>
 .form-wrapper {
   max-width: 50%;
+}
+h2 {
+  text-align: center;
+  padding-bottom: 2rem;
 }
 </style>
