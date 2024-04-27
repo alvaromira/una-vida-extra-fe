@@ -77,9 +77,15 @@ button:active {
 }
 
 .outline {
-  color: #edb421;
-  border: #edb421 solid 1px;
-  background-color: #fff;
+  color: #edb421 !important;
+  border: #edb421 solid 1px !important;
+  background-color: #fff !important;
+}
+
+.outline-green {
+  color: #fff !important;
+  border: #fff solid 1px !important;
+  background-color: #7ab370 !important;
 }
 .outline:active {
   border: #fff solid 1px;

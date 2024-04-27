@@ -1,5 +1,187 @@
 <template>
-  <div class="container-fluid" id="header-wrapper">
+  <header>
+    <section id="primary-nav-bar">
+      <nav class="navbar navbar-expand-lg">
+        <div class="container logo-part">
+          <RouterLink :to="{ name: 'products' }" class="navbar-brand" href="#">
+            <img
+              alt="1up logo"
+              class="logo"
+              src="@/assets/images/one-life-up-logo.png"
+              width="125"
+              height="100"
+          /></RouterLink>
+
+          <!--<a class="navbar-brand" href="#">
+        <img
+          src="/docs/5.0/assets/brand/bootstrap-logo.svg"
+          alt=""
+          width="30"
+          height="24"
+          class="d-inline-block align-text-top"
+        />
+        Bootstrap
+      </a>-->
+          <div class="d-flex buttons-and-actions">
+            <form @submit.prevent="searchProducts" class="d-flex">
+              <label for="site-search">Search the site:</label>
+              <input
+                type="search"
+                id="site-search"
+                name="site-search"
+                v-model="searchTerm"
+                class="form-control"
+                pattern=".{3,}"
+                placeholder="Search"
+                aria-label="Search"
+              />
+              <button type="submit" class="btn search-button">Search</button>
+            </form>
+            <!--<form >
+          <input
+            class="form-control me-2"
+            type="search"
+            placeholder="Search"
+            aria-label="Search"
+          />
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>-->
+            <button
+              class="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarNav"
+              aria-controls="navbarNav"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+            >
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+              <ul class="navbar-nav user-menu-list">
+                <li v-if="!getUserStatus" class="user-menu-item nav-item">
+                  <BaseButton :to="{ name: 'register' }" link="true"
+                    >Register</BaseButton
+                  >
+                </li>
+                <li v-if="!getUserStatus" class="user-menu-item nav-item">
+                  <BaseButton
+                    mode="outline-green"
+                    :to="{ name: 'login' }"
+                    link="true"
+                    >Login</BaseButton
+                  >
+                </li>
+                <!--
+            <li v-if="getUserStatus" class="user-menu-item nav-item">
+              <div>
+                <ProfileImage
+                  :userEmail="activeUserEmail"
+                  :gravatarInfo="false"
+                  :mode="'small'"
+                />
+              </div>
+              <div class="dropdown">
+                <BaseButton>Hi, {{ activeUserEmail }}</BaseButton>
+                <div v-if="!isUserAdmin" class="dropdown-content">
+                  <RouterLink :to="{ name: 'userProducts' }"
+                    >My Products</RouterLink
+                  >
+                  <RouterLink :to="{ name: 'requests' }"
+                    >My Requests</RouterLink
+                  >
+                  <RouterLink :to="{ name: 'profile' }">Profile</RouterLink>
+
+                  <RouterLink :to="{ name: 'logout' }">Log Out</RouterLink>
+                </div>
+                <div v-else class="dropdown-content">
+                  <RouterLink :to="{ name: 'admin' }"
+                    >Admin Dashboard</RouterLink
+                  >
+                  <RouterLink :to="{ name: 'profile' }">Profile</RouterLink>
+                  <RouterLink :to="{ name: 'logout' }">Log Out</RouterLink>
+                </div>
+              </div>
+            </li> -->
+                <li
+                  v-if="getUserStatus"
+                  class="user-menu-item nav-item dropdown d-flex"
+                >
+                  <div>
+                    <ProfileImage
+                      :userEmail="activeUserEmail"
+                      :gravatarInfo="false"
+                      :mode="'small'"
+                    />
+                  </div>
+                  <a
+                    class="nav-link dropdown-toggle"
+                    href="#"
+                    id="navbarDropdown"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    Hi, {{ activeUserEmail }}
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <div v-if="!isUserAdmin">
+                      <RouterLink
+                        class="dropdown-item"
+                        :to="{ name: 'userProducts' }"
+                        >My Products</RouterLink
+                      >
+                      <RouterLink
+                        class="dropdown-item"
+                        :to="{ name: 'requests' }"
+                        >My Requests</RouterLink
+                      >
+                      <RouterLink
+                        class="dropdown-item"
+                        :to="{ name: 'profile' }"
+                        >Profile</RouterLink
+                      >
+
+                      <RouterLink class="dropdown-item" :to="{ name: 'logout' }"
+                        >Log Out</RouterLink
+                      >
+                    </div>
+                    <div v-else>
+                      <RouterLink class="dropdown-item" :to="{ name: 'admin' }"
+                        >Admin Dashboard</RouterLink
+                      >
+                      <RouterLink
+                        class="dropdown-item"
+                        :to="{ name: 'profile' }"
+                        >Profile</RouterLink
+                      >
+                      <RouterLink class="dropdown-item" :to="{ name: 'logout' }"
+                        >Log Out</RouterLink
+                      >
+                    </div>
+                    <!--<li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">Another action</a></li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <a class="dropdown-item" href="#">Something else here</a>
+                </li>-->
+                  </ul>
+                </li>
+              </ul>
+
+              <!--<ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Features</a>
+            </li>
+          </ul>-->
+            </div>
+          </div>
+        </div>
+      </nav>
+      <!-- <div class="container-fluid" id="header-wrapper">
     <header>
       <div class="top-header">
         <RouterLink :to="{ name: 'products' }">
@@ -34,8 +216,7 @@
         <div>
           <nav id="main-menu">
             <ul class="menu-list">
-              <!--<li><RouterLink :to="{ name: ''}">Home</RouterLink></li>
-          <li><RouterLink :to="{ name: 'about'}">About</RouterLink></li>-->
+             
               <li class="menu-item">
                 <RouterLink :to="{ name: 'products' }">Products</RouterLink>
               </li>
@@ -45,8 +226,7 @@
               <li class="menu-item">
                 <RouterLink :to="{ name: 'project' }">Project</RouterLink>
               </li>
-              <!--<li><RouterLink :to="{ name: 'login'}">Login</RouterLink></li>
-          <li><RouterLink :to="{ name: 'register'}">Register</RouterLink></li>-->
+             
             </ul>
             <div>
               <form @submit.prevent="searchProducts" class="search-form">
@@ -67,20 +247,20 @@
         <div>
           <nav id="user-menu">
             <ul class="user-menu-list">
-              <!-- if not logged in-->
-              <li v-if="!getUserStatus" class="user-menu-item">
+             
+              <li v-if="!getUserStatus" class="user-menu-item nav-item">
                 <BaseButton :to="{ name: 'register' }" link="true"
                   >Register</BaseButton
                 >
               </li>
-              <li v-if="!getUserStatus" class="user-menu-item">
+              <li v-if="!getUserStatus" class="user-menu-item nav-item">
                 <BaseButton :to="{ name: 'login' }" link="true"
                   >Login</BaseButton
                 >
               </li>
-              <!--For logged in users -->
+             
 
-              <li v-if="getUserStatus" class="user-menu-item">
+              <li v-if="getUserStatus" class="user-menu-item nav-item">
                 <div>
                   <ProfileImage
                     :userEmail="activeUserEmail"
@@ -115,7 +295,46 @@
         </div>
       </div>
     </header>
-  </div>
+  </div>-->
+    </section>
+    <section id="second-nav-bar">
+      <nav class="navbar navbar-expand-sm">
+        <div class="container">
+          <div class="navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+              <!--       <li class="nav-item">
+                <a class="nav-link active" href="#">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Features</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Pricing</a>
+              </li>-->
+              <li class="nav-item">
+                <RouterLink
+                  aria-current="page"
+                  class="nav-link"
+                  :to="{ name: 'products' }"
+                  >Products</RouterLink
+                >
+              </li>
+              <li class="nav-item">
+                <RouterLink class="nav-link" :to="{ name: 'sponsors' }"
+                  >Sponsors</RouterLink
+                >
+              </li>
+              <li class="nav-item">
+                <RouterLink class="nav-link" :to="{ name: 'project' }"
+                  >Project</RouterLink
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </section>
+  </header>
 </template>
 
 <script setup>
@@ -168,15 +387,32 @@ const isUserAdmin = computed(() => {
 </script>
 
 <style scoped>
+#second-nav-bar {
+  background-color: #fefcf6;
+}
+section#primary-nav-bar nav.navbar {
+  background-color: #7ab370;
+  margin-top: 0;
+}
+section#second-nav-bar nav.navbar {
+  background-color: #fefcf6;
+}
+.dropdown-menu {
+  margin: 0;
+  padding: 0;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
 header {
   color: #fff;
   width: 100%;
   display: block;
   /*justify-content: center;
-  align-items: center;*/
+  align-items: center;
   background-color: #7ab370;
   box-shadow: rgba(17, 17, 26, 0.2) 0px 2px 4px;
-  padding: 1.5rem 0;
+  padding: 1.5rem 0;*/
 }
 .top-header {
   display: flex;
@@ -217,7 +453,7 @@ header {
   padding: 0.5rem 1rem;
   color: #fff;
   background-color: #edb421;
-  border-radius: 5px;
+  /*border-radius: 5px;*/
   min-width: 100px;
   display: inline-block;
   text-align: center;
@@ -246,12 +482,12 @@ header {
   transition: transform 0.3s ease-in-out;
   transform: translateY(-4px);
 }
-.menu-item a.router-link-active {
-  /* border: 1px solid #f391e3; */
+.nav-item:has(a.router-link-active) {
+  border-bottom: 2px solid #7ab370;
   font-weight: bolder;
   position: relative;
 }
-.menu-item a.router-link-active::after {
+/*.nav-item:has(a.router-link-active)::after {
   border-top: 4px solid #fff;
   left: 0;
   right: 1px;
@@ -262,7 +498,7 @@ header {
   -webkit-transition: -webkit-transform 0.3s ease-in-out;
   transition: transform 0.3s ease-in-out;
   transform: translateY(-4px);
-}
+}*/
 h1,
 h2,
 h3 {
@@ -314,6 +550,13 @@ h3 {
 label[for="site-search"] {
   display: none;
 }
+#site-search {
+  min-width: 350px;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
 #main-menu {
   display: flex;
 }
@@ -338,16 +581,19 @@ label[for="site-search"] {
 }
 
 .search-button {
-  height: 100%; /* Match the height of the input field */
+  /*height: 100%; /* Match the height of the input field */
   text-decoration: none;
   padding: 1rem;
-  color: #fff;
-  /*background-color: #edb421;*/
+
+  background-color: #fff;
   color: gray;
-  border-radius: 0px;
-  min-width: 100px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  /*min-width: 100px;*/
   border: none;
-  display: inline-block;
+  /* display: inline-block;*/
   text-align: center;
   cursor: pointer;
 }
@@ -360,5 +606,13 @@ label[for="site-search"] {
 
 #header-wrapper {
   padding: 0;
+}
+
+.logo-part {
+  flex: 1;
+}
+.buttons-and-actions {
+  justify-content: flex-end;
+  gap: 1rem;
 }
 </style>
