@@ -23,19 +23,22 @@ const props = defineProps({
 });
 
 const isUserCoordsValid = computed(() => {
-  return props.UserCoords && props.UserCoords.length > 1;
+  return props.UserCoords !== undefined && props.UserCoords.length > 1;
 });
 const isRequestedProductCoordsValid = computed(() => {
   return (
-    props.RequestedProductCoords && props.RequestedProductCoords.length > 1
+    props.RequestedProductCoords !== undefined &&
+    props.RequestedProductCoords.length > 1
   );
 });
 
 let center;
 
-if (isUserCoordsValid) {
+if (isUserCoordsValid.value) {
+  console.log(props.UserCoords);
   center = ref([props.UserCoords[0], props.UserCoords[1]]);
-} else if (isRequestedProductCoordsValid) {
+} else if (isRequestedProductCoordsValid.value) {
+  console.log(props.RequestedProductCoords);
   center = ref([
     props.RequestedProductCoords[0],
     props.RequestedProductCoords[1],
@@ -67,7 +70,7 @@ const setupLeafletMap = () => {
     })
     .addTo(mapDiv);
   //user marker
-  if (isUserCoordsValid) {
+  if (isUserCoordsValid.value) {
     let userMarker = L.marker([props.UserCoords[0], props.UserCoords[1]]).addTo(
       mapDiv
     );
@@ -75,7 +78,7 @@ const setupLeafletMap = () => {
   }
 
   //prod marker
-  if (isRequestedProductCoordsValid) {
+  if (isRequestedProductCoordsValid.value) {
     let prodMarker = L.marker(
       [props.RequestedProductCoords[0], props.RequestedProductCoords[1]],
       { icon: greenIcon }
