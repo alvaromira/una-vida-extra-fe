@@ -1,124 +1,156 @@
 <template>
-  <div
-    class="product-detail-card-wrapper"
-    :id="props.id"
-    :key="props.key"
-    :class="{ taken: productIsTaken }"
-  >
-    <section class="product-detail-card-left product-detail-card-side">
-      <div class="product-detail-card-image">
-        <img :src="props.image" />
-      </div>
-      <div class="product-detail-card-map" v-show="isLocationDisplayed">
-        <Map
-          :-user-coords="[location.latitude, location.longitude]"
-          :-requested-product-coords="[location.latitude, location.longitude]"
-        ></Map>
-      </div>
-    </section>
-    <section class="product-detail-card-right product-detail-card-side">
-      <div class="location-icon">
-        <IconLocation @click="showLocation" />
-        <span class="lat hidden">{{ location.latitude }}</span>
-        <span class="long hidden">{{ location.longitude }}</span>
-      </div>
-      <div class="product-detail-card-top">
-        <div class="product-card-product-title">
-          <h5>{{ props.title }}</h5>
-        </div>
-        <div class="product-card-detail-publication-details">
-          <p v-if="!loggedUserIsOwner">
-            Published by
-            <span class="publication-details-owner"> {{ props.owner }}</span>
-            on
-            <span class="product-card-product-actual-date">{{
-              props.date
-            }}</span
-            >.
-          </p>
-          <p v-else>
-            You published this item on
-            <span class="product-card-product-actual-date">{{
-              props.date
-            }}</span
-            >.
-          </p>
-        </div>
-        <div class="product-detail-description">
-          <p>{{ props.description }}</p>
-        </div>
-
-        <div
-          class="product-detail-availability"
-          v-if="!props.available && !productIsTaken"
-        >
-          You have accepted a request for this product. Please mark the product
-          as taken when you have donated it.
-        </div>
-      </div>
+  <div class="row justify-content-md-center">
+    <div class="col-md-8">
       <div
-        v-if="!productIsTaken"
-        class="product-card-button product-detail-card-bottom"
+        class="product-detail-card-wrapper row"
+        :id="props.id"
+        :key="props.key"
+        :class="{ taken: productIsTaken }"
       >
-        <BaseButton
-          v-if="!loggedUserIsOwner"
-          :to="{
-            name: 'requestProduct',
-            params: {
-              id: id,
-              //state: { title: props.title, image: props.image },
-            },
-          }"
-          link="true"
-          >Request it!</BaseButton
-        >
-        <div v-else>
-          <BaseButton
-            v-if="props.available && !productIsTaken"
-            :to="{
-              name: 'editProduct',
-              params: {
-                id: id,
-              },
-            }"
-            link="true"
-            >Edit</BaseButton
+        <div class="top row">
+          <section
+            class="product-detail-card-left product-detail-card-side col-6"
           >
-          <BaseButton v-else @click="setIsModalVisible(true)"
-            >Mark as Taken</BaseButton
+            <div class="product-detail-card-image row">
+              <div class="col-md-12">
+                <img
+                  :src="props.image"
+                  class="img-fluid"
+                  :class="{ active: !isLocationDisplayed }"
+                  v-show="!isLocationDisplayed"
+                />
+                <div
+                  class="product-detail-card-map"
+                  :class="{ active: isLocationDisplayed }"
+                  v-show="isLocationDisplayed"
+                >
+                  <Map
+                    :-requested-product-coords="[
+                      location.latitude,
+                      location.longitude,
+                    ]"
+                  ></Map>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section
+            class="product-detail-card-right product-detail-card-side col-6"
           >
-          <BaseButton
-            :to="{
-              name: 'productRequests',
-              params: {
-                id: id,
-                // state: { title: props.title, image: props.image },
-              },
-            }"
-            link="true"
-            >Check Requests</BaseButton
-          >
+            <div class="product-card-product-location row">
+              <div class="location-icon col-md-12">
+                <IconLocation @click="showLocation" /> View Location
+              </div>
+            </div>
+            <div class="product-card-info row">
+              <div class="col-md-12">
+                <div class="product-card-product-title">
+                  <h2>{{ props.title }}</h2>
+                </div>
+                <div class="product-card-detail-publication-details">
+                  <p v-if="!loggedUserIsOwner">
+                    Published by
+                    <span class="publication-details-owner">
+                      {{ props.owner }}</span
+                    >
+                    on
+                    <span class="product-card-product-actual-date">{{
+                      userFriendlyDate
+                    }}</span
+                    >.
+                  </p>
+                  <p v-else>
+                    You published this item on
+                    <span class="product-card-product-actual-date">{{
+                      userFriendlyDate
+                    }}</span
+                    >.
+                  </p>
+                </div>
+                <div class="product-detail-description">
+                  <p>{{ props.description }}</p>
+                </div>
+
+                <div
+                  class="product-detail-availability"
+                  v-if="!props.available && !productIsTaken"
+                >
+                  You have accepted a request for this product. Please mark the
+                  product as taken when you have donated it.
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+        <div class="bottom">
+          <section class="row">
+            <div class="col-md-12 product-detail-buttons">
+              <div
+                v-if="!productIsTaken"
+                class="product-card-button product-detail-card-bottom"
+              >
+                <BaseButton
+                  v-if="!loggedUserIsOwner"
+                  :to="{
+                    name: 'requestProduct',
+                    params: {
+                      id: id,
+                    },
+                  }"
+                  link="true"
+                  >Request it!</BaseButton
+                >
+                <div v-else>
+                  <BaseButton
+                    v-if="props.available && !productIsTaken"
+                    :to="{
+                      name: 'editProduct',
+                      params: {
+                        id: id,
+                      },
+                    }"
+                    link="true"
+                    >Edit</BaseButton
+                  >
+                  <BaseButton v-else @click="setIsModalVisible(true)"
+                    >Mark as Taken</BaseButton
+                  >
+                  <BaseButton
+                    :to="{
+                      name: 'productRequests',
+                      params: {
+                        id: id,
+                        // state: { title: props.title, image: props.image },
+                      },
+                    }"
+                    link="true"
+                    >Check Requests</BaseButton
+                  >
+                </div>
+              </div>
+              <div v-else>This product has already been donated.</div>
+            </div>
+          </section>
         </div>
       </div>
-      <div v-else>This product has already been donated.</div>
-    </section>
-  </div>
 
-  <ModalConfirmationDialog
-    v-if="isModalVisible"
-    @modal-confirmed="onModalConfirm"
-    @modal-close="onModalClose"
-  >
-    <template #header>Mark Product As Taken</template>
-    <template #body
-      ><p>
-        Are you sure you want to mark this product as taken? By doing so you
-        confirm the product has been donated and it will no longer be edited nor
-        listed to other users.
-      </p>
-      <p>This action cannot be undone.</p></template
-    ></ModalConfirmationDialog
-  >
+      <ModalConfirmationDialog
+        v-if="isModalVisible"
+        @modal-confirmed="onModalConfirm"
+        @modal-close="onModalClose"
+      >
+        <template #header>Mark Product As Taken</template>
+        <template #body
+          ><p>
+            Are you sure you want to mark this product as taken? By doing so you
+            confirm the product has been donated and it will no longer be edited
+            nor listed to other users.
+          </p>
+          <p>This action cannot be undone.</p></template
+        ></ModalConfirmationDialog
+      >
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -135,6 +167,10 @@ const locationAvailable = computed(() => {
   } else {
     return true;
   }
+});
+
+const userFriendlyDate = computed(() => {
+  return formatDate(props.date);
 });
 
 let isLocationDisplayed = ref(false);
@@ -247,28 +283,67 @@ const onModalConfirm = async () => {
 
   setIsModalVisible(false);
 };
+
+const formatDate = (dateTimeStamp) => {
+  const date = new Date(dateTimeStamp);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
 </script>
 
 <style scoped>
+/*
 p {
   margin-block-start: 0;
   margin-block-end: 0;
-}
+}*/
 .product-detail-card-wrapper {
-  border: 2px solid #7ab370;
-  border-radius: 2px;
+  /*border: 2px solid #7ab370;*/
+  border-radius: 10px;
   padding: 2rem;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   background-color: #fff;
-  max-width: 60%;
+  /* max-width: 60%;
   width: auto;
   margin: 0 auto;
-  display: flex;
+  display: flex;*/
 }
+.product-detail-card-image img {
+  border-radius: 5px;
+  padding: 0;
+  width: 100%;
+}
+.product-detail-card-map,
+.img-fluid {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+.product-detail-card-map.active,
+.img-fluid.active {
+  opacity: 1;
+}
+.product-detail-buttons {
+  display: flex;
+  justify-content: flex-end;
+}
+.product-card-button {
+}
+
 .product-detail-card-wrapper.taken {
   border: 2px solid lightgray;
 }
-
+.taken p,
+.taken h2,
+.taken .location-icon {
+  color: lightgray !important;
+}
+.taken .product-detail-card-image img,
+.taken .product-detail-card-map {
+  opacity: 0.5 !important;
+}
+/*
 .product-detail-card-side {
   position: relative;
   flex: 1;
@@ -279,9 +354,7 @@ p {
 .product-card-detail-publication-details p {
   margin-top: 0;
 }
-.taken p {
-  color: lightgray;
-}
+
 
 .product-detail-card-image {
   display: flex;
@@ -294,9 +367,7 @@ p {
   max-width: 300px;
   height: auto;
 }
-.taken .product-detail-card-image img {
-  opacity: 0.5;
-}
+
 .product-detail-description,
 .product-detail-location {
   padding-top: 1rem;
@@ -320,12 +391,12 @@ p {
 }
 /*.product-detail-card-bottom {
   display: flex;
-}*/
+}
 .product-card-button {
   text-align: right;
   padding-top: 1rem;
 }
-/*.product-card-button button {
+.product-card-button button {
   background-color: #edb421;
   color: #fff;
   border: none;
@@ -333,13 +404,25 @@ p {
   font-weight: bold;
   cursor: pointer;
 }*/
+/*
 .hidden {
   display: none;
 }
-
+*/
+.product-card-info {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+.product-card-product-title h2 {
+  color: black;
+  text-transform: capitalize;
+}
+.product-card-product-location {
+  padding-bottom: 1rem;
+}
 .location-icon {
-  position: absolute;
-  top: -0.25rem;
-  right: -0.25rem;
+  color: #edb421;
+  font-weight: bold;
+  text-align: right;
 }
 </style>
