@@ -11,6 +11,9 @@ const isAuthenticated = computed(() => store.getters.authenticated);
 
 <template>
   <div class="form-wrapper">
+    <div class="row">
+      <div class="col"><h2>Login</h2></div>
+    </div>
     <UserLoginForm />
   </div>
   <!--<div v-else>
@@ -21,5 +24,9 @@ const isAuthenticated = computed(() => store.getters.authenticated);
 <style scoped>
 .form-wrapper {
   max-width: 50%;
+}
+h2 {
+  text-align: center;
+  padding-bottom: 2rem;
 }
 </style>
