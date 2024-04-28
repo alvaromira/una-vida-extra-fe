@@ -6,9 +6,12 @@ import { useRouter } from "vue-router";
 import BaseSpinner from "../ui/BaseSpinner.vue";
 import ProfileImage from "../ui/ProfileImage.vue";
 import { useStore } from "vuex";
+import { usePasswordValidation } from "../../composables/usePasswordValidation";
 
 const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
 const baseUrl = import.meta.env.VITE_BASE_URL;
+
+const { validatePassword } = usePasswordValidation();
 
 const store = useStore();
 
@@ -372,7 +375,7 @@ export default {
 const togglePasswordVisibility = () => {
   showPassword.value = !showPassword.value;
 };
-
+/*
 const validatePassword = (password) => {
   // Check if the password is at least 8 characters long
   if (password.length < 8) {
@@ -401,13 +404,13 @@ const validatePassword = (password) => {
 
   // If all conditions are met, return true
   return true;
-};
+};*/
 </script>
 
 <template>
   <div class="form-component-container">
     <div class="form-container">
-      <form @submit.prevent="submitForm">
+      <form @submit.prevent="submitForm" class="rounded">
         <div class="form-left-side form-side">
           <div>
             <div
