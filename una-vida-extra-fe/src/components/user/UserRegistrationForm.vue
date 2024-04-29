@@ -566,7 +566,10 @@ const validatePassword = (password) => {
 
         <div class="form-field row">
           <div class="col">
-            <label for="public-details">Accept T&C</label>
+            <label for="public-details"
+              >By enabling this checkbox I accept the
+              <a href="#">terms and conditions</a></label
+            >
             <input
               :class="{ invalid: !data.publicDetails.isValid }"
               type="checkbox"

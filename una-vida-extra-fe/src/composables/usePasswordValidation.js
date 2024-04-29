@@ -1,5 +1,9 @@
 export const usePasswordValidation = () => {
     const validatePassword = (password) => {
+        // Validate that password is provided and is a string
+        if (typeof password !== 'string') {
+            throw new Error('Password must be a string');
+        }
         // Check if the password is at least 8 characters long
         if (password.length < 8) {
             return false;
