@@ -11,17 +11,6 @@
               width="125"
               height="100"
           /></RouterLink>
-
-          <!--<a class="navbar-brand" href="#">
-        <img
-          src="/docs/5.0/assets/brand/bootstrap-logo.svg"
-          alt=""
-          width="30"
-          height="24"
-          class="d-inline-block align-text-top"
-        />
-        Bootstrap
-      </a>-->
         </div>
         <div class="d-flex buttons-and-actions">
           <div id="search_and_access" class="d-flex">
@@ -60,7 +49,6 @@
               <BaseButton :to="{ name: 'register' }" link="true"
                 >Register</BaseButton
               >
-
               <BaseButton
                 mode="outline-green"
                 :to="{ name: 'login' }"
@@ -70,16 +58,14 @@
             </div>
           </div>
 
-          <!--<form >
-          <input
-            class="form-control me-2"
-            type="search"
-            placeholder="Search"
-            aria-label="Search"
-          />
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>-->
-          <!--  <button
+          <div v-if="getUserStatus">
+            <ProfileImage
+              :userEmail="activeUserEmail"
+              :gravatarInfo="false"
+              :mode="'small'"
+            />
+          </div>
+          <button
             class="navbar-toggler"
             type="button"
             data-bs-toggle="collapse"
@@ -89,62 +75,27 @@
             aria-label="Toggle navigation"
           >
             <span class="navbar-toggler-icon"></span>
-          </button>-->
+          </button>
           <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav user-menu-list">
-              <!--
-            <li v-if="getUserStatus" class="user-menu-item nav-item">
-              <div>
-                <ProfileImage
-                  :userEmail="activeUserEmail"
-                  :gravatarInfo="false"
-                  :mode="'small'"
-                />
-              </div>
-              <div class="dropdown">
-                <BaseButton>Hi, {{ activeUserEmail }}</BaseButton>
-                <div v-if="!isUserAdmin" class="dropdown-content">
-                  <RouterLink :to="{ name: 'userProducts' }"
-                    >My Products</RouterLink
-                  >
-                  <RouterLink :to="{ name: 'requests' }"
-                    >My Requests</RouterLink
-                  >
-                  <RouterLink :to="{ name: 'profile' }">Profile</RouterLink>
-
-                  <RouterLink :to="{ name: 'logout' }">Log Out</RouterLink>
-                </div>
-                <div v-else class="dropdown-content">
-                  <RouterLink :to="{ name: 'admin' }"
-                    >Admin Dashboard</RouterLink
-                  >
-                  <RouterLink :to="{ name: 'profile' }">Profile</RouterLink>
-                  <RouterLink :to="{ name: 'logout' }">Log Out</RouterLink>
-                </div>
-              </div>
-            </li> -->
               <li
                 v-if="getUserStatus"
                 class="user-menu-item nav-item dropdown d-flex"
               >
-                <div>
-                  <ProfileImage
-                    :userEmail="activeUserEmail"
-                    :gravatarInfo="false"
-                    :mode="'small'"
-                  />
-                </div>
                 <a
                   class="nav-link dropdown-toggle"
                   href="#"
-                  id="navbarDropdown"
+                  id="navbarDarkDropdownMenuLink"
                   role="button"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
                   Hi, {{ activeUserEmail }}
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <ul
+                  class="dropdown-menu"
+                  aria-labelledby="navbarDarkDropdownMenuLink"
+                >
                   <div v-if="!isUserAdmin">
                     <RouterLink
                       class="dropdown-item"
@@ -173,142 +124,12 @@
                       >Log Out</RouterLink
                     >
                   </div>
-                  <!--<li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><hr class="dropdown-divider" /></li>
-                <li>
-                  <a class="dropdown-item" href="#">Something else here</a>
-                </li>-->
                 </ul>
               </li>
             </ul>
-
-            <!--<ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Features</a>
-            </li>
-          </ul>-->
           </div>
         </div>
       </nav>
-      <!-- <div class="container-fluid" id="header-wrapper">
-    <header>
-      <div class="top-header">
-        <RouterLink :to="{ name: 'products' }">
-          <img
-            alt="1up logo"
-            class="logo"
-            src="@/assets/images/one-life-up-logo.png"
-            width="150"
-            height="125"
-        /></RouterLink>
-        <div id="header-text">
-          <h1>One Life Up</h1>
-          <h3>
-            Give, Take, Re-use&nbsp;<span
-              ><svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                class="bi bi-recycle"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  d="M9.302 1.256a1.5 1.5 0 0 0-2.604 0l-1.704 2.98a.5.5 0 0 0 .869.497l1.703-2.981a.5.5 0 0 1 .868 0l2.54 4.444-1.256-.337a.5.5 0 1 0-.26.966l2.415.647a.5.5 0 0 0 .613-.353l.647-2.415a.5.5 0 1 0-.966-.259l-.333 1.242zM2.973 7.773l-1.255.337a.5.5 0 1 1-.26-.966l2.416-.647a.5.5 0 0 1 .612.353l.647 2.415a.5.5 0 0 1-.966.259l-.333-1.242-2.545 4.454a.5.5 0 0 0 .434.748H5a.5.5 0 0 1 0 1H1.723A1.5 1.5 0 0 1 .421 12.24zm10.89 1.463a.5.5 0 1 0-.868.496l1.716 3.004a.5.5 0 0 1-.434.748h-5.57l.647-.646a.5.5 0 1 0-.708-.707l-1.5 1.5a.5.5 0 0 0 0 .707l1.5 1.5a.5.5 0 1 0 .708-.707l-.647-.647h5.57a1.5 1.5 0 0 0 1.302-2.244z"
-                /></svg
-            ></span>
-          </h3>
-        </div>
-      </div>
-
-      <div class="bottom-header">
-        <div>
-          <nav id="main-menu">
-            <ul class="menu-list">
-             
-              <li class="menu-item">
-                <RouterLink :to="{ name: 'products' }">Products</RouterLink>
-              </li>
-              <li class="menu-item">
-                <RouterLink :to="{ name: 'sponsors' }">Sponsors</RouterLink>
-              </li>
-              <li class="menu-item">
-                <RouterLink :to="{ name: 'project' }">Project</RouterLink>
-              </li>
-             
-            </ul>
-            <div>
-              <form @submit.prevent="searchProducts" class="search-form">
-                <label for="site-search">Search the site:</label>
-                <input
-                  type="search"
-                  id="site-search"
-                  name="site-search"
-                  v-model="searchTerm"
-                  class="search-input"
-                  pattern=".{3,}"
-                />
-                <button type="submit" class="search-button">Search</button>
-              </form>
-            </div>
-          </nav>
-        </div>
-        <div>
-          <nav id="user-menu">
-            <ul class="user-menu-list">
-             
-              <li v-if="!getUserStatus" class="user-menu-item nav-item">
-                <BaseButton :to="{ name: 'register' }" link="true"
-                  >Register</BaseButton
-                >
-              </li>
-              <li v-if="!getUserStatus" class="user-menu-item nav-item">
-                <BaseButton :to="{ name: 'login' }" link="true"
-                  >Login</BaseButton
-                >
-              </li>
-             
-
-              <li v-if="getUserStatus" class="user-menu-item nav-item">
-                <div>
-                  <ProfileImage
-                    :userEmail="activeUserEmail"
-                    :gravatarInfo="false"
-                    :mode="'small'"
-                  />
-                </div>
-                <div class="dropdown">
-                  <BaseButton>Hi, {{ activeUserEmail }}</BaseButton>
-                  <div v-if="!isUserAdmin" class="dropdown-content">
-                    <RouterLink :to="{ name: 'userProducts' }"
-                      >My Products</RouterLink
-                    >
-                    <RouterLink :to="{ name: 'requests' }"
-                      >My Requests</RouterLink
-                    >
-                    <RouterLink :to="{ name: 'profile' }">Profile</RouterLink>
-
-                    <RouterLink :to="{ name: 'logout' }">Log Out</RouterLink>
-                  </div>
-                  <div v-else class="dropdown-content">
-                    <RouterLink :to="{ name: 'admin' }"
-                      >Admin Dashboard</RouterLink
-                    >
-                    <RouterLink :to="{ name: 'profile' }">Profile</RouterLink>
-                    <RouterLink :to="{ name: 'logout' }">Log Out</RouterLink>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </nav>
-        </div>
-      </div>
-    </header>
-  </div>-->
     </section>
     <section id="second-nav-bar">
       <nav class="navbar navbar-expand-sm">
