@@ -22,8 +22,14 @@
         />
         Bootstrap
       </a>-->
-          <div class="d-flex buttons-and-actions">
-            <form @submit.prevent="searchProducts" class="d-flex">
+        </div>
+        <div class="d-flex buttons-and-actions">
+          <div id="search_and_access" class="d-flex">
+            <form
+              @submit.prevent="searchProducts"
+              class="d-flex"
+              id="search-product-form"
+            >
               <label for="site-search">Search the site:</label>
               <input
                 type="search"
@@ -32,12 +38,39 @@
                 v-model="searchTerm"
                 class="form-control"
                 pattern=".{3,}"
-                placeholder="Search"
+                placeholder="Enter your search here..."
                 aria-label="Search"
               />
-              <button type="submit" class="btn search-button">Search</button>
+              <button type="submit" class="btn search-button">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-search"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"
+                  />
+                </svg>
+              </button>
             </form>
-            <!--<form >
+            <div id="access" class="d-flex" v-if="!getUserStatus">
+              <BaseButton :to="{ name: 'register' }" link="true"
+                >Register</BaseButton
+              >
+
+              <BaseButton
+                mode="outline-green"
+                :to="{ name: 'login' }"
+                link="true"
+                >Login</BaseButton
+              >
+            </div>
+          </div>
+
+          <!--<form >
           <input
             class="form-control me-2"
             type="search"
@@ -46,33 +79,20 @@
           />
           <button class="btn btn-outline-success" type="submit">Search</button>
         </form>-->
-            <button
-              class="navbar-toggler"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#navbarNav"
-              aria-controls="navbarNav"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
-            >
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-              <ul class="navbar-nav user-menu-list">
-                <li v-if="!getUserStatus" class="user-menu-item nav-item">
-                  <BaseButton :to="{ name: 'register' }" link="true"
-                    >Register</BaseButton
-                  >
-                </li>
-                <li v-if="!getUserStatus" class="user-menu-item nav-item">
-                  <BaseButton
-                    mode="outline-green"
-                    :to="{ name: 'login' }"
-                    link="true"
-                    >Login</BaseButton
-                  >
-                </li>
-                <!--
+          <!--  <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>-->
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav user-menu-list">
+              <!--
             <li v-if="getUserStatus" class="user-menu-item nav-item">
               <div>
                 <ProfileImage
@@ -103,73 +123,67 @@
                 </div>
               </div>
             </li> -->
-                <li
-                  v-if="getUserStatus"
-                  class="user-menu-item nav-item dropdown d-flex"
+              <li
+                v-if="getUserStatus"
+                class="user-menu-item nav-item dropdown d-flex"
+              >
+                <div>
+                  <ProfileImage
+                    :userEmail="activeUserEmail"
+                    :gravatarInfo="false"
+                    :mode="'small'"
+                  />
+                </div>
+                <a
+                  class="nav-link dropdown-toggle"
+                  href="#"
+                  id="navbarDropdown"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
                 >
-                  <div>
-                    <ProfileImage
-                      :userEmail="activeUserEmail"
-                      :gravatarInfo="false"
-                      :mode="'small'"
-                    />
-                  </div>
-                  <a
-                    class="nav-link dropdown-toggle"
-                    href="#"
-                    id="navbarDropdown"
-                    role="button"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    Hi, {{ activeUserEmail }}
-                  </a>
-                  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <div v-if="!isUserAdmin">
-                      <RouterLink
-                        class="dropdown-item"
-                        :to="{ name: 'userProducts' }"
-                        >My Products</RouterLink
-                      >
-                      <RouterLink
-                        class="dropdown-item"
-                        :to="{ name: 'requests' }"
-                        >My Requests</RouterLink
-                      >
-                      <RouterLink
-                        class="dropdown-item"
-                        :to="{ name: 'profile' }"
-                        >Profile</RouterLink
-                      >
+                  Hi, {{ activeUserEmail }}
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <div v-if="!isUserAdmin">
+                    <RouterLink
+                      class="dropdown-item"
+                      :to="{ name: 'userProducts' }"
+                      >My Products</RouterLink
+                    >
+                    <RouterLink class="dropdown-item" :to="{ name: 'requests' }"
+                      >My Requests</RouterLink
+                    >
+                    <RouterLink class="dropdown-item" :to="{ name: 'profile' }"
+                      >Profile</RouterLink
+                    >
 
-                      <RouterLink class="dropdown-item" :to="{ name: 'logout' }"
-                        >Log Out</RouterLink
-                      >
-                    </div>
-                    <div v-else>
-                      <RouterLink class="dropdown-item" :to="{ name: 'admin' }"
-                        >Admin Dashboard</RouterLink
-                      >
-                      <RouterLink
-                        class="dropdown-item"
-                        :to="{ name: 'profile' }"
-                        >Profile</RouterLink
-                      >
-                      <RouterLink class="dropdown-item" :to="{ name: 'logout' }"
-                        >Log Out</RouterLink
-                      >
-                    </div>
-                    <!--<li><a class="dropdown-item" href="#">Action</a></li>
+                    <RouterLink class="dropdown-item" :to="{ name: 'logout' }"
+                      >Log Out</RouterLink
+                    >
+                  </div>
+                  <div v-else>
+                    <RouterLink class="dropdown-item" :to="{ name: 'admin' }"
+                      >Admin Dashboard</RouterLink
+                    >
+                    <RouterLink class="dropdown-item" :to="{ name: 'profile' }"
+                      >Profile</RouterLink
+                    >
+                    <RouterLink class="dropdown-item" :to="{ name: 'logout' }"
+                      >Log Out</RouterLink
+                    >
+                  </div>
+                  <!--<li><a class="dropdown-item" href="#">Action</a></li>
                 <li><a class="dropdown-item" href="#">Another action</a></li>
                 <li><hr class="dropdown-divider" /></li>
                 <li>
                   <a class="dropdown-item" href="#">Something else here</a>
                 </li>-->
-                  </ul>
-                </li>
-              </ul>
+                </ul>
+              </li>
+            </ul>
 
-              <!--<ul class="navbar-nav">
+            <!--<ul class="navbar-nav">
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="#">Home</a>
             </li>
@@ -177,7 +191,6 @@
               <a class="nav-link" href="#">Features</a>
             </li>
           </ul>-->
-            </div>
           </div>
         </div>
       </nav>
@@ -387,6 +400,11 @@ const isUserAdmin = computed(() => {
 </script>
 
 <style scoped>
+#access {
+  display: flex;
+  gap: 1rem;
+  padding-left: 1rem;
+}
 #second-nav-bar {
   background-color: #fefcf6;
 }
@@ -583,7 +601,7 @@ label[for="site-search"] {
 .search-button {
   /*height: 100%; /* Match the height of the input field */
   text-decoration: none;
-  padding: 1rem;
+  padding: 0.5rem;
 
   background-color: #fff;
   color: gray;
@@ -614,5 +632,6 @@ label[for="site-search"] {
 .buttons-and-actions {
   justify-content: flex-end;
   gap: 1rem;
+  padding: 2rem;
 }
 </style>
