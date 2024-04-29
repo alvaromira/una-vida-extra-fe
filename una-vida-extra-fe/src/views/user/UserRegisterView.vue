@@ -10,6 +10,9 @@ const isAuthenticated = computed(() => store.getters.authenticated);
 </script>
 <template>
   <div class="form-wrapper">
+    <div class="row">
+      <div class="col"><h2>Register</h2></div>
+    </div>
     <p>
       Use the form below to become part of our community and start contributing.
       Thanks!
@@ -18,4 +21,9 @@ const isAuthenticated = computed(() => store.getters.authenticated);
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+h2 {
+  text-align: center;
+  padding-bottom: 2rem;
+}
+</style>

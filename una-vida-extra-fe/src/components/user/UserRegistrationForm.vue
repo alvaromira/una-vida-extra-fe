@@ -6,9 +6,12 @@ import { useRouter } from "vue-router";
 import BaseSpinner from "../ui/BaseSpinner.vue";
 import ProfileImage from "../ui/ProfileImage.vue";
 import { useStore } from "vuex";
+import { usePasswordValidation } from "../../composables/usePasswordValidation";
 
 const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
 const baseUrl = import.meta.env.VITE_BASE_URL;
+
+const { validatePassword } = usePasswordValidation();
 
 const store = useStore();
 
@@ -369,10 +372,14 @@ export default {
   // emits: ["save-data"],
 };*/
 
-const togglePasswordVisibility = () => {
-  showPassword.value = !showPassword.value;
+const togglePasswordVisibility = (event) => {
+  const inputId = event.target.dataset.target;
+  const input = document.getElementById(inputId);
+  if (input) {
+    input.type = input.type === "password" ? "text" : "password";
+  }
 };
-
+/*
 const validatePassword = (password) => {
   // Check if the password is at least 8 characters long
   if (password.length < 8) {
@@ -401,223 +408,270 @@ const validatePassword = (password) => {
 
   // If all conditions are met, return true
   return true;
-};
+};*/
 </script>
 
 <template>
-  <div class="form-component-container">
-    <div class="form-container">
-      <form @submit.prevent="submitForm">
-        <div class="form-left-side form-side">
-          <div>
-            <div
-              class="form-control"
+  <form @submit.prevent="submitForm" class="rounded">
+    <div class="row">
+      <div class="form-left-side form-side col-md-6">
+        <div class="form-field row text-center">
+          <div class="col-3 form-label">
+            <label for="firstname">Firstname</label>
+          </div>
+          <div class="col-9">
+            <input
               :class="{ invalid: !data.firstName.isValid }"
-            >
-              <label for="firstname">Firstname</label>
-              <input
-                type="text"
-                id="firstname"
-                v-model.trim="data.firstName.val"
-                @blur="clearValidity('firstName')"
-              />
-            </div>
-            <div
-              v-if="!data.firstName.isValid"
-              class="validation-error-container"
-            >
-              <p>Firstname must not be empty.</p>
-            </div>
-
-            <div
               class="form-control"
+              type="text"
+              id="firstname"
+              v-model.trim="data.firstName.val"
+              @blur="clearValidity('firstName')"
+            />
+          </div>
+        </div>
+        <div v-if="!data.firstName.isValid" class="validation-error-container">
+          <p>Firstname must not be empty.</p>
+        </div>
+
+        <div class="form-field row text-center">
+          <div class="col-3 form-label">
+            <label for="lastname">Lastname</label>
+          </div>
+          <div class="col-9">
+            <input
               :class="{ invalid: !data.lastName.isValid }"
-            >
-              <label for="lastname">Lastname</label>
-              <input
-                type="text"
-                id="lastname"
-                v-model.trim="data.lastName.val"
-                @blur="clearValidity('lastName')"
-              />
-            </div>
-            <div
-              v-if="!data.lastName.isValid"
-              class="validation-error-container"
-            >
-              <p>Lastname must not be empty.</p>
-            </div>
-
-            <div class="form-control" :class="{ invalid: !data.email.isValid }">
-              <label for="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                v-model.trim="data.email.val"
-                @blur="clearValidity('email')"
-              />
-            </div>
-            <div v-if="!data.email.isValid" class="validation-error-container">
-              <p>Email must not be empty.</p>
-            </div>
-
-            <div class="form-control" :class="{ invalid: !data.phone.isValid }">
-              <label for="phone">Phone</label>
-              <input
-                type="text"
-                id="phone"
-                v-model.trim="data.phone.val"
-                @blur="clearValidity('phone')"
-              />
-            </div>
-            <div v-if="!data.phone.isValid" class="validation-error-container">
-              <p>Phone must not be empty.</p>
-            </div>
-
-            <div
               class="form-control"
-              :class="{ invalid: !data.password.isValid }"
-            >
-              <label for="password">Password</label>
+              type="text"
+              id="lastname"
+              v-model.trim="data.lastName.val"
+              @blur="clearValidity('lastName')"
+            />
+          </div>
+        </div>
+        <div v-if="!data.lastName.isValid" class="validation-error-container">
+          <p>Lastname must not be empty.</p>
+        </div>
+
+        <div class="form-field row text-center">
+          <div class="col-3 form-label"><label for="email">Email</label></div>
+          <div class="col-9">
+            <input
+              :class="{ invalid: !data.email.isValid }"
+              class="form-control"
+              type="email"
+              id="email"
+              v-model.trim="data.email.val"
+              @blur="clearValidity('email')"
+            />
+          </div>
+        </div>
+        <div v-if="!data.email.isValid" class="validation-error-container">
+          <p>Email must not be empty.</p>
+        </div>
+
+        <div class="form-field row text-center">
+          <div class="col-3 form-label"><label for="phone">Phone</label></div>
+          <div class="col-9">
+            <input
+              :class="{ invalid: !data.phone.isValid }"
+              class="form-control"
+              type="text"
+              id="phone"
+              v-model.trim="data.phone.val"
+              @blur="clearValidity('phone')"
+            />
+          </div>
+        </div>
+        <div v-if="!data.phone.isValid" class="validation-error-container">
+          <p>Phone must not be empty.</p>
+        </div>
+
+        <div class="form-field row text-center">
+          <div class="col-3 form-label">
+            <label for="password">Password</label>
+          </div>
+          <div class="col-9">
+            <div class="input-group">
               <input
+                class="form-control"
+                :class="{ invalid: !data.password.isValid }"
                 :type="showPassword ? 'text' : 'password'"
                 id="password"
                 v-model.trim="data.password.val"
                 @blur="clearValidity('password')"
               />
+              <span
+                class="input-group-text visibility-icon"
+                id="input-password-visibility"
+                data-target="password"
+                @click.prevent="togglePasswordVisibility"
+                >@</span
+              >
             </div>
-            <div
-              v-if="!data.password.isValid"
-              class="validation-error-container"
-            >
-              <p>
-                Password must not be empty and it must be 8 characters in
-                length.
-              </p>
-            </div>
+          </div>
+        </div>
+        <div v-if="!data.password.isValid" class="validation-error-container">
+          <p>
+            Password must not be empty and it must be 8 characters in length.
+          </p>
+        </div>
 
-            <div
-              class="form-control"
-              :class="{ invalid: !data.passwordConfirmation.isValid }"
-            >
-              <label for="password-confirmation">Password confirmation</label>
+        <div class="form-field row text-center">
+          <div class="col-3 form-label">
+            <label for="password-confirmation">Password confirmation</label>
+          </div>
+          <div class="col-9">
+            <div class="input-group">
               <input
+                class="form-control col-8"
+                :class="{ invalid: !data.passwordConfirmation.isValid }"
                 :type="showPassword ? 'text' : 'password'"
                 id="password-confirmation"
                 v-model.trim="data.passwordConfirmation.val"
                 @blur="clearValidity('passwordConfirmation')"
               />
-            </div>
-            <div
-              v-if="!data.passwordConfirmation.isValid"
-              class="validation-error-container"
-            >
-              <p>
-                Password confirmation must not be empty and must be at least 8
-                characters.
-              </p>
-            </div>
-            <div
-              v-if="
-                data.passwordConfirmation.isValid &&
-                !data.matchingPasswords.isValid
-              "
-              class="validation-error-container"
-            >
-              <p>Your password and your password confirmation must match.</p>
-            </div>
-            <div class="form-control">
-              <BaseButton
+              <span
+                class="input-group-text visibility-icon"
+                id="input-password-confirmation-visibility"
+                data-target="password-confirmation"
                 @click.prevent="togglePasswordVisibility"
-                mode="outline"
+                >@</span
               >
-                {{ showPassword ? "Hide" : "Show" }} Password
-              </BaseButton>
             </div>
-            <div
-              class="form-control"
-              :class="{ invalid: !data.publicDetails.isValid }"
-            >
-              <label for="public-details">Accept T&C</label>
-              <input
-                type="checkbox"
-                checked
-                id="public-details"
-                v-model.trim="data.publicDetails.val"
-                @change="clearValidity('publicDetails')"
-                @blur="clearValidity('publicDetails')"
-              />
-            </div>
-            <div
-              class="validation-error-container"
-              v-if="!data.publicDetails.isValid"
-            >
-              <p>You must accept our terms and conditions.</p>
-            </div>
-
-            <p v-if="formIsValid.value === false">
-              Please fix the above errors and submit again.
-            </p>
           </div>
         </div>
-        <div class="form-right-side form-side">
+        <div
+          v-if="!data.passwordConfirmation.isValid"
+          class="validation-error-container"
+        >
+          <p>
+            Password confirmation must not be empty and must be at least 8
+            characters.
+          </p>
+        </div>
+        <div
+          v-if="
+            data.passwordConfirmation.isValid && !data.matchingPasswords.isValid
+          "
+          class="validation-error-container"
+        >
+          <p>Your password and your password confirmation must match.</p>
+        </div>
+        <!--<div>
+          <BaseButton @click.prevent="togglePasswordVisibility" mode="outline">
+            {{ showPassword ? "Hide" : "Show" }} Password
+          </BaseButton>
+        </div>-->
+
+        <div class="form-field row">
+          <div class="col">
+            <label for="public-details"
+              >By enabling this checkbox I accept the
+              <a href="#">terms and conditions</a></label
+            >
+            <input
+              :class="{ invalid: !data.publicDetails.isValid }"
+              type="checkbox"
+              checked
+              id="public-details"
+              v-model.trim="data.publicDetails.val"
+              @change="clearValidity('publicDetails')"
+              @blur="clearValidity('publicDetails')"
+            />
+          </div>
+        </div>
+        <div
+          class="validation-error-container"
+          v-if="!data.publicDetails.isValid"
+        >
+          <p>You must accept our terms and conditions.</p>
+        </div>
+
+        <p v-if="formIsValid.value === false">
+          Please fix the above errors and submit again.
+        </p>
+      </div>
+      <div class="form-right-side form-side col-md-6">
+        <div class="form-field row">
           <div id="image-upload">
             <div>
               <ProfileImage :userEmail="activeUserEmail" :mode="'large'" />
             </div>
           </div>
-          <div id="coords-details">
-            <div class="form-control">
+        </div>
+        <div id="coords-details">
+          <div class="form-field row text-center">
+            <div class="col-3 form-label">
               <label for="longitude">Longitude</label>
+            </div>
+            <div class="col-9">
               <input
+                class="form-control"
                 type="text"
                 id="longitude"
                 v-model.trim="data.longitude.val"
+                disabled
               />
             </div>
-            <div
-              v-if="!data.longitude.isValid"
-              class="validation-error-container"
-            >
-              <p>Longitude must not be empty.</p>
-            </div>
-            <div class="form-control">
+          </div>
+          <div
+            v-if="!data.longitude.isValid"
+            class="validation-error-container"
+          >
+            <p>Longitude must not be empty.</p>
+          </div>
+
+          <div class="form-field row text-center">
+            <div class="col-3 form-label">
               <label for="latitude">Latitude</label>
+            </div>
+            <div class="col-9">
               <input
+                class="form-control"
                 type="text"
                 id="latitude"
                 v-model.trim="data.latitude.val"
+                disabled
               />
             </div>
-            <div
-              v-if="!data.latitude.isValid"
-              class="validation-error-container"
-            >
-              <p>Latitude must not be empty.</p>
-            </div>
-            <div id="user-city" v-if="userCity !== ''">
-              <p>You are based around {{ userCity }}</p>
-            </div>
-            <BaseButton @click.prevent="getLocationCoords" mode="outline"
-              >Get my Location</BaseButton
-            >
-            <p class="note">
-              We need your location to make sure that proximity is considered
-              when donating products.Thanks!
-            </p>
           </div>
-          <div class="form-submit-button">
-            <BaseButton>Register</BaseButton>
+          <div v-if="!data.latitude.isValid" class="validation-error-container">
+            <p>Latitude must not be empty.</p>
+          </div>
+          <div id="user-city" class="row" v-if="userCity !== ''">
+            <div class="col text-end">
+              <p>You are based around {{ userCity }}.</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col text-end">
+              <BaseButton @click.prevent="getLocationCoords" mode="outline"
+                >Get my Location</BaseButton
+              >
+              <p class="note">
+                We need your location to make sure that proximity is considered
+                when donating products.Thanks!
+              </p>
+            </div>
           </div>
         </div>
-      </form>
+        <div class="row">
+          <div class="co">
+            <div class="form-submit-button">
+              <BaseButton>Register</BaseButton>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="request-status">
-      <div class="loading" v-show="isLoading">
+
+    <div class="request-status row">
+      <div class="loading col text-center" v-show="isLoading">
         <base-spinner></base-spinner>
       </div>
       <transition name="request-errors">
-        <div class="request-errors" v-show="requestError">
+        <div class="request-errors col" v-show="requestError">
           <p>
             There was an error when trying to perform the registration. Please
             try again.
@@ -640,7 +694,7 @@ const validatePassword = (password) => {
         </div>
       </transition>
     </div>
-  </div>
+  </form>
 </template>
 
 <style scoped>
@@ -650,10 +704,14 @@ const validatePassword = (password) => {
   background-color: #fff;
 }
 form {
+  border: #edb421 solid thin;
+  box-shadow: rgba(17, 17, 26, 0.2) 0px 2px 4px;
+  background-color: #fff;
   padding: 0;
-  display: flex;
+  /* display: block; */
+  padding: 2rem;
 }
-.form-side {
+/*.form-side {
   flex: 1;
   padding: 2rem;
 }
@@ -661,7 +719,7 @@ form {
   margin: 1.5rem 0;
   display: flex;
 }
-
+*/
 .profile-pic {
   background-color: gray;
   width: 125px;
@@ -678,8 +736,8 @@ form {
 
 label {
   font-weight: bold;
-  display: block;
-  /*margin-bottom: 0.5rem;*/
+  /*display: block;
+  margin-bottom: 0.5rem;*/
   color: #edb421;
 }
 
@@ -688,17 +746,28 @@ input[type="checkbox"] + label {
   display: inline;
   margin: 0 0 0 0.5rem;
 }
-
+div.form-field {
+  padding-bottom: 2rem;
+}
+div.form-field.submit {
+  padding-bottom: 0rem;
+}
+.form-label {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
 input,
 textarea {
-  display: block;
-  width: 100%;
+  /*display: block;
+  width: 100%;*/
   border: thin solid #edb421;
   border-radius: 3px;
   font: inherit;
   box-shadow: rgba(17, 17, 26, 0.2) 0px 2px 4px;
-  margin-inline-start: 1.5rem;
+  /*margin-inline-start: 1.5rem;*/
   color: gray;
+  /*padding: 0.5rem;*/
 }
 
 input:focus,
@@ -709,10 +778,10 @@ textarea:focus {
 }
 
 input[type="checkbox"] {
-  display: inline;
+  /* display: inline;
   width: auto;
   border: none;
-  box-shadow: none;
+  box-shadow: none;*/
 }
 
 input[type="checkbox"]:focus {
@@ -736,11 +805,14 @@ h3 {
   content: "";
   display: block;
   position: absolute;
-  left: 25%;
+  left: 50%;
   top: -10px;
   border-bottom: 10px solid red;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
+}
+#public-details {
+  margin-left: 0.5rem;
 }
 /*.invalid label {
   color: red;
@@ -756,6 +828,7 @@ h3 {
 }
 .note {
   color: rgb(139, 138, 138);
+  padding-top: 1rem;
 }
 
 .form-submit-button {
@@ -782,7 +855,6 @@ h3 {
 }
 
 .request-status {
-  padding: 2rem;
 }
 .request-status p {
   margin: 0;
@@ -792,5 +864,9 @@ h3 {
 }
 .request-status ul li {
   line-height: 1rem;
+}
+.visibility-icon {
+  border: #edb421 solid thin;
+  cursor: pointer;
 }
 </style>
