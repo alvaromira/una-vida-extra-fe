@@ -2,6 +2,166 @@
   <header>
     <section id="primary-nav-bar">
       <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+          <RouterLink :to="{ name: 'products' }" class="navbar-brand" href="#">
+            <img
+              alt="1up logo"
+              class="logo"
+              src="@/assets/images/one-life-up-logo.png"
+              width="125"
+              height="100"
+          /></RouterLink>
+
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNavDarkDropdown"
+            aria-controls="navbarNavDarkDropdown"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div
+            class="collapse navbar-collapse search-and-menu-bar"
+            id="navbarNavDarkDropdown"
+          >
+            <form
+              @submit.prevent="searchProducts"
+              class="d-flex"
+              id="search-product-form"
+            >
+              <label for="site-search">Search the site:</label>
+              <input
+                type="search"
+                id="site-search"
+                name="site-search"
+                v-model="searchTerm"
+                class="form-control"
+                pattern=".{3,}"
+                placeholder="Enter your search here..."
+                aria-label="Search"
+              />
+              <button type="submit" class="btn search-button">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-search"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"
+                  />
+                </svg>
+              </button>
+            </form>
+            <div id="access" class="d-flex" v-if="!getUserStatus">
+              <BaseButton :to="{ name: 'register' }" link="true"
+                >Register</BaseButton
+              >
+              <BaseButton
+                mode="outline-green"
+                :to="{ name: 'login' }"
+                link="true"
+                >Login</BaseButton
+              >
+            </div>
+            <div v-if="getUserStatus">
+              <ProfileImage
+                :userEmail="activeUserEmail"
+                :gravatarInfo="false"
+                :mode="'small'"
+              />
+            </div>
+            <ul class="navbar-nav">
+              <li v-if="getUserStatus" class="nav-item dropdown">
+                <a
+                  class="nav-link dropdown-toggle yellow-color"
+                  href="#"
+                  id="navbarDarkDropdownMenuLink"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Hi, {{ activeUserEmail }}
+                </a>
+                <ul
+                  class="dropdown-menu yellow-color"
+                  aria-labelledby="navbarDarkDropdownMenuLink"
+                >
+                  <!--<li><a class="dropdown-item" href="#">Action</a></li>
+                  <li><a class="dropdown-item" href="#">Another action</a></li>
+                  <li>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                  </li>-->
+                  <li>
+                    <RouterLink
+                      v-if="!isUserAdmin"
+                      class="dropdown-item"
+                      :to="{ name: 'userProducts' }"
+                      >My Products</RouterLink
+                    >
+                  </li>
+                  <li>
+                    <RouterLink
+                      v-if="!isUserAdmin"
+                      class="dropdown-item"
+                      :to="{ name: 'requests' }"
+                      >My Requests</RouterLink
+                    >
+                  </li>
+                  <li>
+                    <RouterLink
+                      v-if="!isUserAdmin"
+                      class="dropdown-item"
+                      :to="{ name: 'profile' }"
+                      >Profile</RouterLink
+                    >
+                  </li>
+
+                  <li>
+                    <RouterLink
+                      v-if="!isUserAdmin"
+                      class="dropdown-item"
+                      :to="{ name: 'logout' }"
+                      >Log Out</RouterLink
+                    >
+                  </li>
+
+                  <li>
+                    <RouterLink
+                      v-if="isUserAdmin"
+                      class="dropdown-item"
+                      :to="{ name: 'admin' }"
+                      >Admin Dashboard</RouterLink
+                    >
+                  </li>
+                  <li>
+                    <RouterLink
+                      v-if="isUserAdmin"
+                      class="dropdown-item"
+                      :to="{ name: 'profile' }"
+                      >Profile</RouterLink
+                    >
+                  </li>
+                  <li>
+                    <RouterLink
+                      v-if="isUserAdmin"
+                      class="dropdown-item"
+                      :to="{ name: 'logout' }"
+                      >Log Out</RouterLink
+                    >
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <!--  <nav class="navbar navbar-expand-lg">
         <div class="container logo-part">
           <RouterLink :to="{ name: 'products' }" class="navbar-brand" href="#">
             <img
@@ -129,7 +289,7 @@
             </ul>
           </div>
         </div>
-      </nav>
+      </nav>-->
     </section>
     <section id="second-nav-bar">
       <nav class="navbar navbar-expand-sm">
@@ -221,6 +381,10 @@ const isUserAdmin = computed(() => {
 </script>
 
 <style scoped>
+.search-and-menu-bar {
+  justify-content: flex-end;
+  gap: 1rem;
+}
 #access {
   display: flex;
   gap: 1rem;
@@ -232,6 +396,7 @@ const isUserAdmin = computed(() => {
 section#primary-nav-bar nav.navbar {
   background-color: #7ab370;
   margin-top: 0;
+  padding: 1rem;
 }
 section#second-nav-bar nav.navbar {
   background-color: #fefcf6;
@@ -437,10 +602,21 @@ label[for="site-search"] {
   cursor: pointer;
 }
 .search-button:hover {
-  background-color: #edb421; /* Change background color on hover */
+  background-color: ; /* Change background color on hover */
 }
 .search-button:active {
   background-color: #c49f00; /* Change background color when pressed */
+}
+
+.yellow-color {
+  background-color: #edb421;
+}
+.dropdown-toggle {
+  color: white;
+  border-radius: 5px;
+}
+.dropdown-item {
+  color: white;
 }
 
 #header-wrapper {
