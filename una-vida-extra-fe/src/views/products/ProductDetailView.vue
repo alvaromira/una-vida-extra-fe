@@ -1,5 +1,12 @@
 <template>
   <div v-if="isDataLoaded">
+    <div class="row row justify-content-md-center">
+      <div class="back-to-products-button col-md-8">
+        <a :href="$router.resolve({ name: 'products' }).href"
+          >Back to all products</a
+        >
+      </div>
+    </div>
     <product-detail-card
       :id="productId"
       :key="productId"
@@ -77,3 +84,17 @@ onBeforeMount(() => {
 //Check if user is logged in
 //Check if user is the owner of the product
 </script>
+<style scoped>
+.back-to-products-button {
+  padding-bottom: 2rem;
+}
+.back-to-products-button a {
+  text-decoration: none;
+  color: #edb421;
+  cursor: pointer;
+}
+.back-to-products-button a:hover {
+  text-decoration: underline;
+  color: #edb421;
+}
+</style>

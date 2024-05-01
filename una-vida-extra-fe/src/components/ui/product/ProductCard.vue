@@ -1,15 +1,22 @@
 <template>
-  <div class="card product-card-wrapper" style="width: 18rem">
+  <div class="card product-card-wrapper" style="width: 15rem">
     <!--<div class="location-icon" v-if="locationAvailable">
       <IconLocation @click="showLocation" />
       <span class="lat hidden">{{ location.latitude }}</span>
       <span class="long hidden">{{ location.longitude }}</span>
     </div>-->
-    <img :src="imagePath" class="card-img-top" :alt="title" />
+    <img
+      :src="imagePath"
+      class="card-img-top"
+      :alt="title"
+      style="height: 200px; width: auto"
+    />
     <div class="card-body">
       <h5 class="card-title">{{ title }}</h5>
-      <p class="card-text">{{ description }}</p>
-      <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+      <!-- <p class="card-text">{{ description }}</p>
+      <a href="#" class="btn btn-primary">Go somewhere</a> -->
+    </div>
+    <div class="card-footer">
       <BaseButton :to="{ name: 'product', params: { id: id } }" link="true"
         >More info</BaseButton
       >
@@ -98,12 +105,37 @@ const showLocation = () => {
 </script>
 
 <style scoped>
-.card {
+.card-title {
+  height: 50px;
+}
+.card-img-top {
+  height: 200px;
+  width: auto;
+  object-fit: cover;
+}
+.card-text {
+  height: 50px;
+  text-overflow: ellipsis;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  word-break: break-all;
+}
+.card-footer {
+  background-color: #fff;
+  border: none;
+  text-align: end;
 }
 .product-card-wrapper {
-  border-color: #7ab370;
+  border: thin solid #fff;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   background-color: #fff;
+  padding: 0.25rem;
+  border-radius: 10px;
+  transition: border-color 0.3s ease;
+}
+.product-card-wrapper:hover {
+  cursor: pointer;
+  border: thin solid lightgray;
 }
 .product-top {
   text-align: center;
