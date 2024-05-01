@@ -1,19 +1,21 @@
 <template>
-  <div>
-    <p class="top-page-not-found">Page not found</p>
-    <section class="wrapper">
-      <div class="top">404</div>
-      <div class="bottom" aria-hidden="true">404</div>
-    </section>
-    <p>
-      <span class="oops">Oops!</span> We can't find this page but why not
-      checking all the products available to see if you find what you are
-      looking for?
-    </p>
-    <div class="cta-button">
-      <BaseButton :to="{ name: 'products' }" mode="outline-green" link="true"
-        >All Products</BaseButton
-      >
+  <div class="row not-found-wrapper">
+    <div class="col">
+      <p class="top-page-not-found">Page not found</p>
+      <section class="wrapper">
+        <div class="top">404</div>
+        <div class="bottom" aria-hidden="true">404</div>
+      </section>
+      <p class="message">
+        <span class="oops">Oops!</span> We can't find this page but why not
+        checking all the products available to see if you find what you are
+        looking for?
+      </p>
+      <div class="cta-button">
+        <BaseButton :to="{ name: 'products' }" mode="outline-green" link="true"
+          >All Products</BaseButton
+        >
+      </div>
     </div>
   </div>
 </template>
@@ -22,6 +24,10 @@
 import BaseButton from "./BaseButton.vue";
 </script>
 <style scoped>
+.not-found-wrapper {
+  text-align: center;
+  color: rgb(89 88 86);
+}
 .wrapper {
   display: grid;
   place-content: center;
@@ -30,7 +36,9 @@ import BaseButton from "./BaseButton.vue";
   text-transform: uppercase;
   color: #7ab370;
 }
-
+p.message {
+  font-size: 1.5rem !important;
+}
 .wrapper > div {
   grid-area: 1/1/-1/-1;
 }

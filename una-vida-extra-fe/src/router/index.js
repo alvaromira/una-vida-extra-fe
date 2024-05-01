@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import NotFound from '../views/NotFound.vue';
 import store from '../store';
 import { computed } from "vue";
-
+import NotFound404Page from '../components/ui/NotFound404Page.vue';
 //const store = useStore();
 
 const router = createRouter({
@@ -208,7 +208,7 @@ const router = createRouter({
         middleware: "public",
         title: "Not Found"
       },
-      component: NotFound
+      component: NotFound404Page
     }
   ]
 });
