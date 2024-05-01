@@ -1,25 +1,32 @@
 <template>
   <div v-if="isDataLoaded">
-    <div class="row row justify-content-md-center">
+    <div v-if="productFetched">
+      <div class="row row justify-content-md-center">
+        <div class="back-to-products-button col-md-8">
+          <a :href="$router.resolve({ name: 'products' }).href"
+            >Back to all products</a
+          >
+        </div>
+      </div>
+      <product-detail-card
+        :id="productId"
+        :key="productId"
+        :image="imagePath"
+        :title="prodDetail.title"
+        :date="prodDetail.created_at"
+        :location="prodDetail.location"
+        :owner="prodDetail.owner_id"
+        :description="prodDetail.description"
+        :category="prodDetail.category"
+        :available="prodDetail.available"
+        :isTaken="prodDetail.is_taken"
+      />
+    </div>
+    <div v-else class="row row justify-content-md-center not-found">
       <div class="back-to-products-button col-md-8">
-        <a :href="$router.resolve({ name: 'products' }).href"
-          >Back to all products</a
-        >
+        <NotFound404Page></NotFound404Page>
       </div>
     </div>
-    <product-detail-card
-      :id="productId"
-      :key="productId"
-      :image="imagePath"
-      :title="prodDetail.title"
-      :date="prodDetail.created_at"
-      :location="prodDetail.location"
-      :owner="prodDetail.owner_id"
-      :description="prodDetail.description"
-      :category="prodDetail.category"
-      :available="prodDetail.available"
-      :isTaken="prodDetail.is_taken"
-    />
   </div>
   <div v-else class="loading">
     <base-spinner></base-spinner>
@@ -35,6 +42,8 @@ import { useStore } from "vuex";
 import { ref } from "vue";
 import BaseSpinner from "../../components/ui/BaseSpinner.vue";
 import ProductDetailCard from "../../components/ui/product/ProductDetailCard.vue";
+import BaseButton from "../../components/ui/BaseButton.vue";
+import NotFound404Page from "../../components/ui/NotFound404Page.vue";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const baseUrlImg = import.meta.env.VITE_BASE_IMG_URL;
@@ -45,6 +54,7 @@ const store = useStore();
 
 // Define a ref to track if data is loaded
 const isDataLoaded = ref(false);
+const productFetched = ref(false);
 
 //computed
 const productId = computed(() => {
@@ -60,9 +70,11 @@ const getProductData = async () => {
     //const targetURL = `${baseApiUrl}/products/${route.params.id}`;
     //const response = await axios.get(targetURL);
     prodDetail.value = await store.dispatch("getProductData", route.params.id);
-    isDataLoaded.value = true; // Set data loaded to true once data is fetched
+    productFetched.value = true;
   } catch (err) {
     console.log(err);
+  } finally {
+    isDataLoaded.value = true; // Set data loaded to true once data is fetched
   }
 };
 
