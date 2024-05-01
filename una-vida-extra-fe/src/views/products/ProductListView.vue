@@ -11,35 +11,42 @@
       <h2 v-else>Check the latest additions!</h2>
 
       <section class="product-card-container">
-        <div v-for="product in productResults.data" :key="product.id">
-          <product-card
-            :id="product.id"
-            :image="product.image"
-            :description="product.description"
-            :title="product.title"
-            :date="product.created_at"
-            :location="product.location"
-          />
-        </div>
+        <product-card
+          v-for="product in productResults.data"
+          :key="product.id"
+          :id="product.id"
+          :image="product.image"
+          :description="product.description"
+          :title="product.title"
+          :date="product.created_at"
+          :location="product.location"
+        />
       </section>
       <!-- Pagination controls -->
-      <div class="pagination-controls">
-        <BaseButton @click="loadPreviousPage" :disabled="currentPage === 1">
-          Previous
+      <div class="pagination-controls" v-if="totalPages > 1">
+        <BaseButton
+          @click="loadPreviousPage"
+          mode="outline"
+          disabled="currentPage === 1"
+        >
+          <span class="sr-only">Previous</span>
+          <span aria-hidden="true">&lt;</span>
         </BaseButton>
         <span class="pagination-information"
-          >Page {{ currentPage }} of {{ totalPages }}</span
+          >{{ currentPage }}/{{ totalPages }}</span
         >
         <BaseButton
+          mode="outline"
           @click="loadNextPage"
           :disabled="currentPage === totalPages"
         >
-          Next
+          <span class="sr-only">Next</span>
+          <span aria-hidden="true">&gt;</span>
         </BaseButton>
       </div>
-      <section id="products-data-summary">
+      <!--<section id="products-data-summary">
         <ProductsSummary></ProductsSummary>
-      </section>
+      </section>-->
     </div>
 
     <div v-else class="loading">
@@ -182,5 +189,16 @@ h2 {
   text-align: center;
   color: #7ab370;
   padding: 1rem 1rem 1.5rem 1rem;
+}
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
 }
 </style>
