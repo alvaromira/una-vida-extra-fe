@@ -5,8 +5,17 @@ import { useRouter } from "vue-router";
 import axios from "axios";
 
 const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
+const baseImgURL = import.meta.env.VITE_BASE_IMG_URL;
 
 const router = useRouter();
+
+const imagePath = computed(() => {
+  if (props.initialImage == null || props.initialImage === undefined) {
+    return "https://via.placeholder.com/250x250/cccccc/969696";
+  } else {
+    return baseImgURL + props.initialImage;
+  }
+});
 
 const props = defineProps({
   initialProductName: {
@@ -25,6 +34,10 @@ const props = defineProps({
     type: Number,
     required: false,
   },
+  initialImage: {
+    type: String,
+    required: false,
+  },
   id: {
     type: String,
     required: true,
@@ -36,6 +49,7 @@ const { initialProductName } = toRefs(props);
 const { initialCategory } = toRefs(props);
 const { initialTags } = toRefs(props);
 const { initialDescription } = toRefs(props);
+const { initialImage } = toRefs(props);
 
 //data
 const data = reactive({
@@ -53,6 +67,10 @@ const data = reactive({
   },
   category: {
     val: props.initialCategory,
+    isValid: true,
+  },
+  image: {
+    val: props.initialImage,
     isValid: true,
   },
 });
@@ -119,12 +137,19 @@ const submitForm = async () => {
     return;
   }
 
+  const formData = new FormData();
+  formData.append("title", data.productName.val);
+  formData.append("description", data.description.val);
+  //formData.append('tags', data.tags.val);
+  formData.append("category_id", data.category.val);
+
+  /*
   const formData = {
     title: data.productName.val,
     description: data.description.val,
     //tags: data.tags.val,
     category_id: data.category.val,
-  };
+  };*/
 
   try {
     const responseData = await updateProduct(formData);
@@ -157,11 +182,6 @@ const submitForm = async () => {
     }
   }
 };
-
-/*
-export default {
-  // emits: ["save-data"],
-};*/
 
 //categories
 const errorDetails = reactive({
@@ -221,36 +241,7 @@ onMounted(() => {
   watchInitialProp(initialCategory, "category");
   watchInitialProp(initialTags, "tags");
   watchInitialProp(initialDescription, "description");
-
-  /*
-  // Watch for changes in the initialProductName prop
-  watch(initialProductName, (newVal) => {
-    // Update the productName value in the reactive data object
-    data.productName.val = newVal;
-  });
-  watch(initialCategory, (newVal) => {
-    // Update the productName value in the reactive data object
-    console.log(`newval is ${newVal}`);
-    data.category.val = newVal;
-
-    // computed property to get the category name by ID
-    /* const activeCategory = computed(() => {
-      const item = prodCategories.value.find(
-        (item) => item.id === props.initialCategory
-      );
-      return item ? item.name : "Not found";
-    });
-  });
-  watch(initialTags, (newVal) => {
-    // Update the productName value in the reactive data object
-    console.log(`newval is ${newVal}`);
-    data.tags.val = newVal;
-  });
-  watch(initialDescription, (newVal) => {
-    // Update the productName value in the reactive data object
-    console.log(`newval is ${newVal}`);
-    data.description.val = newVal;
-  });*/
+  watchInitialProp(initialImage, "image");
 });
 
 const updateProduct = async (payload) => {
@@ -273,134 +264,185 @@ const updateProduct = async (payload) => {
 </script>
 
 <template>
-  <div>
-    <h2>Edit your Product</h2>
-    <form @submit.prevent="submitForm">
-      <div class="form-left-side form-side">
-        <div>
-          <div
-            class="form-control"
-            :class="{ invalid: !data.productName.isValid }"
-          >
-            <label for="productName">Name:</label>
-            <input
-              type="text"
-              id="productName"
-              v-model.trim="data.productName.val"
-              @blur="clearValidity('productName')"
-              placeholder="Name of your product"
-            />
+  <div class="row justify-content-md-center">
+    <div class="col-md-10">
+      <div class="form-wrapper">
+        <form @submit.prevent="submitForm" class="rounded">
+          <div class="row edit-card-top">
+            <div class="form-left-side form-side col-md-6">
+              <div class="mb-3">
+                <label for="productName" class="form-label">Name</label>
+                <input
+                  :class="{ invalid: !data.productName.isValid }"
+                  class="form-control"
+                  type="text"
+                  id="productName"
+                  v-model.trim="data.productName.val"
+                  @blur="clearValidity('productName')"
+                  placeholder="Name of your product"
+                />
+              </div>
+              <div
+                v-if="!data.productName.isValid"
+                class="validation-error-container"
+              >
+                <p>productName must not be empty.</p>
+              </div>
+
+              <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+
+                <textarea
+                  class="form-control"
+                  :class="{ invalid: !data.description.isValid }"
+                  id="description"
+                  rows="5"
+                  v-model.trim="data.description.val"
+                  @blur="clearValidity('description')"
+                ></textarea>
+              </div>
+              <div
+                v-if="!data.description.isValid"
+                class="validation-error-container"
+              >
+                <p>Description must not be empty.</p>
+              </div>
+            </div>
+            <div class="form-right-side form-side col-md-6">
+              <div class="form-field row">
+                <div id="image-upload">
+                  <img :src="imagePath" class="profile-pic" />
+                  <div>
+                    <label for="profile-pic" class="form-label"
+                      >Product image</label
+                    >
+                    <input
+                      type="file"
+                      id="profile-pic"
+                      name="profile-pic"
+                      accept="image/png, image/jpeg"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="tags" class="form-label">Tags:</label>
+
+                <input
+                  class="form-control"
+                  type="text"
+                  id="tags"
+                  v-model.trim="data.tags.val"
+                  placeholder="Insert the tags for your product, separate them with commmas"
+                  disabled
+                  readonly
+                />
+                <div id="emailHelp" class="form-text">
+                  Tag editing is not available at the moment.
+                </div>
+              </div>
+              <div v-if="!data.tags.isValid" class="validation-error-container">
+                <p>tags must not be empty.</p>
+              </div>
+
+              <div class="form-field row text-center">
+                <div class="col-3 form-label">
+                  <label for="category">Category:</label>
+                </div>
+                <div class="col-9">
+                  <select
+                    class="form-select"
+                    aria-label="Select category"
+                    name="categories"
+                    id="category"
+                    @blur="clearValidity('category')"
+                    v-model="data.category.val"
+                  >
+                    <option
+                      v-for="category in prodCategories"
+                      :key="category.id"
+                      :id="category.id"
+                      :value="category.id"
+                    >
+                      {{ category.name }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <div
+                v-if="!data.category.isValid"
+                class="validation-error-container"
+              >
+                <p>Category must not be empty.</p>
+              </div>
+            </div>
           </div>
-          <div
-            v-if="!data.productName.isValid"
-            class="validation-error-container"
-          >
-            <p>productName must not be empty.</p>
+          <div class="row edit-card-bottom">
+            <div class="col">
+              <div class="form-submit-button">
+                <BaseButton @submit.prevent="submitForm">Update</BaseButton>
+                <BaseButton>Delete</BaseButton>
+              </div>
+            </div>
           </div>
 
-          <div
-            class="form-control"
-            :class="{ invalid: !data.description.isValid }"
-          >
-            <label for="description">Description</label>
-            <textarea
-              type="text"
-              id="description"
-              rows="5"
-              v-model.trim="data.description.val"
-              @blur="clearValidity('description')"
-              placeholder="Description of your product"
-            ></textarea>
+          <div class="request-status row">
+            <div class="loading col text-center" v-show="isLoading">
+              <base-spinner></base-spinner>
+            </div>
+            <transition name="request-errors">
+              <div class="request-errors col" v-show="requestError">
+                <p>
+                  There was an error when trying to perform the registration.
+                  Please try again.
+                </p>
+                <div v-if="apiErrorsFound">
+                  <p>Details:</p>
+                  <ul v-if="apiErrorsCaptured">
+                    <li v-for="e in errorDetails.errors">{{ e }}</li>
+                  </ul>
+                </div>
+              </div>
+            </transition>
           </div>
-          <div
-            v-if="!data.description.isValid"
-            class="validation-error-container"
-          >
-            <p>Description must not be empty.</p>
-          </div>
-        </div>
+        </form>
       </div>
-      <div class="form-right-side form-side">
-        <div id="image-upload">
-          <img src="" class="profile-pic" />
-          <div>
-            <label for="profile-pic">Product image</label>
-            <input
-              type="file"
-              id="profile-pic"
-              name="profile-pic"
-              accept="image/png, image/jpeg"
-            />
-          </div>
-        </div>
-
-        <div class="form-control" :class="{ invalid: !data.tags.isValid }">
-          <label for="tags">Tags:</label>
-          <input
-            type="text"
-            id="tags"
-            v-model.trim="data.tags.val"
-            @blur="clearValidity('tags')"
-            placeholder="Insert the tags for your product, separate them with commmas"
-          />
-        </div>
-        <div v-if="!data.tags.isValid" class="validation-error-container">
-          <p>tags must not be empty.</p>
-        </div>
-
-        <div class="form-control" :class="{ invalid: !data.category.isValid }">
-          <label for="categories">Category:</label><br />
-
-          <select
-            name="categories"
-            id="category"
-            @blur="clearValidity('category')"
-            v-model="data.category.val"
-          >
-            <option
-              v-for="category in prodCategories"
-              :key="category.id"
-              :id="category.id"
-              :value="category.id"
-            >
-              {{ category.name }}
-            </option>
-            <!--</option>
-            <option value="volvo">Volvo</option>
-            <option value="saab">Saab</option>
-            <option value="mercedes">Mercedes</option>
-            <option value="audi">Audi</option>-->
-          </select>
-        </div>
-        <div v-if="!data.category.isValid" class="validation-error-container">
-          <p>Category must not be empty.</p>
-        </div>
-
-        <div class="form-submit-button">
-          <!-- <BaseButton mode="outline" @click="clearForm">Clear</BaseButton>-->
-          <BaseButton @submit.prevent="submitForm">Save</BaseButton>
-        </div>
-      </div>
-    </form>
+    </div>
   </div>
 </template>
 
 <style scoped>
-form {
+.edit-card-bottom {
+  padding-top: 1rem;
+}
+.form-submit-button {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+.form-wrapper {
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  background-color: #fff;
+}
+/*form {
   border: #edb421 solid thin;
   box-shadow: rgba(17, 17, 26, 0.2) 0px 2px 4px;
   background-color: #fff;
-  padding: 0;
+   padding: 0;
   display: flex;
   margin-top: 1rem;
-}
-.form-side {
+}*/
+/*.form-side {
   flex: 1;
   padding: 2rem;
 }
 .form-control {
   margin: 1.5rem 0;
-}
+}*/
 
 .profile-pic {
   background-color: gray;
@@ -457,11 +499,6 @@ input[type="checkbox"] {
 
 input[type="checkbox"]:focus {
   outline: #3d008d solid 1px;
-}
-
-h3 {
-  margin: 0.5rem 0;
-  font-size: 1rem;
 }
 
 .validation-error-container p {

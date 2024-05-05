@@ -1,4 +1,9 @@
 <template>
+  <div class="form-wrapper">
+    <div class="row">
+      <div class="col"><h2>Edit Product</h2></div>
+    </div>
+  </div>
   <div class="product-editing" id="productId">
     <edit-product-form
       :id="productId.toString()"
@@ -6,6 +11,7 @@
       :initialDescription="prodDetail.description"
       :initialCategory="prodDetail.category"
       :initialTags="prodDetail.product_tags"
+      :initialImage="prodDetail.image"
     />
   </div>
 </template>
@@ -40,3 +46,9 @@ const getProductData = async () => {
 };
 getProductData();
 </script>
+<style scoped>
+h2 {
+  text-align: center;
+  padding-bottom: 2rem;
+}
+</style>
