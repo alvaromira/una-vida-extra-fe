@@ -18,6 +18,7 @@ const errorDetails = reactive({
   message: "",
   errors: [],
 });
+const locationUpdated = ref(false);
 const userCity = ref("");
 const userCountry = ref("");
 
@@ -27,13 +28,16 @@ const activeUserEmail = computed(() => {
 const apiErrorsFound = computed(() => {
   return errorDetails.message.length;
 });
+const activeUserLocation = computed(() => {
+  return store.state.user.user_location;
+});
+
+// Helper function para comprobar valores nules o cadenas vacias
+const isValidValue = (value) => value !== null && value !== "";
 
 onMounted(() => {
   // Destructuring store state for cleaner code
   const { name, surname, phone, email, user_location } = store.state.user;
-
-  // Helper function to check for null or empty values
-  const isValidValue = (value) => value !== null && value !== "";
 
   // Assigning values to data properties after checking validity
   data.firstName.val = isValidValue(name) ? name : "";
@@ -80,6 +84,10 @@ const data = reactive({
     val: null,
     isValid: true,
   },
+  location_id: {
+    val: null,
+    isValid: true,
+  },
 });
 
 //methods
@@ -94,6 +102,9 @@ const getLocationCoords = () => {
       console.log(position.coords.longitude);
       data.longitude.val = position.coords.longitude;
       data.longitude.isValid = true;
+
+      /* Como se ha actualizado la ubicación, se indica con la variable que lo registra */
+      locationUpdated.value = true;
 
       const cityName = getCityNameFromCoords(
         position.coords.longitude,
@@ -119,8 +130,6 @@ const getCityNameFromCoords = async (lon, lat) => {
 
   try {
     const response = await axios.get(OSMReverseURL, { withCredentials: false });
-    console.log(response.data.address.city);
-    console.log(response.data.address.country);
     userCity.value = response.data.address.city;
     userCountry.value = response.data.address.country;
     //return response.data.address.city;
@@ -186,78 +195,80 @@ const submitForm = async () => {
     last: data.lastName.val,
     email: data.email.val,
     phone: data.phone.val,
-    //publicDetails: data.publicDetails.val,
     longitude: data.longitude.val,
     latitude: data.latitude.val,
   };
-  console.log("Form submitted");
-  console.log(formData);
-  // this.$emit("save-data", formData);
-
   const locationFormData = {
     country: userCountry.value,
     city: userCity.value,
     latitude: data.latitude.val,
     longitude: data.longitude.val,
   };
+  /* En primer lugar, se actualiza la ubicación de usuario, si es que se ha obtenido de nuevo la ubicación*/
+  if (locationUpdated.value == true) {
+    const locationId = await createUserLocation(locationFormData);
+    data.location_id.val = locationId;
+    data.location_id.isValid = true;
+  }
+};
 
-  const createUserLocation = async () => {
-    try {
+/** Funcion para crear o actualizar una ubicacion de usuario
+ *
+ * @param locationFormData formulario con los datos para crear o actualizar una ubicacion
+ * @returns id de la ubicacion nueva o actualizada
+ */
+const createUserLocation = async (locationFormData) => {
+  try {
+    //Comprobamos si se ha podido recuperar correctamente el ID de ubicacion para actualizarlo
+    let activeUserLocationID = activeUserLocation.value.id;
+    if (isValidValue(activeUserLocationID)) {
+      const resp = await axios.put(
+        `${baseApiUrl}/locations/${activeUserLocationID}`,
+        locationFormData
+      );
+      console.log(`Location id ${activeUserLocationID} updated successfully.`);
+      handleSuccessfulResponse(resp);
+    } else {
       const resp = await axios.post(
         `${baseApiUrl}/locations`,
         locationFormData
       );
       console.log(`Newly created Location ID: ${resp.data.data.id}`);
-
-      if (resp.status === 201) {
-        //isLoading.value = false;
-        requestError.value = false;
-
-        store.commit("addToast", {
-          title: "Location created",
-          type: "success",
-          message: "You have successfully created a location",
-        });
-
-        // router.push({ name: "products" });
-      }
-    } catch (error) {
-      // Handle Error Here
-      //console.error(error);
-      //isLoading.value = false;
-      requestError.value = true;
-
-      if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        console.error("Error data", error.response.data);
-        console.error("Error status", error.response.status);
-        errorDetails.code = error.response.status;
-        errorDetails.message = error.message;
-        if (error.response.data.errors) {
-          let requestRecivedErrors = error.response.data.errors;
-          for (const property in requestRecivedErrors) {
-            // console.log(`${property}: ${requestRecivedErrors[property]}`);
-            errorDetails.errors.push(requestRecivedErrors[property].toString());
-          }
-        }
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.error("Error message", error.message);
-        console.error("Error code", error.code);
-        errorDetails.code = error.code;
-        errorDetails.message = error.message;
-      }
+      handleSuccessfulResponse(resp);
     }
-  };
-
-  const locationId = await createUserLocation();
+  } catch (error) {
+    handleErrorResponse(error);
+  }
 };
 
-/*
-export default {
-  // emits: ["save-data"],
-};*/
+/** Helpers para la gestion de los errores. Se aceptan 201 para la creacion desde 0 y 201 para la actualizacion */
+const handleSuccessfulResponse = (resp) => {
+  if (resp.status === 201 || resp.status === 200) {
+    requestError.value = false;
+    return resp.data.data.id;
+  }
+};
+
+const handleErrorResponse = (error) => {
+  requestError.value = true;
+  if (error.response) {
+    console.error("Error data", error.response.data);
+    console.error("Error status", error.response.status);
+    errorDetails.code = error.response.status;
+    errorDetails.message = error.message;
+    if (error.response.data.errors) {
+      const requestReceivedErrors = error.response.data.errors;
+      for (const property in requestReceivedErrors) {
+        errorDetails.errors.push(requestReceivedErrors[property].toString());
+      }
+    }
+  } else {
+    console.error("Error message", error.message);
+    console.error("Error code", error.code);
+    errorDetails.code = error.code;
+    errorDetails.message = error.message;
+  }
+};
 </script>
 
 <template>
