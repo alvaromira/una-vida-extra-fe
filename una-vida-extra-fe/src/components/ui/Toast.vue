@@ -13,7 +13,7 @@
     <div class="content toast-body">
       <p role="status">{{ toast.message }}</p>
     </div>
-    <CountdownBar :duration="toastDuration"></CountdownBar>
+    <CountdownBar :duration="toastDuration" :mode="toast.type"></CountdownBar>
   </div>
 </template>
 
@@ -46,28 +46,38 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.toast-header,
+.toast-body {
+  padding: 1.5rem;
+}
 /* Removed CSS variables and used literals directly */
 
 .success,
 .info,
 .error {
-  color: #ffffff;
+  /*color: #ffffff;*/
 }
 
 h3 {
-  color: #ffffff;
+  /* color: #ffffff;*/
 }
 
-div.toast.success {
-  background-color: #4caf50;
+div.toast.success,
+.toast.success .header button,
+div.toast.error .toast-header h3 {
+  color: #4caf50 !important;
 }
 
-div.toast.info {
-  background-color: #ffc107;
+div.toast.info,
+.toast.info .header button,
+div.toast.info .toast-header h3 {
+  color: #ffc107 !important;
 }
 
-div.toast.error {
-  background-color: #ff5252;
+div.toast.error,
+.toast.error .header button,
+div.toast.error .toast-header h3 {
+  color: #ff5252 !important;
 }
 
 .toast {
@@ -82,6 +92,7 @@ div.toast.error {
   border-radius: 8px;*/
   box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.1), 0 2px 15px 0 rgba(0, 0, 0, 0.05);
   opacity: 1;
+  background-color: #ffffff;
   transition: opacity 0.5s ease-out;
 }
 
@@ -90,6 +101,7 @@ div.toast.error {
 }
 .toast p {
   font-weight: 300;
+  font-size: 1rem;
 }
 
 .toast .sidebar {

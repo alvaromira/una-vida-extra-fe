@@ -602,7 +602,7 @@ label[for="site-search"] {
   cursor: pointer;
 }
 .search-button:hover {
-  background-color: ; /* Change background color on hover */
+  /* Change background color on hover */
 }
 .search-button:active {
   background-color: #c49f00; /* Change background color when pressed */

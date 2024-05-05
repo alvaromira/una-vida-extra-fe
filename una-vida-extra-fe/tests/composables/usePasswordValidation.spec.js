@@ -2,37 +2,37 @@ import { usePasswordValidation } from '@/composables/usePasswordValidation';
 import { expect, describe, it } from 'vitest';
 
 describe('usePasswordValidation', () => {
-    it('throws error for non-string password', () => {
+    it('lanza un error para contraseñas que no son cadenas', () => {
         const { validatePassword } = usePasswordValidation();
         expect(() => validatePassword(123)).toThrowError('Password must be a string');
     });
 
-    it('returns false for password less than 8 characters', () => {
+    it('devuelve falso para contraseñas con menos de 8 caracteres', () => {
         const { validatePassword } = usePasswordValidation();
         expect(validatePassword('weakpass')).toBe(false);
     });
 
-    it('returns false for password without uppercase letter', () => {
+    it('devuelve falso para contraseñas sin letras mayúsculas', () => {
         const { validatePassword } = usePasswordValidation();
         expect(validatePassword('password123')).toBe(false);
     });
 
-    it('returns false for password without lowercase letter', () => {
+    it('devuelve falso para contraseñas sin letras minúsculas', () => {
         const { validatePassword } = usePasswordValidation();
         expect(validatePassword('PASSWORD123')).toBe(false);
     });
 
-    it('returns false for password without number', () => {
+    it('devuelve falso para contraseñas sin número', () => {
         const { validatePassword } = usePasswordValidation();
         expect(validatePassword('passwordstrong')).toBe(false);
     });
 
-    it('returns false for password without special character', () => {
+    it('devuelve falso para contraseñas sin carácter especial', () => {
         const { validatePassword } = usePasswordValidation();
         expect(validatePassword('password123A')).toBe(false);
     });
 
-    it('returns true for valid password', () => {
+    it('devuelve verdadero para contraseñas válidas', () => {
         const { validatePassword } = usePasswordValidation();
         expect(validatePassword('StrongPassword123!')).toBe(true);
     });

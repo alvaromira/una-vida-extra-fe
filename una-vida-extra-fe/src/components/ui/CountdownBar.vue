@@ -1,5 +1,9 @@
 <template>
-  <div class="countdown-bar" :style="{ width: progressBarWidth }"></div>
+  <div
+    class="countdown-bar"
+    :style="{ width: progressBarWidth }"
+    :class="mode"
+  ></div>
 </template>
 
 <script setup>
@@ -10,6 +14,10 @@ const props = defineProps({
   duration: {
     type: Number,
     default: 15000, // Set the default value to false
+  },
+  mode: {
+    type: String,
+    default: "info",
   },
 });
 // Start countdown when component is mounted
@@ -37,5 +45,14 @@ const startCountdown = () => {
 .countdown-bar {
   height: 4px;
   background-color: #ffffff; /* Change this to adjust the color of the countdown bar */
+}
+.countdown-bar.success {
+  background-color: #4caf50;
+}
+.countdown-bar.info {
+  background-color: #ffc107;
+}
+.countdown-bar.error {
+  background-color: #ff5252;
 }
 </style>
