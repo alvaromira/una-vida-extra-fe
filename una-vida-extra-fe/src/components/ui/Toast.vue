@@ -63,17 +63,20 @@ h3 {
 }
 
 div.toast.success,
-.toast.success .header button {
+.toast.success .header button,
+div.toast.error .toast-header h3 {
   color: #4caf50 !important;
 }
 
 div.toast.info,
-.toast.info .header button {
+.toast.info .header button,
+div.toast.info .toast-header h3 {
   color: #ffc107 !important;
 }
 
 div.toast.error,
-.toast.error .header button {
+.toast.error .header button,
+div.toast.error .toast-header h3 {
   color: #ff5252 !important;
 }
 

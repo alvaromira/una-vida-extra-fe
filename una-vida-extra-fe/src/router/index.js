@@ -252,7 +252,7 @@ async function handleAuthRoute(to, from, next) {
           title: "You need to log in",
           type: "info",
           message:
-            "You need to log in to access " + routePath,
+            "You need to log in to access this page.",
         });
         next({ name: "login" });
       }
