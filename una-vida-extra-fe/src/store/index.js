@@ -333,6 +333,15 @@ const store = createStore({
                 //throw error;
             }
         },
+        async updateUserDetails({ commit }, { id, payload }) {
+            try {
+                const targetURL = `${baseApiUrl}/users/${id}`;
+                const response = await axios.put(targetURL, payload);
+                return response.data.data;
+            } catch (error) {
+                throw error;
+            }
+        },
     }
 
 });

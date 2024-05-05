@@ -9,8 +9,16 @@ onMounted(async () => {});
 </script>
 <template>
   <div class="form-wrapper">
+    <div class="row">
+      <div class="col"><h2>My Profile</h2></div>
+    </div>
     <user-profile-form />
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+h2 {
+  text-align: center;
+  padding-bottom: 2rem;
+}
+</style>

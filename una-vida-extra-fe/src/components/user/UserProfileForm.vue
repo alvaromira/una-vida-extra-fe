@@ -18,22 +18,31 @@ const errorDetails = reactive({
   message: "",
   errors: [],
 });
+const locationUpdated = ref(false);
 const userCity = ref("");
 const userCountry = ref("");
 
 const activeUserEmail = computed(() => {
   return store.state.user.email;
 });
+
+const activeUserId = computed(() => {
+  return store.state.user.id;
+});
+
 const apiErrorsFound = computed(() => {
   return errorDetails.message.length;
 });
+const activeUserLocation = computed(() => {
+  return store.state.user.user_location;
+});
+
+// Helper function para comprobar valores nules o cadenas vacias
+const isValidValue = (value) => value !== null && value !== "";
 
 onMounted(() => {
   // Destructuring store state for cleaner code
   const { name, surname, phone, email, user_location } = store.state.user;
-
-  // Helper function to check for null or empty values
-  const isValidValue = (value) => value !== null && value !== "";
 
   // Assigning values to data properties after checking validity
   data.firstName.val = isValidValue(name) ? name : "";
@@ -80,6 +89,10 @@ const data = reactive({
     val: null,
     isValid: true,
   },
+  location_id: {
+    val: null,
+    isValid: true,
+  },
 });
 
 //methods
@@ -94,6 +107,9 @@ const getLocationCoords = () => {
       console.log(position.coords.longitude);
       data.longitude.val = position.coords.longitude;
       data.longitude.isValid = true;
+
+      /* Como se ha actualizado la ubicación, se indica con la variable que lo registra */
+      locationUpdated.value = true;
 
       const cityName = getCityNameFromCoords(
         position.coords.longitude,
@@ -119,8 +135,6 @@ const getCityNameFromCoords = async (lon, lat) => {
 
   try {
     const response = await axios.get(OSMReverseURL, { withCredentials: false });
-    console.log(response.data.address.city);
-    console.log(response.data.address.country);
     userCity.value = response.data.address.city;
     userCountry.value = response.data.address.country;
     //return response.data.address.city;
@@ -181,235 +195,286 @@ const submitForm = async () => {
     return;
   }
 
-  const formData = {
-    first: data.firstName.val,
-    last: data.lastName.val,
-    email: data.email.val,
-    phone: data.phone.val,
-    //publicDetails: data.publicDetails.val,
-    longitude: data.longitude.val,
-    latitude: data.latitude.val,
-  };
-  console.log("Form submitted");
-  console.log(formData);
-  // this.$emit("save-data", formData);
-
   const locationFormData = {
     country: userCountry.value,
     city: userCity.value,
     latitude: data.latitude.val,
     longitude: data.longitude.val,
   };
+  /* En primer lugar, se actualiza la ubicación de usuario, si es que se ha obtenido de nuevo la ubicación*/
+  if (locationUpdated.value == true) {
+    const locationId = await createUserLocation(locationFormData);
+    data.location_id.val = locationId;
+    data.location_id.isValid = true;
+  } else {
+    data.location_id.val = activeUserLocation.value.id;
+  }
 
-  const createUserLocation = async () => {
-    try {
+  //Ahora ya están disponible todos los detalles para actualizar el perfil completo.
+  const formData = {
+    first: data.firstName.val,
+    last: data.lastName.val,
+    email: data.email.val,
+    phone: data.phone.val,
+    location_id: data.location_id.val,
+  };
+
+  //Se lanza la llamada y en función del resultado se lanza un toast
+  await updateUser(activeUserId.value, formData);
+};
+
+async function updateUser(userID, data) {
+  try {
+    //Edit the product by ID
+    await store.dispatch("updateUserDetails", {
+      id: userID,
+      payload: data,
+    });
+    // Mostrar toast de exito
+    store.commit("addToast", {
+      title: "User Updated",
+      type: "success",
+      message: `Your user profile details have been updated.`,
+    });
+  } catch (error) {
+    // Mostrar toast de error
+    store.commit("addToast", {
+      title: "User Not Updated",
+      type: "error",
+      message: `Your user profile could not be updated. Please try again later.`,
+    });
+  }
+}
+
+/** Funcion para crear o actualizar una ubicacion de usuario
+ *
+ * @param locationFormData formulario con los datos para crear o actualizar una ubicacion
+ * @returns id de la ubicacion nueva o actualizada
+ */
+const createUserLocation = async (locationFormData) => {
+  try {
+    //Comprobamos si se ha podido recuperar correctamente el ID de ubicacion para actualizarlo
+    let activeUserLocationID = activeUserLocation.value.id;
+    if (isValidValue(activeUserLocationID)) {
+      const resp = await axios.put(
+        `${baseApiUrl}/locations/${activeUserLocationID}`,
+        locationFormData
+      );
+      console.log(`Location id ${activeUserLocationID} updated successfully.`);
+      handleSuccessfulResponse(resp);
+    } else {
       const resp = await axios.post(
         `${baseApiUrl}/locations`,
         locationFormData
       );
       console.log(`Newly created Location ID: ${resp.data.data.id}`);
-
-      if (resp.status === 201) {
-        //isLoading.value = false;
-        requestError.value = false;
-
-        store.commit("addToast", {
-          title: "Location created",
-          type: "success",
-          message: "You have successfully created a location",
-        });
-
-        // router.push({ name: "products" });
-      }
-    } catch (error) {
-      // Handle Error Here
-      //console.error(error);
-      //isLoading.value = false;
-      requestError.value = true;
-
-      if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        console.error("Error data", error.response.data);
-        console.error("Error status", error.response.status);
-        errorDetails.code = error.response.status;
-        errorDetails.message = error.message;
-        if (error.response.data.errors) {
-          let requestRecivedErrors = error.response.data.errors;
-          for (const property in requestRecivedErrors) {
-            // console.log(`${property}: ${requestRecivedErrors[property]}`);
-            errorDetails.errors.push(requestRecivedErrors[property].toString());
-          }
-        }
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.error("Error message", error.message);
-        console.error("Error code", error.code);
-        errorDetails.code = error.code;
-        errorDetails.message = error.message;
-      }
+      handleSuccessfulResponse(resp);
     }
-  };
-
-  const locationId = await createUserLocation();
+  } catch (error) {
+    handleErrorResponse(error);
+  }
 };
 
-/*
-export default {
-  // emits: ["save-data"],
-};*/
+/** Helpers para la gestion de los errores. Se aceptan 201 para la creacion desde 0 y 201 para la actualizacion */
+const handleSuccessfulResponse = (resp) => {
+  if (resp.status === 201 || resp.status === 200) {
+    requestError.value = false;
+    return resp.data.data.id;
+  }
+};
+
+const handleErrorResponse = (error) => {
+  requestError.value = true;
+  if (error.response) {
+    console.error("Error data", error.response.data);
+    console.error("Error status", error.response.status);
+    errorDetails.code = error.response.status;
+    errorDetails.message = error.message;
+    if (error.response.data.errors) {
+      const requestReceivedErrors = error.response.data.errors;
+      for (const property in requestReceivedErrors) {
+        errorDetails.errors.push(requestReceivedErrors[property].toString());
+      }
+    }
+  } else {
+    console.error("Error message", error.message);
+    console.error("Error code", error.code);
+    errorDetails.code = error.code;
+    errorDetails.message = error.message;
+  }
+};
 </script>
 
 <template>
-  <div class="form-component-container">
-    <div class="form-container">
-      <form @submit.prevent="submitForm">
-        <div class="form-left-side form-side">
-          <div>
-            <div
-              class="form-control"
+  <form @submit.prevent="submitForm" class="rounded">
+    <div class="row">
+      <div class="form-left-side form-side col-md-6">
+        <div class="form-field row text-center">
+          <div class="col-3 form-label">
+            <label for="firstname">Firstname</label>
+          </div>
+          <div class="col-9">
+            <input
               :class="{ invalid: !data.firstName.isValid }"
-            >
-              <label for="firstname">Firstname</label>
-              <input
-                type="text"
-                id="firstname"
-                v-model.trim="data.firstName.val"
-                @blur="clearValidity('firstName')"
-              />
-            </div>
-            <div
-              v-if="!data.firstName.isValid"
-              class="validation-error-container"
-            >
-              <p>Firstname must not be empty.</p>
-            </div>
-
-            <div
               class="form-control"
-              :class="{ invalid: !data.lastName.isValid }"
-            >
-              <label for="lastname">Lastname</label>
-              <input
-                type="text"
-                id="lastname"
-                v-model.trim="data.lastName.val"
-                @blur="clearValidity('lastName')"
-              />
-            </div>
-            <div
-              v-if="!data.lastName.isValid"
-              class="validation-error-container"
-            >
-              <p>Lastname must not be empty.</p>
-            </div>
-
-            <div class="form-control" :class="{ invalid: !data.email.isValid }">
-              <label for="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                v-model.trim="data.email.val"
-                @blur="clearValidity('email')"
-              />
-            </div>
-            <div v-if="!data.email.isValid" class="validation-error-container">
-              <p>Email must not be empty.</p>
-            </div>
-
-            <div class="form-control" :class="{ invalid: !data.phone.isValid }">
-              <label for="phone">Phone</label>
-              <input
-                type="text"
-                id="phone"
-                v-model.trim="data.phone.val"
-                @blur="clearValidity('phone')"
-              />
-            </div>
-            <div v-if="!data.phone.isValid" class="validation-error-container">
-              <p>Phone must not be empty.</p>
-            </div>
-
-            <!--<div
-          class="form-control"
-          :class="{ invalid: !data.publicDetails.isValid }"
-        >
-          <label for="public-details">Public details</label>
-          <input
-            type="checkbox"
-            checked
-            id="public-details"
-            v-model.trim="data.publicDetails.val"
-            @blur="clearValidity('publicDetails')"
-          />
-          <p v-if="!data.publicDetails.isValid">
-            public-details must not be empty.
-          </p>
-        </div>-->
-
-            <p v-if="formIsValid.value === false">
-              Please fix the above errors and submit again.
-            </p>
+              type="text"
+              id="firstname"
+              v-model.trim="data.firstName.val"
+              @blur="clearValidity('firstName')"
+            />
           </div>
         </div>
-        <div class="form-right-side form-side">
+        <div v-if="!data.firstName.isValid" class="validation-error-container">
+          <p>Firstname must not be empty.</p>
+        </div>
+
+        <div class="form-field row text-center">
+          <div class="col-3 form-label">
+            <label for="lastname">Lastname</label>
+          </div>
+          <div class="col-9">
+            <input
+              :class="{ invalid: !data.lastName.isValid }"
+              class="form-control"
+              type="text"
+              id="lastname"
+              v-model.trim="data.lastName.val"
+              @blur="clearValidity('lastName')"
+            />
+          </div>
+        </div>
+        <div v-if="!data.lastName.isValid" class="validation-error-container">
+          <p>Lastname must not be empty.</p>
+        </div>
+
+        <div class="form-field row text-center">
+          <div class="col-3 form-label"><label for="email">Email</label></div>
+          <div class="col-9">
+            <input
+              :class="{ invalid: !data.email.isValid }"
+              class="form-control"
+              type="email"
+              id="email"
+              v-model.trim="data.email.val"
+              @blur="clearValidity('email')"
+            />
+          </div>
+        </div>
+        <div v-if="!data.email.isValid" class="validation-error-container">
+          <p>Email must not be empty.</p>
+        </div>
+
+        <div class="form-field row text-center">
+          <div class="col-3 form-label"><label for="phone">Phone</label></div>
+          <div class="col-9">
+            <input
+              :class="{ invalid: !data.phone.isValid }"
+              class="form-control"
+              type="text"
+              id="phone"
+              v-model.trim="data.phone.val"
+              @blur="clearValidity('phone')"
+            />
+          </div>
+        </div>
+        <div v-if="!data.phone.isValid" class="validation-error-container">
+          <p>Phone must not be empty.</p>
+        </div>
+        <p v-if="formIsValid.value === false">
+          Please fix the above errors and submit again.
+        </p>
+        <div class="row">
+          <div class="col-sm-8 col-md-12">
+            <div id="forgot-password">
+              <p class="note">
+                Do you want to reset your password? No probs! You can reset it
+
+                <RouterLink :to="{ name: 'forgot-password' }">here</RouterLink>.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-right-side form-side col-md-6">
+        <div class="form-field row">
           <div id="image-upload">
             <div>
               <ProfileImage :userEmail="activeUserEmail" :mode="'large'" />
             </div>
           </div>
-          <div id="coords-details">
-            <div class="form-control">
+        </div>
+        <div id="coords-details">
+          <div class="form-field row text-center">
+            <div class="col-3 form-label">
               <label for="longitude">Longitude</label>
+            </div>
+            <div class="col-9">
               <input
+                class="form-control"
                 type="text"
                 id="longitude"
                 v-model.trim="data.longitude.val"
+                disabled
               />
             </div>
-            <div
-              v-if="!data.longitude.isValid"
-              class="validation-error-container"
-            >
-              <p>Longitude must not be empty.</p>
-            </div>
-            <div class="form-control">
+          </div>
+          <div
+            v-if="!data.longitude.isValid"
+            class="validation-error-container"
+          >
+            <p>Longitude must not be empty.</p>
+          </div>
+
+          <div class="form-field row text-center">
+            <div class="col-3 form-label">
               <label for="latitude">Latitude</label>
+            </div>
+            <div class="col-9">
               <input
+                class="form-control"
                 type="text"
                 id="latitude"
                 v-model.trim="data.latitude.val"
+                disabled
               />
             </div>
-            <div
-              v-if="!data.latitude.isValid"
-              class="validation-error-container"
-            >
-              <p>Latitude must not be empty.</p>
-            </div>
-            <div id="user-city" v-if="userCity !== ''">
-              <p>You are based around {{ userCity }}</p>
-            </div>
-            <BaseButton @click.prevent="getLocationCoords" mode="outline"
-              >Get my Location</BaseButton
-            >
-            <p class="note">
-              We need your location to make sure that proximity is considered
-              when donating products.Thanks!
-            </p>
           </div>
-          <div class="form-submit-button">
-            <BaseButton>Update</BaseButton>
+          <div v-if="!data.latitude.isValid" class="validation-error-container">
+            <p>Latitude must not be empty.</p>
+          </div>
+          <div id="user-city" class="row" v-if="userCity !== ''">
+            <div class="col text-end">
+              <p>You are based around {{ userCity }}.</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col text-end">
+              <BaseButton @click.prevent="getLocationCoords" mode="outline"
+                >Get my Location</BaseButton
+              >
+              <p class="note">
+                We need your location to make sure that proximity is considered
+                when donating products.Thanks!
+              </p>
+            </div>
           </div>
         </div>
-      </form>
+        <div class="row">
+          <div class="co">
+            <div class="form-submit-button">
+              <BaseButton>Update</BaseButton>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="request-status">
-      <div class="loading" v-show="isLoading">
+
+    <div class="request-status row">
+      <div class="loading col text-center" v-show="isLoading">
         <base-spinner></base-spinner>
       </div>
       <transition name="request-errors">
-        <div class="request-errors" v-show="requestError">
+        <div class="request-errors col" v-show="requestError">
           <p>
             There was an error when trying to perform the registration. Please
             try again.
@@ -432,18 +497,24 @@ export default {
         </div>
       </transition>
     </div>
-  </div>
+  </form>
 </template>
 
 <style scoped>
+.form-component-container {
+  border: #edb421 solid thin;
+  box-shadow: rgba(17, 17, 26, 0.2) 0px 2px 4px;
+  background-color: #fff;
+}
 form {
   border: #edb421 solid thin;
   box-shadow: rgba(17, 17, 26, 0.2) 0px 2px 4px;
   background-color: #fff;
   padding: 0;
-  display: flex;
+  /* display: block; */
+  padding: 2rem;
 }
-.form-side {
+/*.form-side {
   flex: 1;
   padding: 2rem;
 }
@@ -451,7 +522,7 @@ form {
   margin: 1.5rem 0;
   display: flex;
 }
-
+*/
 .profile-pic {
   background-color: gray;
   width: 125px;
@@ -468,8 +539,8 @@ form {
 
 label {
   font-weight: bold;
-  display: block;
-  /*margin-bottom: 0.5rem;*/
+  /*display: block;
+  margin-bottom: 0.5rem;*/
   color: #edb421;
 }
 
@@ -478,17 +549,28 @@ input[type="checkbox"] + label {
   display: inline;
   margin: 0 0 0 0.5rem;
 }
-
+div.form-field {
+  padding-bottom: 2rem;
+}
+div.form-field.submit {
+  padding-bottom: 0rem;
+}
+.form-label {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
 input,
 textarea {
-  display: block;
-  width: 100%;
+  /*display: block;
+  width: 100%;*/
   border: thin solid #edb421;
   border-radius: 3px;
   font: inherit;
   box-shadow: rgba(17, 17, 26, 0.2) 0px 2px 4px;
-  margin-inline-start: 1.5rem;
+  /*margin-inline-start: 1.5rem;*/
   color: gray;
+  /*padding: 0.5rem;*/
 }
 
 input:focus,
@@ -499,10 +581,10 @@ textarea:focus {
 }
 
 input[type="checkbox"] {
-  display: inline;
+  /* display: inline;
   width: auto;
   border: none;
-  box-shadow: none;
+  box-shadow: none;*/
 }
 
 input[type="checkbox"]:focus {
@@ -526,11 +608,14 @@ h3 {
   content: "";
   display: block;
   position: absolute;
-  left: 25%;
+  left: 50%;
   top: -10px;
   border-bottom: 10px solid red;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
+}
+#public-details {
+  margin-left: 0.5rem;
 }
 /*.invalid label {
   color: red;
@@ -544,12 +629,47 @@ h3 {
   display: flex;
   justify-content: center;
 }
-
 .note {
   color: rgb(139, 138, 138);
+  padding-top: 1rem;
 }
 
 .form-submit-button {
   text-align: right;
+}
+.request-errors {
+  color: red;
+  opacity: 0.7;
+  padding: 1rem;
+  background-color: rgba(237, 219, 219, 0.5);
+  border: red solid 2px;
+}
+.request-errors pre {
+  display: inline-block;
+}
+
+.request-errors-enter-active,
+.request-errors-leave-active {
+  transition: opacity 0.5s;
+}
+.request-errors-enter,
+.request-errors-leave-to {
+  opacity: 0;
+}
+
+.request-status {
+}
+.request-status p {
+  margin: 0;
+}
+.request-status ul {
+  line-height: 1rem;
+}
+.request-status ul li {
+  line-height: 1rem;
+}
+.visibility-icon {
+  border: #edb421 solid thin;
+  cursor: pointer;
 }
 </style>
