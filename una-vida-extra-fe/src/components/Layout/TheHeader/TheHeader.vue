@@ -1,7 +1,7 @@
 <template>
   <header>
     <section id="primary-nav-bar">
-      <nav class="navbar navbar-expand-lg">
+      <nav class="navbar navbar-expand-md">
         <div class="container-fluid">
           <RouterLink :to="{ name: 'products' }" class="navbar-brand" href="#">
             <img
@@ -69,7 +69,7 @@
                 >Login</BaseButton
               >
             </div>
-            <div v-if="getUserStatus">
+            <div v-if="getUserStatus" class="profile-image-icon">
               <ProfileImage
                 :userEmail="activeUserEmail"
                 :gravatarInfo="false"
@@ -92,11 +92,6 @@
                   class="dropdown-menu yellow-color"
                   aria-labelledby="navbarDarkDropdownMenuLink"
                 >
-                  <!--<li><a class="dropdown-item" href="#">Action</a></li>
-                  <li><a class="dropdown-item" href="#">Another action</a></li>
-                  <li>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                  </li>-->
                   <li>
                     <RouterLink
                       v-if="!isUserAdmin"
@@ -161,150 +156,12 @@
           </div>
         </div>
       </nav>
-      <!--  <nav class="navbar navbar-expand-lg">
-        <div class="container logo-part">
-          <RouterLink :to="{ name: 'products' }" class="navbar-brand" href="#">
-            <img
-              alt="1up logo"
-              class="logo"
-              src="@/assets/images/one-life-up-logo.png"
-              width="125"
-              height="100"
-          /></RouterLink>
-        </div>
-        <div class="d-flex buttons-and-actions">
-          <div id="search_and_access" class="d-flex">
-            <form
-              @submit.prevent="searchProducts"
-              class="d-flex"
-              id="search-product-form"
-            >
-              <label for="site-search">Search the site:</label>
-              <input
-                type="search"
-                id="site-search"
-                name="site-search"
-                v-model="searchTerm"
-                class="form-control"
-                pattern=".{3,}"
-                placeholder="Enter your search here..."
-                aria-label="Search"
-              />
-              <button type="submit" class="btn search-button">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  class="bi bi-search"
-                  viewBox="0 0 16 16"
-                >
-                  <path
-                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"
-                  />
-                </svg>
-              </button>
-            </form>
-            <div id="access" class="d-flex" v-if="!getUserStatus">
-              <BaseButton :to="{ name: 'register' }" link="true"
-                >Register</BaseButton
-              >
-              <BaseButton
-                mode="outline-green"
-                :to="{ name: 'login' }"
-                link="true"
-                >Login</BaseButton
-              >
-            </div>
-          </div>
-
-          <div v-if="getUserStatus">
-            <ProfileImage
-              :userEmail="activeUserEmail"
-              :gravatarInfo="false"
-              :mode="'small'"
-            />
-          </div>
-          <button
-            class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav user-menu-list">
-              <li
-                v-if="getUserStatus"
-                class="user-menu-item nav-item dropdown d-flex"
-              >
-                <a
-                  class="nav-link dropdown-toggle"
-                  href="#"
-                  id="navbarDarkDropdownMenuLink"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Hi, {{ activeUserEmail }}
-                </a>
-                <ul
-                  class="dropdown-menu"
-                  aria-labelledby="navbarDarkDropdownMenuLink"
-                >
-                  <div v-if="!isUserAdmin">
-                    <RouterLink
-                      class="dropdown-item"
-                      :to="{ name: 'userProducts' }"
-                      >My Products</RouterLink
-                    >
-                    <RouterLink class="dropdown-item" :to="{ name: 'requests' }"
-                      >My Requests</RouterLink
-                    >
-                    <RouterLink class="dropdown-item" :to="{ name: 'profile' }"
-                      >Profile</RouterLink
-                    >
-
-                    <RouterLink class="dropdown-item" :to="{ name: 'logout' }"
-                      >Log Out</RouterLink
-                    >
-                  </div>
-                  <div v-else>
-                    <RouterLink class="dropdown-item" :to="{ name: 'admin' }"
-                      >Admin Dashboard</RouterLink
-                    >
-                    <RouterLink class="dropdown-item" :to="{ name: 'profile' }"
-                      >Profile</RouterLink
-                    >
-                    <RouterLink class="dropdown-item" :to="{ name: 'logout' }"
-                      >Log Out</RouterLink
-                    >
-                  </div>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>-->
     </section>
     <section id="second-nav-bar">
       <nav class="navbar navbar-expand-sm">
         <div class="container">
           <div class="navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav">
-              <!--       <li class="nav-item">
-                <a class="nav-link active" href="#">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Features</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Pricing</a>
-              </li>-->
               <li class="nav-item">
                 <RouterLink
                   aria-current="page"
@@ -322,6 +179,9 @@
                 <RouterLink class="nav-link" :to="{ name: 'project' }"
                   >Project</RouterLink
                 >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link">Help</a>
               </li>
             </ul>
           </div>
@@ -381,6 +241,12 @@ const isUserAdmin = computed(() => {
 </script>
 
 <style scoped>
+#navbarNavDarkDropdown {
+  padding-top: 1rem;
+}
+#navbarDarkDropdownMenuLink {
+  margin-top: 1rem;
+}
 .search-and-menu-bar {
   justify-content: flex-end;
   gap: 1rem;
@@ -388,7 +254,8 @@ const isUserAdmin = computed(() => {
 #access {
   display: flex;
   gap: 1rem;
-  padding-left: 1rem;
+  padding-left: 0rem;
+  padding-top: 1rem;
 }
 #second-nav-bar {
   background-color: #fefcf6;
@@ -491,6 +358,7 @@ header {
   font-weight: bolder;
   position: relative;
 }
+
 /*.nav-item:has(a.router-link-active)::after {
   border-top: 4px solid #fff;
   left: 0;
@@ -555,7 +423,7 @@ label[for="site-search"] {
   display: none;
 }
 #site-search {
-  min-width: 350px;
+  min-width: 300px;
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
   border-top-right-radius: 0px;
@@ -612,8 +480,10 @@ label[for="site-search"] {
   background-color: #edb421;
 }
 .dropdown-toggle {
-  color: white;
+  color: white !important;
   border-radius: 5px;
+  padding: 0.375rem 0.75rem;
+  font-weight: normal;
 }
 .dropdown-item {
   color: white;
@@ -630,5 +500,30 @@ label[for="site-search"] {
   justify-content: flex-end;
   gap: 1rem;
   padding: 2rem;
+}
+/* De forma predeterminada para dispositivos pequeños, no se muestra */
+.profile-image-icon {
+  display: none !important;
+}
+#second-nav-bar .navbar-nav {
+  gap: 1rem;
+}
+@media (min-width: 768px) {
+  #access {
+    display: flex;
+    gap: 1rem;
+    padding-left: 1rem;
+    padding-top: 0rem;
+  }
+  #navbarNavDarkDropdown {
+    padding-top: 0rem;
+  }
+
+  #navbarDarkDropdownMenuLink {
+    margin-top: 0rem;
+  }
+  .profile-image-icon {
+    display: block;
+  }
 }
 </style>
