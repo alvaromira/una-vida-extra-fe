@@ -25,6 +25,11 @@ const userCountry = ref("");
 const activeUserEmail = computed(() => {
   return store.state.user.email;
 });
+
+const activeUserId = computed(() => {
+  return store.state.user.id;
+});
+
 const apiErrorsFound = computed(() => {
   return errorDetails.message.length;
 });
@@ -190,14 +195,6 @@ const submitForm = async () => {
     return;
   }
 
-  const formData = {
-    first: data.firstName.val,
-    last: data.lastName.val,
-    email: data.email.val,
-    phone: data.phone.val,
-    longitude: data.longitude.val,
-    latitude: data.latitude.val,
-  };
   const locationFormData = {
     country: userCountry.value,
     city: userCity.value,
@@ -209,8 +206,45 @@ const submitForm = async () => {
     const locationId = await createUserLocation(locationFormData);
     data.location_id.val = locationId;
     data.location_id.isValid = true;
+  } else {
+    data.location_id.val = activeUserLocation.value.id;
   }
+
+  //Ahora ya están disponible todos los detalles para actualizar el perfil completo.
+  const formData = {
+    first: data.firstName.val,
+    last: data.lastName.val,
+    email: data.email.val,
+    phone: data.phone.val,
+    location_id: data.location_id.val,
+  };
+
+  //Se lanza la llamada y en función del resultado se lanza un toast
+  await updateUser(activeUserId.value, formData);
 };
+
+async function updateUser(userID, data) {
+  try {
+    //Edit the product by ID
+    await store.dispatch("updateUserDetails", {
+      id: userID,
+      payload: data,
+    });
+    // Mostrar toast de exito
+    store.commit("addToast", {
+      title: "User Updated",
+      type: "success",
+      message: `Your user profile details have been updated.`,
+    });
+  } catch (error) {
+    // Mostrar toast de error
+    store.commit("addToast", {
+      title: "User Not Updated",
+      type: "error",
+      message: `Your user profile could not be updated. Please try again later.`,
+    });
+  }
+}
 
 /** Funcion para crear o actualizar una ubicacion de usuario
  *

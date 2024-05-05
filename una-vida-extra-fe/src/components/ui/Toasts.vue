@@ -1,6 +1,6 @@
 <template>
   <div
-    class="toasts-wrapper toast-container position-absolute top-0 end-0 p-3"
+    class="toasts-wrapper toast-container top-0 end-0 p-3"
     v-if="toasts.length"
   >
     <!--  <TransitionGroup name="list" tag="div"
@@ -27,19 +27,10 @@ const toasts = computed(() => {
 </script>
 
 <style scoped>
-/*
-.toasts-wrapper {
-  width: 600px;
-  min-height: 150px;
-  display: flex;
-  flex-direction: column;
-  align-items: end;
+.toasts-wrapper.toast-container {
   position: fixed;
-  right: 2rem;
-  top: 2rem;
-  z-index: 10000;
 }
-.list-enter-active,
+/*.list-enter-active,
 .list-leave-active {
   transition: all 0.5s ease;
 }
