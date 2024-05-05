@@ -261,155 +261,175 @@ export default {
 </script>
 
 <template>
-  <div class="form-component-container">
-    <div class="form-container">
-      <form @submit.prevent="submitForm">
-        <div class="form-left-side form-side">
-          <div>
-            <div
-              class="form-control"
+  <form @submit.prevent="submitForm" class="rounded">
+    <div class="row">
+      <div class="form-left-side form-side col-md-6">
+        <div class="form-field row text-center">
+          <div class="col-3 form-label">
+            <label for="firstname">Firstname</label>
+          </div>
+          <div class="col-9">
+            <input
               :class="{ invalid: !data.firstName.isValid }"
-            >
-              <label for="firstname">Firstname</label>
-              <input
-                type="text"
-                id="firstname"
-                v-model.trim="data.firstName.val"
-                @blur="clearValidity('firstName')"
-              />
-            </div>
-            <div
-              v-if="!data.firstName.isValid"
-              class="validation-error-container"
-            >
-              <p>Firstname must not be empty.</p>
-            </div>
-
-            <div
               class="form-control"
-              :class="{ invalid: !data.lastName.isValid }"
-            >
-              <label for="lastname">Lastname</label>
-              <input
-                type="text"
-                id="lastname"
-                v-model.trim="data.lastName.val"
-                @blur="clearValidity('lastName')"
-              />
-            </div>
-            <div
-              v-if="!data.lastName.isValid"
-              class="validation-error-container"
-            >
-              <p>Lastname must not be empty.</p>
-            </div>
-
-            <div class="form-control" :class="{ invalid: !data.email.isValid }">
-              <label for="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                v-model.trim="data.email.val"
-                @blur="clearValidity('email')"
-              />
-            </div>
-            <div v-if="!data.email.isValid" class="validation-error-container">
-              <p>Email must not be empty.</p>
-            </div>
-
-            <div class="form-control" :class="{ invalid: !data.phone.isValid }">
-              <label for="phone">Phone</label>
-              <input
-                type="text"
-                id="phone"
-                v-model.trim="data.phone.val"
-                @blur="clearValidity('phone')"
-              />
-            </div>
-            <div v-if="!data.phone.isValid" class="validation-error-container">
-              <p>Phone must not be empty.</p>
-            </div>
-
-            <!--<div
-          class="form-control"
-          :class="{ invalid: !data.publicDetails.isValid }"
-        >
-          <label for="public-details">Public details</label>
-          <input
-            type="checkbox"
-            checked
-            id="public-details"
-            v-model.trim="data.publicDetails.val"
-            @blur="clearValidity('publicDetails')"
-          />
-          <p v-if="!data.publicDetails.isValid">
-            public-details must not be empty.
-          </p>
-        </div>-->
-
-            <p v-if="formIsValid.value === false">
-              Please fix the above errors and submit again.
-            </p>
+              type="text"
+              id="firstname"
+              v-model.trim="data.firstName.val"
+              @blur="clearValidity('firstName')"
+            />
           </div>
         </div>
-        <div class="form-right-side form-side">
+        <div v-if="!data.firstName.isValid" class="validation-error-container">
+          <p>Firstname must not be empty.</p>
+        </div>
+
+        <div class="form-field row text-center">
+          <div class="col-3 form-label">
+            <label for="lastname">Lastname</label>
+          </div>
+          <div class="col-9">
+            <input
+              :class="{ invalid: !data.lastName.isValid }"
+              class="form-control"
+              type="text"
+              id="lastname"
+              v-model.trim="data.lastName.val"
+              @blur="clearValidity('lastName')"
+            />
+          </div>
+        </div>
+        <div v-if="!data.lastName.isValid" class="validation-error-container">
+          <p>Lastname must not be empty.</p>
+        </div>
+
+        <div class="form-field row text-center">
+          <div class="col-3 form-label"><label for="email">Email</label></div>
+          <div class="col-9">
+            <input
+              :class="{ invalid: !data.email.isValid }"
+              class="form-control"
+              type="email"
+              id="email"
+              v-model.trim="data.email.val"
+              @blur="clearValidity('email')"
+            />
+          </div>
+        </div>
+        <div v-if="!data.email.isValid" class="validation-error-container">
+          <p>Email must not be empty.</p>
+        </div>
+
+        <div class="form-field row text-center">
+          <div class="col-3 form-label"><label for="phone">Phone</label></div>
+          <div class="col-9">
+            <input
+              :class="{ invalid: !data.phone.isValid }"
+              class="form-control"
+              type="text"
+              id="phone"
+              v-model.trim="data.phone.val"
+              @blur="clearValidity('phone')"
+            />
+          </div>
+        </div>
+        <div v-if="!data.phone.isValid" class="validation-error-container">
+          <p>Phone must not be empty.</p>
+        </div>
+        <p v-if="formIsValid.value === false">
+          Please fix the above errors and submit again.
+        </p>
+        <div class="row">
+          <div class="col-sm-8 col-md-12">
+            <div id="forgot-password">
+              <p class="note">
+                Do you want to reset your password? No probs! You can reset it
+
+                <RouterLink :to="{ name: 'forgot-password' }">here</RouterLink>.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-right-side form-side col-md-6">
+        <div class="form-field row">
           <div id="image-upload">
             <div>
               <ProfileImage :userEmail="activeUserEmail" :mode="'large'" />
             </div>
           </div>
-          <div id="coords-details">
-            <div class="form-control">
+        </div>
+        <div id="coords-details">
+          <div class="form-field row text-center">
+            <div class="col-3 form-label">
               <label for="longitude">Longitude</label>
+            </div>
+            <div class="col-9">
               <input
+                class="form-control"
                 type="text"
                 id="longitude"
                 v-model.trim="data.longitude.val"
+                disabled
               />
             </div>
-            <div
-              v-if="!data.longitude.isValid"
-              class="validation-error-container"
-            >
-              <p>Longitude must not be empty.</p>
-            </div>
-            <div class="form-control">
+          </div>
+          <div
+            v-if="!data.longitude.isValid"
+            class="validation-error-container"
+          >
+            <p>Longitude must not be empty.</p>
+          </div>
+
+          <div class="form-field row text-center">
+            <div class="col-3 form-label">
               <label for="latitude">Latitude</label>
+            </div>
+            <div class="col-9">
               <input
+                class="form-control"
                 type="text"
                 id="latitude"
                 v-model.trim="data.latitude.val"
+                disabled
               />
             </div>
-            <div
-              v-if="!data.latitude.isValid"
-              class="validation-error-container"
-            >
-              <p>Latitude must not be empty.</p>
-            </div>
-            <div id="user-city" v-if="userCity !== ''">
-              <p>You are based around {{ userCity }}</p>
-            </div>
-            <BaseButton @click.prevent="getLocationCoords" mode="outline"
-              >Get my Location</BaseButton
-            >
-            <p class="note">
-              We need your location to make sure that proximity is considered
-              when donating products.Thanks!
-            </p>
           </div>
-          <div class="form-submit-button">
-            <BaseButton>Update</BaseButton>
+          <div v-if="!data.latitude.isValid" class="validation-error-container">
+            <p>Latitude must not be empty.</p>
+          </div>
+          <div id="user-city" class="row" v-if="userCity !== ''">
+            <div class="col text-end">
+              <p>You are based around {{ userCity }}.</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col text-end">
+              <BaseButton @click.prevent="getLocationCoords" mode="outline"
+                >Get my Location</BaseButton
+              >
+              <p class="note">
+                We need your location to make sure that proximity is considered
+                when donating products.Thanks!
+              </p>
+            </div>
           </div>
         </div>
-      </form>
+        <div class="row">
+          <div class="co">
+            <div class="form-submit-button">
+              <BaseButton>Update</BaseButton>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="request-status">
-      <div class="loading" v-show="isLoading">
+
+    <div class="request-status row">
+      <div class="loading col text-center" v-show="isLoading">
         <base-spinner></base-spinner>
       </div>
       <transition name="request-errors">
-        <div class="request-errors" v-show="requestError">
+        <div class="request-errors col" v-show="requestError">
           <p>
             There was an error when trying to perform the registration. Please
             try again.
@@ -432,18 +452,24 @@ export default {
         </div>
       </transition>
     </div>
-  </div>
+  </form>
 </template>
 
 <style scoped>
+.form-component-container {
+  border: #edb421 solid thin;
+  box-shadow: rgba(17, 17, 26, 0.2) 0px 2px 4px;
+  background-color: #fff;
+}
 form {
   border: #edb421 solid thin;
   box-shadow: rgba(17, 17, 26, 0.2) 0px 2px 4px;
   background-color: #fff;
   padding: 0;
-  display: flex;
+  /* display: block; */
+  padding: 2rem;
 }
-.form-side {
+/*.form-side {
   flex: 1;
   padding: 2rem;
 }
@@ -451,7 +477,7 @@ form {
   margin: 1.5rem 0;
   display: flex;
 }
-
+*/
 .profile-pic {
   background-color: gray;
   width: 125px;
@@ -468,8 +494,8 @@ form {
 
 label {
   font-weight: bold;
-  display: block;
-  /*margin-bottom: 0.5rem;*/
+  /*display: block;
+  margin-bottom: 0.5rem;*/
   color: #edb421;
 }
 
@@ -478,17 +504,28 @@ input[type="checkbox"] + label {
   display: inline;
   margin: 0 0 0 0.5rem;
 }
-
+div.form-field {
+  padding-bottom: 2rem;
+}
+div.form-field.submit {
+  padding-bottom: 0rem;
+}
+.form-label {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
 input,
 textarea {
-  display: block;
-  width: 100%;
+  /*display: block;
+  width: 100%;*/
   border: thin solid #edb421;
   border-radius: 3px;
   font: inherit;
   box-shadow: rgba(17, 17, 26, 0.2) 0px 2px 4px;
-  margin-inline-start: 1.5rem;
+  /*margin-inline-start: 1.5rem;*/
   color: gray;
+  /*padding: 0.5rem;*/
 }
 
 input:focus,
@@ -499,10 +536,10 @@ textarea:focus {
 }
 
 input[type="checkbox"] {
-  display: inline;
+  /* display: inline;
   width: auto;
   border: none;
-  box-shadow: none;
+  box-shadow: none;*/
 }
 
 input[type="checkbox"]:focus {
@@ -526,11 +563,14 @@ h3 {
   content: "";
   display: block;
   position: absolute;
-  left: 25%;
+  left: 50%;
   top: -10px;
   border-bottom: 10px solid red;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
+}
+#public-details {
+  margin-left: 0.5rem;
 }
 /*.invalid label {
   color: red;
@@ -544,12 +584,47 @@ h3 {
   display: flex;
   justify-content: center;
 }
-
 .note {
   color: rgb(139, 138, 138);
+  padding-top: 1rem;
 }
 
 .form-submit-button {
   text-align: right;
+}
+.request-errors {
+  color: red;
+  opacity: 0.7;
+  padding: 1rem;
+  background-color: rgba(237, 219, 219, 0.5);
+  border: red solid 2px;
+}
+.request-errors pre {
+  display: inline-block;
+}
+
+.request-errors-enter-active,
+.request-errors-leave-active {
+  transition: opacity 0.5s;
+}
+.request-errors-enter,
+.request-errors-leave-to {
+  opacity: 0;
+}
+
+.request-status {
+}
+.request-status p {
+  margin: 0;
+}
+.request-status ul {
+  line-height: 1rem;
+}
+.request-status ul li {
+  line-height: 1rem;
+}
+.visibility-icon {
+  border: #edb421 solid thin;
+  cursor: pointer;
 }
 </style>
