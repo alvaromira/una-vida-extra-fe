@@ -3,18 +3,32 @@ import { ref, reactive, toRefs, onMounted, watch, computed } from "vue";
 import BaseButton from "../BaseButton.vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
+import BaseSpinner from "../BaseSpinner.vue";
+import { useStore } from "vuex";
 
 const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
 const baseImgURL = import.meta.env.VITE_BASE_IMG_URL;
 
 const router = useRouter();
+const store = useStore();
 
 const imagePath = computed(() => {
-  if (props.initialImage == null || props.initialImage === undefined) {
+  if (
+    data.image.val == null ||
+    (data.image.val === undefined && imageURL.value === "")
+  ) {
     return "https://via.placeholder.com/250x250/cccccc/969696";
+  } else if (imageURL.value !== "") {
+    return imageURL.value;
   } else {
-    return baseImgURL + props.initialImage;
+    return baseImgURL + data.image.val;
   }
+});
+const imageURL = ref("");
+const isLoading = ref(false);
+
+const apiErrorsFound = computed(() => {
+  return errorDetails.message.length;
 });
 
 const props = defineProps({
@@ -72,6 +86,7 @@ const data = reactive({
   image: {
     val: props.initialImage,
     isValid: true,
+    isUpdated: false, //es necesario saber si la imagen se actualiza con una nueva, o no. Si es el caso, habrá que mandar la información para subir una nueva imagen
   },
 });
 
@@ -100,10 +115,12 @@ const validateForm = async () => {
     formIsValid.value = false;
   }
 
+  /*
+ No se hace validacion de las etiquetas hasta que no se implemente toda la funcionalidad
   if (data.tags.val === "") {
     data.tags.isValid = false;
     formIsValid.value = false;
-  }
+  }*/
 
   if (data.category.val === "" || data.category.val === null) {
     data.category.isValid = false;
@@ -111,76 +128,93 @@ const validateForm = async () => {
   }
 };
 
-const clearForm = () => {
-  console.log("Clearing form");
-
-  data.productName.val === "";
-  data.productName.isValid = true;
-
-  data.description.val === "";
-  data.description.isValid = true;
-
-  data.tags.val === "";
-  data.tags.isValid = false;
-
-  data.category.val === "";
-  data.category.isValid = true;
-
-  formIsValid.value = true;
-};
-
 const submitForm = async () => {
-  console.log("Submitting form");
   await validateForm();
-
+  //Si no supera la validación no se sigue
   if (!formIsValid.value) {
     return;
   }
-
+  // Se crea un form Data en JS para mandarlo como http request con multipart
   const formData = new FormData();
   formData.append("title", data.productName.val);
   formData.append("description", data.description.val);
   //formData.append('tags', data.tags.val);
   formData.append("category_id", data.category.val);
-
-  /*
-  const formData = {
-    title: data.productName.val,
-    description: data.description.val,
-    //tags: data.tags.val,
-    category_id: data.category.val,
-  };*/
+  //solo poner la imagen si se ha actualizado desde que se mando por ultima vez
+  if (data.image.isUpdated === true) {
+    formData.append("image", data.image.val);
+  }
+  //por las limitaciones de php y Laravel para gestionar formularios con multipart con verbos que no sean POST, se usa el campo _method para poder mandar la http request con post pero que realmente salga como put para que la acepte el endpoint de la api
+  formData.append("_method", "PUT");
 
   try {
+    isLoading.value = true;
     const responseData = await updateProduct(formData);
-    console.log(responseData);
-    //TO DO, show loader
-    console.log("Form submitted, redirecting to userProducts");
-    //TO DO show toast
-    router.push({ name: "userProducts" });
+    handleSuccess();
   } catch (error) {
-    if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.error("Error data", error.response.data);
-      console.error("Error status", error.response.status);
-      //errorDetails.code = error.response.status;
-      //errorDetails.message = error.message;
-      if (error.response.data.errors) {
-        let requestRecivedErrors = error.response.data.errors;
-        for (const property in requestRecivedErrors) {
-          //errorDetails.errors.push(requestRecivedErrors[property].toString());
-          console.log(requestRecivedErrors[property].toString());
-        }
-      }
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.error("Error message", error.message);
-      console.error("Error code", error.code);
-      //errorDetails.code = error.code;
-      //errorDetails.message = error.message;
-    }
+    handleError(error);
+  } finally {
+    // Al terminar, poner la carga a falso
+    isLoading.value = false;
   }
+};
+
+// Method to handle success response
+const handleSuccess = () => {
+  // Set isLoading to false
+  isLoading.value = false;
+
+  // Update image.isUpdated if product is successfully updated
+  data.image.isUpdated = false;
+
+  // Show success toast
+  store.commit("addToast", {
+    title: "Product updated",
+    type: "success",
+    message: "You have successfully updated the product",
+  });
+};
+
+// Method to handle error response
+const handleError = (error) => {
+  // Set isLoading to false
+  isLoading.value = false;
+
+  // Initialize errorStatus and errorMessage variables
+  let errorStatus = null;
+  let errorMessage = null;
+
+  if (error.response) {
+    // Capture error status
+    errorStatus = error.response.status;
+    console.error("Error status", error.response.status);
+
+    // Extract error message
+    const errors = error.response.data.errors;
+    if (errors && Object.keys(errors).length > 0) {
+      const firstChildKey = Object.keys(errors)[0];
+      const firstChildErrors = errors[firstChildKey];
+      if (Array.isArray(firstChildErrors) && firstChildErrors.length > 0) {
+        errorMessage = firstChildErrors[0];
+      }
+    }
+  } else {
+    // Other errors
+    console.error("Error message", error.message);
+    console.error("Error code", error.code);
+    errorStatus = error.code;
+    errorMessage = error.message;
+  }
+
+  // Construct final error message
+  const finalMessage = `The product could not be updated. Error code: ${errorStatus}. Error message: ${errorMessage}`;
+
+  // Show error toast
+  store.commit("addToast", {
+    title: "Product Not Updated",
+    type: "error",
+    message: finalMessage,
+  });
 };
 
 //categories
@@ -246,19 +280,31 @@ onMounted(() => {
 
 const updateProduct = async (payload) => {
   try {
-    const headers = {
-      "Content-Type": "application/json",
-    };
-    const response = await axios.put(
+    //se usa post en la llamada porque con el multipart/form-data no se puede usar put, pero se pone campo _method: PUT para realmente usar el endpoint adecuado de la API
+    const response = await axios.post(
       `${baseApiUrl}/products/${props.id}`,
       payload,
       {
-        headers: headers,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       }
     );
     return response.data;
   } catch (error) {
     throw error; // rethrow the error to be handled in the component
+  }
+};
+
+/** Funcion para mostrar vista previa de las imagenes a subir */
+const onImageChange = (e) => {
+  console.log(e.target.files[0]);
+  if (e.target.files[0]) {
+    data.image.val = e.target.files[0];
+    imageURL.value = URL.createObjectURL(e.target.files[0]);
+    data.image.isUpdated = true; //ponemos que se ha cambiado el archivo de imagen y hay que mandarlo
+  } else {
+    console.log("No file selected");
   }
 };
 </script>
@@ -321,6 +367,8 @@ const updateProduct = async (payload) => {
                       id="profile-pic"
                       name="profile-pic"
                       accept="image/png, image/jpeg"
+                      v-on:change="onImageChange"
+                      enctype="multipart/form-data"
                     />
                   </div>
                 </div>
@@ -346,11 +394,9 @@ const updateProduct = async (payload) => {
                 <p>tags must not be empty.</p>
               </div>
 
-              <div class="form-field row text-center">
-                <div class="col-3 form-label">
-                  <label for="category">Category:</label>
-                </div>
-                <div class="col-9">
+              <div class="form-field row">
+                <div class="mb-3">
+                  <label for="category" class="form-label">Category:</label>
                   <select
                     class="form-select"
                     aria-label="Select category"
