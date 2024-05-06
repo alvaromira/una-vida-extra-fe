@@ -5,12 +5,20 @@ import { useRouter } from "vue-router";
 import axios from "axios";
 import BaseSpinner from "../BaseSpinner.vue";
 import { useStore } from "vuex";
+import ModalConfirmationDialog from "../ModalConfirmationDialog.vue";
 
 const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
 const baseImgURL = import.meta.env.VITE_BASE_IMG_URL;
 
 const router = useRouter();
 const store = useStore();
+
+//Modal related
+const isDeleteModalVisible = ref(false);
+// Setter for isDeleteModalVisible
+const setIsDeleteModalVisible = (value) => {
+  isDeleteModalVisible.value = value;
+};
 
 const imagePath = computed(() => {
   if (
@@ -95,14 +103,11 @@ const formIsValid = ref(true);
 //methods
 
 const clearValidity = (input) => {
-  console.log(`Setting valid to true: ${input}`);
   data[input].isValid = true;
 };
 
 //specific validation of each of the registration forms included
 const validateForm = async () => {
-  console.log("Running validation on registration form");
-
   formIsValid.value = true;
 
   if (data.productName.val === "") {
@@ -229,9 +234,7 @@ const prodCategories = ref([]);
 const getProductCategories = async () => {
   try {
     const resp = await axios.get(`${baseApiUrl}/categories`);
-    //console.log(resp);
     prodCategories.value = resp.data.data;
-    console.log(prodCategories);
     requestError.value = false;
   } catch (error) {
     requestError.value = true;
@@ -265,7 +268,6 @@ getProductCategories();
 const watchInitialProp = (initialProp, dataProp) => {
   watch(initialProp, (newVal) => {
     data[dataProp].val = newVal;
-    console.log(`New value for ${dataProp} is ${newVal}`);
   });
 };
 
@@ -298,15 +300,45 @@ const updateProduct = async (payload) => {
 
 /** Funcion para mostrar vista previa de las imagenes a subir */
 const onImageChange = (e) => {
-  console.log(e.target.files[0]);
   if (e.target.files[0]) {
     data.image.val = e.target.files[0];
     imageURL.value = URL.createObjectURL(e.target.files[0]);
     data.image.isUpdated = true; //ponemos que se ha cambiado el archivo de imagen y hay que mandarlo
-  } else {
-    console.log("No file selected");
   }
 };
+
+const confirmDeletion = async () => {
+  setIsDeleteModalVisible(true);
+};
+
+const onDeleteModalClose = () => {
+  setIsDeleteModalVisible(false);
+};
+const onDeleteModalConfirm = async () => {
+  await deleteProduct(props.id);
+  setIsDeleteModalVisible(false);
+};
+
+async function deleteProduct(productId) {
+  try {
+    //Borrar por ID
+    await store.dispatch("deleteProduct", productId);
+
+    //Se muestra el success
+    store.commit("addToast", {
+      title: "Product Deleted",
+      type: "success",
+      message: `Product ${productId} has been deleted. You are not taken to your rest of products`,
+    });
+    router.push({ name: "userProducts" });
+  } catch (error) {
+    store.commit("addToast", {
+      title: "Product Not Deleted",
+      type: "error",
+      message: `Your product could not be deleted. Please try again later`,
+    });
+  }
+}
 </script>
 
 <template>
@@ -429,7 +461,9 @@ const onImageChange = (e) => {
             <div class="col">
               <div class="form-submit-button">
                 <BaseButton @submit.prevent="submitForm">Update</BaseButton>
-                <BaseButton>Delete</BaseButton>
+                <BaseButton @click.prevent="confirmDeletion()"
+                  >Delete</BaseButton
+                >
               </div>
             </div>
           </div>
@@ -457,6 +491,22 @@ const onImageChange = (e) => {
       </div>
     </div>
   </div>
+  <ModalConfirmationDialog
+    v-if="isDeleteModalVisible"
+    @modal-confirmed="onDeleteModalConfirm"
+    @modal-close="onDeleteModalClose"
+    id="delete-user-modal"
+  >
+    <template #header>Confirm Product Deletion</template>
+    <template #body
+      ><p>
+        Are you sure you want to delete this product? The product will no longer
+        be listed or visible to anybody. Any requests it may have will be
+        deleted as well.
+      </p>
+      <p>This action cannot be undone.</p></template
+    >
+  </ModalConfirmationDialog>
 </template>
 
 <style scoped>
