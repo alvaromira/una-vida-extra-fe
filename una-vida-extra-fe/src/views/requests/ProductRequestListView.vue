@@ -191,24 +191,37 @@ const handleRequestError = (error) => {
 
 <template>
   <div>
-    <div class="loading" v-show="isLoading">
-      <base-spinner></base-spinner>
+    <div class="row" v-show="isLoading">
+      <div class="col">
+        <div class="loading">
+          <base-spinner></base-spinner>
+        </div>
+      </div>
     </div>
     <section v-if="!isLoading">
-      <div v-if="prodRequests.length < 1">
-        <p>You don't have any active requests for {{ productTitle }}.</p>
-      </div>
-
-      <div v-else>
-        <h2>Requests received for product {{ productTitle }}</h2>
-        <div class="request-card-wrapper">
-          <!--<div class="request-product-id request-card-item">User Id</div>
-          <div class="request-message request-card-item">Message</div>
-          <div class="request-date request-card-item">Date</div>
-          <div class="request-distance request-card-item">Location</div>
-          <div class="request-status request-card-item">Availability</div>
-          <div class="request-cancel-button">x</div>-->
+      <div
+        class="row d-flex justify-content-center"
+        v-if="prodRequests.length < 1"
+      >
+        <div class="col-md-8 no-requests-found text-center">
+          <p>Opps! You don't have any active requests for this item (yet).</p>
+          <p>
+            Click
+            <RouterLink v-if="!isUserAdmin" :to="{ name: 'userProducts' }"
+              >here</RouterLink
+            >
+            to go back to your products.
+          </p>
         </div>
+      </div>
+      <div v-else class="row">
+        <div class="row">
+          <div class="col">
+            <h2>Requests received for product {{ productTitle }}</h2>
+          </div>
+        </div>
+        <!-- <div class="request-card-wrapper">
+        </div>-->
         <transition-group name="list" tag="div">
           <div v-for="request in sortedRequests" :key="request.id">
             <ProductRequestCard
@@ -228,24 +241,24 @@ const handleRequestError = (error) => {
             /></div
         ></transition-group>
       </div>
-
-      <ModalConfirmationDialog
-        v-if="isModalVisible"
-        @modal-confirmed="onModalConfirm"
-        @modal-close="onModalClose"
-      >
-        <template #header>Accept Product Request</template>
-        <template #body
-          ><p>
-            Are you sure you want to Accept this request for your product? This
-            will mark the rest of requests as inactive and your item will no
-            longer be listed.
-          </p>
-          <p>This action cannot be undone.</p></template
-        ></ModalConfirmationDialog
-      >
     </section>
   </div>
+
+  <ModalConfirmationDialog
+    v-if="isModalVisible"
+    @modal-confirmed="onModalConfirm"
+    @modal-close="onModalClose"
+  >
+    <template #header>Accept Product Request</template>
+    <template #body
+      ><p>
+        Are you sure you want to Accept this request for your product? This will
+        mark the rest of requests as inactive and your item will no longer be
+        listed.
+      </p>
+      <p>This action cannot be undone.</p></template
+    ></ModalConfirmationDialog
+  >
 </template>
 
 <style scoped>
@@ -268,5 +281,19 @@ const handleRequestError = (error) => {
 .list-leave-to {
   opacity: 0;
   transform: translateX(30px);
+}
+.no-requests-found {
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  background-color: #fff;
+}
+.no-requests-found p {
+  margin: 0;
+  color: var(--bs-nav-link-color);
+}
+.no-requests-found p a {
+  text-decoration: none;
+  color: #edb421;
 }
 </style>
