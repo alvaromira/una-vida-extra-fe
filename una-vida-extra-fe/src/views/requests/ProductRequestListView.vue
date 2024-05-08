@@ -63,12 +63,6 @@ const sortedRequests = computed(() => {
   return sortedArray;
 });
 
-/*const getIdsExceptGivenOne = (id) => {
-  return sortedRequests.value
-    .filter((request) => request.id !== id)
-    .map((request) => request.id);
-};*/
-
 const numberOfRequests = computed(() => {
   return prodRequests.length;
 });
@@ -104,26 +98,6 @@ const onModalConfirm = async () => {
   } catch (error) {
     handleRequestError(error);
   }
-  //Remove with api request, if all good, reload list and show toast
-  /* const deletionResult = await deleteProductRequests(
-    requestIdToBeRemoved.value
-  );*/
-  /*if (deletionResult === true) {
-    store.commit("addToast", {
-      title: "Request deleted",
-      type: "success",
-      message: "You have successfully deleted the request.",
-    });
-    await getProductRequests();
-  } else {
-    store.commit("addToast", {
-      title: "Request deleted",
-      type: "error",
-      message:
-        "There was an error deleting the request. Try again. If the error persists, get in touch.",
-    });
-  }*/
-  //removeChildComponentById(reqId);
   setRequestAccepted(true);
 };
 const onModalClose = () => {
@@ -141,7 +115,6 @@ const processRequestAcceptance = (userId, requestId, productId) => {
 
 //get product info to get name before loading component
 onBeforeMount(async () => {
-  console.log("Before the component mounts");
   //fetch product requests from the public api
   try {
     setRequestAccepted(false);
@@ -149,7 +122,7 @@ onBeforeMount(async () => {
     // Dispatch getProductData action with the product id
     const data = await store.dispatch("getProductRequests", productId.value);
     // Update the product variable with the returned data
-    console.log(data);
+
     setIsproductTitle(data.title);
     prodRequests.value = data.product_request;
     isLoading.value = false;
@@ -190,59 +163,67 @@ const handleRequestError = (error) => {
 </script>
 
 <template>
-  <div>
-    <div class="row" v-show="isLoading">
-      <div class="col">
-        <div class="loading">
-          <base-spinner></base-spinner>
-        </div>
+  <div class="row justify-content-md-center">
+    <div class="back-to-products-button col">
+      <a :href="$router.resolve({ name: 'userProducts' }).href"
+        >Back to your products</a
+      >
+    </div>
+  </div>
+
+  <div class="row" v-if="isLoading">
+    <div class="col">
+      <div class="loading">
+        <base-spinner></base-spinner>
       </div>
     </div>
-    <section v-if="!isLoading">
-      <div
-        class="row d-flex justify-content-center"
-        v-if="prodRequests.length < 1"
-      >
-        <div class="col-md-8 no-requests-found text-center">
-          <p>Opps! You don't have any active requests for this item (yet).</p>
-          <p>
-            Click
-            <RouterLink v-if="!isUserAdmin" :to="{ name: 'userProducts' }"
-              >here</RouterLink
-            >
-            to go back to your products.
-          </p>
-        </div>
-      </div>
-      <div v-else class="row">
-        <div class="row">
-          <div class="col">
-            <h2>Requests received for product {{ productTitle }}</h2>
-          </div>
-        </div>
-        <!-- <div class="request-card-wrapper">
-        </div>-->
-        <transition-group name="list" tag="div">
-          <div v-for="request in sortedRequests" :key="request.id">
-            <ProductRequestCard
-              :key="request.id"
-              :id="request.id"
-              :message="request.message"
-              :distance="request.distance"
-              :date="request.request_date"
-              :isActive="request.is_active"
-              :isAccepted="request.is_accepted"
-              :productId="request.product_id"
-              :userId="request.user_id"
-              :userEmail="request.user_details.email"
-              :userName="request.user_details.name"
-              :user-coords="request.user_details.coords[0]"
-              @accepted-request="processRequestAcceptance"
-            /></div
-        ></transition-group>
-      </div>
-    </section>
   </div>
+  <section v-if="!isLoading">
+    <div
+      class="row d-flex justify-content-center"
+      v-if="prodRequests.length < 1"
+    >
+      <div class="col-md-8 no-requests-found text-center">
+        <p>Opps! You don't have any active requests for this item (yet).</p>
+        <p>
+          Click
+          <RouterLink v-if="!isUserAdmin" :to="{ name: 'userProducts' }"
+            >here</RouterLink
+          >
+          to go back to your products.
+        </p>
+      </div>
+    </div>
+    <div v-else class="row">
+      <div class="row">
+        <div class="col">
+          <h2>
+            Requests received for <em>{{ productTitle }}</em>
+          </h2>
+        </div>
+      </div>
+      <!-- <div class="request-card-wrapper">
+        </div>-->
+      <transition-group name="list">
+        <div v-for="request in sortedRequests" :key="request.id">
+          <ProductRequestCard
+            :id="request.id"
+            :message="request.message"
+            :distance="request.distance"
+            :date="request.request_date"
+            :isActive="request.is_active"
+            :isAccepted="request.is_accepted"
+            :productId="request.product_id"
+            :userId="request.user_id"
+            :userEmail="request.user_details.email"
+            :userName="request.user_details.name"
+            :user-coords="request.user_details.coords[0]"
+            @accepted-request="processRequestAcceptance"
+          />
+        </div>
+      </transition-group>
+    </div>
+  </section>
 
   <ModalConfirmationDialog
     v-if="isModalVisible"
@@ -294,6 +275,22 @@ const handleRequestError = (error) => {
 }
 .no-requests-found p a {
   text-decoration: none;
+  color: #edb421;
+}
+h2 {
+  text-align: center;
+  padding-bottom: 2rem;
+}
+.back-to-products-button {
+  padding-bottom: 2rem;
+}
+.back-to-products-button a {
+  text-decoration: none;
+  color: #edb421;
+  cursor: pointer;
+}
+.back-to-products-button a:hover {
+  text-decoration: underline;
   color: #edb421;
 }
 </style>

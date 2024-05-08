@@ -358,6 +358,20 @@ const store = createStore({
                 throw error;
             }
         },
+        async getUserContactDetails({ commit }, id) {
+            try {
+                const targetURL = `${baseApiUrl}/users/${id}`;
+                const response = await axios.get(targetURL);
+                const details = {
+                    "email": response.data.data.email,
+                    "phone": response.data.data.phone
+                }
+                return details;
+
+            } catch (error) {
+                throw error;
+            }
+        }
     }
 
 });
