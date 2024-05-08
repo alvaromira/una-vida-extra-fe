@@ -482,7 +482,7 @@ label[for="site-search"] {
 .dropdown-toggle {
   color: white !important;
   border-radius: 5px;
-  padding: 0.375rem 0.75rem;
+  padding: 0.5rem 1rem;
   font-weight: normal;
 }
 .dropdown-item {

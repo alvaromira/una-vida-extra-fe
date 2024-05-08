@@ -429,4 +429,7 @@ p {
   display: flex;
   gap: 1rem;
 }
+.product-detail-availability {
+  font-weight: bold;
+}
 </style>
