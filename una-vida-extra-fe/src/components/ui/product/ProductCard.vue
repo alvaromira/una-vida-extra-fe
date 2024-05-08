@@ -69,7 +69,7 @@ const props = defineProps({
   title: String,
   date: String,
   location: Object,
-  category: String,
+  category: Number,
   description: String,
   tags: Object,
   id: Number,

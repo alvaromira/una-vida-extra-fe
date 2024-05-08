@@ -79,7 +79,7 @@
             <ul class="navbar-nav">
               <li v-if="getUserStatus" class="nav-item dropdown">
                 <a
-                  class="nav-link dropdown-toggle yellow-color"
+                  class="nav-link dropdown-toggle yellow-color w-100"
                   href="#"
                   id="navbarDarkDropdownMenuLink"
                   role="button"
@@ -89,7 +89,7 @@
                   Hi, {{ activeUserEmail }}
                 </a>
                 <ul
-                  class="dropdown-menu yellow-color"
+                  class="dropdown-menu yellow-color w-100"
                   aria-labelledby="navbarDarkDropdownMenuLink"
                 >
                   <li>
@@ -482,7 +482,7 @@ label[for="site-search"] {
 .dropdown-toggle {
   color: white !important;
   border-radius: 5px;
-  padding: 0.375rem 0.75rem;
+  padding: 0.5rem 1rem !important;
   font-weight: normal;
 }
 .dropdown-item {

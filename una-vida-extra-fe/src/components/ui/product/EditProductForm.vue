@@ -3,10 +3,41 @@ import { ref, reactive, toRefs, onMounted, watch, computed } from "vue";
 import BaseButton from "../BaseButton.vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
+import BaseSpinner from "../BaseSpinner.vue";
+import { useStore } from "vuex";
+import ModalConfirmationDialog from "../ModalConfirmationDialog.vue";
 
 const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
+const baseImgURL = import.meta.env.VITE_BASE_IMG_URL;
 
 const router = useRouter();
+const store = useStore();
+
+//Modal related
+const isDeleteModalVisible = ref(false);
+// Setter for isDeleteModalVisible
+const setIsDeleteModalVisible = (value) => {
+  isDeleteModalVisible.value = value;
+};
+
+const imagePath = computed(() => {
+  if (
+    data.image.val == null ||
+    (data.image.val === undefined && imageURL.value === "")
+  ) {
+    return "https://via.placeholder.com/250x250/cccccc/969696";
+  } else if (imageURL.value !== "") {
+    return imageURL.value;
+  } else {
+    return baseImgURL + data.image.val;
+  }
+});
+const imageURL = ref("");
+const isLoading = ref(false);
+
+const apiErrorsFound = computed(() => {
+  return errorDetails.message.length;
+});
 
 const props = defineProps({
   initialProductName: {
@@ -25,6 +56,10 @@ const props = defineProps({
     type: Number,
     required: false,
   },
+  initialImage: {
+    type: String,
+    required: false,
+  },
   id: {
     type: String,
     required: true,
@@ -36,6 +71,7 @@ const { initialProductName } = toRefs(props);
 const { initialCategory } = toRefs(props);
 const { initialTags } = toRefs(props);
 const { initialDescription } = toRefs(props);
+const { initialImage } = toRefs(props);
 
 //data
 const data = reactive({
@@ -55,6 +91,11 @@ const data = reactive({
     val: props.initialCategory,
     isValid: true,
   },
+  image: {
+    val: props.initialImage,
+    isValid: true,
+    isUpdated: false, //es necesario saber si la imagen se actualiza con una nueva, o no. Si es el caso, habrá que mandar la información para subir una nueva imagen
+  },
 });
 
 const formIsValid = ref(true);
@@ -62,14 +103,11 @@ const formIsValid = ref(true);
 //methods
 
 const clearValidity = (input) => {
-  console.log(`Setting valid to true: ${input}`);
   data[input].isValid = true;
 };
 
 //specific validation of each of the registration forms included
 const validateForm = async () => {
-  console.log("Running validation on registration form");
-
   formIsValid.value = true;
 
   if (data.productName.val === "") {
@@ -82,10 +120,12 @@ const validateForm = async () => {
     formIsValid.value = false;
   }
 
+  /*
+ No se hace validacion de las etiquetas hasta que no se implemente toda la funcionalidad
   if (data.tags.val === "") {
     data.tags.isValid = false;
     formIsValid.value = false;
-  }
+  }*/
 
   if (data.category.val === "" || data.category.val === null) {
     data.category.isValid = false;
@@ -93,75 +133,94 @@ const validateForm = async () => {
   }
 };
 
-const clearForm = () => {
-  console.log("Clearing form");
-
-  data.productName.val === "";
-  data.productName.isValid = true;
-
-  data.description.val === "";
-  data.description.isValid = true;
-
-  data.tags.val === "";
-  data.tags.isValid = false;
-
-  data.category.val === "";
-  data.category.isValid = true;
-
-  formIsValid.value = true;
-};
-
 const submitForm = async () => {
-  console.log("Submitting form");
   await validateForm();
-
+  //Si no supera la validación no se sigue
   if (!formIsValid.value) {
     return;
   }
-
-  const formData = {
-    title: data.productName.val,
-    description: data.description.val,
-    //tags: data.tags.val,
-    category_id: data.category.val,
-  };
+  // Se crea un form Data en JS para mandarlo como http request con multipart
+  const formData = new FormData();
+  formData.append("title", data.productName.val);
+  formData.append("description", data.description.val);
+  //formData.append('tags', data.tags.val);
+  formData.append("category_id", data.category.val);
+  //solo poner la imagen si se ha actualizado desde que se mando por ultima vez
+  if (data.image.isUpdated === true) {
+    formData.append("image", data.image.val);
+  }
+  //por las limitaciones de php y Laravel para gestionar formularios con multipart con verbos que no sean POST, se usa el campo _method para poder mandar la http request con post pero que realmente salga como put para que la acepte el endpoint de la api
+  formData.append("_method", "PUT");
 
   try {
+    isLoading.value = true;
     const responseData = await updateProduct(formData);
-    console.log(responseData);
-    //TO DO, show loader
-    console.log("Form submitted, redirecting to userProducts");
-    //TO DO show toast
-    router.push({ name: "userProducts" });
+    handleSuccess();
   } catch (error) {
-    if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.error("Error data", error.response.data);
-      console.error("Error status", error.response.status);
-      //errorDetails.code = error.response.status;
-      //errorDetails.message = error.message;
-      if (error.response.data.errors) {
-        let requestRecivedErrors = error.response.data.errors;
-        for (const property in requestRecivedErrors) {
-          //errorDetails.errors.push(requestRecivedErrors[property].toString());
-          console.log(requestRecivedErrors[property].toString());
-        }
-      }
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.error("Error message", error.message);
-      console.error("Error code", error.code);
-      //errorDetails.code = error.code;
-      //errorDetails.message = error.message;
-    }
+    handleError(error);
+  } finally {
+    // Al terminar, poner la carga a falso
+    isLoading.value = false;
   }
 };
 
-/*
-export default {
-  // emits: ["save-data"],
-};*/
+// Method to handle success response
+const handleSuccess = () => {
+  // Set isLoading to false
+  isLoading.value = false;
+
+  // Update image.isUpdated if product is successfully updated
+  data.image.isUpdated = false;
+
+  // Show success toast
+  store.commit("addToast", {
+    title: "Product updated",
+    type: "success",
+    message: "You have successfully updated the product",
+  });
+};
+
+// Method to handle error response
+const handleError = (error) => {
+  // Set isLoading to false
+  isLoading.value = false;
+
+  // Initialize errorStatus and errorMessage variables
+  let errorStatus = null;
+  let errorMessage = null;
+
+  if (error.response) {
+    // Capture error status
+    errorStatus = error.response.status;
+    console.error("Error status", error.response.status);
+
+    // Extract error message
+    const errors = error.response.data.errors;
+    if (errors && Object.keys(errors).length > 0) {
+      const firstChildKey = Object.keys(errors)[0];
+      const firstChildErrors = errors[firstChildKey];
+      if (Array.isArray(firstChildErrors) && firstChildErrors.length > 0) {
+        errorMessage = firstChildErrors[0];
+      }
+    }
+  } else {
+    // Other errors
+    console.error("Error message", error.message);
+    console.error("Error code", error.code);
+    errorStatus = error.code;
+    errorMessage = error.message;
+  }
+
+  // Construct final error message
+  const finalMessage = `The product could not be updated. Error code: ${errorStatus}. Error message: ${errorMessage}`;
+
+  // Show error toast
+  store.commit("addToast", {
+    title: "Product Not Updated",
+    type: "error",
+    message: finalMessage,
+  });
+};
 
 //categories
 const errorDetails = reactive({
@@ -175,9 +234,7 @@ const prodCategories = ref([]);
 const getProductCategories = async () => {
   try {
     const resp = await axios.get(`${baseApiUrl}/categories`);
-    //console.log(resp);
     prodCategories.value = resp.data.data;
-    console.log(prodCategories);
     requestError.value = false;
   } catch (error) {
     requestError.value = true;
@@ -211,7 +268,6 @@ getProductCategories();
 const watchInitialProp = (initialProp, dataProp) => {
   watch(initialProp, (newVal) => {
     data[dataProp].val = newVal;
-    console.log(`New value for ${dataProp} is ${newVal}`);
   });
 };
 
@@ -221,48 +277,19 @@ onMounted(() => {
   watchInitialProp(initialCategory, "category");
   watchInitialProp(initialTags, "tags");
   watchInitialProp(initialDescription, "description");
-
-  /*
-  // Watch for changes in the initialProductName prop
-  watch(initialProductName, (newVal) => {
-    // Update the productName value in the reactive data object
-    data.productName.val = newVal;
-  });
-  watch(initialCategory, (newVal) => {
-    // Update the productName value in the reactive data object
-    console.log(`newval is ${newVal}`);
-    data.category.val = newVal;
-
-    // computed property to get the category name by ID
-    /* const activeCategory = computed(() => {
-      const item = prodCategories.value.find(
-        (item) => item.id === props.initialCategory
-      );
-      return item ? item.name : "Not found";
-    });
-  });
-  watch(initialTags, (newVal) => {
-    // Update the productName value in the reactive data object
-    console.log(`newval is ${newVal}`);
-    data.tags.val = newVal;
-  });
-  watch(initialDescription, (newVal) => {
-    // Update the productName value in the reactive data object
-    console.log(`newval is ${newVal}`);
-    data.description.val = newVal;
-  });*/
+  watchInitialProp(initialImage, "image");
 });
 
 const updateProduct = async (payload) => {
   try {
-    const headers = {
-      "Content-Type": "application/json",
-    };
-    const response = await axios.put(
+    //se usa post en la llamada porque con el multipart/form-data no se puede usar put, pero se pone campo _method: PUT para realmente usar el endpoint adecuado de la API
+    const response = await axios.post(
       `${baseApiUrl}/products/${props.id}`,
       payload,
       {
-        headers: headers,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       }
     );
     return response.data;
@@ -270,137 +297,248 @@ const updateProduct = async (payload) => {
     throw error; // rethrow the error to be handled in the component
   }
 };
+
+/** Funcion para mostrar vista previa de las imagenes a subir */
+const onImageChange = (e) => {
+  if (e.target.files[0]) {
+    data.image.val = e.target.files[0];
+    imageURL.value = URL.createObjectURL(e.target.files[0]);
+    data.image.isUpdated = true; //ponemos que se ha cambiado el archivo de imagen y hay que mandarlo
+  }
+};
+
+const confirmDeletion = async () => {
+  setIsDeleteModalVisible(true);
+};
+
+const onDeleteModalClose = () => {
+  setIsDeleteModalVisible(false);
+};
+const onDeleteModalConfirm = async () => {
+  await deleteProduct(props.id);
+  setIsDeleteModalVisible(false);
+};
+
+async function deleteProduct(productId) {
+  try {
+    //Borrar por ID
+    await store.dispatch("deleteProduct", productId);
+
+    //Se muestra el success
+    store.commit("addToast", {
+      title: "Product Deleted",
+      type: "success",
+      message: `Product ${productId} has been deleted. You are not taken to your rest of products`,
+    });
+    router.push({ name: "userProducts" });
+  } catch (error) {
+    store.commit("addToast", {
+      title: "Product Not Deleted",
+      type: "error",
+      message: `Your product could not be deleted. Please try again later`,
+    });
+  }
+}
 </script>
 
 <template>
-  <div>
-    <h2>Edit your Product</h2>
-    <form @submit.prevent="submitForm">
-      <div class="form-left-side form-side">
-        <div>
-          <div
-            class="form-control"
-            :class="{ invalid: !data.productName.isValid }"
-          >
-            <label for="productName">Name:</label>
-            <input
-              type="text"
-              id="productName"
-              v-model.trim="data.productName.val"
-              @blur="clearValidity('productName')"
-              placeholder="Name of your product"
-            />
+  <div class="row justify-content-md-center">
+    <div class="col-md-10">
+      <div class="form-wrapper">
+        <form @submit.prevent="submitForm" class="rounded">
+          <div class="row edit-card-top">
+            <div class="form-left-side form-side col-md-6">
+              <div class="mb-3">
+                <label for="productName" class="form-label">Name</label>
+                <input
+                  :class="{ invalid: !data.productName.isValid }"
+                  class="form-control"
+                  type="text"
+                  id="productName"
+                  v-model.trim="data.productName.val"
+                  @blur="clearValidity('productName')"
+                  placeholder="Name of your product"
+                />
+              </div>
+              <div
+                v-if="!data.productName.isValid"
+                class="validation-error-container"
+              >
+                <p>productName must not be empty.</p>
+              </div>
+
+              <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+
+                <textarea
+                  class="form-control"
+                  :class="{ invalid: !data.description.isValid }"
+                  id="description"
+                  rows="5"
+                  v-model.trim="data.description.val"
+                  @blur="clearValidity('description')"
+                ></textarea>
+              </div>
+              <div
+                v-if="!data.description.isValid"
+                class="validation-error-container"
+              >
+                <p>Description must not be empty.</p>
+              </div>
+            </div>
+            <div class="form-right-side form-side col-md-6">
+              <div class="form-field row">
+                <div id="image-upload">
+                  <img :src="imagePath" class="profile-pic" />
+                  <div>
+                    <label for="profile-pic" class="form-label"
+                      >Product image</label
+                    >
+                    <input
+                      type="file"
+                      id="profile-pic"
+                      name="profile-pic"
+                      accept="image/png, image/jpeg"
+                      v-on:change="onImageChange"
+                      enctype="multipart/form-data"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="tags" class="form-label">Tags:</label>
+
+                <input
+                  class="form-control"
+                  type="text"
+                  id="tags"
+                  v-model.trim="data.tags.val"
+                  placeholder="Insert the tags for your product, separate them with commmas"
+                  disabled
+                  readonly
+                />
+                <div id="emailHelp" class="form-text">
+                  Tag editing is not available at the moment.
+                </div>
+              </div>
+              <div v-if="!data.tags.isValid" class="validation-error-container">
+                <p>tags must not be empty.</p>
+              </div>
+
+              <div class="form-field row">
+                <div class="mb-3">
+                  <label for="category" class="form-label">Category:</label>
+                  <select
+                    class="form-select"
+                    aria-label="Select category"
+                    name="categories"
+                    id="category"
+                    @blur="clearValidity('category')"
+                    v-model="data.category.val"
+                  >
+                    <option
+                      v-for="category in prodCategories"
+                      :key="category.id"
+                      :id="category.id"
+                      :value="category.id"
+                    >
+                      {{ category.name }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <div
+                v-if="!data.category.isValid"
+                class="validation-error-container"
+              >
+                <p>Category must not be empty.</p>
+              </div>
+            </div>
           </div>
-          <div
-            v-if="!data.productName.isValid"
-            class="validation-error-container"
-          >
-            <p>productName must not be empty.</p>
+          <div class="row edit-card-bottom">
+            <div class="col">
+              <div class="form-submit-button">
+                <BaseButton @submit.prevent="submitForm">Update</BaseButton>
+                <BaseButton @click.prevent="confirmDeletion()"
+                  >Delete</BaseButton
+                >
+              </div>
+            </div>
           </div>
 
-          <div
-            class="form-control"
-            :class="{ invalid: !data.description.isValid }"
-          >
-            <label for="description">Description</label>
-            <textarea
-              type="text"
-              id="description"
-              rows="5"
-              v-model.trim="data.description.val"
-              @blur="clearValidity('description')"
-              placeholder="Description of your product"
-            ></textarea>
+          <div class="request-status row">
+            <div class="loading col text-center" v-show="isLoading">
+              <base-spinner></base-spinner>
+            </div>
+            <transition name="request-errors">
+              <div class="request-errors col" v-show="requestError">
+                <p>
+                  There was an error when trying to perform the registration.
+                  Please try again.
+                </p>
+                <div v-if="apiErrorsFound">
+                  <p>Details:</p>
+                  <ul v-if="apiErrorsCaptured">
+                    <li v-for="e in errorDetails.errors">{{ e }}</li>
+                  </ul>
+                </div>
+              </div>
+            </transition>
           </div>
-          <div
-            v-if="!data.description.isValid"
-            class="validation-error-container"
-          >
-            <p>Description must not be empty.</p>
-          </div>
-        </div>
+        </form>
       </div>
-      <div class="form-right-side form-side">
-        <div id="image-upload">
-          <img src="" class="profile-pic" />
-          <div>
-            <label for="profile-pic">Product image</label>
-            <input
-              type="file"
-              id="profile-pic"
-              name="profile-pic"
-              accept="image/png, image/jpeg"
-            />
-          </div>
-        </div>
-
-        <div class="form-control" :class="{ invalid: !data.tags.isValid }">
-          <label for="tags">Tags:</label>
-          <input
-            type="text"
-            id="tags"
-            v-model.trim="data.tags.val"
-            @blur="clearValidity('tags')"
-            placeholder="Insert the tags for your product, separate them with commmas"
-          />
-        </div>
-        <div v-if="!data.tags.isValid" class="validation-error-container">
-          <p>tags must not be empty.</p>
-        </div>
-
-        <div class="form-control" :class="{ invalid: !data.category.isValid }">
-          <label for="categories">Category:</label><br />
-
-          <select
-            name="categories"
-            id="category"
-            @blur="clearValidity('category')"
-            v-model="data.category.val"
-          >
-            <option
-              v-for="category in prodCategories"
-              :key="category.id"
-              :id="category.id"
-              :value="category.id"
-            >
-              {{ category.name }}
-            </option>
-            <!--</option>
-            <option value="volvo">Volvo</option>
-            <option value="saab">Saab</option>
-            <option value="mercedes">Mercedes</option>
-            <option value="audi">Audi</option>-->
-          </select>
-        </div>
-        <div v-if="!data.category.isValid" class="validation-error-container">
-          <p>Category must not be empty.</p>
-        </div>
-
-        <div class="form-submit-button">
-          <!-- <BaseButton mode="outline" @click="clearForm">Clear</BaseButton>-->
-          <BaseButton @submit.prevent="submitForm">Save</BaseButton>
-        </div>
-      </div>
-    </form>
+    </div>
   </div>
+  <ModalConfirmationDialog
+    v-if="isDeleteModalVisible"
+    @modal-confirmed="onDeleteModalConfirm"
+    @modal-close="onDeleteModalClose"
+    id="delete-user-modal"
+  >
+    <template #header>Confirm Product Deletion</template>
+    <template #body
+      ><p>
+        Are you sure you want to delete this product? The product will no longer
+        be listed or visible to anybody. Any requests it may have will be
+        deleted as well.
+      </p>
+      <p>This action cannot be undone.</p></template
+    >
+  </ModalConfirmationDialog>
 </template>
 
 <style scoped>
-form {
+.edit-card-bottom {
+  padding-top: 1rem;
+}
+.form-submit-button {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+.form-wrapper {
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  background-color: #fff;
+}
+/*form {
   border: #edb421 solid thin;
   box-shadow: rgba(17, 17, 26, 0.2) 0px 2px 4px;
   background-color: #fff;
-  padding: 0;
+   padding: 0;
   display: flex;
   margin-top: 1rem;
-}
-.form-side {
+}*/
+/*.form-side {
   flex: 1;
   padding: 2rem;
 }
 .form-control {
   margin: 1.5rem 0;
-}
+}*/
 
 .profile-pic {
   background-color: gray;
@@ -457,11 +595,6 @@ input[type="checkbox"] {
 
 input[type="checkbox"]:focus {
   outline: #3d008d solid 1px;
-}
-
-h3 {
-  margin: 0.5rem 0;
-  font-size: 1rem;
 }
 
 .validation-error-container p {

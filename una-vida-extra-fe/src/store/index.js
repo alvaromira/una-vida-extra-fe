@@ -204,6 +204,22 @@ const store = createStore({
                 throw error;
             }
         },
+        async getUserProducts({ commit }, { userId, page }) {
+            try {
+                let targetURL = `${baseApiUrl}/users/${userId}/products`;
+
+                if (page !== undefined && typeof page === 'number') {
+                    targetURL += `?page=${page}`;
+                }
+                const response = await axios.get(targetURL);
+                //commit('setProductResults', response.data);
+                return response.data;
+            } catch (error) {
+                console.error('Error fetching user products:', error);
+                throw error;
+                // Handle error (e.g., show error message to user)
+            }
+        },
         async getProducts({ commit }, page) {
             try {
                 let targetURL = `${baseApiUrl}/products`;
@@ -342,6 +358,20 @@ const store = createStore({
                 throw error;
             }
         },
+        async getUserContactDetails({ commit }, id) {
+            try {
+                const targetURL = `${baseApiUrl}/users/${id}`;
+                const response = await axios.get(targetURL);
+                const details = {
+                    "email": response.data.data.email,
+                    "phone": response.data.data.phone
+                }
+                return details;
+
+            } catch (error) {
+                throw error;
+            }
+        }
     }
 
 });

@@ -100,7 +100,7 @@
                   link="true"
                   >Request it!</BaseButton
                 >
-                <div v-else>
+                <div v-else class="product-magement-buttons">
                   <BaseButton
                     v-if="props.available && !productIsTaken"
                     :to="{
@@ -124,7 +124,7 @@
                       },
                     }"
                     link="true"
-                    >Check Requests</BaseButton
+                    >Requests</BaseButton
                   >
                 </div>
               </div>
@@ -424,5 +424,12 @@ p {
   color: #edb421;
   font-weight: bold;
   text-align: right;
+}
+.product-magement-buttons {
+  display: flex;
+  gap: 1rem;
+}
+.product-detail-availability {
+  font-weight: bold;
 }
 </style>

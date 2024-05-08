@@ -27,7 +27,7 @@
         <BaseButton
           @click="loadPreviousPage"
           mode="outline"
-          disabled="currentPage === 1"
+          :disabled="currentPage === 1"
         >
           <span class="sr-only">Previous</span>
           <span aria-hidden="true">&lt;</span>
@@ -135,6 +135,8 @@ const getProductRequests = async (search, page) => {
     isDataLoaded.value = true; // Set data loaded to true once data is fetched
     // Handle request error
     handleRequestError(error);
+  } finally {
+    isDataLoaded.value = true;
   }
 };
 
