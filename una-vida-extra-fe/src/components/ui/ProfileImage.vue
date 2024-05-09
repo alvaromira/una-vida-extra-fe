@@ -110,6 +110,9 @@ const generateGravatarUrl = async (email) => {
   border-radius: 50%;
   overflow: hidden;
   margin-inline-end: 3px;
+  background-color: #e9ecef;
+  margin: 0 auto;
+  margin-bottom: 1rem;
 }
 
 .small {

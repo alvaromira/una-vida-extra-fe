@@ -568,7 +568,9 @@ const validatePassword = (password) => {
           <div class="col">
             <label for="public-details"
               >By enabling this checkbox I accept the
-              <a href="#">terms and conditions</a></label
+              <a :href="$router.resolve({ name: 'terms' }).href" target="_blank"
+                >terms and conditions</a
+              ></label
             >
             <input
               :class="{ invalid: !data.publicDetails.isValid }"
