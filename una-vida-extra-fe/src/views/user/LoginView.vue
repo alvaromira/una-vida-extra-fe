@@ -23,7 +23,6 @@ const isAuthenticated = computed(() => store.getters.authenticated);
 
 <style scoped>
 .form-wrapper {
-  max-width: 50%;
 }
 h2 {
   text-align: center;
