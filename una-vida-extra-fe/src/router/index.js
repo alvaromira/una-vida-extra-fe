@@ -156,6 +156,15 @@ const router = createRouter({
       component: () => import('../views/user/UserRegisterView.vue')
     },
     {
+      path: '/terms',
+      name: 'terms',
+      meta: {
+        middleware: "public",
+        title: "Terms and Conditions"
+      },
+      component: () => import('../views/TermsAndConditionsView.vue')
+    },
+    {
       path: '/logout',
       name: 'logout',
       meta: {
