@@ -5,7 +5,7 @@
         class="product-detail-card-wrapper row"
         :id="props.id"
         :key="props.key"
-        :class="{ taken: productIsTaken }"
+        :class="{ taken: productIsTaken, 'prod-unavailable': !props.available }"
       >
         <div class="top row">
           <section
@@ -39,7 +39,28 @@
           >
             <div class="product-card-product-location row">
               <div class="location-icon col-md-12">
-                <IconLocation @click="showLocation" /> View Location
+                <span class="location-toggle" @click="showLocation">
+                  <span v-if="!isLocationDisplayed"
+                    ><IconLocation /> View Location</span
+                  >
+                  <span v-else
+                    ><svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      class="bi bi-image"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"
+                      />
+                      <path
+                        d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1z"
+                      /></svg
+                    >&nbsp;View Image</span
+                  >
+                </span>
               </div>
             </div>
             <div class="product-card-info row">
@@ -71,12 +92,25 @@
                   <p>{{ props.description }}</p>
                 </div>
 
-                <div
-                  class="product-detail-availability"
-                  v-if="!props.available && !productIsTaken"
-                >
-                  You have accepted a request for this product. Please mark the
-                  product as taken when you have donated it.
+                <div class="product-detail-availability">
+                  <div v-if="loggedUserIsOwner">
+                    <p>
+                      You have accepted a request for this product. Please mark
+                      the product as taken when you have donated it.
+                    </p>
+                  </div>
+
+                  <div v-else>
+                    <!--Para no dueÑos del producto, en esta sección solo hay dos casos: donado y por tanto se borrará en breve, o bien, con solicitud aceptada y no disponible pero no donado. El resto de casos, no pueden existir {ejemplo: disponible y donado al mismo tiempo}-->
+                    <p v-if="!props.available && !productIsTaken">
+                      This product has an accepted request and it only needs to
+                      be collected. So you can't request it at the moment.
+                    </p>
+                    <p v-else-if="!props.available && productIsTaken">
+                      This product has been donated already. It will be unlisted
+                      soon.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -85,50 +119,51 @@
         <div class="bottom">
           <section class="row">
             <div class="col-md-12 product-detail-buttons">
-              <div
-                v-if="!productIsTaken"
-                class="product-card-button product-detail-card-bottom"
-              >
+              <!--Si se trata del dueño del producto, se muestran botones para gestionarlo -->
+              <div v-if="loggedUserIsOwner" class="product-magement-buttons">
                 <BaseButton
-                  v-if="!loggedUserIsOwner"
+                  v-if="props.available && !productIsTaken"
                   :to="{
-                    name: 'requestProduct',
+                    name: 'editProduct',
                     params: {
                       id: id,
                     },
                   }"
                   link="true"
-                  >Request it!</BaseButton
+                  >Edit</BaseButton
                 >
-                <div v-else class="product-magement-buttons">
-                  <BaseButton
-                    v-if="props.available && !productIsTaken"
-                    :to="{
-                      name: 'editProduct',
-                      params: {
-                        id: id,
-                      },
-                    }"
-                    link="true"
-                    >Edit</BaseButton
-                  >
-                  <BaseButton v-else @click="setIsModalVisible(true)"
-                    >Mark as Taken</BaseButton
-                  >
-                  <BaseButton
-                    :to="{
-                      name: 'productRequests',
-                      params: {
-                        id: id,
-                        // state: { title: props.title, image: props.image },
-                      },
-                    }"
-                    link="true"
-                    >Requests</BaseButton
-                  >
-                </div>
+                <BaseButton v-else @click="setIsModalVisible(true)"
+                  >Mark as Taken</BaseButton
+                >
+                <BaseButton
+                  :to="{
+                    name: 'productRequests',
+                    params: {
+                      id: id,
+                    },
+                  }"
+                  link="true"
+                  >Requests</BaseButton
+                >
               </div>
-              <div v-else>This product has already been donated.</div>
+              <div v-else>
+                <!-- Caso uno, el producto esta donado, no se muestra nada
+                <span v-if="productIsTaken"></span>-->
+                <!--Caso dos, el producto no está donado y está disponible, se puede solicitar y se muestra botón -->
+                <span v-if="!productIsTaken && props.available">
+                  <BaseButton
+                    :to="{
+                      name: 'requestProduct',
+                      params: {
+                        id: id,
+                      },
+                    }"
+                    link="true"
+                    >Request it!</BaseButton
+                  >
+                </span>
+                <!--Caso tres, el product no está donado y NO está disponible, no se puede solicitar. En este caso el usuario dueño debería marcarlo como tomado                <span v-else-if="!productIsTaken && !props.available"></span>-->
+              </div>
             </div>
           </section>
         </div>
@@ -294,6 +329,9 @@ const formatDate = (dateTimeStamp) => {
 </script>
 
 <style scoped>
+.location-toggle {
+  cursor: pointer;
+}
 /*
 p {
   margin-block-start: 0;
@@ -331,17 +369,23 @@ p {
 .product-card-button {
 }
 
-.product-detail-card-wrapper.taken {
-  border: 2px solid lightgray;
-}
 .taken p,
 .taken h2,
-.taken .location-icon {
+.taken .location-icon,
+.prod-unavailable p,
+.prod-unavailable h2,
+.prod-unavailable .location-icon {
   color: lightgray !important;
 }
 .taken .product-detail-card-image img,
-.taken .product-detail-card-map {
+.taken .product-detail-card-map,
+.prod-unavailable .product-detail-card-image img,
+.prod-unavailable .product-detail-card-map {
   opacity: 0.5 !important;
+}
+.taken .product-detail-availability p,
+.prod-unavailable .product-detail-availability p {
+  color: rgba(0, 0, 0, 0.65) !important;
 }
 /*
 .product-detail-card-side {

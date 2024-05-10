@@ -100,100 +100,105 @@ const handleSuccessfulLogin = () => {
 </script>
 
 <template>
-  <form @submit.prevent="submitForm" class="rounded">
-    <div class="container">
-      <div class="form-field row text-center">
-        <div class="col-3 form-label">
-          <label for="email">Email</label>
-        </div>
-        <div class="col-9">
-          <input
-            class="form-control col-8"
-            :class="{ invalid: !data.email.isValid }"
-            type="email"
-            id="email"
-            v-model.trim="data.email.val"
-            @blur="clearValidity('email')"
-          />
-        </div>
-      </div>
-      <div
-        v-if="!data.email.isValid"
-        class="validation-error-container pointer-up row"
-        :class="{ active: !data.email.isValid }"
-      >
-        <div class="col">
-          <p>Email must not be empty.</p>
-        </div>
-      </div>
-
-      <div class="form-field row text-center">
-        <div class="col-3 form-label">
-          <label for="password">Password</label>
-        </div>
-        <div class="col-9">
-          <input
-            class="form-control col-8"
-            :class="{ invalid: !data.password.isValid }"
-            type="password"
-            id="password"
-            v-model.trim="data.password.val"
-            @blur="clearValidity('password')"
-          />
-        </div>
-      </div>
-      <div
-        v-if="!data.password.isValid"
-        class="validation-error-container pointer-up row"
-        :class="{ active: !data.password.isValid }"
-      >
-        <div class="col">
-          <p>Password must not be empty.</p>
-        </div>
-      </div>
-
-      <div>
-        <div
-          v-if="formIsValid.value === false"
-          class="form-field row text-center"
-        >
-          <p>Please fix the above errors and submit again.</p>
-        </div>
-      </div>
-
-      <div class="form-field row submit">
-        <div class="form-submit-button">
-          <BaseButton :disabled="isProcessing">Login</BaseButton>
-        </div>
-      </div>
-      <div v-if="!isProcessing">
-        <div
-          id="login-errors"
-          class="validation-error-container"
-          :class="{ active: loginError }"
-          v-if="loginError"
-        >
-          <p v-if="errorCode === 422" class="validation-error">
-            Wrong credentials provided. Please check your email and password.
-          </p>
-          <p v-else>
-            There was an error while logging you in. Please try again later.
-          </p>
-        </div>
-      </div>
-      <div v-else class="loading">
-        <base-spinner></base-spinner>
-      </div>
-    </div>
-  </form>
-
-  <div class="container">
-    <div class="row">
-      <div class="col-sm-8 col-md-12">
-        <div id="forgot-password">
-          <RouterLink :to="{ name: 'forgot-password' }"
-            >Forgot your password?</RouterLink
+  <div class="row justify-content-md-center">
+    <div class="col-md-8">
+      <form @submit.prevent="submitForm" class="rounded">
+        <div class="container">
+          <div class="form-field row text-center">
+            <div class="col-3 form-label">
+              <label for="email">Email</label>
+            </div>
+            <div class="col-9">
+              <input
+                class="form-control col-8"
+                :class="{ invalid: !data.email.isValid }"
+                type="email"
+                id="email"
+                v-model.trim="data.email.val"
+                @blur="clearValidity('email')"
+              />
+            </div>
+          </div>
+          <div
+            v-if="!data.email.isValid"
+            class="validation-error-container pointer-up row"
+            :class="{ active: !data.email.isValid }"
           >
+            <div class="col">
+              <p>Email must not be empty.</p>
+            </div>
+          </div>
+
+          <div class="form-field row text-center">
+            <div class="col-3 form-label">
+              <label for="password">Password</label>
+            </div>
+            <div class="col-9">
+              <input
+                class="form-control col-8"
+                :class="{ invalid: !data.password.isValid }"
+                type="password"
+                id="password"
+                v-model.trim="data.password.val"
+                @blur="clearValidity('password')"
+              />
+            </div>
+          </div>
+          <div
+            v-if="!data.password.isValid"
+            class="validation-error-container pointer-up row"
+            :class="{ active: !data.password.isValid }"
+          >
+            <div class="col">
+              <p>Password must not be empty.</p>
+            </div>
+          </div>
+
+          <div>
+            <div
+              v-if="formIsValid.value === false"
+              class="form-field row text-center"
+            >
+              <p>Please fix the above errors and submit again.</p>
+            </div>
+          </div>
+
+          <div class="form-field row submit">
+            <div class="form-submit-button">
+              <BaseButton :disabled="isProcessing">Login</BaseButton>
+            </div>
+          </div>
+          <div v-if="!isProcessing">
+            <div
+              id="login-errors"
+              class="validation-error-container"
+              :class="{ active: loginError }"
+              v-if="loginError"
+            >
+              <p v-if="errorCode === 422" class="validation-error">
+                Wrong credentials provided. Please check your email and
+                password.
+              </p>
+              <p v-else>
+                There was an error while logging you in. Please try again later.
+              </p>
+            </div>
+          </div>
+          <div v-else class="loading">
+            <base-spinner></base-spinner>
+          </div>
+        </div>
+      </form>
+
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-8 col-md-12">
+            <div id="forgot-password">
+              <RouterLink :to="{ name: 'forgot-password' }"
+                >Forgot your password?</RouterLink
+              >
+            </div>
+          </div>
         </div>
       </div>
     </div>
