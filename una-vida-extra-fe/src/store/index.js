@@ -1,15 +1,13 @@
 import { createStore } from 'vuex';
-import { ref } from "vue";
 import axios from 'axios';
 
 const baseApiUrl = import.meta.env.VITE_BASE_API_URL; //ruta base para la api del backend
 const baseUrl = import.meta.env.VITE_BASE_URL; //ruta base para el cliente de la aplicacion
 
-//vuex store init
+//inicializacion del vuex store, con todas las propiedades del state que se usan en diversas partes y vistas de la app
 const store = createStore({
     state() {
         return {
-            //userLoggedIn: false,
             userIsAdmin: false,
             authenticated: false,
             user: {},
@@ -19,6 +17,7 @@ const store = createStore({
             productTags: []
         };
     },
+    //getters para acceder a los valores de las propiedades del state para evitar el accesso directo. Para los toasts no son necesarios porque no se acceden a ellos. Solo se añaden y eliminan
     getters: {
         authenticated(state) {
             return state.authenticated;
@@ -29,7 +28,6 @@ const store = createStore({
         getProductResults(state) {
             return state.productResults;
         },
-
         getProductCategories(state) {
             return state.productCategories;
         },
@@ -37,6 +35,7 @@ const store = createStore({
             return state.productTags;
         }
     },
+    //setters para las propiedadedes del setter
     mutations: {
         SET_USER_IS_ADMIN(state, status) {
             state.userIsAdmin = status
@@ -47,12 +46,16 @@ const store = createStore({
         SET_USER(state, value) {
             state.user = value
         },
+        //Para añadir mensajes toasta al toast state, que puede soportar varios
         addToast(state, toast) {
             state.toasts.push(toast);
         },
+        //para eliminar mensajes toast por su titulo
         clearToast(state, title) {
-            const index = state.toasts.findIndex((toast) => toast.title === title); // find toast
-            state.toasts.splice(index, 1); // remove toast from array
+            const index = state.toasts.findIndex((toast) => toast.title === title); // se encuentra el toast por si indice
+            if (index != null) {
+                state.toasts.splice(index, 1); // se elimina si se ha encontrado
+            }
         },
         setProductResults(state, results) {
             state.productResults = results;
@@ -64,6 +67,7 @@ const store = createStore({
             state.productTags = tags;
         }
     },
+    //Coleccion de las acciones que se ejecutan tanto sobre el estado como sobre elementos de la API sin estar asociados a propiedades del state pero que se usan en diversas partes de la app
     actions: {
         async login({ commit }, { payload }) {
             try {
