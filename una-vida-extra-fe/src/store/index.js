@@ -228,7 +228,8 @@ const store = createStore({
                 try {
                     let targetURL = `${baseApiUrl}/users/${userId}/requests?page=${currentPage}`;
                     const data = await axios.get(targetURL);
-                    userRequests.push(data.data); //se ponen las solicitudes en el array
+                    const requestObjects = data.data.data;
+                    userRequests.push(...requestObjects); //se ponen las solicitudes en el array
 
                     // Si no hay siguiente pagina, salimos del bucle
                     if (!data.next_page_url) {

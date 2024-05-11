@@ -205,13 +205,16 @@ const handleError = (error) => {
 //Antes de cargar el componente, obtener los productos del usuario
 onBeforeMount(async () => {
   const requestedProds = await getUserRequestedProducts(activeUserId.value);
-
   //Si hay productos solicitados, se filtran para ver si existe ya el que se está visitando para solicitar
-  if (requestedProds.data) {
-    const filteredData = requestedProds.data.filter(
-      (item) =>
-        item.product_id == props.id && item.user_id == activeUserId.value
-    );
+
+  if (requestedProds) {
+    let filteredData = [];
+    for (let i = 0; i < requestedProds.length; i++) {
+      console.log(requestedProds[i].product_id);
+      if (requestedProds[i].product_id == props.id) {
+        filteredData.push(requestedProds[i]);
+      }
+    }
     if (filteredData.length) {
       isProductedAlreadyRequestedByUser.value = true;
     }
@@ -296,6 +299,9 @@ h3 {
   text-align: right;
 }
 
+.already-requested {
+  padding-top: 1rem;
+}
 .already-requested p {
   color: gray;
 }
