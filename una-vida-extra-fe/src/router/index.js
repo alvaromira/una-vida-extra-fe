@@ -1,276 +1,281 @@
 
 import { createRouter, createWebHistory } from 'vue-router';
-import NotFound from '../views/NotFound.vue';
 import store from '../store';
 import { computed } from "vue";
 import NotFound404Page from '../components/ui/NotFound404Page.vue';
-//const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 
 const router = createRouter({
+  // Configuración para el historial de navegación basado en la API de historial de navegación web
   history: createWebHistory(import.meta.env.BASE_URL),
+  // Definición de las rutas de la aplicación
   routes: [
     {
-      path: '/',
+      path: '/', // Ruta raíz de la aplicación
       name: 'home',
-      //component: HomeView,
-      redirect: '/products',
+      redirect: '/products', // Redirige la ruta raíz a la vista de productos
       meta: {
-        middleware: "public",
-        title: 'home'
+        middleware: "public", // Middleware público (sin autenticación requerida)
+        title: 'Home' // Título de la página
       },
     },
     {
-      path: '/project',
+      path: '/project', // Ruta para la vista del proyecto
       name: 'project',
       meta: {
-        middleware: "public",
-        title: "The Project"
+        middleware: "public", // Middleware público (sin autenticación requerida)
+        title: "The Project" // Título de la página
       },
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/ProjectView.vue')
+      component: () => import('../views/ProjectView.vue') // Componente asociado a la vista del proyecto
     },
     {
-      path: '/products',
+      path: '/products', // Ruta para mostrar todos los productos
       name: 'products',
       meta: {
-        middleware: "public",
-        title: "Products"
+        middleware: "public", // Middleware público (sin autenticación requerida)
+        title: "Products" // Título de la página
       },
-      component: () => import('../views/products/ProductListView.vue'),
-      props: route => ({ sText: route.query.q })
-
-      //Children
-      //add a new product
+      component: () => import('../views/products/ProductListView.vue'), // Componente asociado a la vista de lista de productos
+      props: route => ({ sText: route.query.q }) // Propiedades pasadas al componente, incluyendo el texto de búsqueda si está presente en la consulta URL
     },
     {
-      path: '/my-products',
+      path: '/my-products', // Ruta para mostrar los productos del usuario
       name: 'userProducts',
       meta: {
-        middleware: "auth",
-        title: 'User Products'
+        middleware: "auth", // Middleware de autenticación requerida
+        title: 'User Products' // Título de la página
       },
-      component: () => import('../views/products/UserProductListView.vue'),
+      component: () => import('../views/products/UserProductListView.vue') // Componente asociado a la vista de productos del usuario
     },
     {
-      path: '/products/add',
+      path: '/products/add', // Ruta para agregar un nuevo producto
       name: 'addProduct',
       meta: {
-        middleware: "auth",
-        title: "Add a Product"
+        middleware: "auth", // Middleware de autenticación requerida
+        title: "Add a Product" // Título de la página
       },
-      component: () => import('../views/products/AddNewProduct.vue'),
+      component: () => import('../views/products/AddNewProduct.vue') // Componente asociado a la vista de agregar nuevo producto
     },
     {
-      path: '/products/:id',
+      path: '/products/:id', // Ruta para mostrar los detalles de un producto específico
       name: 'product',
       meta: {
-        middleware: "public",
-        title: "Product Details"
+        middleware: "public", // Middleware público (sin autenticación requerida)
+        title: "Product Details" // Título de la página
       },
-      props: true,
-      component: () => import('../views/products/ProductDetailView.vue'),
+      props: true, // Pasar las propiedades de la ruta al componente
+      component: () => import('../views/products/ProductDetailView.vue') // Componente asociado a la vista de detalles del producto
     },
     {
-      path: '/products/:id/request',
+      path: '/products/:id/request', // Ruta para solicitar un producto específico
       name: 'requestProduct',
       meta: {
-        middleware: "auth",
-        title: "Request a Product"
+        middleware: "auth", // Middleware de autenticación requerida
+        title: "Request a Product" // Título de la página
       },
-      props: true,
-      component: () => import('../views/requests/RequestDetailView.vue')
+      props: true, // Pasar las propiedades de la ruta al componente
+      component: () => import('../views/requests/RequestDetailView.vue') // Componente asociado a la vista de solicitud de producto
     },
     {
-      path: '/products/:id/edit',
+      path: '/products/:id/edit', // Ruta para editar un producto específico
       name: 'editProduct',
       meta: {
-        middleware: "auth",
-        title: "Edit a Product"
+        middleware: "auth", // Middleware de autenticación requerida
+        title: "Edit a Product" // Título de la página
       },
-      props: true,
-      component: () => import('../views/products/EditProductView.vue')
+      props: true, // Pasar las propiedades de la ruta al componente
+      component: () => import('../views/products/EditProductView.vue') // Componente asociado a la vista de edición de producto
     },
     {
-      path: '/requests',
+      path: '/requests', // Ruta para ver todas las solicitudes de productos
       name: 'requests',
       meta: {
-        middleware: "auth",
-        title: "Requests"
+        middleware: "auth", // Middleware de autenticación requerida
+        title: "Requests" // Título de la página
       },
-      component: () => import('../views/requests/RequestListView.vue')
+      component: () => import('../views/requests/RequestListView.vue') // Componente asociado a la vista de lista de solicitudes
     },
     {
-      path: '/requests/product/:id',
+      path: '/requests/product/:id', // Ruta para ver las solicitudes de un producto específico
       name: 'productRequests',
       meta: {
-        middleware: "auth",
-        title: "Product Requests"
+        middleware: "auth", // Middleware de autenticación requerida
+        title: "Product Requests" // Título de la página
       },
-      component: () => import('../views/requests/ProductRequestListView.vue')
+      component: () => import('../views/requests/ProductRequestListView.vue') // Componente asociado a la vista de solicitudes de producto específico
     },
     {
-      path: '/sponsors',
+      path: '/sponsors', // Ruta para mostrar los patrocinadores
       name: 'sponsors',
       meta: {
-        middleware: "public",
-        title: "Sponsors"
+        middleware: "public", // Middleware público (sin autenticación requerida)
+        title: "Sponsors" // Título de la página
       },
-      component: () => import('../views/SponsorsView.vue')
+      component: () => import('../views/SponsorsView.vue') // Componente asociado a la vista de patrocinadores
     },
     {
-      path: '/login',
+      path: '/login', // Ruta para iniciar sesión
       name: 'login',
       meta: {
-        middleware: "guest",
-        title: 'Login'
+        middleware: "guest", // Middleware de invitado (no autenticado)
+        title: 'Login' // Título de la página
       },
-      component: () => import('../views/user/LoginView.vue')
+      component: () => import('../views/user/LoginView.vue') // Componente asociado a la vista de inicio de sesión
     },
     {
-      path: '/forgot-password',
+      path: '/forgot-password', // Ruta para restablecer la contraseña olvidada
       name: 'forgot-password',
       meta: {
-        middleware: "guest",
-        title: 'Forgot Password'
+        middleware: "guest", // Middleware de invitado (no autenticado)
+        title: 'Forgot Password' // Título de la página
       },
-      component: () => import('../views/user/ForgotPasswordView.vue')
+      component: () => import('../views/user/ForgotPasswordView.vue') // Componente asociado a la vista de olvido de contraseña
     },
     {
-      path: '/reset-password/:token',
+      path: '/reset-password/:token', // Ruta para restablecer la contraseña con un token específico
       name: 'reset-password',
       meta: {
-        middleware: "guest",
-        title: 'Reset Password'
+        middleware: "guest", // Middleware de invitado (no autenticado)
+        title: 'Reset Password' // Título de la página
       },
-      component: () => import('../views/user/ResetPasswordView.vue')
+      component: () => import('../views/user/ResetPasswordView.vue') // Componente asociado a la vista de restablecimiento de contraseña
     },
     {
-      path: '/register',
+      path: '/register', // Ruta para registrar un nuevo usuario
       name: 'register',
       meta: {
-        middleware: "guest",
-        title: 'Register'
+        middleware: "guest", // Middleware de invitado (no autenticado)
+        title: 'Register' // Título de la página
       },
-      component: () => import('../views/user/UserRegisterView.vue')
+      component: () => import('../views/user/UserRegisterView.vue') // Componente asociado a la vista de registro de usuario
     },
     {
-      path: '/terms',
+      path: '/terms', // Ruta para mostrar los términos y condiciones
       name: 'terms',
       meta: {
-        middleware: "public",
-        title: "Terms and Conditions"
+        middleware: "public", // Middleware público (sin autenticación requerida)
+        title: "Terms and Conditions" // Título de la página
       },
-      component: () => import('../views/TermsAndConditionsView.vue')
+      component: () => import('../views/TermsAndConditionsView.vue') // Componente asociado a la vista de términos y condiciones
     },
+
     {
-      path: '/logout',
+      path: '/logout', // Ruta para cerrar sesión
       name: 'logout',
       meta: {
-        middleware: "public",
-        title: "Logout"
+        middleware: "public", // Middleware público (sin autenticación requerida)
+        title: "Logout" // Título de la página
       },
-      component: () => import('../views/user/LogoutView.vue')
+      component: () => import('../views/user/LogoutView.vue') // Componente asociado a la vista de cierre de sesión
     },
     {
-      path: '/profile',
+      path: '/profile', // Ruta para ver el perfil del usuario
       name: 'profile',
       meta: {
-        middleware: "auth",
-        title: "User Profile"
+        middleware: "auth", // Middleware de autenticación requerido
+        title: "User Profile" // Título de la página
       },
-      component: () => import('../views/user/ProfileView.vue')
+      component: () => import('../views/user/ProfileView.vue') // Componente asociado a la vista de perfil de usuario
     },
     {
-      path: '/admin',
+      path: '/admin', // Ruta para el panel de administración
       name: 'admin',
       children: [
-        { path: '', redirect: 'products' },
-        { path: 'products', component: () => import('../views/admin/ProductManagement.vue') },
-        { path: 'users', component: () => import('../views/admin/UserManagement.vue') },
-        { path: 'categories', component: () => import('../views/admin/CategoryManagement.vue') },
-        { path: 'tags', component: () => import('../views/admin/TagManagement.vue') },
-        { path: 'locations', component: () => import('../views/admin/LocationManagement.vue') },
-        { path: 'requests', component: () => import('../views/admin/RequestManagement.vue') },
+        { path: '', redirect: 'products' }, // Redirecciona a la página de gestión de productos por defecto
+        { path: 'products', component: () => import('../views/admin/ProductManagement.vue') }, // Página de gestión de productos
+        { path: 'users', component: () => import('../views/admin/UserManagement.vue') }, // Página de gestión de usuarios
+        { path: 'categories', component: () => import('../views/admin/CategoryManagement.vue') }, // Página de gestión de categorías
+        { path: 'tags', component: () => import('../views/admin/TagManagement.vue') }, // Página de gestión de etiquetas
+        { path: 'locations', component: () => import('../views/admin/LocationManagement.vue') }, // Página de gestión de ubicaciones
+        { path: 'requests', component: () => import('../views/admin/RequestManagement.vue') }, // Página de gestión de solicitudes
       ],
       meta: {
-        middleware: "admin",
-        title: "Admin Dashboard"
+        middleware: "admin", // Middleware de administrador requerido
+        title: "Admin Dashboard" // Título de la página
       },
-      component: () => import('../views/AdminDashboard.vue')
+      component: () => import('../views/AdminDashboard.vue') // Componente asociado al panel de administración
     },
     {
-      path: '/forgot-password',
+      path: '/forgot-password', // Ruta para restablecer la contraseña olvidada
       name: 'forgot-password',
       meta: {
-        middleware: "public",
-        title: "Forgot Password"
+        middleware: "public", // Middleware público (sin autenticación requerida)
+        title: "Forgot Password" // Título de la página
       },
-      component: () => import('../views/user/ForgotPasswordView.vue')
+      component: () => import('../views/user/ForgotPasswordView.vue') // Componente asociado a la vista de olvido de contraseña
     },
+
     {
-      //catch all
+      // Ruta de captura para cualquier ruta no encontrada. Fallback
       path: '/:notFound(.*)',
       name: 'notFound',
       meta: {
-        middleware: "public",
-        title: "Not Found"
+        middleware: "public", // Middleware público (sin autenticación requerida)
+        title: "Not Found" // Título de la página
       },
-      component: NotFound404Page
+      component: NotFound404Page // Componente asociado a la página de error 404
     }
   ]
 });
 
+// Propiedad computada para verificar si el usuario está autenticado
 const isAuthenticated = computed(() => store.getters.authenticated);
+
+// Propiedad computada para obtener los datos del usuario
 const user = computed(() => store.getters.user);
 
+// Función para manejar rutas accesibles para invitados
 async function handleGuestRoute(to, next) {
-  //Check if the csrf token and session are valid, if so, redirect
-  //Todo (consider a redirection page)
+  // Verificar si el token csrf y la sesión son válidos, si es así, redirigir
+  // Pendiente (considerar una página de redirección)
   store.dispatch("getAuthUser").then(() => {
     if (isAuthenticated.value) {
-      console.log("VISITING A GUEST ROUTE, you are authenticated already", to.name);
+      console.log("VISITANDO UNA RUTA DE INVITADO, ya estás autenticado", to.name);
       next({ name: "products" });
       //next();
     } else {
-      console.log("VISITING A GUEST ROUTE, you are NOT authenticated", to.name);
+      console.log("VISITANDO UNA RUTA DE INVITADO, no estás autenticado", to.name);
       next();
     }
-  })
+  });
 }
 
+// Función para manejar rutas públicas, realmente no hace falta nada al ser pública, se sigue adelante
 function handlePublicRoute(to, next) {
-  console.log("VISITING A PUBLIC ROUTE ", to.name);
   next();
 }
 
+// Función para manejar rutas autenticadas
 async function handleAuthRoute(to, from, next) {
   const routePath = to.fullPath;
+  //si el usuario está authenticado, se sigue adelante
   if (isAuthenticated.value) {
-    console.log("VISITING An AUTH ROUTE, you are authenticated");
     next();
   } else {
+    //si no lo está porque no se ha logeado, se trata de comprobar si en el estado ya está logeado y por tanto con una cookie de Sanctum valida. Si es el caso, se recicla la autenticación, se logea al usuario y se sigue adelante
     store.dispatch("getAuthUser").then(() => {
       if (isAuthenticated.value) {
-        console.log("VISITING An AUTH ROUTE, you were NOT authenticated, but you are now re-authenticated from your valid session");
+        //console.log("VISITANDO UNA RUTA DE AUTENTICACIÓN, no estabas autenticado, pero ahora estás re-autenticado desde tu sesión válida");
         next();
       } else {
-        console.log(`VISITING AN AUTH ROUTE ${to.name}, you are NOT authenticated`);
+        //en caso contrario, se pone un toast de informacion para y se redirije a login
+        //console.log(`VISITANDO UNA RUTA DE AUTENTICACIÓN ${to.name}, no estás autenticado`);
         store.commit("addToast", {
-          title: "You need to log in",
+          title: "Necesitas iniciar sesión",
           type: "info",
           message:
-            "You need to log in to access this page.",
+            "Necesitas iniciar sesión para acceder a esta página.",
         });
         next({ name: "login" });
       }
     });
   }
 }
-router.beforeEach((to, from, next) => {
-  document.title = "1up - " + to.meta.title;
 
+// Guardia o controles de navegación global.En función del tipo del middleware de la ruta, se gestiona de una u otra forma por parte del router antes de pintar la vista
+router.beforeEach((to, from, next) => {
+  document.title = "1up - " + to.meta.title; //para el título de cualquier ruta
+
+  // Determinar el tipo de middleware de la ruta y manejarla en consecuencia con los métodos de arriba
   if (to.meta.middleware === "guest") {
     handleGuestRoute(to, next);
   } else if (to.meta.middleware === "admin") {
@@ -282,6 +287,7 @@ router.beforeEach((to, from, next) => {
     handleAuthRoute(to, from, next);
   }
 });
+
 
 
 export default router
