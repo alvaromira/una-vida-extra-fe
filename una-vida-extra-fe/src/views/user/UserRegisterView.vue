@@ -4,7 +4,7 @@ import UserRedirectionView from "./UserRedirectionView.vue";
 import { useStore } from "vuex";
 import { computed } from "vue";
 
-const store = useStore();
+const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 
 const isAuthenticated = computed(() => store.getters.authenticated);
 </script>

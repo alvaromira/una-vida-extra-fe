@@ -66,7 +66,7 @@ import BaseButton from "../../components/ui/BaseButton.vue";
 // Access current route
 const route = useRoute();
 // Access Vuex store
-const store = useStore();
+const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 // Computed property to check if there's a registration redirection query parameter
 const registrationRedirection = computed(() => {
   return route.query.registration === "success";

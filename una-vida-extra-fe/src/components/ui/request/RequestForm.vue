@@ -1,17 +1,36 @@
+<!--Componente formulario para que los usuarios puedan solicitar un producto que está disponible. Solo se requiere el mensaje para mandarlo y listo.-->
 <template>
-  <form @submit.prevent="submitForm">
-    <div>
-      <div class="form-control" :class="{ invalid: !data.message.isValid }">
-        <label for="message" hidden="hidden">Message</label>
-        <textarea
-          type="text"
-          id="message"
-          rows="7"
-          v-model.trim="data.message.val"
-          @blur="clearValidity('message')"
-          maxlength="400"
-          placeholder="Enter the message the onwer of the product you are requesting to read (max 400 characters)"
-        ></textarea>
+  <div v-if="isProductedAlreadyRequestedByUser" class="already-requested">
+    <!--Si ya se ha solicitado, se indica y no se muestra el formulario-->
+    <p>It seems like you have already requested this product.</p>
+    <p>
+      Click
+      <RouterLink v-if="!isUserAdmin" :to="{ name: 'requests' }"
+        >here</RouterLink
+      >
+      to check your own requested items.
+    </p>
+  </div>
+  <form v-else @submit.prevent="submitForm">
+    <div class="row">
+      <div class="col">
+        <div class="mb-3">
+          <div class="form-control" :class="{ invalid: !data.message.isValid }">
+            <label for="message" hidden="hidden" class="form-label"
+              >Message</label
+            >
+            <textarea
+              class="form-control"
+              type="text"
+              id="message"
+              rows="7"
+              v-model.trim="data.message.val"
+              @blur="clearValidity('message')"
+              maxlength="400"
+              placeholder="Enter the message the onwer of the product you are requesting to read (max 400 characters)"
+            ></textarea>
+          </div>
+        </div>
       </div>
       <div v-if="!data.message.isValid" class="validation-error-container">
         <p>
@@ -25,27 +44,33 @@
         @submit.prevent="submitForm"
         :isDisabled="isProductedAlreadyRequestedByUser"
         >Submit Request</BaseButton
-      >
+      ><!--Si el usuario ya lo ha solicitado, el botón estará desactivado-->
+    </div>
+    <div class="loading col text-center" v-show="isLoading">
+      <base-spinner></base-spinner>
     </div>
   </form>
 </template>
 
 <script setup>
-import { ref, reactive, computed, defineProps, onBeforeMount } from "vue";
+import { ref, reactive, computed, onBeforeMount } from "vue";
 import BaseButton from "../BaseButton.vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import axios from "axios";
-const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
+import BaseSpinner from "../BaseSpinner.vue";
+
+const baseApiUrl = import.meta.env.VITE_BASE_API_URL; //ruta base para la api del backend
 const props = defineProps({
   id: String,
 });
 
-//to store the productIDs already requested by the user
-const userActiveRequests = ref([]);
+const isLoading = ref(false); //variable para gestionar el estado de carga local
+
+//variable para saber si el usuario ya ha pedido este producto, o no, y mostrar u ocultar el formulario
 const isProductedAlreadyRequestedByUser = ref(false);
 
-//data
+//datos
 const data = reactive({
   message: {
     val: "",
@@ -54,26 +79,16 @@ const data = reactive({
 });
 
 const formIsValid = ref(true);
-
-//vuex
-const store = useStore();
+const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 const router = useRouter();
 
-//using computed property derived from Vuex
-const getUserStatus = computed(() => {
-  return store.state.authenticated;
-});
-
-//methods
+//Metodo para poner a true tras salir
 const clearValidity = (input) => {
-  console.log(`Setting valid to true: ${input}`);
   data[input].isValid = true;
 };
 
-//specific validation of each of the registration forms included
+//validación específica de cada uno de los campos del formulario
 const validateForm = () => {
-  console.log("Running validation on request form");
-
   formIsValid.value = true;
 
   if (data.message.val === "" || data.message.val.length > 400) {
@@ -82,87 +97,116 @@ const validateForm = () => {
   }
 };
 
+//se computa el usuario activo desde el store de Vuex
 const activeUserId = computed(() => {
   return store.state.user.id;
 });
 
+//funcion para el envio del formulario
 const submitForm = async () => {
-  console.log("Submitting form");
   validateForm();
 
   if (!formIsValid.value) {
-    return;
-  }
+    return false;
+  } //si hay fallos, no se sigue con el envio
 
+  //se crea los datos para mandar al endpoint
   const formData = {
     message: data.message.val,
-    request_date: "2023-11-11 16:12:49",
     is_active: true,
     product_id: props.id,
     user_id: activeUserId.value,
   };
-  console.log("Form submitted");
-  //logUserIn();
+
   const r = await sendProdRequest(formData);
-
-  //router.push({ name: "requests" });
-
-  //console.log(formData);
-
-  // this.$emit("save-data", formData);
 };
 
-//to do handle pagination
-async function getUserRequestedProducts(user_id) {
-  const resp = await axios.get(`${baseApiUrl}/users/${user_id}/requests`);
-  return resp.data;
+//Funcion para obtener todos los productos
+async function getUserRequestedProducts() {
+  const fetchedUserRequest = await store.dispatch(
+    "getAllUserRequestedProducts",
+    activeUserId.value
+  );
+  return fetchedUserRequest;
 }
 
+//Funcion para mandar la solicitud para el producto
 async function sendProdRequest(requestData) {
-  // this.processing = true
-  console.log("sending...", requestData);
-
   try {
+    // Poner isLoading a true
+    isLoading.value = true;
     const resp = await axios.post(`${baseApiUrl}/requests`, {
       ...requestData,
     });
-
-    console.log("Request response", resp);
-
-    //TODO Show toast
-    router.push({ name: "requests" });
-
-    //TO DO handle errors properly
-    /*store.dispatch("login").then(() => {
-      if (route.query.from != undefined && route.query.from.length > 0) {
-        router.replace(route.query.from);
-      } else {
-        router.push("/products");
-      }
-    });*/
+    handleSuccess();
   } catch (err) {
-    if (err.status === 422) {
-      //this.validationErrors = err.data.errors
-      console.log(err.data.errors);
-    } else {
-      //this.validationErrors = {}
-      //alert(err.data.message)
-      console.log(err);
-    }
+    handleError();
   } finally {
-    console.log("request creation function over.");
+    // Poner isLoading a false
+    isLoading.value = false;
   }
 }
 
-//the list of products already requested
-onBeforeMount(async () => {
-  console.log(
-    "Component is about to be mounted. Checking products for " +
-      activeUserId.value
-  );
-  const requestedProds = await getUserRequestedProducts(activeUserId.value);
-  console.log(requestedProds.data);
+//Function para cuando todo OK
+const handleSuccess = () => {
+  // Poner isLoading a false
+  isLoading.value = false;
+  //toast
+  store.commit("addToast", {
+    title: "Request Sent",
+    type: "success",
+    message: "You have correctly requested the product. Good luck!",
+  });
+  router.push({ name: "requests" });
+};
 
+// Método para gestionar la respuesta de error
+const handleError = (error) => {
+  // Poner isLoading a false
+  isLoading.value = false;
+
+  // Inicializa las variables errorStatus y errorMessage
+  let errorStatus = null;
+  let errorMessage = null;
+
+  if (error.response) {
+    // Capture error status
+    errorStatus = error.response.status;
+    console.error("Error status", error.response.status);
+
+    // Extraer mensaje de error, solo el primero, de forma que si hay varios se solucinan uno a uno.
+    const errors = error.response.data.errors;
+    if (errors && Object.keys(errors).length > 0) {
+      const firstChildKey = Object.keys(errors)[0];
+      const firstChildErrors = errors[firstChildKey];
+      if (Array.isArray(firstChildErrors) && firstChildErrors.length > 0) {
+        errorMessage = firstChildErrors[0];
+      }
+    }
+  } else {
+    // Other errors
+    console.error("Error message", error.message);
+    console.error("Error code", error.code);
+    errorStatus = error.code;
+    errorMessage = error.message;
+  }
+
+  // Construct final error message
+  const finalMessage = `The request could not be placed. Error code: ${errorStatus}. Error message: ${errorMessage}`;
+
+  // Show error toast
+  store.commit("addToast", {
+    title: "Request Not Sent",
+    type: "error",
+    message: finalMessage,
+  });
+};
+
+//Antes de cargar el componente, obtener los productos del usuario
+onBeforeMount(async () => {
+  const requestedProds = await getUserRequestedProducts(activeUserId.value);
+
+  //Si hay productos solicitados, se filtran para ver si existe ya el que se está visitando para solicitar
   if (requestedProds.data) {
     const filteredData = requestedProds.data.filter(
       (item) =>
@@ -171,13 +215,7 @@ onBeforeMount(async () => {
     if (filteredData.length) {
       isProductedAlreadyRequestedByUser.value = true;
     }
-
-    console.log(
-      `Is this already requested? ${isProductedAlreadyRequestedByUser.value}`
-    );
   }
-
-  // You can perform additional setup or actions here
 });
 </script>
 
@@ -186,10 +224,6 @@ form {
   background-color: #fff;
   padding: 0;
   display: block;
-}
-
-.form-control {
-  margin: 1.5rem 0;
 }
 
 label {
@@ -203,7 +237,7 @@ input,
 textarea {
   display: block;
   width: 100%;
-  border: thin solid #edb421;
+
   border-radius: 3px;
   font: inherit;
   box-shadow: rgba(17, 17, 26, 0.2) 0px 2px 4px;
@@ -253,17 +287,6 @@ h3 {
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
 }
-/*.invalid label {
-  color: red;
-}
-
-.invalid input,
-.invalid textarea {
-  border: 1px solid red;
-}*/
-#image-upload {
-  display: flex;
-}
 
 .note {
   color: rgb(139, 138, 138);
@@ -272,12 +295,8 @@ h3 {
 .form-submit-button {
   text-align: right;
 }
-select#category {
-  border: thin solid #edb421;
-  border-radius: 3px;
-  font: inherit;
-  box-shadow: rgba(17, 17, 26, 0.2) 0px 2px 4px;
+
+.already-requested p {
   color: gray;
-  margin-inline-start: 1.5rem;
 }
 </style>

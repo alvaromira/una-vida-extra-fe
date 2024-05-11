@@ -62,43 +62,20 @@
 <script setup>
 import BaseButton from "../../components/ui/BaseButton.vue";
 import ProductCard from "../../components/ui/product/ProductCard.vue";
-import AddNewProduct from "./AddNewProduct.vue";
-import { ref, defineProps, computed, reactive, onMounted } from "vue";
-import RequestCard from "../../components/ui/request/RequestCard.vue";
-import { useRouter, useRoute } from "vue-router";
-import axios from "axios";
+import { ref, computed, reactive, onMounted } from "vue";
+
 import { useStore } from "vuex";
 import BaseSpinner from "../../components/ui/BaseSpinner.vue";
 
-const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
+const baseApiUrl = import.meta.env.VITE_BASE_API_URL; //ruta base para la api del backend
 
-const route = useRoute();
-const store = useStore();
+const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 
 // Define a ref to track if data is loaded
 const isDataLoaded = ref(false);
 
-const isLoading = ref(false);
-const requestError = ref(false);
-const requestCurrentPage = ref(1);
-const errorDetails = reactive({
-  code: "",
-  message: "",
-  errors: [],
-});
-
 const userProducts = ref([]);
 
-/*const numberOfUserProducts = computed(() => {
-  if (
-    userProducts.meta.total !== undefined &&
-    userProducts.meta.total !== null
-  ) {
-    return userProducts.meta.total;
-  } else {
-    return 0;
-  }
-});*/
 const loggedInUser = computed(() => {
   return store.state.user.id;
 });

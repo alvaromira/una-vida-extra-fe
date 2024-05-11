@@ -18,7 +18,7 @@ const props = defineProps({
     default: "/",
   },
 });*/
-//Aceppted properties for the card items
+//Propiedades aceptadas por el componente
 const props = defineProps({
   isDisabled: {
     type: Boolean,

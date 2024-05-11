@@ -6,13 +6,13 @@ import { useStore } from "vuex";
 import BaseSpinner from "../../components/ui/BaseSpinner.vue";
 import ModalConfirmationDialog from "../../components/ui/ModalConfirmationDialog.vue";
 
-const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
+const baseApiUrl = import.meta.env.VITE_BASE_API_URL; //ruta base para la api del backend
 
-const store = useStore();
+const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 
-//Modal related
-const isModalVisible = ref(false);
-// Setter for isModalVisible
+//Variables para el componente Modal
+const isModalVisible = ref(false); // variable para controlar la visibilidad del modal
+// Setter para isModalVisible
 const setIsModalVisible = (value) => {
   isModalVisible.value = value;
 };
@@ -36,7 +36,7 @@ const getRequestIdToBeRemoved = computed(() => {
   return requestIdToBeRemoved.value;
 });
 
-const isLoading = ref(false);
+const isLoading = ref(false); //variable para gestionar el estado de carga local
 const requestError = ref(false);
 const requestCurrentPage = ref(1);
 const errorDetails = reactive({

@@ -1,10 +1,6 @@
+<!--Componente para mostrar datos minimos de un producto e invitar al usuario a obtener mas informacion. Se usa una estructura de tarjeta con altura limitada en la imagen y el titulo para garantizar el mismo tamaño-->
 <template>
   <div class="card product-card-wrapper" style="width: 15rem">
-    <!--<div class="location-icon" v-if="locationAvailable">
-      <IconLocation @click="showLocation" />
-      <span class="lat hidden">{{ location.latitude }}</span>
-      <span class="long hidden">{{ location.longitude }}</span>
-    </div>-->
     <img
       :src="imagePath"
       class="card-img-top"
@@ -13,8 +9,7 @@
     />
     <div class="card-body">
       <h5 class="card-title">{{ title }}</h5>
-      <!-- <p class="card-text">{{ description }}</p>
-      <a href="#" class="btn btn-primary">Go somewhere</a> -->
+      <!-- <p class="card-text">{{ description }}</p> -->
     </div>
     <div class="card-footer">
       <BaseButton :to="{ name: 'product', params: { id: id } }" link="true"
@@ -22,47 +17,17 @@
       >
     </div>
   </div>
-
-  <!--
-  <div class="product-card-wrapper" :id="id">
-    <section class="product-top">
-      <div class="product-card-image">
-        <img :src="imagePath" />
-      </div>
-      <div class="location-icon" v-if="locationAvailable">
-        <IconLocation @click="showLocation" />
-        <span class="lat hidden">{{ location.latitude }}</span>
-        <span class="long hidden">{{ location.longitude }}</span>
-      </div>
-    </section>
-    <section class="product-bottom">
-      <div class="product-card-product-title">
-        <h3>{{ title }}</h3>
-      </div>
-      <div class="product-card-product-date">
-        <span>Publication date: </span
-        ><span class="product-card-product-actual-date">{{ date }}</span>
-      </div>
-      <div class="product-card-button">
-        <BaseButton :to="{ name: 'product', params: { id: id } }" link="true"
-          >More info</BaseButton
-        >
-      </div>
-    </section>
-  </div>-->
 </template>
 
 <script setup>
 import { ref, computed } from "vue";
-import IconLocation from "../../icons/iconLocation.vue";
 import BaseButton from "../BaseButton.vue";
-import Map from "../Map.vue";
 
-const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
-const baseUrl = import.meta.env.VITE_BASE_URL;
-const baseImgURL = import.meta.env.VITE_BASE_IMG_URL;
+const baseApiUrl = import.meta.env.VITE_BASE_API_URL; //ruta base para la api del backend
+const baseUrl = import.meta.env.VITE_BASE_URL; //ruta base para el cliente de la aplicacion
+const baseImgURL = import.meta.env.VITE_BASE_IMG_URL; // ruta para las imagenes, que se hospedan en un S3 bucket de amazon
 
-//Aceppted properties for the card items
+//propiedades que acepta la tarjeta
 const props = defineProps({
   image: String,
   key: String,
@@ -76,7 +41,6 @@ const props = defineProps({
 });
 
 //methods or functionality
-
 const imagePath = computed(() => {
   if (props.image == null || props.image === undefined) {
     return "https://via.placeholder.com/250x250/cccccc/969696";
@@ -84,29 +48,15 @@ const imagePath = computed(() => {
     return baseImgURL + props.image;
   }
 });
-
-const locationAvailable = computed(() => {
-  if (props.location == null || props.location === undefined) {
-    return false;
-  } else {
-    return true;
-  }
-});
-
-const moreInfo = () => {
-  console.log("You just clicked on the product card");
-};
-
-const showLocation = () => {
-  console.log(
-    `Displaying location: ${props.location.latitude}, ${props.location.longitude}`
-  );
-};
 </script>
 
 <style scoped>
+/* Se corta el titulo con elipsis para que evitar que haya demasiado contenido */
 .card-title {
-  height: 50px;
+  height: 30px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 .card-img-top {
   height: 200px;

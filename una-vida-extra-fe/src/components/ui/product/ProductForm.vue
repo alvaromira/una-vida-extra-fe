@@ -1,260 +1,4 @@
-<script setup>
-import { ref, reactive, onMounted, computed } from "vue";
-import BaseButton from "../BaseButton.vue";
-import { useRouter } from "vue-router";
-import axios from "axios";
-import { useStore } from "vuex";
-const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
-
-const router = useRouter();
-const store = useStore();
-//data
-const data = reactive({
-  productName: {
-    val: "",
-    isValid: true,
-  },
-  description: {
-    val: "",
-    isValid: true,
-  },
-  tags: {
-    val: "",
-    isValid: true,
-  },
-  category: {
-    val: null,
-    isValid: true,
-  },
-  image: {
-    val: null,
-    isValid: true,
-  },
-});
-
-const loggedInUser = ref(store.state.user.id);
-onMounted(() => {
-  loggedInUser.value = store.state.user.id;
-});
-
-const formIsValid = ref(true);
-const image = ref(); //move to Data
-const imageURL = ref();
-
-//methods
-
-const clearValidity = (input) => {
-  console.log(`Setting valid to true: ${input}`);
-  data[input].isValid = true;
-};
-
-//specific validation of each of the registration forms included
-const validateForm = async () => {
-  console.log("Running validation on registration form");
-
-  formIsValid.value = true;
-
-  if (data.productName.val === "") {
-    data.productName.isValid = false;
-    formIsValid.value = false;
-  }
-
-  if (data.description.val === "") {
-    data.description.isValid = false;
-    formIsValid.value = false;
-  }
-
-  if (data.tags.val === "") {
-    data.tags.isValid = false;
-    formIsValid.value = false;
-  }
-
-  if (data.category.val === "" || data.category.val === null) {
-    data.category.isValid = false;
-    formIsValid.value = false;
-  }
-};
-
-const clearForm = () => {
-  console.log("Clearing form");
-
-  data.productName.val === "";
-  data.productName.isValid = true;
-
-  data.description.val === "";
-  data.description.isValid = true;
-
-  data.tags.val === "";
-  data.tags.isValid = false;
-
-  data.category.val === "";
-  data.category.isValid = true;
-
-  formIsValid.value = true;
-};
-
-const submitForm = async () => {
-  await validateForm();
-
-  if (!formIsValid.value) {
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append("image", data.image.val);
-  formData.append("title", data.productName.val);
-  formData.append("description", data.description.val);
-  //formData.append('tags', data.tags.val);
-  formData.append("category_id", data.category.val);
-  formData.append("user_id", loggedInUser.value);
-  formData.append("available", 1);
-  formData.append("is_taken", 0);
-  formData.append("end_date", "2024-12-08 16:12:49");
-
-  try {
-    isLoading.value = true;
-    const responseData = await createProduct(formData);
-    handleSuccess();
-  } catch (error) {
-    handleError(error);
-  } finally {
-    // Al terminar, poner la carga a falso
-    isLoading.value = false;
-  }
-};
-
-// Method to handle success response
-const handleSuccess = () => {
-  // Set isLoading to false
-  isLoading.value = false;
-
-  // Update image.isUpdated if product is successfully updated
-  data.image.isUpdated = false;
-
-  store.commit("addToast", {
-    title: "Product added",
-    type: "success",
-    message: "You have successfully added a new product",
-  });
-
-  router.push({ name: "userProducts" });
-};
-
-// Method to handle error response
-const handleError = (error) => {
-  // Set isLoading to false
-  isLoading.value = false;
-
-  // Initialize errorStatus and errorMessage variables
-  let errorStatus = null;
-  let errorMessage = null;
-
-  if (error.response) {
-    // Capture error status
-    errorStatus = error.response.status;
-    console.error("Error status", error.response.status);
-
-    // Extract error message
-    const errors = error.response.data.errors;
-    if (errors && Object.keys(errors).length > 0) {
-      const firstChildKey = Object.keys(errors)[0];
-      const firstChildErrors = errors[firstChildKey];
-      if (Array.isArray(firstChildErrors) && firstChildErrors.length > 0) {
-        errorMessage = firstChildErrors[0];
-      }
-    }
-  } else {
-    // Other errors
-    console.error("Error message", error.message);
-    console.error("Error code", error.code);
-    errorStatus = error.code;
-    errorMessage = error.message;
-  }
-
-  // Construct final error message
-  const finalMessage = `The product could not be created. Error code: ${errorStatus}. Error message: ${errorMessage}`;
-
-  // Show error toast
-  store.commit("addToast", {
-    title: "Product Not Created",
-    type: "error",
-    message: finalMessage,
-  });
-};
-
-const createProduct = async (payload) => {
-  try {
-    const response = await axios.post(`${baseApiUrl}/products`, payload, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    return response.data;
-  } catch (error) {
-    throw error; // rethrow the error to be handled in the component
-  }
-};
-const requestError = ref(false);
-const prodCategories = ref([]);
-//fetch product requests from the public api
-const getProductCategories = async () => {
-  try {
-    const resp = await axios.get(`${baseApiUrl}/categories`);
-    //console.log(resp);
-    prodCategories.value = resp.data.data;
-    console.log(prodCategories);
-    requestError.value = false;
-  } catch (error) {
-    requestError.value = true;
-
-    if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.error("Error data", error.response.data);
-      console.error("Error status", error.response.status);
-      errorDetails.code = error.response.status;
-      errorDetails.message = error.message;
-      if (error.response.data.errors) {
-        let requestRecivedErrors = error.response.data.errors;
-        for (const property in requestRecivedErrors) {
-          errorDetails.errors.push(requestRecivedErrors[property].toString());
-        }
-      }
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.error("Error message", error.message);
-      console.error("Error code", error.code);
-      errorDetails.code = error.code;
-      errorDetails.message = error.message;
-    }
-  }
-};
-
-getProductCategories();
-
-const imagePath = computed(() => {
-  if (
-    data.image.val == null ||
-    (data.image.val === undefined && imageURL.value === "")
-  ) {
-    return "https://via.placeholder.com/250x250/cccccc/969696";
-  } else if (imageURL.value !== "") {
-    return imageURL.value;
-  } else {
-    return baseImgURL + data.image.val;
-  }
-});
-const isLoading = ref(false);
-
-/** Funcion para mostrar vista previa de las imagenes a subir */
-const onImageChange = (e) => {
-  if (e.target.files[0]) {
-    data.image.val = e.target.files[0];
-    imageURL.value = URL.createObjectURL(e.target.files[0]);
-  }
-};
-</script>
-
+<!--Componente para la creacion de productos. Se usa un formulario de Bootstrap con validaciones sencillas en el propio formulario y depues en la llamada a la API-->
 <template>
   <div class="row justify-content-md-center">
     <div class="col-md-10">
@@ -383,6 +127,257 @@ const onImageChange = (e) => {
   </div>
 </template>
 
+<script setup>
+import { ref, reactive, onMounted, computed } from "vue";
+import BaseButton from "../BaseButton.vue";
+import { useRouter } from "vue-router";
+import axios from "axios";
+import { useStore } from "vuex";
+const baseApiUrl = import.meta.env.VITE_BASE_API_URL; //ruta base para la api del backend
+
+const router = useRouter();
+const store = useStore(); // inicializacion para acceso al state en el store de Vuex
+//data
+//Datos vinculados al formulario para irlos actualizando automáticamente (tienen un v-model)
+const data = reactive({
+  productName: {
+    val: "",
+    isValid: true,
+  },
+  description: {
+    val: "",
+    isValid: true,
+  },
+  tags: {
+    val: "",
+    isValid: true,
+  },
+  category: {
+    val: null,
+    isValid: true,
+  },
+  image: {
+    val: null,
+    isValid: true,
+  },
+});
+
+//Se lee el estado para tomar los datos de ID del usuario y se usan
+const loggedInUser = ref(store.state.user.id);
+onMounted(() => {
+  loggedInUser.value = store.state.user.id;
+});
+const formIsValid = ref(true);
+const imageURL = ref();
+
+//Funcion para volver a poner un campo del formulario como valido
+const clearValidity = (input) => {
+  data[input].isValid = true;
+};
+
+//validación específica de cada uno de los campos del formulario
+const validateForm = async () => {
+  formIsValid.value = true;
+
+  if (data.productName.val === "") {
+    data.productName.isValid = false;
+    formIsValid.value = false;
+  }
+
+  if (data.description.val === "") {
+    data.description.isValid = false;
+    formIsValid.value = false;
+  }
+
+  if (data.tags.val === "") {
+    data.tags.isValid = false;
+    formIsValid.value = false;
+  }
+
+  if (data.category.val === "" || data.category.val === null) {
+    data.category.isValid = false;
+    formIsValid.value = false;
+  }
+};
+
+//Funcion para resetar el formulario y opner todo a OK de entrada
+const clearForm = () => {
+  data.productName.val === "";
+  data.productName.isValid = true;
+
+  data.description.val === "";
+  data.description.isValid = true;
+
+  data.tags.val === "";
+  data.tags.isValid = false;
+
+  data.category.val === "";
+  data.category.isValid = true;
+
+  formIsValid.value = true;
+};
+
+const submitForm = async () => {
+  await validateForm();
+  if (!formIsValid.value) {
+    return;
+  }
+
+  //Se usa un formData para mandar los datos del formulario. Hay campos que no se cogen del formulario sino que se generan con datos de la sesión actual
+  const formData = new FormData();
+  formData.append("image", data.image.val);
+  formData.append("title", data.productName.val);
+  formData.append("description", data.description.val);
+  //formData.append('tags', data.tags.val);
+  formData.append("category_id", data.category.val);
+  formData.append("user_id", loggedInUser.value);
+  formData.append("available", 1);
+  formData.append("is_taken", 0);
+  formData.append("end_date", "2024-12-08 16:12:49");
+
+  try {
+    isLoading.value = true;
+    const responseData = await createProduct(formData);
+    handleSuccess();
+  } catch (error) {
+    handleError(error);
+  } finally {
+    // Al terminar, poner la carga a falso
+    isLoading.value = false;
+  }
+};
+
+// Método para manejar la respuesta correcta de la API
+const handleSuccess = () => {
+  // Poner isLoading a false
+  isLoading.value = false;
+
+  // Actualiza image.isUpdated si el producto se actualiza correctamente
+  data.image.isUpdated = false;
+
+  store.commit("addToast", {
+    title: "Product added",
+    type: "success",
+    message: "You have successfully added a new product",
+  });
+
+  router.push({ name: "userProducts" });
+};
+
+// Método para gestionar la respuesta de error
+const handleError = (error) => {
+  // Poner isLoading a false
+  isLoading.value = false;
+
+  // Inicializa las variables errorStatus y errorMessage
+  let errorStatus = null;
+  let errorMessage = null;
+
+  if (error.response) {
+    // capturar el codigo de error
+    errorStatus = error.response.status;
+    console.error("Error status", error.response.status);
+
+    // Extraer mensaje de error, solo el primero, de forma que si hay varios se solucinan uno a uno.
+    const errors = error.response.data.errors;
+    if (errors && Object.keys(errors).length > 0) {
+      const firstChildKey = Object.keys(errors)[0];
+      const firstChildErrors = errors[firstChildKey];
+      if (Array.isArray(firstChildErrors) && firstChildErrors.length > 0) {
+        errorMessage = firstChildErrors[0];
+      }
+    }
+  } else {
+    // OTros errores
+    console.error("Error message", error.message);
+    console.error("Error code", error.code);
+    errorStatus = error.code;
+    errorMessage = error.message;
+  }
+
+  // Mensaje de erorr final
+  const finalMessage = `The product could not be created. Error code: ${errorStatus}. Error message: ${errorMessage}`;
+
+  // Toast de error
+  store.commit("addToast", {
+    title: "Product Not Created",
+    type: "error",
+    message: finalMessage,
+  });
+};
+
+const createProduct = async (payload) => {
+  try {
+    const response = await axios.post(`${baseApiUrl}/products`, payload, {
+      headers: {
+        "Content-Type": "multipart/form-data", //Muy importante: para poder enviar la imagen en binario al backend
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error; // vuelve a lanzar el error que se manejará en el componente
+  }
+};
+const requestError = ref(false);
+const prodCategories = ref([]);
+//pillar product requests de la api
+const getProductCategories = async () => {
+  try {
+    const resp = await axios.get(`${baseApiUrl}/categories`);
+
+    prodCategories.value = resp.data.data;
+    console.log(prodCategories);
+    requestError.value = false;
+  } catch (error) {
+    requestError.value = true;
+
+    if (error.response) {
+      console.error("Error data", error.response.data);
+      console.error("Error status", error.response.status);
+      errorDetails.code = error.response.status;
+      errorDetails.message = error.message;
+      if (error.response.data.errors) {
+        let requestRecivedErrors = error.response.data.errors;
+        for (const property in requestRecivedErrors) {
+          errorDetails.errors.push(requestRecivedErrors[property].toString());
+        }
+      }
+    } else {
+      // Algo sucedió al configurar la solicitud que provocó un error
+      console.error("Error message", error.message);
+      console.error("Error code", error.code);
+      errorDetails.code = error.code;
+      errorDetails.message = error.message;
+    }
+  }
+};
+
+//Al cargarse el componente, gestionar categorías para mostrar las adecuadas
+getProductCategories();
+
+const imagePath = computed(() => {
+  if (
+    data.image.val == null ||
+    (data.image.val === undefined && imageURL.value === "")
+  ) {
+    return "https://via.placeholder.com/250x250/cccccc/969696";
+  } else if (imageURL.value !== "") {
+    return imageURL.value;
+  } else {
+    return baseImgURL + data.image.val;
+  }
+});
+const isLoading = ref(false); //variable para gestionar el estado de carga local
+
+/** Funcion para mostrar vista previa de las imagenes a subir */
+const onImageChange = (e) => {
+  if (e.target.files[0]) {
+    data.image.val = e.target.files[0];
+    imageURL.value = URL.createObjectURL(e.target.files[0]);
+  }
+};
+</script>
+
 <style scoped>
 .edit-card-bottom {
   padding-top: 1rem;
@@ -398,21 +393,6 @@ const onImageChange = (e) => {
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   background-color: #fff;
 }
-/*form {
-  border: #edb421 solid thin;
-  box-shadow: rgba(17, 17, 26, 0.2) 0px 2px 4px;
-  background-color: #fff;
-   padding: 0;
-  display: flex;
-  margin-top: 1rem;
-}*/
-/*.form-side {
-  flex: 1;
-  padding: 2rem;
-}
-.form-control {
-  margin: 1.5rem 0;
-}*/
 
 .product-image {
   background-color: gray;
@@ -489,14 +469,6 @@ input[type="checkbox"]:focus {
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
 }
-/*.invalid label {
-  color: red;
-}
-
-.invalid input,
-.invalid textarea {
-  border: 1px solid red;
-}*/
 #image-upload {
   display: flex;
 }

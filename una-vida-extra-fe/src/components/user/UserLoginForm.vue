@@ -32,7 +32,7 @@ const data = reactive({
 const formIsValid = ref(true);
 
 //vuex
-const store = useStore();
+const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 const router = useRouter();
 
 //methods
@@ -41,7 +41,7 @@ const clearValidity = (input) => {
   data[input].isValid = true;
 };
 
-//specific validation of each of the registration forms included
+//validación específica de cada uno de los campos del formulario
 const validateForm = async () => {
   console.log("Running validation on registration form");
 

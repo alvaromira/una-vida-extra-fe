@@ -18,7 +18,7 @@ import { useStore } from "vuex";
 // Import the Toast component
 import Toast from "./Toast.vue";
 
-const store = useStore();
+const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 
 const toasts = computed(() => {
   // Access the toasts array from the store

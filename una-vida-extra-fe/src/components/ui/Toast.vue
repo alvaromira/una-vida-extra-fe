@@ -29,7 +29,7 @@ const isFadingOut = ref(false);
 
 const toastDuration = ref(10000);
 
-const store = useStore();
+const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 const dismissToast = (m) => {
   isFadingOut.value = true;
   store.commit("clearToast", m);

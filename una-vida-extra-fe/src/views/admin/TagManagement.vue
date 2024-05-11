@@ -150,7 +150,7 @@ import ModalConfirmationDialog from "../../components/ui/ModalConfirmationDialog
 // Access current route
 const route = useRoute();
 // Access Vuex store
-const store = useStore();
+const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 
 // Computed property to access product results state from the store
 
@@ -159,14 +159,14 @@ const productTags = computed(() => store.state.productTags);
 // Reference to track if data is loaded
 const isDataLoaded = ref(false);
 
-//Modal related
+//Variables para el componente Modal
 const isDeleteModalVisible = ref(false);
 // Setter for isDeleteModalVisible
 const setIsDeleteModalVisible = (value) => {
   isDeleteModalVisible.value = value;
 };
 
-//Modal related
+//Variables para el componente Modal
 const isEditModalVisible = ref(false);
 // Setter for isEditModalVisible
 const setIsEditModalVisible = (value) => {

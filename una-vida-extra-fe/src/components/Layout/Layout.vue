@@ -1,3 +1,4 @@
+<!--Plantilla principal donde colocar todo el contenido de la app de forma consistente-->
 <template>
   <Header />
   <slot />

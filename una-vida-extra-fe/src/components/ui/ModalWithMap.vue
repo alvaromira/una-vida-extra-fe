@@ -76,7 +76,7 @@ const close = defineEmits(["close"]);
 //  defineEmits(["close"]);
 //};
 
-//Aceppted properties for the card items
+//Propiedades aceptadas por el componente
 const props = defineProps({
   userLat: String,
   userLong: String,

@@ -6,13 +6,13 @@ import axios from "axios";
 import BaseSpinner from "../ui/BaseSpinner.vue";
 import { useStore } from "vuex";
 
-const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
+const baseApiUrl = import.meta.env.VITE_BASE_API_URL; //ruta base para la api del backend
 
-const store = useStore();
+const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 
 const formIsValid = ref(true);
 const requestError = ref(false);
-const isLoading = ref(false);
+const isLoading = ref(false); //variable para gestionar el estado de carga local
 const errorDetails = reactive({
   code: "",
   message: "",
@@ -148,7 +148,7 @@ const clearValidity = (input) => {
   data[input].isValid = true;
 };
 
-//specific validation of each of the registration forms included
+//validación específica de cada uno de los campos del formulario
 const validateForm = () => {
   console.log("Running validation on registration form");
 

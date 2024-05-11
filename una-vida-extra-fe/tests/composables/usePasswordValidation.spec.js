@@ -1,6 +1,7 @@
 import { usePasswordValidation } from '@/composables/usePasswordValidation';
 import { expect, describe, it } from 'vitest';
 
+//Es siguiente metodo es una bateria de pruebas unitarias para la función usePasswordValidation. La descripción de cada una es realmente lo que sigue al statement it
 describe('usePasswordValidation', () => {
     it('lanza un error para contraseñas que no son cadenas', () => {
         const { validatePassword } = usePasswordValidation();

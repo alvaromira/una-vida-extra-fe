@@ -45,12 +45,12 @@ import ProductDetailCard from "../../components/ui/product/ProductDetailCard.vue
 import BaseButton from "../../components/ui/BaseButton.vue";
 import NotFound404Page from "../../components/ui/NotFound404Page.vue";
 
-const baseUrl = import.meta.env.VITE_BASE_URL;
+const baseUrl = import.meta.env.VITE_BASE_URL; //ruta base para el cliente de la aplicacion
 const baseUrlImg = import.meta.env.VITE_BASE_IMG_URL;
 
 const router = useRouter();
 const route = useRoute();
-const store = useStore();
+const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 
 // Define a ref to track if data is loaded
 const isDataLoaded = ref(false);
@@ -90,7 +90,7 @@ onBeforeMount(() => {
   getProductData();
 });
 
-//Aceppted properties for the card items
+//Propiedades aceptadas por el componente
 
 //TO DO
 //Check if user is logged in

@@ -1,8 +1,9 @@
 import { createStore } from 'vuex';
+import { ref } from "vue";
 import axios from 'axios';
 
-const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
-const baseUrl = import.meta.env.VITE_BASE_URL;
+const baseApiUrl = import.meta.env.VITE_BASE_API_URL; //ruta base para la api del backend
+const baseUrl = import.meta.env.VITE_BASE_URL; //ruta base para el cliente de la aplicacion
 
 //vuex store init
 const store = createStore({
@@ -219,6 +220,29 @@ const store = createStore({
                 throw error;
                 // Handle error (e.g., show error message to user)
             }
+        },
+        async getAllUserRequestedProducts({ commit }, userId) {
+            const userRequests = [];
+            const currentPage = 1;
+            while (true) {
+                try {
+                    let targetURL = `${baseApiUrl}/users/${userId}/requests?page=${currentPage}`;
+                    const data = await axios.get(targetURL);
+                    userRequests.push(data.data); //se ponen las solicitudes en el array
+
+                    // Si no hay siguiente pagina, salimos del bucle
+                    if (!data.next_page_url) {
+                        break;
+                    }
+                    // Tras hacer una pagina se sigue a la siguiente
+                    currentPage++;
+                } catch (error) {
+                    console.error('Error fetching user requests:', error);
+                    throw error;
+                }
+            }
+            //tras terminar el bucle, se devuelve el array con las solicitudes
+            return userRequests;
         },
         async getProducts({ commit }, page) {
             try {

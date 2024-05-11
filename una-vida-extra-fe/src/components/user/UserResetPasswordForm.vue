@@ -54,7 +54,7 @@ const data = reactive({
 const formIsValid = ref(true);
 
 //vuex
-const store = useStore();
+const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 const router = useRouter();
 const route = useRoute();
 
@@ -112,7 +112,7 @@ const validatePassword = (password) => {
   return true;
 };
 
-//specific validation of each of the registration forms included
+//validación específica de cada uno de los campos del formulario
 const validateForm = async () => {
   console.log("Running validation on reset form");
 
@@ -332,8 +332,7 @@ const handleSuccessfulReset = () => {
         <base-spinner></base-spinner>
       </div>
       <div class="form-field row submit">
-        <div class="col-md-6">
-        </div>
+        <div class="col-md-6"></div>
         <div class="form-submit-button col-md-6">
           <BaseButton :disabled="isProcessing">Reset Password</BaseButton>
         </div>

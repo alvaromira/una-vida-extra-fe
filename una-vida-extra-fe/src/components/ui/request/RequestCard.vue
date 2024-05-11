@@ -1,22 +1,22 @@
 <script setup>
 import { ref, defineProps, computed, defineEmits, onBeforeMount } from "vue";
-import IconLocation from "../../icons/iconLocation.vue";
+import IconLocation from "../../icons/IconLocation.vue";
 import IconAvailable from "../../icons/IconAvailable.vue";
 import IconNotAvailable from "../../icons/IconNotAvailable.vue";
 import BaseButton from "../BaseButton.vue";
 import { useStore } from "vuex";
 import ModalWithMap from "../ModalWithMap.vue";
 
-const store = useStore();
+const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 const activeUserId = computed(() => {
   return store.state.user.id;
 });
 const activeUserLocation = computed(() => {
   return store.state.user.user_location;
 });
-const isModalVisible = ref(false);
+const isModalVisible = ref(false); // variable para controlar la visibilidad del modal
 
-//Aceppted properties for the card items
+//Propiedades aceptadas por el componente
 const props = defineProps({
   message: String,
   date: String,
@@ -60,9 +60,11 @@ const showLocation = () => {
   showModal();
 };
 //modal
+//funcion para abrir el modal en la UI
 const showModal = () => {
   isModalVisible.value = true;
 };
+//funcion para cerrar el modal en la UI
 const closeModal = () => {
   console.log("modal emit received, closing modal visibilty");
   isModalVisible.value = false;

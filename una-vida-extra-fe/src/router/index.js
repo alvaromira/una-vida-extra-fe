@@ -4,7 +4,7 @@ import NotFound from '../views/NotFound.vue';
 import store from '../store';
 import { computed } from "vue";
 import NotFound404Page from '../components/ui/NotFound404Page.vue';
-//const store = useStore();
+//const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
