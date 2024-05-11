@@ -2,9 +2,22 @@
 
 <template>
   <div class="container">
+    <div class="row admin-panel-jumbo">
+      <div class="col">
+        <h2>Admin Panel</h2>
+        <p>
+          This is a resctricted area only available to admin users. Use the
+          navigation sidebar on the right to access the data managed in the app,
+          the users, etc.
+        </p>
+        <p>
+          Please be mindful of your actions when working on this admin panel
+          since your actions can be destructive, especially when deleting data.
+        </p>
+      </div>
+    </div>
     <div class="admin-dashboard-nav row">
       <ul class="nav nav-pills col-md-2">
-        <h2>Admin Panel</h2>
         <li class="nav-item">
           <router-link
             class="nav-link"
@@ -70,6 +83,15 @@ const route = useRoute();
 const currentPath = computed(() => route.path);
 </script>
 <style scoped>
+.admin-panel-jumbo {
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  background-color: #fff;
+}
+.admin-panel-jumbo h2 {
+  padding-bottom: 1rem;
+}
 .nav-pills {
   display: flex;
   flex-direction: column;
