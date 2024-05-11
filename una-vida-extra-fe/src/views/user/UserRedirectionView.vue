@@ -1,3 +1,4 @@
+<!--Vista donde forzar una redirección, no se usa actualmente-->
 <template>
   <div>
     <p>
@@ -19,7 +20,7 @@ onMounted(() => {
     countdown.value--;
     if (countdown.value === 0) {
       clearInterval(timer);
-      router.push({ name: "products" }); // Redirect to the products route
+      router.push({ name: "products" }); // Redirección forzada a productos
     }
   }, 1000);
 });

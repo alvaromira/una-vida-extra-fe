@@ -7,14 +7,18 @@ import "bootstrap/dist/css/bootstrap.css";
 
 import "bootstrap/dist/js/bootstrap.js";
 </script>
-
+<!--Esta es la estructura general de la aplicación, donde se colocan las diferentes vistas. Es un contenedor para las vistas que se cargan con las rutas del router-->
 <template>
   <Toasts />
+  <!--Ubicación para los posibles mensajes toasts-->
   <TheHeader></TheHeader>
+  <!--Cabecera con los menus de navegacion-->
   <div id="content" class="container">
+    <!--Zona principal de contenidos donde se muestra el contenido de las diversas vistas-->
     <RouterView />
   </div>
   <TheFooter></TheFooter>
+  <!--Pie de pagina-->
 </template>
 
 <style scoped>

@@ -1,13 +1,8 @@
 <script setup>
 import UserRegistrationForm from "../../components/user/UserRegistrationForm.vue";
-import UserRedirectionView from "./UserRedirectionView.vue";
-import { useStore } from "vuex";
-import { computed } from "vue";
-
-const store = useStore(); // inicializacion para acceso al state en el store de Vuex
-
-const isAuthenticated = computed(() => store.getters.authenticated);
 </script>
+<!--Vista donde se muestra el componente de registor de usuario con su formulario-->
+
 <template>
   <div class="form-wrapper">
     <div class="row">

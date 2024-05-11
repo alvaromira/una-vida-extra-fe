@@ -1,5 +1,4 @@
 <script setup>
-import axios from "axios";
 import { useRouter } from "vue-router";
 import { onMounted } from "vue";
 import store from "../../store";
@@ -8,10 +7,11 @@ onMounted(async () => {
   const router = useRouter(); // inicializacion para acceso al router
   await store.dispatch("logout");
 
-  //using replace to avoid potential issues with back and forth logging in and out
+  //uso de reemplazo para evitar posibles problemas al iniciar y cerrar sesión de ida y vuelta
   router.replace({ name: "login" });
 });
 </script>
+<!--Vista donde se muestra el progreso del cierre de sesión y se redirije-->
 
 <template>
   <div class="form-wrapper">
