@@ -1,3 +1,5 @@
+<!--Vista donde se muestra el contenido de la pagina del proyecto. ES HTML estatico. -->
+
 <template>
   <div>
     <h2>This is the project view</h2>

@@ -1,30 +1,36 @@
+<!--Tarjeta para mostrar la imagen y el titulo del producto e incluir el formulario de solicitud. Layout a dos columnas con el formulario como componente en la derecha-->
 <template>
-  <div class="request-detail-card-wrapper" :id="id">
-    <section class="request-detail-card-left request-detail-card-side">
-      <div class="request-detail-card-image">
-        <img :src="image" />
+  <div class="row justify-content-md-center">
+    <div class="col-md-8">
+      <div class="request-detail-card-wrapper row" :id="id">
+        <section
+          class="request-detail-card-left request-detail-card-side col-md-6"
+        >
+          <div class="request-detail-card-image">
+            <img :src="image" />
+          </div>
+        </section>
+        <section
+          class="request-detail-card-right request-detail-card-side col-md-6"
+        >
+          <div class="request-detail-card-top">
+            <div class="product-card-product-title">
+              <h2>{{ title }}</h2>
+            </div>
+          </div>
+          <div class="request-detail-card-bottom">
+            <request-form :id="id" />
+          </div>
+        </section>
       </div>
-    </section>
-    <section class="request-detail-card-right request-detail-card-side">
-      <div class="request-detail-card-top">
-        <div class="product-card-product-title">
-          <h2>{{ title }}</h2>
-        </div>
-      </div>
-      <div class="request-detail-card-bottom">
-        <request-form :id="id" />
-      </div>
-    </section>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { defineProps } from "vue";
-
-import BaseButton from "../BaseButton.vue";
 import RequestForm from "./RequestForm.vue";
 
-//Aceppted properties for the card items
+//Propiedades aceptadas por el componente
 const props = defineProps({
   image: String,
   title: String,
@@ -38,23 +44,12 @@ p {
   margin-block-end: 0;
 }
 .request-detail-card-wrapper {
-  border: 2px solid #7ab370;
-  border-radius: 2px;
+  border-radius: 10px;
   padding: 2rem;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   background-color: #fff;
-  max-width: 60%;
-  width: auto;
-  margin: 0 auto;
-  display: flex;
 }
 
-.request-detail-card-side {
-  flex: 1;
-}
-
-.request-detail-card-right {
-}
 .product-card-detail-publication-details p {
   margin-top: 0;
 }
@@ -94,21 +89,8 @@ p {
   text-align: right;
   padding-top: 1rem;
 }
-/*.product-card-button button {
-    background-color: #edb421;
-    color: #fff;
-    border: none;
-    padding: 0.25rem 0.5rem;
-    font-weight: bold;
-    cursor: pointer;
-  }*/
+
 .hidden {
   display: none;
-}
-
-.location-icon {
-  position: absolute;
-  top: 0.5rem;
-  left: 0.5rem;
 }
 </style>

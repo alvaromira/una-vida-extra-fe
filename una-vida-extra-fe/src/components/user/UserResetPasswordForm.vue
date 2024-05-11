@@ -1,213 +1,3 @@
-<script setup>
-import { ref, reactive, computed, onMounted } from "vue";
-import BaseButton from "../ui/BaseButton.vue";
-import { useStore } from "vuex";
-import { useRouter, useRoute } from "vue-router";
-import BaseSpinner from "../ui/BaseSpinner.vue";
-
-// Define a ref to track if data is loaded
-const isProcessing = ref(false);
-const showPassword = ref(false);
-
-/*const togglePasswordVisibility = () => {
-  showPassword.value = !showPassword.value;
-};*/
-
-const togglePasswordVisibility = (event) => {
-  const inputId = event.target.dataset.target;
-  const input = document.getElementById(inputId);
-  if (input) {
-    input.type = input.type === "password" ? "text" : "password";
-  }
-};
-
-const resetError = ref(false);
-const errorCode = ref(null);
-const errorString = ref(
-  "Wrong credentials provided. Please check your email and password."
-);
-
-//data
-const data = reactive({
-  email: {
-    val: "",
-    isValid: true,
-  },
-  password: {
-    val: "",
-    isValid: true,
-  },
-  passwordConfirmation: {
-    val: "",
-    isValid: true,
-  },
-  matchingPasswords: {
-    val: false,
-    isValid: true,
-  },
-  token: {
-    val: "",
-    isValid: true,
-  },
-});
-
-const formIsValid = ref(true);
-
-//vuex
-const store = useStore();
-const router = useRouter();
-const route = useRoute();
-
-//received from the route
-// Accessing query parameters
-const email = route.query.email;
-const token = route.params.token; // Assuming 'token' is a route parameter, not a query parameter
-
-//computed
-const emailParam = computed(() => {
-  return route.query.email;
-});
-//computed
-const tokenParam = computed(() => {
-  return route.params.token;
-});
-
-onMounted(() => {
-  data.email.val = emailParam.value;
-  data.token.val = tokenParam;
-});
-
-//methods
-const clearValidity = (input) => {
-  console.log(`Setting valid to true: ${input}`);
-  data[input].isValid = true;
-};
-const validatePassword = (password) => {
-  // Check if the password is at least 8 characters long
-  if (password.length < 8) {
-    return false;
-  }
-
-  // Check if the password contains at least one uppercase letter
-  if (!/[A-Z]/.test(password)) {
-    return false;
-  }
-
-  // Check if the password contains at least one lowercase letter
-  if (!/[a-z]/.test(password)) {
-    return false;
-  }
-
-  // Check if the password contains at least one number
-  if (!/\d/.test(password)) {
-    return false;
-  }
-
-  // Check if the password contains at least one special character
-  if (!/[^a-zA-Z0-9]/.test(password)) {
-    return false;
-  }
-
-  // If all conditions are met, return true
-  return true;
-};
-
-//specific validation of each of the registration forms included
-const validateForm = async () => {
-  console.log("Running validation on reset form");
-
-  formIsValid.value = true;
-
-  if (data.email.val === "") {
-    data.email.isValid = false;
-    formIsValid.value = false;
-  }
-  if (
-    data.password.val === "" ||
-    validatePassword(data.password.val) == false
-  ) {
-    data.password.isValid = false;
-    formIsValid.value = false;
-  }
-
-  if (
-    data.passwordConfirmation.val === "" ||
-    validatePassword(data.passwordConfirmation.val) == false
-  ) {
-    data.passwordConfirmation.isValid = false;
-    formIsValid.value = false;
-  }
-
-  if (data.passwordConfirmation.val !== data.password.val) {
-    data.matchingPasswords.val = false;
-    data.matchingPasswords.isValid = false;
-    formIsValid.value = false;
-  } else {
-    data.matchingPasswords.val = true;
-    data.matchingPasswords.isValid = true;
-  }
-
-  resetError.value = false;
-};
-
-const submitForm = async () => {
-  await validateForm();
-  if (!formIsValid.value) {
-    return;
-  }
-  resetError.value = false;
-  await resetPassword();
-};
-
-const resetPassword = async () => {
-  console.log("resetting password");
-  isProcessing.value = true; // Set data loaded to true once data is fetched
-  try {
-    const formData = {
-      email: data.email.val,
-      password: data.password.val,
-      password_confirmation: data.passwordConfirmation.val,
-      token: data.token.val,
-    };
-
-    await store.dispatch("resetPassword", {
-      payload: formData,
-    });
-    isProcessing.value = false; // Set data loaded to true once data is fetched
-    handleSuccessfulReset();
-  } catch (error) {
-    console.log(error);
-    isProcessing.value = false; // Set data loaded to true once data is fetched
-
-    if (error.response.status) {
-      if (error.response.status && error.response.status === 422) {
-        if (error.response.data.errors.email[0]) {
-          errorString.value = error.response.data.errors.email[0];
-        }
-        errorCode.value = 422;
-      } else {
-        errorCode.value = error.response.status;
-      }
-    } else {
-      errorCode.value = 0;
-    }
-    resetError.value = true;
-  }
-};
-
-const handleSuccessfulReset = () => {
-  isProcessing.value = false;
-  //toast
-  store.commit("addToast", {
-    title: "Password Correctly Reset",
-    type: "success",
-    message:
-      "You have correctly updated your password. You can now login to the site.",
-  });
-  router.push("/login");
-};
-</script>
-
 <template>
   <form @submit.prevent="submitForm" class="rounded">
     <div class="container">
@@ -332,8 +122,7 @@ const handleSuccessfulReset = () => {
         <base-spinner></base-spinner>
       </div>
       <div class="form-field row submit">
-        <div class="col-md-6">
-        </div>
+        <div class="col-md-6"></div>
         <div class="form-submit-button col-md-6">
           <BaseButton :disabled="isProcessing">Reset Password</BaseButton>
         </div>
@@ -341,6 +130,216 @@ const handleSuccessfulReset = () => {
     </div>
   </form>
 </template>
+
+<script setup>
+import { ref, reactive, computed, onMounted } from "vue";
+import BaseButton from "../ui/BaseButton.vue";
+import { useStore } from "vuex";
+import { useRouter, useRoute } from "vue-router";
+import BaseSpinner from "../ui/BaseSpinner.vue";
+
+// Define a ref to track if data is loaded
+const isProcessing = ref(false);
+const showPassword = ref(false);
+
+/*const togglePasswordVisibility = () => {
+  showPassword.value = !showPassword.value;
+};*/
+
+const togglePasswordVisibility = (event) => {
+  const inputId = event.target.dataset.target;
+  const input = document.getElementById(inputId);
+  if (input) {
+    input.type = input.type === "password" ? "text" : "password";
+  }
+};
+
+const resetError = ref(false);
+const errorCode = ref(null);
+const errorString = ref(
+  "Wrong credentials provided. Please check your email and password."
+);
+
+//data
+const data = reactive({
+  email: {
+    val: "",
+    isValid: true,
+  },
+  password: {
+    val: "",
+    isValid: true,
+  },
+  passwordConfirmation: {
+    val: "",
+    isValid: true,
+  },
+  matchingPasswords: {
+    val: false,
+    isValid: true,
+  },
+  token: {
+    val: "",
+    isValid: true,
+  },
+});
+
+const formIsValid = ref(true);
+
+//vuex
+const store = useStore(); // inicializacion para acceso al state en el store de Vuex
+const router = useRouter(); // inicializacion para acceso al router
+const route = useRoute();
+
+//received from the route
+// Accessing query parameters
+const email = route.query.email;
+const token = route.params.token; // Assuming 'token' is a route parameter, not a query parameter
+
+//computed
+const emailParam = computed(() => {
+  return route.query.email;
+});
+//computed
+const tokenParam = computed(() => {
+  return route.params.token;
+});
+
+onMounted(() => {
+  data.email.val = emailParam.value;
+  data.token.val = tokenParam;
+});
+
+//methods
+const clearValidity = (input) => {
+  console.log(`Setting valid to true: ${input}`);
+  data[input].isValid = true;
+};
+const validatePassword = (password) => {
+  // Check if the password is at least 8 characters long
+  if (password.length < 8) {
+    return false;
+  }
+
+  // Check if the password contains at least one uppercase letter
+  if (!/[A-Z]/.test(password)) {
+    return false;
+  }
+
+  // Check if the password contains at least one lowercase letter
+  if (!/[a-z]/.test(password)) {
+    return false;
+  }
+
+  // Check if the password contains at least one number
+  if (!/\d/.test(password)) {
+    return false;
+  }
+
+  // Check if the password contains at least one special character
+  if (!/[^a-zA-Z0-9]/.test(password)) {
+    return false;
+  }
+
+  // If all conditions are met, return true
+  return true;
+};
+
+//validación específica de cada uno de los campos del formulario
+const validateForm = async () => {
+  console.log("Running validation on reset form");
+
+  formIsValid.value = true;
+
+  if (data.email.val === "") {
+    data.email.isValid = false;
+    formIsValid.value = false;
+  }
+  if (
+    data.password.val === "" ||
+    validatePassword(data.password.val) == false
+  ) {
+    data.password.isValid = false;
+    formIsValid.value = false;
+  }
+
+  if (
+    data.passwordConfirmation.val === "" ||
+    validatePassword(data.passwordConfirmation.val) == false
+  ) {
+    data.passwordConfirmation.isValid = false;
+    formIsValid.value = false;
+  }
+
+  if (data.passwordConfirmation.val !== data.password.val) {
+    data.matchingPasswords.val = false;
+    data.matchingPasswords.isValid = false;
+    formIsValid.value = false;
+  } else {
+    data.matchingPasswords.val = true;
+    data.matchingPasswords.isValid = true;
+  }
+
+  resetError.value = false;
+};
+
+const submitForm = async () => {
+  await validateForm();
+  if (!formIsValid.value) {
+    return;
+  }
+  resetError.value = false;
+  await resetPassword();
+};
+
+const resetPassword = async () => {
+  console.log("resetting password");
+  isProcessing.value = true; // Set data loaded to true once data is fetched
+  try {
+    const formData = {
+      email: data.email.val,
+      password: data.password.val,
+      password_confirmation: data.passwordConfirmation.val,
+      token: data.token.val,
+    };
+
+    await store.dispatch("resetPassword", {
+      payload: formData,
+    });
+    isProcessing.value = false; // Set data loaded to true once data is fetched
+    handleSuccessfulReset();
+  } catch (error) {
+    console.log(error);
+    isProcessing.value = false; // Set data loaded to true once data is fetched
+
+    if (error.response.status) {
+      if (error.response.status && error.response.status === 422) {
+        if (error.response.data.errors.email[0]) {
+          errorString.value = error.response.data.errors.email[0];
+        }
+        errorCode.value = 422;
+      } else {
+        errorCode.value = error.response.status;
+      }
+    } else {
+      errorCode.value = 0;
+    }
+    resetError.value = true;
+  }
+};
+
+const handleSuccessfulReset = () => {
+  isProcessing.value = false;
+  //toast
+  store.commit("addToast", {
+    title: "Password Correctly Reset",
+    type: "success",
+    message:
+      "You have correctly updated your password. You can now login to the site.",
+  });
+  router.push("/login");
+};
+</script>
 
 <style scoped>
 .visibility-icon {

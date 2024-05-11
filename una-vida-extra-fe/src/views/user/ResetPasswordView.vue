@@ -1,6 +1,7 @@
 <script setup>
 import UserResetPasswordForm from "../../components/user/UserResetPasswordForm.vue";
 </script>
+<!--Vista donde se muestra el formulario para completar el proceso de reseteo de password-->
 
 <template>
   <div class="form-wrapper container">

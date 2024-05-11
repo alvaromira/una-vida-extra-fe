@@ -1,4 +1,4 @@
-<!--https://www.digitalocean.com/community/tutorials/vuejs-vue-modal-component-->
+<!--Modal generico, no se usa de momento en la app-->
 <template>
   <transition name="modal-fade">
     <div class="modal-backdrop">

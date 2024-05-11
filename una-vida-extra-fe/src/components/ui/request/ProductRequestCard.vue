@@ -1,63 +1,4 @@
-<script setup>
-import { ref, computed, defineEmits, onBeforeMount } from "vue";
-import IconLocation from "../../icons/iconLocation.vue";
-import IconAvailable from "../../icons/IconAvailable.vue";
-import IconNotAvailable from "../../icons/IconNotAvailable.vue";
-import BaseButton from "../BaseButton.vue";
-import { useStore } from "vuex";
-import ModalWithMap from "../ModalWithMap.vue";
-import ProfileImage from "../ProfileImage.vue";
-import IconInfo from "../../icons/IconInfo.vue";
-
-const store = useStore();
-const activeUserId = computed(() => {
-  return store.state.user.id;
-});
-const activeUserLocation = computed(() => {
-  return store.state.user.user_location;
-});
-
-const isModalVisible = ref(false);
-
-//Aceppted properties for the card items
-const props = defineProps({
-  message: String,
-  date: String,
-  distance: Number,
-  id: Number,
-  isActive: Boolean,
-  isAccepted: Boolean,
-  userId: Number,
-  userName: String,
-  userEmail: String,
-  userCoords: Object,
-  productId: Number,
-});
-
-const emit = defineEmits(["accepted-request"]);
-
-//function
-const acceptRequest = () => {
-  emit("accepted-request", activeUserId.value, props.id, props.productId);
-};
-const showLocation = () => {
-  showModal();
-};
-//modal
-const showModal = () => {
-  isModalVisible.value = true;
-};
-const closeModal = () => {
-  isModalVisible.value = false;
-};
-
-onBeforeMount(() => {
-  if (props.isAccepted === true) {
-    console.log("this one is accepted");
-  }
-});
-</script>
-
+<!--Componente donde se muestra a un dueño de un producto la información de una solicitud para su producto. Cuando está aceptada por el dueño se muestra el correo de la persona para la que se ha aceptado.-->
 <template>
   <div
     class="request-card-wrapper row"
@@ -77,6 +18,7 @@ onBeforeMount(() => {
           <span :data-user-id="userId">{{ props.userName }}</span>
         </div>
         <div v-if="props.isAccepted" class="col item">
+          <!--Solo cuando la solicitud esta aceptada se muestra para el usuario su correo-->
           <span class="note"
             >You can now contact the requester:
             <a :href="'mailto:' + props.userEmail"
@@ -123,15 +65,60 @@ onBeforeMount(() => {
     v-if="isModalVisible"
     @close="closeModal"
   >
-    <!--<template #header>Location of product {{ productId }} with map</template>
-    <template #body
-      >Lat: {{ activeUserLocation.latitude }}, long:
-      {{ activeUserLocation.longitude }}
-    </template>
-    <template #footer>Passed footer</template>-->
   </ModalWithMap>
 </template>
+<script setup>
+import { ref, computed, defineEmits } from "vue";
+import IconLocation from "../../icons/IconLocation.vue";
+import BaseButton from "../BaseButton.vue";
+import { useStore } from "vuex";
+import ModalWithMap from "../ModalWithMap.vue";
+import ProfileImage from "../ProfileImage.vue";
 
+const store = useStore(); // inicializacion para acceso al state en el store de Vuex
+
+const activeUserId = computed(() => {
+  return store.state.user.id;
+});
+const activeUserLocation = computed(() => {
+  return store.state.user.user_location;
+});
+
+const isModalVisible = ref(false); // variable para controlar la visibilidad del modal
+
+//Propiedades aceptadas por el componente
+const props = defineProps({
+  message: String,
+  date: String,
+  distance: Number,
+  id: Number,
+  isActive: Boolean,
+  isAccepted: Boolean,
+  userId: Number,
+  userName: String,
+  userEmail: String,
+  userCoords: Object,
+  productId: Number,
+});
+
+const emit = defineEmits(["accepted-request"]); // para notificar a la vista padre el evento de solicitud acceptada
+
+const acceptRequest = () => {
+  emit("accepted-request", activeUserId.value, props.id, props.productId);
+};
+const showLocation = () => {
+  showModal();
+};
+
+//funcion para abrir el modal en la UI
+const showModal = () => {
+  isModalVisible.value = true;
+};
+//funcion para cerrar el modal en la UI
+const closeModal = () => {
+  isModalVisible.value = false;
+};
+</script>
 <style scoped>
 .note {
   color: rgb(139, 138, 138);

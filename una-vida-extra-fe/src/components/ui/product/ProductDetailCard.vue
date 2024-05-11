@@ -1,3 +1,4 @@
+<!--Componente para mostrar todos los detalles de un producto e invitar al usuario a solicitarlo. Para los botones de acción, cambian según el estado del producto y quién lo vea (el dueño vs no dueño)-->
 <template>
   <div class="row justify-content-md-center">
     <div class="col-md-8">
@@ -7,6 +8,7 @@
         :key="props.key"
         :class="{ taken: productIsTaken, 'prod-unavailable': !props.available }"
       >
+        <!--Se usan las clases taken y prod-unavailable para mostrar el producto como atenuado-->
         <div class="top row">
           <section
             class="product-detail-card-left product-detail-card-side col-6"
@@ -22,7 +24,7 @@
                 <div
                   class="product-detail-card-map"
                   :class="{ active: isLocationDisplayed }"
-                  v-show="isLocationDisplayed"
+                  v-if="isLocationDisplayed"
                 >
                   <Map
                     :-requested-product-coords="[
@@ -147,8 +149,7 @@
                 >
               </div>
               <div v-else>
-                <!-- Caso uno, el producto esta donado, no se muestra nada
-                <span v-if="productIsTaken"></span>-->
+                <!-- Caso uno, el producto esta donado, no se muestra nada-->
                 <!--Caso dos, el producto no está donado y está disponible, se puede solicitar y se muestra botón -->
                 <span v-if="!productIsTaken && props.available">
                   <BaseButton
@@ -162,13 +163,14 @@
                     >Request it!</BaseButton
                   >
                 </span>
-                <!--Caso tres, el product no está donado y NO está disponible, no se puede solicitar. En este caso el usuario dueño debería marcarlo como tomado                <span v-else-if="!productIsTaken && !props.available"></span>-->
+                <!--Caso tres, el product no está donado y NO está disponible, no se puede solicitar. En este caso el usuario dueño debería marcarlo como tomado-->
               </div>
             </div>
           </section>
         </div>
       </div>
 
+      <!--Modal para la confirmación de la acción de marcar como donado un producto para el usuario dueño-->
       <ModalConfirmationDialog
         v-if="isModalVisible"
         @modal-confirmed="onModalConfirm"
@@ -189,42 +191,33 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from "vue";
-import IconLocation from "../../icons/iconLocation.vue";
+import { ref, computed, watch } from "vue";
 import BaseButton from "../BaseButton.vue";
 import { useStore } from "vuex";
 import ModalConfirmationDialog from "../ModalConfirmationDialog.vue";
 import Map from "../Map.vue";
+import IconLocation from "../../icons/IconLocation.vue";
 
-const locationAvailable = computed(() => {
-  if (props.location == null || props.location === undefined) {
-    return false;
-  } else {
-    return true;
-  }
-});
-
+//Funcion para poner una fecha en formato facil de entender para el usuario
 const userFriendlyDate = computed(() => {
   return formatDate(props.date);
 });
 
 let isLocationDisplayed = ref(false);
 
+//Funcion para cambiar en mostrar la ubicacion, y no
 const showLocation = () => {
-  console.log(
-    `Displaying location: ${props.location.latitude}, ${props.location.longitude}`
-  );
   isLocationDisplayed.value = !isLocationDisplayed.value;
 };
 
-//Modal related
-const isModalVisible = ref(false);
-// Setter for isModalVisible
+//Variables para el componente Modal
+const isModalVisible = ref(false); // variable para controlar la visibilidad del modal
+// Setter para isModalVisible
 const setIsModalVisible = (value) => {
   isModalVisible.value = value;
 };
 
-//Aceppted properties for the card items
+//Propiedades aceptadas por el componente
 const props = defineProps({
   id: String,
   image: String,
@@ -238,31 +231,22 @@ const props = defineProps({
   isTaken: Boolean,
 });
 
-const store = useStore();
-//methods or functionality
+const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 
 const productIsTaken = ref(props.isTaken);
 const setProductIsTaken = (value) => {
   productIsTaken.value = value;
 };
 
-onMounted(() => {
-  // Code to execute once the DOM of ChildComponent is fully loaded
-  console.log("ChildComponent is fully loaded");
-  console.log("VAlue of productIsTaken: " + productIsTaken.value);
-});
-
-// Watch for changes in props.isTaken
+// Monitorización de los cambios en in props.isTaken para poner al producto a isTaken si se marca como donado
 watch(
   () => props.isTaken,
   (newValue, oldValue) => {
     setProductIsTaken(newValue);
-    console.log("isTaken prop changed from", oldValue, "to", newValue);
   }
 );
 
-//a product is only editable if the user is authenticated and the product owner matches the logged-in user id
-
+//un producto solo es editable si el usuario está autenticado y el propietario del producto coincide con la identificación del usuario que inició sesión
 const loggedUserIsOwner = computed(() => {
   if (store.state.user.id === props.owner) {
     return true;
@@ -271,15 +255,13 @@ const loggedUserIsOwner = computed(() => {
   }
 });
 
+//Acciones tras cerrar el modal
 const onModalClose = () => {
-  console.log("Modal closed, nothing confirmed...");
   setProductIsTaken(false);
   setIsModalVisible(false);
-  //setRequestAccepted(false);
 };
+//Acciones para confirmacion el modal: se actualiza el producto para marcarlo como donado
 const onModalConfirm = async () => {
-  console.log("Modal closed, nothing confirmed...");
-
   try {
     const data = await store.dispatch("updateProductData", {
       id: props.id,
@@ -288,8 +270,7 @@ const onModalConfirm = async () => {
       },
     });
 
-    console.log(data);
-    //check if the product is really marked as taken
+    //se comprueba que esta donado en el nuevo payload y se saca un toast de exito, de lo contrario, toast de error
     if (data.is_taken === true) {
       setProductIsTaken(true);
       store.commit("addToast", {
@@ -315,10 +296,10 @@ const onModalConfirm = async () => {
         "There was an error marking the product as taken. Please try again.",
     });
   }
-
   setIsModalVisible(false);
 };
 
+//Funcion para poner un timestamp como fecha amigable para el usuario
 const formatDate = (dateTimeStamp) => {
   const date = new Date(dateTimeStamp);
   const year = date.getFullYear();
@@ -365,8 +346,6 @@ p {
 .product-detail-buttons {
   display: flex;
   justify-content: flex-end;
-}
-.product-card-button {
 }
 
 .taken p,

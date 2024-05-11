@@ -45,12 +45,12 @@ import ProductDetailCard from "../../components/ui/product/ProductDetailCard.vue
 import BaseButton from "../../components/ui/BaseButton.vue";
 import NotFound404Page from "../../components/ui/NotFound404Page.vue";
 
-const baseUrl = import.meta.env.VITE_BASE_URL;
+const baseUrl = import.meta.env.VITE_BASE_URL; //ruta base para el cliente de la aplicacion
 const baseUrlImg = import.meta.env.VITE_BASE_IMG_URL;
 
-const router = useRouter();
+const router = useRouter(); // inicializacion para acceso al router
 const route = useRoute();
-const store = useStore();
+const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 
 // Define a ref to track if data is loaded
 const isDataLoaded = ref(false);
@@ -63,12 +63,8 @@ const productId = computed(() => {
 
 const prodDetail = ref([]);
 
-//paramId.value = router.params.id;
-
 const getProductData = async () => {
   try {
-    //const targetURL = `${baseApiUrl}/products/${route.params.id}`;
-    //const response = await axios.get(targetURL);
     prodDetail.value = await store.dispatch("getProductData", route.params.id);
     productFetched.value = true;
   } catch (err) {
@@ -89,12 +85,6 @@ const imagePath = computed(() => {
 onBeforeMount(() => {
   getProductData();
 });
-
-//Aceppted properties for the card items
-
-//TO DO
-//Check if user is logged in
-//Check if user is the owner of the product
 </script>
 <style scoped>
 .back-to-products-button {

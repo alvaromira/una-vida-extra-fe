@@ -1,416 +1,7 @@
-<script setup>
-import { ref, reactive, computed } from "vue";
-import BaseButton from "../ui/BaseButton.vue";
-import axios from "axios";
-import { useRouter } from "vue-router";
-import BaseSpinner from "../ui/BaseSpinner.vue";
-import ProfileImage from "../ui/ProfileImage.vue";
-import { useStore } from "vuex";
-import { usePasswordValidation } from "../../composables/usePasswordValidation";
+<!--Componente formulario para el registro del usuario. Tiene varios campos, que se validan. Los datos y el formularios estan vinculados dinamicamente con v-model. En caso de exito, se muestra un toast y se redirije. Si hay error, se gestionan y muesrtran los errores.
 
-const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
-const baseUrl = import.meta.env.VITE_BASE_URL;
-
-const { validatePassword } = usePasswordValidation();
-
-const store = useStore();
-
-const activeUserEmail = computed(() => {
-  return data.email.val;
-});
-
-const showPassword = ref(false);
-
-//data
-const data = reactive({
-  firstName: {
-    val: "",
-    isValid: true,
-  },
-  lastName: {
-    val: "",
-    isValid: true,
-  },
-  phone: {
-    val: "",
-    isValid: true,
-  },
-  email: {
-    val: "",
-    isValid: true,
-  },
-  password: {
-    val: "",
-    isValid: true,
-  },
-  passwordConfirmation: {
-    val: "",
-    isValid: true,
-  },
-  matchingPasswords: {
-    val: false,
-    isValid: true,
-  },
-  publicDetails: {
-    val: false,
-    isValid: true,
-  },
-  longitude: {
-    val: null,
-    isValid: true,
-  },
-  latitude: {
-    val: null,
-    isValid: true,
-  },
-});
-
-const router = useRouter();
-const formIsValid = ref(true);
-const isLoading = ref(false);
-const requestError = ref(false);
-const locationId = ref(null);
-const errorDetails = reactive({
-  code: "",
-  message: "",
-  errors: [],
-});
-const userCity = ref("");
-const userCountry = ref("");
-//computed
-const apiErrorsFound = computed(() => {
-  return errorDetails.message.length;
-});
-
-const apiErrorsCaptured = computed(() => {
-  return errorDetails.errors.length > 0;
-});
-
-//methods
-
-//get the user location coords using the default nav controls
-const getLocationCoords = () => {
-  navigator.geolocation.getCurrentPosition(
-    (position) => {
-      console.log(position.coords.latitude);
-      data.latitude.val = position.coords.latitude;
-      data.latitude.isValid = true;
-      console.log(position.coords.longitude);
-      data.longitude.val = position.coords.longitude;
-      data.longitude.isValid = true;
-
-      const cityName = getCityNameFromCoords(
-        position.coords.longitude,
-        position.coords.latitude
-      );
-    },
-    (error) => {
-      console.log(
-        `There was an error fetching the geo coords ${error.message}`
-      );
-    }
-  );
-};
-
-//Get city from coords
-const getCityNameFromCoords = async (lon, lat) => {
-  let OSMReverseURL =
-    "https://nominatim.openstreetmap.org/reverse?lat=" +
-    lat +
-    "&lon=" +
-    lon +
-    "&format=json";
-
-  try {
-    const response = await axios.get(OSMReverseURL, { withCredentials: false });
-    console.log(response.data.address.city);
-    userCity.value = response.data.address.city;
-    userCountry.value = response.data.address.country;
-    //return response.data.address.city;
-  } catch (error) {
-    throw error; // rethrow the error to be handled in the component
-  }
-};
-
-const clearValidity = (input) => {
-  console.log(`Setting valid to true: ${input}`);
-  data[input].isValid = true;
-};
-
-//specific validation of each of the registration forms included
-const validateForm = () => {
-  console.log("Running validation on registration form");
-
-  formIsValid.value = true;
-
-  if (data.firstName.val === "") {
-    data.firstName.isValid = false;
-    formIsValid.value = false;
-  }
-
-  if (data.lastName.val === "") {
-    data.lastName.isValid = false;
-    formIsValid.value = false;
-  }
-
-  if (data.email.val === "") {
-    data.email.isValid = false;
-    formIsValid.value = false;
-  }
-
-  if (data.phone.val === "") {
-    data.phone.isValid = false;
-    formIsValid.value = false;
-  }
-
-  if (
-    data.password.val === "" ||
-    validatePassword(data.password.val) == false
-  ) {
-    data.password.isValid = false;
-    formIsValid.value = false;
-  }
-
-  if (
-    data.passwordConfirmation.val === "" ||
-    validatePassword(data.passwordConfirmation.val) == false
-  ) {
-    data.passwordConfirmation.isValid = false;
-    formIsValid.value = false;
-  }
-
-  if (data.passwordConfirmation.val !== data.password.val) {
-    data.matchingPasswords.val = false;
-    data.matchingPasswords.isValid = false;
-    formIsValid.value = false;
-  } else {
-    data.matchingPasswords.val = true;
-    data.matchingPasswords.isValid = true;
-  }
-
-  if (data.publicDetails.val === "" || data.publicDetails.val === false) {
-    data.publicDetails.isValid = false;
-    formIsValid.value = false;
-  }
-
-  //validate long and lat together
-  if (
-    !data.longitude.val ||
-    !data.latitude.val ||
-    typeof data.longitude.val === "undefined" ||
-    typeof data.latitude.val === "undefined"
-  ) {
-    data.longitude.isValid = false;
-    data.latitude.isValid = false;
-    formIsValid.value = false;
-  }
-
-  /*
-    last: data.lastName.val,
-    phone: data.phone.val,
-    password: data.password.val,
-    publicDetails: data.publicDetails.val,
-    longitude: data.longitude.val,
-    latitude: data.latitude.val, */
-};
-
-const submitForm = async () => {
-  console.log("Submitting form");
-
-  validateForm();
-
-  if (!formIsValid.value) {
-    return;
-  }
-
-  requestError.value = false;
-  isLoading.value = true;
-  errorDetails.errors.length = 0;
-
-  const sendRegistrationRequest = async (fd) => {
-    try {
-      console.log(fd);
-      const cookie = await axios.get(`${baseUrl}/sanctum/csrf-cookie`);
-      const resp = await axios.post(`${baseApiUrl}/register`, fd);
-      //console.log(resp);
-
-      if (resp.status === 201) {
-        isLoading.value = false;
-        requestError.value = false;
-
-        store.commit("addToast", {
-          title: "User registered",
-          type: "success",
-          message: "You have successfully registered. You can now log in.",
-        });
-
-        router.push({ name: "products" });
-      }
-    } catch (error) {
-      // Handle Error Here
-      //console.error(error);
-      isLoading.value = false;
-      requestError.value = true;
-
-      if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        console.error("Error data", error.response.data);
-        console.error("Error status", error.response.status);
-        errorDetails.code = error.response.status;
-        errorDetails.message = error.message;
-        if (error.response.data.errors) {
-          let requestRecivedErrors = error.response.data.errors;
-          for (const property in requestRecivedErrors) {
-            // console.log(`${property}: ${requestRecivedErrors[property]}`);
-            errorDetails.errors.push(requestRecivedErrors[property].toString());
-          }
-        }
-        //console.log(error.response.headers);
-        // } else if (error.request) {
-        // The request was made but no response was received
-        // `error.request` is an instance of XMLHttpRequest in the browser
-        // and an instance of http.ClientRequest in node.js
-        //   console.log(error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.error("Error message", error.message);
-        console.error("Error code", error.code);
-        errorDetails.code = error.code;
-        errorDetails.message = error.message;
-      }
-    }
-  };
-
-  const locationFormData = {
-    country: userCountry.value,
-    city: userCity.value,
-    latitude: data.latitude.val,
-    longitude: data.longitude.val,
-  };
-
-  const createUserLocation = async () => {
-    try {
-      const cookie = await axios.get(`${baseUrl}/sanctum/csrf-cookie`);
-      const resp = await axios.post(
-        `${baseApiUrl}/locations`,
-        locationFormData
-      );
-      console.log(`Newly created Location ID: ${resp.data.data.id}`);
-
-      if (resp.status === 201) {
-        //isLoading.value = false;
-        requestError.value = false;
-
-        store.commit("addToast", {
-          title: "Location created",
-          type: "success",
-          message: "You have successfully created a location",
-        });
-
-        locationId.value = resp.data.data.id;
-        return resp.data.data.id;
-        // router.push({ name: "products" });
-      }
-    } catch (error) {
-      // Handle Error Here
-      //console.error(error);
-      //isLoading.value = false;
-      requestError.value = true;
-
-      if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        console.error("Error data", error.response.data);
-        console.error("Error status", error.response.status);
-        errorDetails.code = error.response.status;
-        errorDetails.message = error.message;
-        if (error.response.data.errors) {
-          let requestRecivedErrors = error.response.data.errors;
-          for (const property in requestRecivedErrors) {
-            // console.log(`${property}: ${requestRecivedErrors[property]}`);
-            errorDetails.errors.push(requestRecivedErrors[property].toString());
-          }
-        }
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.error("Error message", error.message);
-        console.error("Error code", error.code);
-        errorDetails.code = error.code;
-        errorDetails.message = error.message;
-      }
-    }
-  };
-
-  //only create the user location if it has not been created already (e.g. server side validation errors)
-  if (locationId.value == null) {
-    await createUserLocation();
-  }
-
-  const formData = {
-    name: data.firstName.val,
-    surname: data.lastName.val,
-    email: data.email.val,
-    phone: data.phone.val,
-    password: data.password.val,
-    password_confirmation: data.passwordConfirmation.val,
-    termsAndConditions: data.publicDetails.val,
-    location_id: locationId.value,
-    // longitude: data.longitude.val,
-    // latitude: data.latitude.val,
-  };
-  console.log("Form submitted");
-  // console.log(formData);
-
-  await sendRegistrationRequest(formData);
-
-  // this.$emit("save-data", formData);
-};
-
-/*
-export default {
-  // emits: ["save-data"],
-};*/
-
-const togglePasswordVisibility = (event) => {
-  const inputId = event.target.dataset.target;
-  const input = document.getElementById(inputId);
-  if (input) {
-    input.type = input.type === "password" ? "text" : "password";
-  }
-};
-/*
-const validatePassword = (password) => {
-  // Check if the password is at least 8 characters long
-  if (password.length < 8) {
-    return false;
-  }
-
-  // Check if the password contains at least one uppercase letter
-  if (!/[A-Z]/.test(password)) {
-    return false;
-  }
-
-  // Check if the password contains at least one lowercase letter
-  if (!/[a-z]/.test(password)) {
-    return false;
-  }
-
-  // Check if the password contains at least one number
-  if (!/\d/.test(password)) {
-    return false;
-  }
-
-  // Check if the password contains at least one special character
-  if (!/[^a-zA-Z0-9]/.test(password)) {
-    return false;
-  }
-
-  // If all conditions are met, return true
-  return true;
-};*/
-</script>
-
+Este formulario es identico al UserProfileForm, aunque un poco mas sencillo. PAra la documentacion, se aconseja usar el UserProfileForm para todo lo compartido. Para lo especifico del registro, se ha documentado aqui
+-->
 <template>
   <form @submit.prevent="submitForm" class="rounded">
     <div class="row">
@@ -501,6 +92,7 @@ const validatePassword = (password) => {
                 v-model.trim="data.password.val"
                 @blur="clearValidity('password')"
               />
+              <!--La funcion de togglePasswordVisibility se usa para mostrar el password literalmente-->
               <span
                 class="input-group-text visibility-icon"
                 id="input-password-visibility"
@@ -558,14 +150,9 @@ const validatePassword = (password) => {
         >
           <p>Your password and your password confirmation must match.</p>
         </div>
-        <!--<div>
-          <BaseButton @click.prevent="togglePasswordVisibility" mode="outline">
-            {{ showPassword ? "Hide" : "Show" }} Password
-          </BaseButton>
-        </div>-->
-
         <div class="form-field row">
           <div class="col">
+            <!--Los terminos y conditiones se abren en otra pagina porque son muy largos-->
             <label for="public-details"
               >By enabling this checkbox I accept the
               <a :href="$router.resolve({ name: 'terms' }).href" target="_blank"
@@ -681,15 +268,6 @@ const validatePassword = (password) => {
           <div v-if="apiErrorsFound">
             <p>Details:</p>
             <ul v-if="apiErrorsCaptured">
-              <!--<li>
-              Code:
-              <pre>{{ errorDetails.code }}</pre>
-            </li>
-            <li>
-              Message:
-              <pre>{{ errorDetails.message }}</pre>
-            </li>-->
-
               <li v-for="e in errorDetails.errors">{{ e }}</li>
             </ul>
           </div>
@@ -698,6 +276,345 @@ const validatePassword = (password) => {
     </div>
   </form>
 </template>
+<script setup>
+import { ref, reactive, computed } from "vue";
+import BaseButton from "../ui/BaseButton.vue";
+import axios from "axios";
+import { useRouter } from "vue-router";
+import BaseSpinner from "../ui/BaseSpinner.vue";
+import ProfileImage from "../ui/ProfileImage.vue";
+import { useStore } from "vuex";
+import { usePasswordValidation } from "../../composables/usePasswordValidation";
+
+const baseApiUrl = import.meta.env.VITE_BASE_API_URL; //ruta base para la api del backend
+const baseUrl = import.meta.env.VITE_BASE_URL; //ruta base para el cliente de la aplicacion
+
+const { validatePassword } = usePasswordValidation(); //fucion para validar passwords
+
+const store = useStore(); // inicializacion para acceso al state en el store de Vuex
+
+const activeUserEmail = computed(() => {
+  return data.email.val;
+});
+
+const showPassword = ref(false);
+
+//datos vinculados q v-model
+const data = reactive({
+  firstName: {
+    val: "",
+    isValid: true,
+  },
+  lastName: {
+    val: "",
+    isValid: true,
+  },
+  phone: {
+    val: "",
+    isValid: true,
+  },
+  email: {
+    val: "",
+    isValid: true,
+  },
+  password: {
+    val: "",
+    isValid: true,
+  },
+  passwordConfirmation: {
+    val: "",
+    isValid: true,
+  },
+  matchingPasswords: {
+    val: false,
+    isValid: true,
+  },
+  publicDetails: {
+    val: false,
+    isValid: true,
+  },
+  longitude: {
+    val: null,
+    isValid: true,
+  },
+  latitude: {
+    val: null,
+    isValid: true,
+  },
+});
+
+const router = useRouter(); // inicializacion para acceso al router
+const formIsValid = ref(true);
+const isLoading = ref(false); //variable para gestionar el estado de carga local
+const requestError = ref(false);
+const locationId = ref(null);
+const errorDetails = reactive({
+  code: "",
+  message: "",
+  errors: [],
+});
+const userCity = ref("");
+const userCountry = ref("");
+//computed
+const apiErrorsFound = computed(() => {
+  return errorDetails.message.length;
+});
+
+const apiErrorsCaptured = computed(() => {
+  return errorDetails.errors.length > 0;
+});
+
+const getLocationCoords = () => {
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      console.log(position.coords.latitude);
+      data.latitude.val = position.coords.latitude;
+      data.latitude.isValid = true;
+      console.log(position.coords.longitude);
+      data.longitude.val = position.coords.longitude;
+      data.longitude.isValid = true;
+
+      const cityName = getCityNameFromCoords(
+        position.coords.longitude,
+        position.coords.latitude
+      );
+    },
+    (error) => {
+      console.log(
+        `There was an error fetching the geo coords ${error.message}`
+      );
+    }
+  );
+};
+
+//Get city from coords
+const getCityNameFromCoords = async (lon, lat) => {
+  let OSMReverseURL =
+    "https://nominatim.openstreetmap.org/reverse?lat=" +
+    lat +
+    "&lon=" +
+    lon +
+    "&format=json";
+
+  try {
+    const response = await axios.get(OSMReverseURL, { withCredentials: false });
+    console.log(response.data.address.city);
+    userCity.value = response.data.address.city;
+    userCountry.value = response.data.address.country;
+    //return response.data.address.city;
+  } catch (error) {
+    throw error; // rethrow the error to be handled in the component
+  }
+};
+
+const clearValidity = (input) => {
+  data[input].isValid = true;
+};
+
+//validación específica de cada uno de los campos del formulario
+const validateForm = () => {
+  formIsValid.value = true;
+
+  if (data.firstName.val === "") {
+    data.firstName.isValid = false;
+    formIsValid.value = false;
+  }
+
+  if (data.lastName.val === "") {
+    data.lastName.isValid = false;
+    formIsValid.value = false;
+  }
+
+  if (data.email.val === "") {
+    data.email.isValid = false;
+    formIsValid.value = false;
+  }
+
+  if (data.phone.val === "") {
+    data.phone.isValid = false;
+    formIsValid.value = false;
+  }
+
+  if (
+    data.password.val === "" ||
+    validatePassword(data.password.val) == false
+  ) {
+    data.password.isValid = false;
+    formIsValid.value = false;
+  }
+
+  if (
+    data.passwordConfirmation.val === "" ||
+    validatePassword(data.passwordConfirmation.val) == false
+  ) {
+    data.passwordConfirmation.isValid = false;
+    formIsValid.value = false;
+  }
+
+  if (data.passwordConfirmation.val !== data.password.val) {
+    data.matchingPasswords.val = false;
+    data.matchingPasswords.isValid = false;
+    formIsValid.value = false;
+  } else {
+    data.matchingPasswords.val = true;
+    data.matchingPasswords.isValid = true;
+  }
+
+  if (data.publicDetails.val === "" || data.publicDetails.val === false) {
+    data.publicDetails.isValid = false;
+    formIsValid.value = false;
+  }
+
+  //validate long and lat together
+  if (
+    !data.longitude.val ||
+    !data.latitude.val ||
+    typeof data.longitude.val === "undefined" ||
+    typeof data.latitude.val === "undefined"
+  ) {
+    data.longitude.isValid = false;
+    data.latitude.isValid = false;
+    formIsValid.value = false;
+  }
+};
+
+const submitForm = async () => {
+  validateForm();
+  if (!formIsValid.value) {
+    return;
+  }
+  requestError.value = false;
+  isLoading.value = true;
+  errorDetails.errors.length = 0;
+
+  //Funcion para el registro del usuario
+  const sendRegistrationRequest = async (fd) => {
+    try {
+      const cookie = await axios.get(`${baseUrl}/sanctum/csrf-cookie`); //se require la llamada a sanctum para la cookie csrf de Laravel que permite las llamadas con proteccion de middleware
+      const resp = await axios.post(`${baseApiUrl}/register`, fd); //se llama al endpoint de registro con el formulario
+
+      //Para todo ok, se espera un 201, se para la carga, se muestra un toast de exito y se redirije a productos
+      if (resp.status === 201) {
+        isLoading.value = false;
+        requestError.value = false;
+
+        store.commit("addToast", {
+          title: "User registered",
+          type: "success",
+          message: "You have successfully registered. You can now log in.",
+        });
+
+        router.push({ name: "products" });
+      }
+    } catch (error) {
+      //Si hay errores en la llamada a la aPI, se muestran en la UI para que se puedan corregir o actuar
+      isLoading.value = false;
+      requestError.value = true;
+
+      if (error.response) {
+        // Se realizó la solicitud y el servidor respondió con un código de estado
+        // eso cae fuera del rango de 2xx
+        console.error("Error data", error.response.data);
+        console.error("Error status", error.response.status);
+        errorDetails.code = error.response.status;
+        errorDetails.message = error.message;
+        if (error.response.data.errors) {
+          let requestRecivedErrors = error.response.data.errors;
+          for (const property in requestRecivedErrors) {
+            errorDetails.errors.push(requestRecivedErrors[property].toString());
+          }
+        }
+      } else {
+        // Algo sucedió al configurar la solicitud que provocó un error
+        console.error("Error message", error.message);
+        console.error("Error code", error.code);
+        errorDetails.code = error.code;
+        errorDetails.message = error.message;
+      }
+    }
+  };
+
+  const locationFormData = {
+    country: userCountry.value,
+    city: userCity.value,
+    latitude: data.latitude.val,
+    longitude: data.longitude.val,
+  };
+
+  //Funcion para crear la ubicacion del usuario, que es necesari para poder registrarse
+  const createUserLocation = async () => {
+    try {
+      const cookie = await axios.get(`${baseUrl}/sanctum/csrf-cookie`); //se require la llamada a sanctum para la cookie csrf de Laravel que permite las llamadas con proteccion de middleware
+      const resp = await axios.post(
+        `${baseApiUrl}/locations`,
+        locationFormData
+      );
+      console.log(`Newly created Location ID: ${resp.data.data.id}`);
+
+      //para el exito se muestra un toast
+      if (resp.status === 201) {
+        requestError.value = false;
+        store.commit("addToast", {
+          title: "Location created",
+          type: "success",
+          message: "You have successfully created a location",
+        });
+
+        locationId.value = resp.data.data.id;
+        return resp.data.data.id;
+        // router.push({ name: "products" });
+      }
+    } catch (error) {
+      //Si hay un error se muestra en la UI en por consola como errores
+      requestError.value = true;
+      if (error.response) {
+        console.error("Error data", error.response.data);
+        console.error("Error status", error.response.status);
+        errorDetails.code = error.response.status;
+        errorDetails.message = error.message;
+        if (error.response.data.errors) {
+          let requestRecivedErrors = error.response.data.errors;
+          for (const property in requestRecivedErrors) {
+            errorDetails.errors.push(requestRecivedErrors[property].toString());
+          }
+        }
+      } else {
+        console.error("Error message", error.message);
+        console.error("Error code", error.code);
+        errorDetails.code = error.code;
+        errorDetails.message = error.message;
+      }
+    }
+  };
+
+  //solo crea la ubicación del usuario si aún no se ha creado (por ejemplo, errores de validación del lado del servidor)
+  if (locationId.value == null) {
+    await createUserLocation();
+  }
+
+  const formData = {
+    name: data.firstName.val,
+    surname: data.lastName.val,
+    email: data.email.val,
+    phone: data.phone.val,
+    password: data.password.val,
+    password_confirmation: data.passwordConfirmation.val,
+    termsAndConditions: data.publicDetails.val,
+    location_id: locationId.value,
+  };
+
+  await sendRegistrationRequest(formData);
+};
+
+//Funcion para cambiar la visibilidad de los campos de contraseña al hacer click en el icono. Se cambia el tipo de password a text
+const togglePasswordVisibility = (event) => {
+  const inputId = event.target.dataset.target;
+  const input = document.getElementById(inputId);
+  if (input) {
+    input.type = input.type === "password" ? "text" : "password";
+  }
+};
+</script>
 
 <style scoped>
 .form-component-container {

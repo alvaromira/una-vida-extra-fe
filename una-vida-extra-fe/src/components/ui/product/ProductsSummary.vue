@@ -1,3 +1,4 @@
+<!--Componente para mostrar resumen de produtos es una vista concreta-->
 <template>
   <div id="products-data-wrapper">
     <div id="products-data">

@@ -4,11 +4,9 @@ import UserRedirectionView from "./UserRedirectionView.vue";
 import { useStore } from "vuex";
 import { computed } from "vue";
 
-const store = useStore();
-
-const isAuthenticated = computed(() => store.getters.authenticated);
+const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 </script>
-
+<!--Vista donde mostrar el componente del formulario de usuario para hacer login-->
 <template>
   <div class="form-wrapper">
     <div class="row">
@@ -16,14 +14,9 @@ const isAuthenticated = computed(() => store.getters.authenticated);
     </div>
     <UserLoginForm />
   </div>
-  <!--<div v-else>
-    <UserRedirectionView></UserRedirectionView>
-  </div>-->
 </template>
 
 <style scoped>
-.form-wrapper {
-}
 h2 {
   text-align: center;
   padding-bottom: 2rem;

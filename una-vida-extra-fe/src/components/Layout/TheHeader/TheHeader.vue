@@ -1,3 +1,4 @@
+<!--Componente header para el esquema de layout principal-->
 <template>
   <header>
     <section id="primary-nav-bar">
@@ -196,42 +197,30 @@ import BaseButton from "../../ui/BaseButton.vue";
 import { computed, ref, onMounted } from "vue";
 import { useStore } from "vuex";
 import ProfileImage from "../../ui/ProfileImage.vue";
-import md5 from "md5";
 import { useRouter } from "vue-router";
 
-const router = useRouter();
-
-const store = useStore();
+const router = useRouter(); // inicializacion para acceso al router
+const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 const searchTerm = ref("");
 
 const searchProducts = () => {
-  const searchTermValue = searchTerm.value.trim(); // Trim whitespace
+  const searchTermValue = searchTerm.value.trim(); // se eliminan espacios en blancos para el termino de busqeuda
 
   if (searchTermValue.length >= 3) {
-    // Check length
+    // Antes de empezar a buscar, se comprueba que la busqueda tenga mas de 3 caracteres
     router.push({
       name: "products",
       query: { q: searchTermValue },
     });
   } else {
-    // Handle case where searchTerm is empty or less than 3 characters
     console.log("Search term must be at least 3 characters long");
   }
 };
 
-/*const searchProducts = async () => {
-  await store.dispatch("searchProducts", searchTerm.value.trim());
-};
-
-const searchResults = computed(() => {
-  return store.getters["getSearchResults"];
-});*/
-
+//Se usan computed para los datos que viene del state en el store de Vuex
 const activeUserEmail = computed(() => {
   return store.state.user.email;
 });
-
-//using computed property derived from Vuex
 const getUserStatus = computed(() => {
   return store.state.authenticated;
 });
@@ -359,18 +348,6 @@ header {
   position: relative;
 }
 
-/*.nav-item:has(a.router-link-active)::after {
-  border-top: 4px solid #fff;
-  left: 0;
-  right: 1px;
-  bottom: -4px;
-  content: "";
-  display: block;
-  position: absolute;
-  -webkit-transition: -webkit-transform 0.3s ease-in-out;
-  transition: transform 0.3s ease-in-out;
-  transform: translateY(-4px);
-}*/
 h1,
 h2,
 h3 {

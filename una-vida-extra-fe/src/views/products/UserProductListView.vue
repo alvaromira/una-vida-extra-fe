@@ -62,43 +62,20 @@
 <script setup>
 import BaseButton from "../../components/ui/BaseButton.vue";
 import ProductCard from "../../components/ui/product/ProductCard.vue";
-import AddNewProduct from "./AddNewProduct.vue";
-import { ref, defineProps, computed, reactive, onMounted } from "vue";
-import RequestCard from "../../components/ui/request/RequestCard.vue";
-import { useRouter, useRoute } from "vue-router";
-import axios from "axios";
+import { ref, computed, reactive, onMounted } from "vue";
+
 import { useStore } from "vuex";
 import BaseSpinner from "../../components/ui/BaseSpinner.vue";
 
-const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
+const baseApiUrl = import.meta.env.VITE_BASE_API_URL; //ruta base para la api del backend
 
-const route = useRoute();
-const store = useStore();
+const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 
 // Define a ref to track if data is loaded
 const isDataLoaded = ref(false);
 
-const isLoading = ref(false);
-const requestError = ref(false);
-const requestCurrentPage = ref(1);
-const errorDetails = reactive({
-  code: "",
-  message: "",
-  errors: [],
-});
-
 const userProducts = ref([]);
 
-/*const numberOfUserProducts = computed(() => {
-  if (
-    userProducts.meta.total !== undefined &&
-    userProducts.meta.total !== null
-  ) {
-    return userProducts.meta.total;
-  } else {
-    return 0;
-  }
-});*/
 const loggedInUser = computed(() => {
   return store.state.user.id;
 });
@@ -160,58 +137,6 @@ const handleRequestError = (error) => {
     message: errorMessage,
   });
 };
-
-//fetch product requests from the public api
-/*const getUserProducts = async () => {
-  try {
-    const resp = await axios.get(
-      `${baseApiUrl}/users/${loggedInUser.value}/products`
-    );
-    //console.log(resp);
-    userProducts.value = resp.data.data;
-    requestCurrentPage.value = resp.data.current_page;
-    //isLoading.value = false;
-    requestError.value = false;
-    //router.push({ name: "products", query: { registration: "success" } });
-    isDataLoaded.value = true; // Set data loaded to true once data is fetched
-  } catch (error) {
-    // Handle Error Here
-    console.error(error);
-    //isLoading.value = false;
-    requestError.value = true;
-
-    if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.error("Error data", error.response.data);
-      console.error("Error status", error.response.status);
-      errorDetails.code = error.response.status;
-      errorDetails.message = error.message;
-      if (error.response.data.errors) {
-        let requestRecivedErrors = error.response.data.errors;
-        for (const property in requestRecivedErrors) {
-          errorDetails.errors.push(requestRecivedErrors[property].toString());
-        }
-      }
-      isDataLoaded.value = true; // Set data loaded to true once data is fetched
-
-      //console.log(error.response.headers);
-      // } else if (error.request) {
-      // The request was made but no response was received
-      // `error.request` is an instance of XMLHttpRequest in the browser
-      // and an instance of http.ClientRequest in node.js
-      //   console.log(error.request);
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.error("Error message", error.message);
-      console.error("Error code", error.code);
-      errorDetails.code = error.code;
-      errorDetails.message = error.message;
-      isDataLoaded.value = true; // Set data loaded to true once data is fetched
-    }
-    isDataLoaded.value = true; // Set data loaded to true once data is fetched
-  }
-};*/
 
 // Fetch products on component mount
 onMounted(async () => {

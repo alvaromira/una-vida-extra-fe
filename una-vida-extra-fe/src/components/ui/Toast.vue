@@ -1,3 +1,4 @@
+<!--Componente toast para usar en el toasts wrapper. Acepta duración y modo. La duración se pasa al subcomponente countdownbar, que por defecto usa 15000 milisegundos-->
 <template>
   <div
     class="toast show"
@@ -18,27 +19,25 @@
 </template>
 
 <script setup>
-// Import the necessary functions from Vue
 import { ref, onMounted } from "vue";
 import { useStore } from "vuex";
 import CountdownBar from "./CountdownBar.vue";
 
-// Define the props using the `defineProps` function
+//Como propiedad acepta un aarray toast donde se manda todo lo necesario: el tipo, el mensaje y la duracion
 const { props } = defineProps(["toast"]);
 const isFadingOut = ref(false);
 
-const toastDuration = ref(10000);
+const toastDuration = ref(15000); //duracion predeterminada
 
-const store = useStore();
+const store = useStore(); // inicializacion para acceso al state en el store de Vuex
+//Funcion para cerrar el toast desde la UI antes de que cumpla el tiempo
 const dismissToast = (m) => {
   isFadingOut.value = true;
-  store.commit("clearToast", m);
+  store.commit("clearToast", m); // esta es una llamada la funcion clearToast del store de Vuex. Los toasts se guardan en el state, asi que con esta llamada se eliminan formalmente
 };
 
-// Lifecycle hook using `onMounted`
 onMounted(() => {
-  // Logic to execute on component mount
-  // Automatically dismiss toast after x seconds
+  // De forma automatica, cerrar el toast tras los milisegundos en toastDuration
   setTimeout(() => {
     dismissToast();
   }, toastDuration.value);
@@ -50,18 +49,8 @@ onMounted(() => {
 .toast-body {
   padding: 1.5rem;
 }
-/* Removed CSS variables and used literals directly */
 
-.success,
-.info,
-.error {
-  /*color: #ffffff;*/
-}
-
-h3 {
-  /* color: #ffffff;*/
-}
-
+/**Se han creado clases para pintar los elementos de los toasts en funcion del tipo de mensaje: error, success o info. Se usa enfoque de semaforo con verde, amarillo y rojo */
 div.toast.success,
 .toast.success .header button,
 div.toast.error .toast-header h3 {
@@ -81,15 +70,6 @@ div.toast.error .toast-header h3 {
 }
 
 .toast {
-  /* width: 500px;
-  min-height: 50px;
-  display: block;
-
-  margin-bottom: 1rem;
-  padding: 1rem;
-  box-sizing: border-box;
-  justify-content: center;
-  border-radius: 8px;*/
   box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.1), 0 2px 15px 0 rgba(0, 0, 0, 0.05);
   opacity: 1;
   background-color: #ffffff;
@@ -142,10 +122,6 @@ div.toast.error .toast-header h3 {
   background: none;
   font-size: 1rem;
   opacity: 0.3;
-}
-.toast .header button:hover {
-  /* background: #e7e7e7;
-  opacity: 0.75;*/
 }
 
 .toast .content {

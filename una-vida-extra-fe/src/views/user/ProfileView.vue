@@ -1,12 +1,11 @@
 <script setup>
 import UserProfileForm from "../../components/user/UserProfileForm.vue";
-import axios from "axios";
-import { useRouter } from "vue-router";
 import { onMounted } from "vue";
-import { useStore } from "vuex";
 
 onMounted(async () => {});
 </script>
+
+<!--Vista donde se muestra el perfil de usuario y su formulario-->
 <template>
   <div class="form-wrapper">
     <div class="row">

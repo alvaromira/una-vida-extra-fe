@@ -1,4 +1,4 @@
-<!--https://www.digitalocean.com/community/tutorials/vuejs-vue-modal-component-->
+<!--Modal que lleva directamente un subcomponente mapa embebido dentro.-->
 <template>
   <transition name="modal-fade">
     <div class="modal-backdrop">
@@ -21,6 +21,7 @@
         <section class="modal-body" id="modalDescription">
           <div name="body"></div>
           <div v-if="prodReqDetailReady">
+            <!--Cuando las propiedades de las coordenadas estan listas, se pasan el componente del mapa-->
             <Map
               :-user-coords="[userLat, userLong]"
               :-requested-product-coords="[prodLat, prodLong]"
@@ -41,6 +42,7 @@
 
         <footer class="modal-footer">
           <div name="footer"></div>
+          <!--Solo se acepta el onclick para cerrar el mapa-->
           <button
             type="button"
             class="btn-green"
@@ -56,44 +58,34 @@
 </template>
 
 <script setup>
-import {
-  onBeforeMount,
-  onMounted,
-  onUnmounted,
-  defineEmits,
-  defineProps,
-  ref,
-  reactive,
-} from "vue";
+import { onMounted, onUnmounted, defineEmits, defineProps, ref } from "vue";
 import Map from "./Map.vue";
-import axios from "axios";
 
-const prodReqDetails = ref();
-const prodReqDetailReady = ref(true); //use emit from Map itself to handle this
+const prodReqDetailReady = ref(true);
 
+//El modal solo emite un evento para el padre, el de cierre
 const close = defineEmits(["close"]);
-//const close = () => {
-//  defineEmits(["close"]);
-//};
 
-//Aceppted properties for the card items
+//Propiedades aceptadas por el componente
 const props = defineProps({
   userLat: String,
   userLong: String,
   prodLat: String,
   prodLong: String,
 });
+
+//Se permite cerrar el modal con Escape
 const handleKeyUp = (event) => {
   if (event.key === "Escape") {
-    //handle closure
   }
 };
 
+//Se crea un listener y se elimina para cerrar el modal al crear y quitar el componente
 onMounted(() => {
   document.addEventListener("keyup", handleKeyUp);
 });
 onUnmounted(() => {
-  document.addEventListener("keyup", handleKeyUp);
+  document.removeEventListener("keyup", handleKeyUp);
 });
 </script>
 

@@ -7,13 +7,13 @@ import BaseSpinner from "../BaseSpinner.vue";
 import { useStore } from "vuex";
 import ModalConfirmationDialog from "../ModalConfirmationDialog.vue";
 
-const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
-const baseImgURL = import.meta.env.VITE_BASE_IMG_URL;
+const baseApiUrl = import.meta.env.VITE_BASE_API_URL; //ruta base para la api del backend
+const baseImgURL = import.meta.env.VITE_BASE_IMG_URL; // ruta para las imagenes, que se hospedan en un S3 bucket de amazon
 
-const router = useRouter();
-const store = useStore();
+const router = useRouter(); // inicializacion para acceso al router
+const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 
-//Modal related
+//Variables para el componente Modal
 const isDeleteModalVisible = ref(false);
 // Setter for isDeleteModalVisible
 const setIsDeleteModalVisible = (value) => {
@@ -33,7 +33,7 @@ const imagePath = computed(() => {
   }
 });
 const imageURL = ref("");
-const isLoading = ref(false);
+const isLoading = ref(false); //variable para gestionar el estado de carga local
 
 const apiErrorsFound = computed(() => {
   return errorDetails.message.length;
@@ -106,7 +106,7 @@ const clearValidity = (input) => {
   data[input].isValid = true;
 };
 
-//specific validation of each of the registration forms included
+//validación específica de cada uno de los campos del formulario
 const validateForm = async () => {
   formIsValid.value = true;
 
@@ -164,9 +164,9 @@ const submitForm = async () => {
   }
 };
 
-// Method to handle success response
+// Método para manejar la respuesta correcta de la API
 const handleSuccess = () => {
-  // Set isLoading to false
+  // Poner isLoading a false
   isLoading.value = false;
 
   // Update image.isUpdated if product is successfully updated
@@ -180,21 +180,21 @@ const handleSuccess = () => {
   });
 };
 
-// Method to handle error response
+// Método para gestionar la respuesta de error
 const handleError = (error) => {
-  // Set isLoading to false
+  // Poner isLoading a false
   isLoading.value = false;
 
-  // Initialize errorStatus and errorMessage variables
+  // Inicializa las variables errorStatus y errorMessage
   let errorStatus = null;
   let errorMessage = null;
 
   if (error.response) {
-    // Capture error status
+    // Capturar el codigo de error
     errorStatus = error.response.status;
     console.error("Error status", error.response.status);
 
-    // Extract error message
+    // Extraer mensaje de error, solo el primero, de forma que si hay varios se solucinan uno a uno.
     const errors = error.response.data.errors;
     if (errors && Object.keys(errors).length > 0) {
       const firstChildKey = Object.keys(errors)[0];
@@ -204,17 +204,17 @@ const handleError = (error) => {
       }
     }
   } else {
-    // Other errors
+    // Otros errores
     console.error("Error message", error.message);
     console.error("Error code", error.code);
     errorStatus = error.code;
     errorMessage = error.message;
   }
 
-  // Construct final error message
+  // Construir el mensaje de error final
   const finalMessage = `The product could not be updated. Error code: ${errorStatus}. Error message: ${errorMessage}`;
 
-  // Show error toast
+  //Mostrar el toast con el error
   store.commit("addToast", {
     title: "Product Not Updated",
     type: "error",

@@ -1,3 +1,4 @@
+<!--Componente footer para el esquema de layout principal-->
 <template>
   <div class="container-fluid" id="footer-wrapper">
     <footer>
@@ -8,13 +9,7 @@
   </div>
 </template>
 
-<script>
-import { computed } from "vue";
-
-export default {
-  name: "TheFooter",
-};
-</script>
+<script setup></script>
 
 <style scoped>
 #footer-wrapper {
