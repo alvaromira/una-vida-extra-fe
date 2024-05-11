@@ -1,3 +1,4 @@
+<!--Vista donde se muestra el contenido de la pagina de sponsor. ES HTML estatico. -->
 <template>
   <div>
     <h2>This is the sponsors page</h2>

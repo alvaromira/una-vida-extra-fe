@@ -262,6 +262,7 @@ h3 {
   opacity: 0;
   transition: opacity 0.5s;
   padding-bottom: 2rem;
+  padding-top: 1rem;
 }
 
 .validation-error-container.active {
