@@ -1,3 +1,5 @@
+<!--Vista donde se cargan los componentes y la navegación de la zona de administadores. Tiene sub-routas asignadas y sus correspondientes componentes y vistas, donde se encuentra la documentacion correspondiente -->
+
 <template>
   <div class="container">
     <div class="admin-dashboard-nav row">
@@ -64,7 +66,7 @@ import { useRoute } from "vue-router";
 import { computed } from "vue";
 
 const route = useRoute();
-//const currentPath = route.path;
+//propiedad computada para mantener registro de la ruta actual y marcala en la barra de navegacion
 const currentPath = computed(() => route.path);
 </script>
 <style scoped>

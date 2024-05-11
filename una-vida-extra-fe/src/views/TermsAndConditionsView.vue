@@ -1,3 +1,4 @@
+<!--Vista donde se muestra el contenido de la pagina de los terminos y condiciones. ES HTML estatico. -->
 <template>
   <div class="row">
     <div class="col">

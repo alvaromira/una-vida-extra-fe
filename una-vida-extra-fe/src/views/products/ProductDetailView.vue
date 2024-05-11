@@ -63,12 +63,8 @@ const productId = computed(() => {
 
 const prodDetail = ref([]);
 
-//paramId.value = router.params.id;
-
 const getProductData = async () => {
   try {
-    //const targetURL = `${baseApiUrl}/products/${route.params.id}`;
-    //const response = await axios.get(targetURL);
     prodDetail.value = await store.dispatch("getProductData", route.params.id);
     productFetched.value = true;
   } catch (err) {
@@ -89,12 +85,6 @@ const imagePath = computed(() => {
 onBeforeMount(() => {
   getProductData();
 });
-
-//Propiedades aceptadas por el componente
-
-//TO DO
-//Check if user is logged in
-//Check if user is the owner of the product
 </script>
 <style scoped>
 .back-to-products-button {
