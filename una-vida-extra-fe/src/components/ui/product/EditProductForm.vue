@@ -10,7 +10,7 @@ import ModalConfirmationDialog from "../ModalConfirmationDialog.vue";
 const baseApiUrl = import.meta.env.VITE_BASE_API_URL; //ruta base para la api del backend
 const baseImgURL = import.meta.env.VITE_BASE_IMG_URL; // ruta para las imagenes, que se hospedan en un S3 bucket de amazon
 
-const router = useRouter();
+const router = useRouter(); // inicializacion para acceso al router
 const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 
 //Variables para el componente Modal

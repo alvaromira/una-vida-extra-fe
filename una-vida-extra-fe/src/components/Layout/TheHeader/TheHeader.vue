@@ -199,7 +199,7 @@ import { useStore } from "vuex";
 import ProfileImage from "../../ui/ProfileImage.vue";
 import { useRouter } from "vue-router";
 
-const router = useRouter();
+const router = useRouter(); // inicializacion para acceso al router
 const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 const searchTerm = ref("");
 

@@ -1,104 +1,4 @@
-<script setup>
-import { ref, reactive, computed } from "vue";
-import BaseButton from "../ui/BaseButton.vue";
-import { useStore } from "vuex";
-import { useRouter, useRoute } from "vue-router";
-import BaseSpinner from "../ui/BaseSpinner.vue";
-
-const route = useRoute();
-
-// Define a ref to track if data is loaded
-const isProcessing = ref(false);
-
-const loginError = ref(false);
-const errorCode = ref(null);
-//computed
-const loginRedirection = computed(() => {
-  return route.query.from;
-});
-
-//data
-const data = reactive({
-  email: {
-    val: "",
-    isValid: true,
-  },
-  password: {
-    val: "",
-    isValid: true,
-  },
-});
-
-const formIsValid = ref(true);
-
-//vuex
-const store = useStore(); // inicializacion para acceso al state en el store de Vuex
-const router = useRouter();
-
-//methods
-const clearValidity = (input) => {
-  console.log(`Setting valid to true: ${input}`);
-  data[input].isValid = true;
-};
-
-//validación específica de cada uno de los campos del formulario
-const validateForm = async () => {
-  console.log("Running validation on registration form");
-
-  formIsValid.value = true;
-
-  if (data.email.val === "") {
-    data.email.isValid = false;
-    formIsValid.value = false;
-  }
-  if (data.password.val === "") {
-    data.password.isValid = false;
-    formIsValid.value = false;
-  }
-  loginError.value = false;
-};
-
-const submitForm = async () => {
-  await validateForm();
-  if (!formIsValid.value) {
-    return;
-  }
-  await login();
-};
-
-const login = async () => {
-  isProcessing.value = true; // Set data loaded to true once data is fetched
-  try {
-    await store.dispatch("login", {
-      payload: { email: data.email.val, password: data.password.val },
-    });
-    isProcessing.value = false; // Set data loaded to true once data is fetched
-    handleSuccessfulLogin();
-  } catch (error) {
-    isProcessing.value = false; // Set data loaded to true once data is fetched
-    loginError.value = true;
-    if (error.response.status) {
-      if (error.response.status && error.response.status === 422) {
-        errorCode.value = 422;
-      } else {
-        errorCode.value = error.response.status;
-      }
-    } else {
-      errorCode.value = 0;
-      console.error(error.message);
-    }
-  }
-};
-
-const handleSuccessfulLogin = () => {
-  if (route.query.from != undefined && route.query.from.length > 0) {
-    router.replace(route.query.from);
-  } else {
-    router.push("/products");
-  }
-};
-</script>
-
+<!--Componente formulario para logear a un usuario. Solo hay un par de campos, que se validan. En caso de exito, se redirije a los productos, en caso de error, se muestra el error en el formulario. -->
 <template>
   <div class="row justify-content-md-center">
     <div class="col-md-8">
@@ -169,6 +69,7 @@ const handleSuccessfulLogin = () => {
             </div>
           </div>
           <div v-if="!isProcessing">
+            <!--Si hay errores se muestran a continuacion. La variable de control de los errores se gestiona tras la llamada al login endpoint de la api-->
             <div
               id="login-errors"
               class="validation-error-container"
@@ -204,6 +105,104 @@ const handleSuccessfulLogin = () => {
     </div>
   </div>
 </template>
+<script setup>
+import { ref, reactive, computed } from "vue";
+import BaseButton from "../ui/BaseButton.vue";
+import { useStore } from "vuex";
+import { useRouter, useRoute } from "vue-router";
+import BaseSpinner from "../ui/BaseSpinner.vue";
+
+const route = useRoute();
+
+//Variable para gestionar la carga
+const isProcessing = ref(false);
+
+const loginError = ref(false);
+const errorCode = ref(null);
+
+//datos del formulario, reactivos y vinculados a los campos del formulario
+const data = reactive({
+  email: {
+    val: "",
+    isValid: true,
+  },
+  password: {
+    val: "",
+    isValid: true,
+  },
+});
+
+const formIsValid = ref(true);
+
+//vuex
+const store = useStore(); // inicializacion para acceso al state en el store de Vuex
+const router = useRouter(); // inicializacion para acceso al router
+
+//Para poner los campos en true al modificarlos y salir de ellos, asi que puede revalidar
+const clearValidity = (input) => {
+  console.log(`Setting valid to true: ${input}`);
+  data[input].isValid = true;
+};
+
+//validación específica de cada uno de los campos del formulario
+const validateForm = async () => {
+  console.log("Running validation on registration form");
+
+  formIsValid.value = true;
+
+  if (data.email.val === "") {
+    data.email.isValid = false;
+    formIsValid.value = false;
+  }
+  if (data.password.val === "") {
+    data.password.isValid = false;
+    formIsValid.value = false;
+  }
+  loginError.value = false;
+};
+//Envio del formulario. Se valida y si es valido, se llama a login() para logear al usuario frente al servidor
+const submitForm = async () => {
+  await validateForm();
+  if (!formIsValid.value) {
+    return;
+  }
+  await login();
+};
+
+//Funcion para logear al usuario
+const login = async () => {
+  isProcessing.value = true; // se activa la carga
+  try {
+    //se llama a la funcion de login del store de Vuex con los datos espearado, de forma async
+    await store.dispatch("login", {
+      payload: { email: data.email.val, password: data.password.val },
+    });
+    isProcessing.value = false; // se desactiva la carga
+    handleSuccessfulLogin(); //si todo va ok se gestiona el exito
+  } catch (error) {
+    isProcessing.value = false; // se desactiva la carga
+    loginError.value = true; //si hay errores se activa esta variable para mostrarlos en pantalla y se asignan corespondientemente el resto de variables de error
+    if (error.response.status) {
+      if (error.response.status && error.response.status === 422) {
+        errorCode.value = 422;
+      } else {
+        errorCode.value = error.response.status;
+      }
+    } else {
+      errorCode.value = 0;
+      console.error(error.message);
+    }
+  }
+};
+//funcion para gestionar el exito de la llamada. Redireccion bien a productos bien a la ruta anterior
+const handleSuccessfulLogin = () => {
+  if (route.query.from != undefined && route.query.from.length > 0) {
+    router.replace(route.query.from);
+  } else {
+    router.push("/products");
+  }
+};
+</script>
 
 <style scoped>
 form {

@@ -1,35 +1,36 @@
+/**Se trata de una funcion generica para validar password que se puede usar en varios sitios */
 export const usePasswordValidation = () => {
     const validatePassword = (password) => {
-        // Validate that password is provided and is a string
+        // Valida que se proporcione la contraseña y que sea una cadena
         if (typeof password !== 'string') {
             throw new Error('Password must be a string');
         }
-        // Check if the password is at least 8 characters long
+        //Comprueba si la contraseña tiene al menos 8 caracteres
         if (password.length < 8) {
             return false;
         }
 
-        // Check if the password contains at least one uppercase letter
+        //Comprueba si la contraseña contiene al menos una letra mayúscula
         if (!/[A-Z]/.test(password)) {
             return false;
         }
 
-        // Check if the password contains at least one lowercase letter
+        //Comprueba si la contraseña contiene al menos una letra minúscula
         if (!/[a-z]/.test(password)) {
             return false;
         }
 
-        // Check if the password contains at least one number
+        //Comprueba si la contraseña contiene al menos un número
         if (!/\d/.test(password)) {
             return false;
         }
 
-        // Check if the password contains at least one special character
+        //Comprueba si la contraseña contiene al menos un carácter especial
         if (!/[^a-zA-Z0-9]/.test(password)) {
             return false;
         }
 
-        // If all conditions are met, return true
+        // Si se cumplen todas las condiciones, devuelve verdadero
         return true;
     };
 

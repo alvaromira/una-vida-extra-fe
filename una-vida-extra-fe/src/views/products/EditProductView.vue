@@ -29,7 +29,7 @@ import EditProductForm from "../../components/ui/product/EditProductForm.vue";
 import axios from "axios";
 const baseApiUrl = import.meta.env.VITE_BASE_API_URL; //ruta base para la api del backend
 
-const router = useRouter();
+const router = useRouter(); // inicializacion para acceso al router
 const route = useRoute();
 
 defineProps({

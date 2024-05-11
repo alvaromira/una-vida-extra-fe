@@ -1,8 +1,8 @@
+<!--Componente para mostrar el icono de gravatar en un círculo y con diferentes tamaños y configuraciones-->
 <template>
   <div class="profile-picture" :class="mode">
     <img v-show="isDataLoaded" :src="gravatarUrl" alt="Profile" />
   </div>
-  <!--to do, show only when registering not, when logged in-->
   <div v-if="props.gravatarInfo">
     <p>
       Since we are about re-using, we use the
@@ -13,18 +13,17 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, computed } from "vue";
+import { ref, onMounted, watch } from "vue";
 import md5 from "md5";
 
-// Define a ref to track if data is loaded
+//variable para ver la carga esta completa o no
 const isDataLoaded = ref(false);
 
-//What the prop received and update the gravatar url
+//Watch para monitorizar cuando cambia la propiedad recibida y capturar el gravatar. Se usa en el registro de usuarios a medida que el usuario teclea el email
 watch(
   () => props.userEmail,
   (newValue, oldValue) => {
     gravatarUrl.value = generateGravatarUrl(newValue);
-    // Do something when myProp changes
   }
 );
 
@@ -32,7 +31,7 @@ const props = defineProps({
   userEmail: String,
   mode: {
     type: String,
-    default: "small", // Default value for the isEnabled prop
+    default: "small", // Se aceptan small,medium y large. El predefenido es small
   },
   gravatarInfo: {
     type: Boolean,
@@ -42,62 +41,41 @@ const props = defineProps({
 const isGravatarValid = ref(false);
 const gravatarUrl = ref("");
 
+//Al crearse elcomponente, se usa la direccion email del usuario para capturar su gravatar
 onMounted(() => {
   gravatarUrl.value = generateGravatarUrl(props.userEmail);
 });
 
+//Funcion para obtener el gravatar del usuario desde Gravatar usando la API y el email del usuario.
 const generateGravatarUrl = async (email) => {
   if (!email || email.trim() === "") {
-    // Handle null or empty email case
     return null;
   }
-
+  //se crea el hash necesario para la llamada a api de Gravatar
   const hash = md5(email.toLowerCase().trim());
-  // console.log(hash);
 
+  //Se hace una llamada http sin axios porque en Axios por defecto se usa el valor withCredentials = true y ahora no hace falta
   try {
     const xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
       if (xhr.readyState === XMLHttpRequest.DONE) {
         if (xhr.status === 200) {
-          // Gravatar exists
+          // Hay gravatar disponible, se usa
           isGravatarValid.value = true;
           gravatarUrl.value = `https://gravatar.com/avatar/${hash}?d=identicon`;
-          isDataLoaded.value = true; // Set data loaded to true once data is fetched
-
-          // document.getElementById('result').innerText = 'Gravatar exists!';
+          isDataLoaded.value = true; // carga completada
         } else {
+          //si no hay gravatar para el correo, se genera una imagen aleatoria a partir del correo.
           isGravatarValid.value = false;
           gravatarUrl.value = "https://ui-avatars.com/api/?name=" + email;
-          isDataLoaded.value = true; // Set data loaded to true once data is fetched
-
-          // Gravatar does not exist
-          //document.getElementById('result').innerText = 'Gravatar does not exist.';
+          isDataLoaded.value = true;
         }
       }
     };
-    xhr.open("GET", `https://gravatar.com/avatar/${hash}?d=robohash`, true);
+    xhr.open("GET", `https://gravatar.com/avatar/${hash}?d=robohash`, true); //con la opcion robohash, se genera una imagen aleatoria si no hay correo registrado
     xhr.send();
-
-    /*  const response = await axios.get(
-      `https://gravatar.com/avatar/${hash}?d=404`,
-      {
-        withCredentials: false,
-      }
-    );
-
-    if (response.status === 200) {
-      // Gravatar exists
-      isGravatarValid.value = true;
-      gravatarUrl.value = `https://gravatar.com/avatar/${hash}?d=identicon`;
-    } else {
-      // Gravatar does not exist
-      isGravatarValid.value = false;
-      gravatarUrl.value = "https://ui-avatars.com/api/?name=" + email;
-    }*/
   } catch (error) {
-    // Handle errors
-    console.error("Error checking the Gravatar:", error.message);
+    //errorores
     isGravatarValid.value = false;
     gravatarUrl.value = "https://ui-avatars.com/api/?name=" + email;
     isDataLoaded.value = true; // Set data loaded to true once data is fetched
@@ -107,7 +85,7 @@ const generateGravatarUrl = async (email) => {
 
 <style scoped>
 .profile-picture {
-  border-radius: 50%;
+  border-radius: 50%; /** se usa el border radius al 50% para hacer un circulo */
   overflow: hidden;
   margin-inline-end: 3px;
   background-color: #e9ecef;
@@ -116,18 +94,18 @@ const generateGravatarUrl = async (email) => {
 }
 
 .small {
-  width: 35px; /* Adjust the size as needed */
-  height: 35px; /* Adjust the size as needed */
+  width: 35px;
+  height: 35px;
 }
 
 .medium {
-  width: 75px; /* Adjust the size as needed */
-  height: 75px; /* Adjust the size as needed */
+  width: 75px;
+  height: 75px;
 }
 
 .large {
-  width: 125px; /* Adjust the size as needed */
-  height: 125px; /* Adjust the size as needed */
+  width: 125px;
+  height: 125px;
 }
 
 .profile-picture img {

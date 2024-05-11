@@ -1,7 +1,8 @@
-<!--https://www.digitalocean.com/community/tutorials/vuejs-vue-modal-component-->
+<!--Componente Modal para confirmar o cancelar y devolver al padre un evento corespondiente-->
 <template>
   <transition name="modal-fade">
     <div class="modal-backdrop">
+      <!--se pone todo el fondo tapado para forzar accion sobre el modal-->
       <div
         class="modal-container"
         role="dialog"
@@ -10,6 +11,7 @@
       >
         <header class="modal-header" id="modalTitle">
           <slot name="header"> This is the default title! </slot>
+          <!--se usa un slot para pasar contenido-->
           <button
             type="button"
             class="btn-close"
@@ -23,6 +25,7 @@
         </section>
 
         <footer class="modal-footer">
+          <!--evento onclick que manda la confirmacion al padre-->
           <button
             type="button"
             class="btn-confirm"
@@ -31,6 +34,7 @@
           >
             Confirm
           </button>
+          <!--evento onclick que manda la cancelacion al padre-->
           <button
             type="button"
             class="btn-cancel"
@@ -47,19 +51,20 @@
 
 <script setup>
 import { defineEmits } from "vue";
-
+//El modal va a emitir dos eventos, uno para cerrar y otro para confirmar.
 const emit = defineEmits(["modal-close", "modal-confirmed"]);
-
+//funcion para emitir el evento de cierre al padre
 function onClose() {
   emit("modal-close");
 }
-
+//funcion para emitir el evento de confirmacion al padre
 function onConfirm() {
   emit("modal-confirmed");
 }
 </script>
 
 <style>
+/* Clase para poner todo el fondo en semi-opaco */
 .modal-backdrop {
   position: fixed;
   top: 0;

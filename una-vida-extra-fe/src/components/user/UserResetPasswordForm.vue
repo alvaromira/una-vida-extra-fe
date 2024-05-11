@@ -1,3 +1,136 @@
+<template>
+  <form @submit.prevent="submitForm" class="rounded">
+    <div class="container">
+      <div class="form-field row text-center">
+        <div class="col-3 form-label">
+          <label for="email">Email</label>
+        </div>
+        <div class="col-9">
+          <input
+            class="form-control col-8"
+            :class="{ invalid: !data.email.isValid }"
+            type="email"
+            id="email"
+            v-model.trim="data.email.val"
+            @blur="clearValidity('email')"
+          />
+        </div>
+      </div>
+      <div
+        v-if="!data.email.isValid"
+        class="validation-error-container pointer-up row"
+        :class="{ active: !data.email.isValid }"
+      >
+        <div class="col">
+          <p>Email must not be empty.</p>
+        </div>
+      </div>
+
+      <div class="form-field row text-center">
+        <div class="col-3 form-label">
+          <label for="password">Password</label>
+        </div>
+        <div class="col-9">
+          <div class="input-group">
+            <input
+              class="form-control"
+              :class="{ invalid: !data.password.isValid }"
+              :type="showPassword ? 'text' : 'password'"
+              id="password"
+              v-model.trim="data.password.val"
+              @blur="clearValidity('password')"
+            />
+            <span
+              class="input-group-text visibility-icon"
+              id="input-password-visibility"
+              data-target="password"
+              @click.prevent="togglePasswordVisibility"
+              >@</span
+            >
+          </div>
+        </div>
+      </div>
+      <div
+        v-if="!data.password.isValid"
+        class="validation-error-container pointer-up row"
+        :class="{ active: !data.password.isValid }"
+      >
+        <div class="col">
+          <p>
+            Password must be at least 8 characters long and contain at least one
+            uppercase letter, one lowercase letter, one number, and one special
+            character."
+          </p>
+        </div>
+      </div>
+
+      <div class="form-field row text-center">
+        <div class="col-3 form-label">
+          <label for="password-confirmation">Password Confirmation</label>
+        </div>
+        <div class="col-9">
+          <div class="input-group">
+            <input
+              class="form-control col-8"
+              :class="{ invalid: !data.passwordConfirmation.isValid }"
+              :type="showPassword ? 'text' : 'password'"
+              id="password-confirmation"
+              v-model.trim="data.passwordConfirmation.val"
+              @blur="clearValidity('passwordConfirmation')"
+            />
+            <span
+              class="input-group-text visibility-icon"
+              id="input-password-confirmation-visibility"
+              data-target="password-confirmation"
+              @click.prevent="togglePasswordVisibility"
+              >@</span
+            >
+          </div>
+        </div>
+      </div>
+      <div
+        v-if="!data.passwordConfirmation.isValid"
+        class="validation-error-container pointer-up row"
+        :class="{ active: !data.passwordConfirmation.isValid }"
+      >
+        <div class="col">
+          <p>The password confirmation must match the password.</p>
+        </div>
+      </div>
+
+      <div>
+        <div
+          v-if="formIsValid.value === false"
+          class="form-field row text-center"
+        >
+          <p>Please fix the above errors and submit again.</p>
+        </div>
+      </div>
+      <div v-if="!isProcessing">
+        <div
+          id="login-errors"
+          class="validation-error-container row"
+          :class="{ active: resetError }"
+          v-if="resetError"
+        >
+          <p class="validation-error col">
+            {{ errorString }}
+          </p>
+        </div>
+      </div>
+      <div v-else class="loading">
+        <base-spinner></base-spinner>
+      </div>
+      <div class="form-field row submit">
+        <div class="col-md-6"></div>
+        <div class="form-submit-button col-md-6">
+          <BaseButton :disabled="isProcessing">Reset Password</BaseButton>
+        </div>
+      </div>
+    </div>
+  </form>
+</template>
+
 <script setup>
 import { ref, reactive, computed, onMounted } from "vue";
 import BaseButton from "../ui/BaseButton.vue";
@@ -55,7 +188,7 @@ const formIsValid = ref(true);
 
 //vuex
 const store = useStore(); // inicializacion para acceso al state en el store de Vuex
-const router = useRouter();
+const router = useRouter(); // inicializacion para acceso al router
 const route = useRoute();
 
 //received from the route
@@ -207,139 +340,6 @@ const handleSuccessfulReset = () => {
   router.push("/login");
 };
 </script>
-
-<template>
-  <form @submit.prevent="submitForm" class="rounded">
-    <div class="container">
-      <div class="form-field row text-center">
-        <div class="col-3 form-label">
-          <label for="email">Email</label>
-        </div>
-        <div class="col-9">
-          <input
-            class="form-control col-8"
-            :class="{ invalid: !data.email.isValid }"
-            type="email"
-            id="email"
-            v-model.trim="data.email.val"
-            @blur="clearValidity('email')"
-          />
-        </div>
-      </div>
-      <div
-        v-if="!data.email.isValid"
-        class="validation-error-container pointer-up row"
-        :class="{ active: !data.email.isValid }"
-      >
-        <div class="col">
-          <p>Email must not be empty.</p>
-        </div>
-      </div>
-
-      <div class="form-field row text-center">
-        <div class="col-3 form-label">
-          <label for="password">Password</label>
-        </div>
-        <div class="col-9">
-          <div class="input-group">
-            <input
-              class="form-control"
-              :class="{ invalid: !data.password.isValid }"
-              :type="showPassword ? 'text' : 'password'"
-              id="password"
-              v-model.trim="data.password.val"
-              @blur="clearValidity('password')"
-            />
-            <span
-              class="input-group-text visibility-icon"
-              id="input-password-visibility"
-              data-target="password"
-              @click.prevent="togglePasswordVisibility"
-              >@</span
-            >
-          </div>
-        </div>
-      </div>
-      <div
-        v-if="!data.password.isValid"
-        class="validation-error-container pointer-up row"
-        :class="{ active: !data.password.isValid }"
-      >
-        <div class="col">
-          <p>
-            Password must be at least 8 characters long and contain at least one
-            uppercase letter, one lowercase letter, one number, and one special
-            character."
-          </p>
-        </div>
-      </div>
-
-      <div class="form-field row text-center">
-        <div class="col-3 form-label">
-          <label for="password-confirmation">Password Confirmation</label>
-        </div>
-        <div class="col-9">
-          <div class="input-group">
-            <input
-              class="form-control col-8"
-              :class="{ invalid: !data.passwordConfirmation.isValid }"
-              :type="showPassword ? 'text' : 'password'"
-              id="password-confirmation"
-              v-model.trim="data.passwordConfirmation.val"
-              @blur="clearValidity('passwordConfirmation')"
-            />
-            <span
-              class="input-group-text visibility-icon"
-              id="input-password-confirmation-visibility"
-              data-target="password-confirmation"
-              @click.prevent="togglePasswordVisibility"
-              >@</span
-            >
-          </div>
-        </div>
-      </div>
-      <div
-        v-if="!data.passwordConfirmation.isValid"
-        class="validation-error-container pointer-up row"
-        :class="{ active: !data.passwordConfirmation.isValid }"
-      >
-        <div class="col">
-          <p>The password confirmation must match the password.</p>
-        </div>
-      </div>
-
-      <div>
-        <div
-          v-if="formIsValid.value === false"
-          class="form-field row text-center"
-        >
-          <p>Please fix the above errors and submit again.</p>
-        </div>
-      </div>
-      <div v-if="!isProcessing">
-        <div
-          id="login-errors"
-          class="validation-error-container row"
-          :class="{ active: resetError }"
-          v-if="resetError"
-        >
-          <p class="validation-error col">
-            {{ errorString }}
-          </p>
-        </div>
-      </div>
-      <div v-else class="loading">
-        <base-spinner></base-spinner>
-      </div>
-      <div class="form-field row submit">
-        <div class="col-md-6"></div>
-        <div class="form-submit-button col-md-6">
-          <BaseButton :disabled="isProcessing">Reset Password</BaseButton>
-        </div>
-      </div>
-    </div>
-  </form>
-</template>
 
 <style scoped>
 .visibility-icon {

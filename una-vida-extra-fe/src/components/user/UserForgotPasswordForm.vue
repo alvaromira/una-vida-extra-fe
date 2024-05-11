@@ -1,96 +1,6 @@
-<script setup>
-import { ref, reactive, computed } from "vue";
-import BaseButton from "../ui/BaseButton.vue";
-import { useStore } from "vuex";
-import { useRouter, useRoute } from "vue-router";
-import BaseSpinner from "../ui/BaseSpinner.vue";
-import axios from "axios";
-
-const route = useRoute();
-
-const isProcessing = ref(false);
-const resetError = ref(false);
-const errorCode = ref(null);
-
-//data
-const data = reactive({
-  email: {
-    val: "",
-    isValid: true,
-  },
-});
-
-const formIsValid = ref(true);
-
-//vuex
-const store = useStore(); // inicializacion para acceso al state en el store de Vuex
-const router = useRouter();
-
-const anyError = computed(() => {
-  if (data.email.isValid === false || resetError.value === true) {
-    return true;
-  }
-  return false;
-});
-
-//methods
-const clearValidity = (input) => {
-  console.log(`Setting valid to true: ${input}`);
-  data[input].isValid = true;
-};
-
-//validación específica de cada uno de los campos del formulario
-const validateForm = () => {
-  console.log("Running validation on registration form");
-
-  formIsValid.value = true;
-
-  if (data.email.val === "") {
-    data.email.isValid = false;
-    formIsValid.value = false;
-  }
-};
-
-const submitForm = () => {
-  resetError.value = false;
-  validateForm();
-  if (!formIsValid.value) {
-    return;
-  }
-  forgotPassword();
-};
-
-const handleSuccessfulReset = () => {
-  isProcessing.value = false;
-  //toast
-  store.commit("addToast", {
-    title: "Password Reset Requested",
-    type: "success",
-    message:
-      "You have requested a password reset. You will receive an email to process your password reset in a few minutes.",
-  });
-  router.push("/login");
-};
-
-async function forgotPassword() {
-  isProcessing.value = true;
-  try {
-    await store.dispatch("forgotPassword", {
-      email: data.email.val,
-    });
-    handleSuccessfulReset();
-  } catch (response) {
-    isProcessing.value = false;
-    resetError.value = true;
-    errorCode.value = response.response.status;
-  } finally {
-    isProcessing.value = false;
-  }
-}
-</script>
-
+<!--Componente formulario para resetar el password. Solo hay un campo, que se valida. En caso de exito, se redirije al login, en caso de error, se muestra el error en el formulario. -->
 <template>
-  <form @submit.prevent="submitForm">
+  <form @submit.prevent="submitForm" class="rounded">
     <div class="container">
       <div class="row instructions">
         <div class="col">
@@ -116,6 +26,7 @@ async function forgotPassword() {
         </div>
       </div>
       <div v-if="anyError">
+        <!--Si hay algun error se muestra. El unico que se espera es 422, otro tipo de error seria un fallo general tipo 500-->
         <div
           class="validation-error-container pointer-up row"
           :class="{ active: anyError }"
@@ -136,7 +47,7 @@ async function forgotPassword() {
           </div>
         </div>
       </div>
-
+      <!--Mostrar el icono de progreso mientras se carga-->
       <div v-if="isProcessing" class="loading">
         <base-spinner></base-spinner>
       </div>
@@ -148,6 +59,98 @@ async function forgotPassword() {
     </div>
   </form>
 </template>
+<script setup>
+import { ref, reactive, computed } from "vue";
+import BaseButton from "../ui/BaseButton.vue";
+import { useStore } from "vuex";
+import { useRouter, useRoute } from "vue-router";
+import BaseSpinner from "../ui/BaseSpinner.vue";
+
+const route = useRoute();
+
+const isProcessing = ref(false);
+const resetError = ref(false);
+const errorCode = ref(null);
+
+//Datos del formulario
+const data = reactive({
+  email: {
+    val: "",
+    isValid: true,
+  },
+});
+
+const formIsValid = ref(true);
+
+//vuex
+const store = useStore(); // inicializacion para acceso al state en el store de Vuex
+const router = useRouter(); // inicializacion para acceso al router
+
+//comprobacion de si hay algun error
+const anyError = computed(() => {
+  if (data.email.isValid === false || resetError.value === true) {
+    return true;
+  }
+  return false;
+});
+
+//funcion para poner al true si hace falta tras actualizar un campo, para que al validar compruebe si esta mal
+const clearValidity = (input) => {
+  data[input].isValid = true;
+};
+
+//VAlidacion del formulario, solo el correo
+const validateForm = () => {
+  formIsValid.value = true;
+
+  if (data.email.val === "") {
+    data.email.isValid = false;
+    formIsValid.value = false;
+  }
+};
+
+//envio del formulario. Si se pasa la validacion, se llama a la funcion para resetear el password
+const submitForm = () => {
+  resetError.value = false;
+  validateForm();
+  if (!formIsValid.value) {
+    return;
+  }
+  forgotPassword();
+};
+
+//Funcion para gestionar el resultado de la solicitud de reseteo correcto
+const handleSuccessfulReset = () => {
+  isProcessing.value = false;
+  //se muestra un toast de exito
+  store.commit("addToast", {
+    title: "Password Reset Requested",
+    type: "success",
+    message:
+      "You have requested a password reset. You will receive an email to process your password reset in a few minutes.",
+  });
+  //se redirije a la ruta login
+  router.push("/login");
+};
+
+//Funcion para solicitar al servidor el reseteo via API endpoint
+async function forgotPassword() {
+  isProcessing.value = true; //se muestra la carga
+  try {
+    await store.dispatch("forgotPassword", {
+      email: data.email.val,
+    });
+    handleSuccessfulReset();
+  } catch (response) {
+    //Si hay error, se guarda el mensaje de error y se muestra directamente en el formulario. Realmente el resultado de la llamada a la API es bien correcto o bien incorrecto, no hay muchos detalles que dar
+    isProcessing.value = false;
+    resetError.value = true;
+    errorCode.value = response.response.status;
+  } finally {
+    isProcessing.value = false; //se termina la carga
+  }
+}
+</script>
 
 <style scoped>
 form {

@@ -5,7 +5,7 @@ import { onMounted } from "vue";
 import store from "../../store";
 
 onMounted(async () => {
-  const router = useRouter();
+  const router = useRouter(); // inicializacion para acceso al router
   await store.dispatch("logout");
 
   //using replace to avoid potential issues with back and forth logging in and out

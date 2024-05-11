@@ -135,7 +135,7 @@ import axios from "axios";
 import { useStore } from "vuex";
 const baseApiUrl = import.meta.env.VITE_BASE_API_URL; //ruta base para la api del backend
 
-const router = useRouter();
+const router = useRouter(); // inicializacion para acceso al router
 const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 //data
 //Datos vinculados al formulario para irlos actualizando automáticamente (tienen un v-model)

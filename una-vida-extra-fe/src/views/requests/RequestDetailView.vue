@@ -23,7 +23,7 @@ const baseApiUrl = import.meta.env.VITE_BASE_API_URL; //ruta base para la api de
 const baseUrl = import.meta.env.VITE_BASE_URL; //ruta base para el cliente de la aplicacion
 const baseUrlImg = import.meta.env.VITE_BASE_IMG_URL; // ruta para las imagenes, que se hospedan en un S3 bucket de amazon
 
-const router = useRouter();
+const router = useRouter(); // inicializacion para acceso al router
 const route = useRoute();
 const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 

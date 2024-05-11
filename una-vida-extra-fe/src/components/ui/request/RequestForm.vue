@@ -80,7 +80,7 @@ const data = reactive({
 
 const formIsValid = ref(true);
 const store = useStore(); // inicializacion para acceso al state en el store de Vuex
-const router = useRouter();
+const router = useRouter(); // inicializacion para acceso al router
 
 //Metodo para poner a true tras salir
 const clearValidity = (input) => {

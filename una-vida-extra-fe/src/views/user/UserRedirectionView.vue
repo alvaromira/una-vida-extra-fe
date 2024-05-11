@@ -12,7 +12,7 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 
 const countdown = ref(5);
-const router = useRouter();
+const router = useRouter(); // inicializacion para acceso al router
 
 onMounted(() => {
   const timer = setInterval(() => {

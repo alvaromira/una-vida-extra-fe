@@ -1,3 +1,4 @@
+<!--Componente para cuando se reciben 404 en las llamadas a rutas. Es realmente una vista con el error estilizado y una invitación a seguir navegando para encontrar lo que se busca-->
 <template>
   <div class="row not-found-wrapper">
     <div class="col">
