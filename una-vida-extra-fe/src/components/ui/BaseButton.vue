@@ -1,41 +1,10 @@
-<script setup>
-import { defineProps } from "vue";
-/*
-const props = defineProps({
-  mode: {
-    type: String,
-    required: false,
-    default: null,
-  },
-  link: {
-    type: Boolean,
-    required: false,
-    default: false,
-  },
-  to: {
-    type: String,
-    required: false,
-    default: "/",
-  },
-});*/
-//Propiedades aceptadas por el componente
-const props = defineProps({
-  isDisabled: {
-    type: Boolean,
-    default: false, // Set the default value to false
-  },
-  mode: String,
-  link: String,
-  to: Object,
-});
-</script>
-
+<!--Componente boton que puede actuar como boton o enlace para rutas del router. Por defecto, es boton sin enlace. En todos los casos, el texto de boton o enlace va en el slot-->
 <template>
   <button
     v-if="!link"
     :class="mode"
     :disabled="props.isDisabled"
-    :title="props.isDisabled ? 'You have already requested this product' : ''"
+    :title="props.isDisabled ? 'This functionality is disabled for now' : ''"
   >
     <slot></slot>
   </button>
@@ -43,6 +12,19 @@ const props = defineProps({
     <slot></slot>
   </RouterLink>
 </template>
+
+<script setup>
+//Propiedades aceptadas por el componente
+const props = defineProps({
+  isDisabled: {
+    type: Boolean,
+    default: false, // Por defecto, false, no es enlace
+  },
+  mode: String, //realmente se soporta normal y outline, con las clases correspondientes
+  link: String,
+  to: Object, //se trata del destino en los enlaces
+});
+</script>
 
 <style scoped>
 button,

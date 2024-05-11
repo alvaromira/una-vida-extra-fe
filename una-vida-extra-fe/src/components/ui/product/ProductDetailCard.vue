@@ -24,7 +24,7 @@
                 <div
                   class="product-detail-card-map"
                   :class="{ active: isLocationDisplayed }"
-                  v-show="isLocationDisplayed"
+                  v-if="isLocationDisplayed"
                 >
                   <Map
                     :-requested-product-coords="[

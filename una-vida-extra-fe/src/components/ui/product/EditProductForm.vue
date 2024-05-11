@@ -190,7 +190,7 @@ const handleError = (error) => {
   let errorMessage = null;
 
   if (error.response) {
-    // Capture error status
+    // Capturar el codigo de error
     errorStatus = error.response.status;
     console.error("Error status", error.response.status);
 
@@ -204,17 +204,17 @@ const handleError = (error) => {
       }
     }
   } else {
-    // Other errors
+    // Otros errores
     console.error("Error message", error.message);
     console.error("Error code", error.code);
     errorStatus = error.code;
     errorMessage = error.message;
   }
 
-  // Construct final error message
+  // Construir el mensaje de error final
   const finalMessage = `The product could not be updated. Error code: ${errorStatus}. Error message: ${errorMessage}`;
 
-  // Show error toast
+  //Mostrar el toast con el error
   store.commit("addToast", {
     title: "Product Not Updated",
     type: "error",

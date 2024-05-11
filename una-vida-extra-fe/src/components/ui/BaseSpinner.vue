@@ -1,3 +1,4 @@
+<!--Se trata de un componente auxiliar para mostrar en momentos de carga o durante llamadas a la API. Puro en css con animaciones sin js-->
 <template>
   <div class="lds-ellipsis">
     <div></div>
