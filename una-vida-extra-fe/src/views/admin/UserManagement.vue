@@ -26,7 +26,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="user in userResults" :key="user.id">
+          <tr v-for="user in paginatedUsers" :key="user.id">
             <td>{{ user.id }}</td>
             <td>{{ user.user_is_admin }}</td>
             <td>{{ user.user_is_disabled }}</td>
@@ -368,22 +368,35 @@ const setUserForEdition = (value) => {
   userForEdition.value = value;
 };
 
-/*
 // Pagination variables
 const currentPage = ref(1);
-const pageSize = 10; // Number of users per page
-const totalPages = computed(() => userResults.value.meta.last_page);
+const itemsPerPage = ref(10); // Number of users per page
+const totalPages = computed(() => {
+  return Math.ceil(userResults.value.length / itemsPerPage.value);
+});
+
+const startIndex = computed(() => {
+  return (currentPage.value - 1) * itemsPerPage.value;
+});
+const endIndex = computed(() => {
+  return startIndex.value + itemsPerPage.value;
+});
+
+const paginatedUsers = computed(() => {
+  // Slice userResults array to get the current page's data
+  return userResults.value.slice(startIndex.value, endIndex.value);
+});
 
 // Load users for the current page
+/*
 const loadUsers = async () => {
   await getUserRequests(currentPage.value);
-};
+};*/
 
 // Event handler to load the previous page of users
 const loadPreviousPage = () => {
   if (currentPage.value > 1) {
     currentPage.value--;
-    loadUsers();
   }
 };
 
@@ -391,10 +404,9 @@ const loadPreviousPage = () => {
 const loadNextPage = () => {
   if (currentPage.value < totalPages.value) {
     currentPage.value++;
-    loadUsers();
   }
 };
-*/
+
 // Función para buscar usuarios según el texto de búsqueda
 const getAllUsers = async () => {
   try {
