@@ -338,7 +338,7 @@ const handleRequestError = (error) => {
   });
 };
 
-// Fetch all tags on component mount
+// Fetch all locations on component mount
 onMounted(async () => {
   await getAllLocations();
 });
@@ -371,7 +371,7 @@ async function confirmEdition(location) {
 async function deleteLocation(locationId) {
   try {
     //Delete the product by ID
-    await store.dispatch("deleteLocation", locationId);
+    // await store.dispatch("deleteLocation", locationId);
     const resp = await axios.delete(`${baseApiUrl}/locations/${locationId}`);
     store.commit("addToast", {
       title: "Location Deleted",
