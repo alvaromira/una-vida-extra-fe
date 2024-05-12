@@ -84,7 +84,6 @@ const imagePath = computed(() => {
   transition: border-color 0.3s ease;
 }
 .product-card-wrapper:hover {
-  cursor: pointer;
   border: thin solid lightgray;
 }
 .product-top {

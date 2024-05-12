@@ -179,8 +179,10 @@ const router = createRouter({
     {
       path: '/admin', // Ruta para el panel de administración
       name: 'admin',
+      redirect: '/admin/products', // Redirecciona a la página de gestión de productos por defecto
+
       children: [
-        { path: '', redirect: 'products' }, // Redirecciona a la página de gestión de productos por defecto
+        // { path: '', redirect: 'products' }, // Redirecciona a la página de gestión de productos por defecto
         { path: 'products', component: () => import('../views/admin/ProductManagement.vue') }, // Página de gestión de productos
         { path: 'users', component: () => import('../views/admin/UserManagement.vue') }, // Página de gestión de usuarios
         { path: 'categories', component: () => import('../views/admin/CategoryManagement.vue') }, // Página de gestión de categorías

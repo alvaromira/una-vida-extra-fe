@@ -4,16 +4,44 @@
   <div class="container">
     <div class="row admin-panel-jumbo">
       <div class="col">
-        <h2>Admin Panel</h2>
-        <p>
-          This is a resctricted area only available to admin users. Use the
-          navigation sidebar on the right to access the data managed in the app,
-          the users, etc.
-        </p>
-        <p>
-          Please be mindful of your actions when working on this admin panel
-          since your actions can be destructive, especially when deleting data.
-        </p>
+        <div class="d-flex" style="justify-content: space-between">
+          <h2>Admin Panel</h2>
+          &nbsp;
+          <a
+            class="collapse-icon"
+            data-bs-toggle="collapse"
+            href="#collapseInfo"
+            role="button"
+            aria-expanded="false"
+            aria-controls="collapseInfo"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-arrows-collapse"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8m7-8a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 4.293V.5A.5.5 0 0 1 8 0m-.5 11.707-1.146 1.147a.5.5 0 0 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 11.707V15.5a.5.5 0 0 1-1 0z"
+              />
+            </svg>
+          </a>
+        </div>
+        <div class="collapse" id="collapseInfo">
+          <p>
+            This is a resctricted area only available to admin users. Use the
+            navigation sidebar on the right to access the data managed in the
+            app, the users, etc.
+          </p>
+          <p>
+            Please be mindful of your actions when working on this admin panel
+            since your actions can be destructive, especially when deleting
+            data.
+          </p>
+        </div>
       </div>
     </div>
     <div class="admin-dashboard-nav row">
@@ -83,6 +111,9 @@ const route = useRoute();
 const currentPath = computed(() => route.path);
 </script>
 <style scoped>
+#collapseInfo {
+  padding-top: 1rem;
+}
 .admin-panel-jumbo {
   border-radius: 10px;
   padding: 2rem;
@@ -90,7 +121,6 @@ const currentPath = computed(() => route.path);
   background-color: #fff;
 }
 .admin-panel-jumbo h2 {
-  padding-bottom: 1rem;
 }
 .nav-pills {
   display: flex;
@@ -107,5 +137,14 @@ const currentPath = computed(() => route.path);
   padding: 2rem 0;
 }
 .admin-view-wrapper {
+}
+.collapse-icon {
+  display: flex;
+  color: #7ab370;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #7ab370;
+  padding: 1rem;
+  border-radius: 50%;
 }
 </style>
