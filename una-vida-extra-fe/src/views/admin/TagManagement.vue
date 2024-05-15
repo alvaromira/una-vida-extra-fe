@@ -1,3 +1,4 @@
+<!--Componente para gestionar todas las etiquetas disponibles. Se pueden crear nuevas, editar y borrar. Se usa el estado del store de Vuex y se pagina directamente para ponerlas todas a la vez. Se usan modales para estas acciones-->
 <template>
   <div>
     <div v-if="isDataLoaded">
@@ -147,46 +148,48 @@ import BaseSpinner from "../../components/ui/BaseSpinner.vue";
 import BaseButton from "../../components/ui/BaseButton.vue";
 import ModalConfirmationDialog from "../../components/ui/ModalConfirmationDialog.vue";
 
-// Access current route
+// Acceso a la ruta actual
 const route = useRoute();
-// Access Vuex store
+
 const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 
 // Computed property to access product results state from the store
 
 const productTags = computed(() => store.state.productTags);
 
-// Reference to track if data is loaded
+// Referencia para saber si los datos estan cargados
 const isDataLoaded = ref(false);
 
 //Variables para el componente Modal
 const isDeleteModalVisible = ref(false);
-// Setter for isDeleteModalVisible
+// Setter para isDeleteModalVisible
 const setIsDeleteModalVisible = (value) => {
   isDeleteModalVisible.value = value;
 };
 
 //Variables para el componente Modal
 const isEditModalVisible = ref(false);
-// Setter for isEditModalVisible
+// Setter para isEditModalVisible
 const setIsEditModalVisible = (value) => {
   isEditModalVisible.value = value;
 };
 
 const isCreateModalVisible = ref(false);
+//Setter paraisCreateModalVisible
 const setIsCreateModalVisible = (value) => {
   isCreateModalVisible.value = value;
 };
 
 const newTag = ref();
 
+//Funcion para cerrar todos los modales a la vez
 const closeAllModals = () => {
   setIsEditModalVisible(false);
   setIsDeleteModalVisible(false);
   setIsCreateModalVisible(false);
 };
 
-// Watch to be used as safeguard to make sure both modals can never be visible at the same time
+// Watchs que monitoriza y se utilizará como protección para garantizar que los modales nunca puedan ser visibles al mismo tiempo
 watch(
   () => isEditModalVisible.value,
   (newValue, oldValue) => {
@@ -205,7 +208,6 @@ watch(
 watch(
   () => isDeleteModalVisible.value,
   (newValue, oldValue) => {
-    console.log("isDeleteModalVisible changed from", oldValue, "to", newValue);
     if ((newValue = true)) {
       setIsEditModalVisible(false);
       setIsCreateModalVisible(false);
@@ -215,7 +217,6 @@ watch(
 watch(
   () => isCreateModalVisible.value,
   (newValue, oldValue) => {
-    console.log("isDeleteModalVisible changed from", oldValue, "to", newValue);
     if ((newValue = true)) {
       setIsEditModalVisible(false);
       setIsDeleteModalVisible(false);
@@ -238,24 +239,24 @@ const getAllTags = async () => {
     isDataLoaded.value = false;
     // Fetch all tags to store so they can be used
     await store.dispatch("getProductTags");
-    // Set data loaded to true once data is fetched
+    //Establece la carga a verdadero una vez que se obtienen los datos
     isDataLoaded.value = true;
   } catch (error) {
-    isDataLoaded.value = true; // Set data loaded to true once data is fetched
-    // Handle request error
+    isDataLoaded.value = true; //Establece la carga a verdadero una vez que se obtienen los datos
+    // Se gestiona el error en la solicitud
     handleRequestError(error);
   }
 };
 
-// Function to handle request errors
+// Función para manejar errores de solicitud
 const handleRequestError = (error) => {
-  console.error(error);
+  console.error(error); //como es un error, se saca como tal por consola tambien
   isDataLoaded.value = true;
   const errorMessage = error.response
     ? `There was an error while processing the requests. (Code: ${error.response.status})`
     : `There was an error while processing the requests. (Code: ${error.code})`;
 
-  // Dispatch toast message to Vuex store for error notification
+  // Enviar toast al estado de Vuex para notificación de error
   store.commit("addToast", {
     title: "Error Processing Requests",
     type: "error",
@@ -273,18 +274,21 @@ onUnmounted(() => {
   store.commit("setProductTags", []);
 });
 
+//Funcion que se ejecuta al confirmar el modal de borrado
 async function confirmDeletion(tag) {
   setTagForDeletion(tag);
   setIsCreateModalVisible(false);
   setIsEditModalVisible(false);
   setIsDeleteModalVisible(true);
 }
+//Funcion que se ejecuta al confirmar el modal de creacion
 async function confirmAddition() {
   setIsEditModalVisible(false);
   setIsDeleteModalVisible(false);
   setIsCreateModalVisible(true);
 }
 
+//Funcion que se ejecuta al confirmar el modal de edicion
 async function confirmEdition(tag) {
   //feed all the tags details to the form to be opened in the modal
   for (const key in editTagFormData) {
@@ -298,122 +302,124 @@ async function confirmEdition(tag) {
   setIsCreateModalVisible(false);
 }
 
+//Funcion que se encarga de eliminar el elemento y gestionar el resultado
 async function deleteTag(tagId) {
   try {
-    //Delete the product by ID
+    //Borar por ID
     await store.dispatch("deleteTag", tagId);
 
-    // Dispatch toast message to Vuex store for success notification
+    //Enviar toast al store de Vuex para mostrar la notificacion de exito
     store.commit("addToast", {
       title: "Tag Deleted",
       type: "success",
       message: `Tag ${tagId} has been deleted. The tag list will be reloaded.`,
     });
 
-    //reload all projects, using the first page
-    //currentPage.value = 1;
-    closeAllModals();
+    //se hace una recarga para obtener datos actualizados del servidor tras la accion
+
+    closeAllModals(); //se cierran todos los modales al terminar
     await getAllTags();
   } catch (error) {
-    isDataLoaded.value = true; // Set data loaded to true once data is fetched
-    // Handle request error
+    isDataLoaded.value = true; //Establece la carga a verdadero una vez que se obtienen los datos
+    // Se gestiona el error en la solicitud
     handleRequestError(error);
   }
 }
 
+//Funcion para crear elemento llamando a la API del backend
 async function createTag(tagName) {
   try {
-    //Edit the product by ID
     await store.dispatch("createTag", {
       name: tagName,
     });
 
-    // Dispatch toast message to Vuex store for success notification
+    //Enviar toast al store de Vuex para mostrar la notificacion de exito
     store.commit("addToast", {
       title: "Tag Created",
       type: "success",
       message: `The tag has been created. The tag list will be reloaded.`,
     });
 
-    //reload all projects, using the first page
-    //currentPage.value = 1;
-    closeAllModals();
+    //se hace una recarga para obtener datos actualizados del servidor tras la accion
+
+    closeAllModals(); //se cierran todos los modales al terminar
     await getAllTags();
   } catch (error) {
-    isDataLoaded.value = true; // Set data loaded to true once data is fetched
-    // Handle request error
+    isDataLoaded.value = true; //Establece la carga a verdadero una vez que se obtienen los datos
+    // Se gestiona el error en la solicitud
     handleRequestError(error);
   }
 }
+//Funcion para editar por el ID via la API del backend. Se usan los datos del formulario del edicion mostrado en el modal
 async function editTag(tag) {
   try {
-    //Edit the product by ID
     await store.dispatch("updateTag", {
       id: editTagFormData.id,
       newname: editTagFormData.name,
     });
 
-    // Dispatch toast message to Vuex store for success notification
+    //Enviar toast al store de Vuex para mostrar la notificacion de exito
     store.commit("addToast", {
       title: "Tag Updated",
       type: "success",
       message: `The tag has been updated. The tag list will be reloaded.`,
     });
 
-    //reload all projects, using the first page
-    //currentPage.value = 1;
-    closeAllModals();
+    //se hace una recarga para obtener datos actualizados del servidor tras la accion
+
+    closeAllModals(); //se cierran todos los modales al terminar
     await getAllTags();
   } catch (error) {
-    isDataLoaded.value = true; // Set data loaded to true once data is fetched
-    // Handle request error
+    isDataLoaded.value = true; //Establece la carga a verdadero una vez que se obtienen los datos
+    // Se gestiona el error en la solicitud
     handleRequestError(error);
   }
 }
 
+//Funcion para gestionar el resultado del cierre sin accion del modal de borrado
 const onDeleteModalClose = () => {
-  console.log("Modal closed, nothing confirmed...");
   setTagForDeletion(null);
   closeAllModals();
 };
+//Funcion para gestionar el resultado del cierre sin accion del modal de edicion
 const onEditModalClose = async () => {
-  console.log("Edit Modal closed, nothing confirmed...");
   await resetEditTagFormData();
   setTagForEdition(null);
   closeAllModals();
 };
+//Funcion para gestionar el resultado del cierre sin accion del modal de creacion
 const onCreateModalClose = () => {
-  console.log("Modal closed, nothing confirmed...");
   newTag.value = null;
   closeAllModals();
 };
 
+//Funcion para gestionar la confirmacion del modal de edicion. Con esto se pasa a la accion con la API del backend.
 const onEditModalConfirm = async () => {
-  console.log("Edit modal closd, cofirming something...");
   await editTag(tagForEdition);
   setTagForEdition(null);
   resetEditTagFormData();
 };
 
+//Funcion para gestionar la confirmacion del modal de edicion. Con esto se pasa a la accion con la API del backend.
 const onCreateModalConfirm = async () => {
-  console.log("Edit modal closd, cofirming something...");
   await createTag(newTag.value);
   newTag.value = null;
 };
 
+//Funcion para gestionar la confirmacion del modal de borrrado. Con esto se pasa a la accion con la API del backend.
 const onDeleteModalConfirm = async () => {
-  console.log("Modal closed, something confirmed...");
-
   await deleteTag(tagForDeletion.value);
   setTagForEdition(null);
   closeAllModals();
 };
 
+//Objecto que se vincula al formulario de edicion para eventualmente mandarlo como payload de la llamada  ala API
 const editTagFormData = {
   id: null,
   name: "",
 };
 
+//Funcion para resetear el formulario de edicion
 const resetEditTagFormData = async () => {
   editTagFormData.id = null;
   editTagFormData.name = "";

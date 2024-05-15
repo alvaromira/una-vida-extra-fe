@@ -292,7 +292,7 @@ const store = createStore({
                     userRequests.push(...requestObjects);
 
                     // Si no hay una página siguiente, se sale del bucle
-                    if (!data.next_page_url) {
+                    if (!data.data.links.next) {
                         break;
                     }
 

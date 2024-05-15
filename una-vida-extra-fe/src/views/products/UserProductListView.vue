@@ -80,17 +80,17 @@ const loggedInUser = computed(() => {
   return store.state.user.id;
 });
 
-// Pagination variables
+//Variables usadas en la paginacion
 const currentPage = ref(1);
-const pageSize = 10; // Number of products per page
+const pageSize = 10; // Numero de elementos por pagina
 const totalPages = computed(() => userProducts.value.meta.last_page);
 
-// Load products for the current page
+//Cargar elementos para la pagina actual
 const loadProducts = async () => {
   await getUserProducts(loggedInUser.value, currentPage.value);
 };
 
-// Event handler to load the previous page of products
+//Gestor del evento onclick para cargar la pagina anterior
 const loadPreviousPage = () => {
   if (currentPage.value > 1) {
     currentPage.value--;
@@ -98,7 +98,7 @@ const loadPreviousPage = () => {
   }
 };
 
-// Event handler to load the next page of products
+//Gestor del evento onclick para cargar la pagina siguiente
 const loadNextPage = () => {
   if (currentPage.value < totalPages.value) {
     currentPage.value++;
@@ -115,22 +115,22 @@ const getUserProducts = async (userId, page) => {
     });
     userProducts.value = fetchedUserProducts;
   } catch (error) {
-    // Handle request error
+    // Se gestiona el error en la solicitud
     handleRequestError(error);
   } finally {
     isDataLoaded.value = true;
   }
 };
 
-// Function to handle request errors
+// Función para manejar errores de solicitud
 const handleRequestError = (error) => {
-  console.error(error);
+  console.error(error); //como es un error, se saca como tal por consola tambien
   isDataLoaded.value = true;
   const errorMessage = error.response
     ? `There was an error while processing the requests. (Code: ${error.response.status})`
     : `There was an error while processing the requests. (Code: ${error.code})`;
 
-  // Dispatch toast message to Vuex store for error notification
+  // Enviar toast al estado de Vuex para notificación de error
   store.commit("addToast", {
     title: "Error Processing Your Products",
     type: "error",

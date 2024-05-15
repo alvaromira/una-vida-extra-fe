@@ -63,9 +63,9 @@ import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import BaseSpinner from "../../components/ui/BaseSpinner.vue";
 import BaseButton from "../../components/ui/BaseButton.vue";
-// Access current route
+// Acceso a la ruta actual
 const route = useRoute();
-// Access Vuex store
+
 const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 // Computed property to check if there's a registration redirection query parameter
 const registrationRedirection = computed(() => {
@@ -73,7 +73,7 @@ const registrationRedirection = computed(() => {
 });
 // Computed property to access product results state from the store
 const productResults = computed(() => store.state.productResults);
-// Reference to track if data is loaded
+// Referencia para saber si los datos estan cargados
 const isDataLoaded = ref(false);
 // Props definition for search text
 const props = defineProps({
@@ -83,17 +83,17 @@ const props = defineProps({
   },
 });
 
-// Pagination variables
+//Variables usadas en la paginacion
 const currentPage = ref(1);
-const pageSize = 10; // Number of products per page
+const pageSize = 10; // Numero de elementos por pagina
 const totalPages = computed(() => productResults.value.meta.last_page);
 
-// Load products for the current page
+//Cargar elementos para la pagina actual
 const loadProducts = async () => {
   await getProductRequests("", currentPage.value);
 };
 
-// Event handler to load the previous page of products
+//Gestor del evento onclick para cargar la pagina anterior
 const loadPreviousPage = () => {
   if (currentPage.value > 1) {
     currentPage.value--;
@@ -101,7 +101,7 @@ const loadPreviousPage = () => {
   }
 };
 
-// Event handler to load the next page of products
+//Gestor del evento onclick para cargar la pagina siguiente
 const loadNextPage = () => {
   if (currentPage.value < totalPages.value) {
     currentPage.value++;
@@ -129,26 +129,26 @@ const getProductRequests = async (search, page) => {
     } else {
       await store.dispatch("getProducts", page);
     }
-    // Set data loaded to true once data is fetched
+    //Establece la carga a verdadero una vez que se obtienen los datos
     isDataLoaded.value = true;
   } catch (error) {
-    isDataLoaded.value = true; // Set data loaded to true once data is fetched
-    // Handle request error
+    isDataLoaded.value = true; //Establece la carga a verdadero una vez que se obtienen los datos
+    // Se gestiona el error en la solicitud
     handleRequestError(error);
   } finally {
     isDataLoaded.value = true;
   }
 };
 
-// Function to handle request errors
+// Función para manejar errores de solicitud
 const handleRequestError = (error) => {
-  console.error(error);
+  console.error(error); //como es un error, se saca como tal por consola tambien
   isDataLoaded.value = true;
   const errorMessage = error.response
     ? `There was an error while processing the requests. (Code: ${error.response.status})`
     : `There was an error while processing the requests. (Code: ${error.code})`;
 
-  // Dispatch toast message to Vuex store for error notification
+  // Enviar toast al estado de Vuex para notificación de error
   store.commit("addToast", {
     title: "Error Processing Requests",
     type: "error",
