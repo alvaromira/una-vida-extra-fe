@@ -294,7 +294,7 @@ const submitForm = async () => {
 
 const resetPassword = async () => {
   console.log("resetting password");
-  isProcessing.value = true; // Set data loaded to true once data is fetched
+  isProcessing.value = true; //Establece la carga a verdadero una vez que se obtienen los datos
   try {
     const formData = {
       email: data.email.val,
@@ -306,11 +306,11 @@ const resetPassword = async () => {
     await store.dispatch("resetPassword", {
       payload: formData,
     });
-    isProcessing.value = false; // Set data loaded to true once data is fetched
+    isProcessing.value = false; //Establece la carga a verdadero una vez que se obtienen los datos
     handleSuccessfulReset();
   } catch (error) {
     console.log(error);
-    isProcessing.value = false; // Set data loaded to true once data is fetched
+    isProcessing.value = false; //Establece la carga a verdadero una vez que se obtienen los datos
 
     if (error.response.status) {
       if (error.response.status && error.response.status === 422) {

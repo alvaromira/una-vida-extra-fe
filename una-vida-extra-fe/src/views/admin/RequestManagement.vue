@@ -1,3 +1,4 @@
+<!--Componente para la gestion de los solicitudes de todos los usuarios y productos. Se pagina directamente en local, por lo que la carga inicial es un poco lenta. Se usan modales para la edicion y el borrado. El administrador no crea solicitudes desde el panel. -->
 <template>
   <div>
     <div v-if="isDataLoaded">
@@ -65,19 +66,6 @@
           </tr>
         </tbody>
       </table>
-
-      <!--<section class="request-card-container">
-        <div v-for="request in requestResults.data">
-          <request-card
-            :key="request.id"
-            :id="request.id"
-            :image="request.image"
-            :title="request.title"
-            :date="request.created_at"
-            :location="request.location"
-          />
-        </div>
-      </section>-->
       <!-- Pagination controls -->
       <div class="pagination-controls">
         <BaseButton @click="loadPreviousPage" :disabled="currentPage === 1">
@@ -240,44 +228,40 @@ const baseUrl = import.meta.env.VITE_BASE_API_URL;
 const baseUrlImg = import.meta.env.VITE_BASE_IMG_URL;
 const baseApiUrl = import.meta.env.VITE_BASE_API_URL; //ruta base para la api del backend
 
-const { formatDate } = useUserFriendlyTimeStamp(); //fucion para validar passwords
+const { formatDate } = useUserFriendlyTimeStamp(); //funcion para poner la fecha en bonito
 
-// Access current route
+// Acceso a la ruta actual
 const route = useRoute();
-// Access Vuex store
+
 const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 
 // Computed property to access request results state from the store
 const requestResults = ref(null);
 
-// Reference to track if data is loaded
+// Referencia para saber si los datos estan cargados
 const isDataLoaded = ref(false);
 
 //Variables para el componente Modal
 const isDeleteModalVisible = ref(false);
-// Setter for isDeleteModalVisible
+// Setter para isDeleteModalVisible
 const setIsDeleteModalVisible = (value) => {
   isDeleteModalVisible.value = value;
 };
 
 //Variables para el componente Modal
 const isEditModalVisible = ref(false);
-// Setter for isEditModalVisible
+// Setter para isEditModalVisible
 const setIsEditModalVisible = (value) => {
   isEditModalVisible.value = value;
 };
 
-const isCreateModalVisible = ref(false);
-const setIsCreateModalVisible = (value) => {
-  isCreateModalVisible.value = value;
-};
-
+//Funcion para cerrar todos los modales a la vez
 const closeAllModals = () => {
   setIsEditModalVisible(false);
   setIsDeleteModalVisible(false);
 };
 
-// Watch to be used as safeguard to make sure both modals can never be visible at the same time
+// Watchs que monitoriza y se utilizará como protección para garantizar que los modales nunca puedan ser visibles al mismo tiempo
 watch(
   () => isEditModalVisible.value,
   (newValue, oldValue) => {
@@ -296,29 +280,19 @@ watch(
 watch(
   () => isDeleteModalVisible.value,
   (newValue, oldValue) => {
-    console.log("isDeleteModalVisible changed from", oldValue, "to", newValue);
     if ((newValue = true)) {
       setIsEditModalVisible(false);
       //setIsCreateModalVisible(false);
     }
   }
 );
-/*
-watch(
-  () => isCreateModalVisible.value,
-  (newValue, oldValue) => {
-    console.log("isDeleteModalVisible changed from", oldValue, "to", newValue);
-    if ((newValue = true)) {
-      setIsEditModalVisible(false);
-      setIsDeleteModalVisible(false);
-    }
-  }
-);
-*/
+//Variable y setter para la solicitud a borrar
 const requestForDeletion = ref();
 const setrequestForDeletion = (value) => {
   requestForDeletion.value = value;
 };
+//Variable y setter para la solicitud a editar
+
 const requestForEdition = ref();
 const setRequestForEdition = (value) => {
   requestForEdition.value = value;
@@ -327,40 +301,43 @@ const setRequestForEdition = (value) => {
 //Total de solicitudes
 const totalRequest = ref(0);
 
-// Pagination variables
+//Variables usadas en la paginacion
 const currentPage = ref(1);
-const itemsPerPage = ref(10); // Number of requests per page
+const itemsPerPage = ref(10); // Numero de elementos por pagina
 const totalPages = computed(() => {
   return Math.ceil(requestResults.value.length / itemsPerPage.value);
 });
 
+//indice de inicio de la pagina
 const startIndex = computed(() => {
   return (currentPage.value - 1) * itemsPerPage.value;
 });
+//indice de fin de una pagina
 const endIndex = computed(() => {
   return startIndex.value + itemsPerPage.value;
 });
 
+//computada para los resultados paginados en local. Se usa el indica de inicio y de fin para cortar los elementos necesarios de los resultados originales recuperados de la api
 const paginatedRequests = computed(() => {
-  // Slice requestResults array to get the current page's data
+  // Cortar la matriz requestResults para obtener los datos de la página actual
   return requestResults.value.slice(startIndex.value, endIndex.value);
 });
 
-// Event handler to load the previous page of requests
+// Manejador de eventos para cargar la página anterior de solicitudes
 const loadPreviousPage = () => {
   if (currentPage.value > 1) {
     currentPage.value--;
   }
 };
 
-// Event handler to load the next page of requests
+// Manejador de eventos para cargar la siguiente página de solicitudes
 const loadNextPage = () => {
   if (currentPage.value < totalPages.value) {
     currentPage.value++;
   }
 };
 
-// Función para buscar usuarios según el texto de búsqueda
+// Función para obtener todas las solicitudes y gestionar el resultado en el componente
 const getAllRequests = async () => {
   try {
     isDataLoaded.value = false;
@@ -373,7 +350,7 @@ const getAllRequests = async () => {
     isDataLoaded.value = true; // Establece los datos cargados en verdadero una vez que se obtienen los datos o hay error
   }
 };
-
+//Funcion para recuperar todas las solicitudes en local, sin usar el estado. Se paginan todos los resultados de la api
 const fetchAllRequests = async () => {
   const allRequests = []; // Array para almacenar usuarios
   let page = 1; // Página actual inicializada en 1
@@ -447,11 +424,7 @@ const handleRequestError = (error) => {
       }
     }
   } else {
-    // Otros errores
     console.error("There was an unexpected error processing the request.");
-    //console.error("Error code", error.code);
-    // errorStatus = error.code;
-    // errorMessage = error.message;
   }
 
   // Construir el mensaje de error final
@@ -465,34 +438,19 @@ const handleRequestError = (error) => {
   });
 };
 
-/*
-// Function to handle request errors
-const handleRequestError = (error) => {
-  console.error(error);
-  isDataLoaded.value = true;
-  const errorMessage = error.response
-    ? `There was an error while processing the requests. (Code: ${error.response.status})`
-    : `There was an error while processing the requests. (Code: ${error.code})`;
-
-  // Dispatch toast message to Vuex store for error notification
-  store.commit("addToast", {
-    title: "Error Processing Requests",
-    type: "error",
-    message: errorMessage,
-  });
-};*/
-
-// Fetch requests on component mount
+// Recuperar solicitudes en el montaje de componentes
 onMounted(async () => {
   await getAllRequests();
 });
 
+//Funcion que se ejecuta al confirmar el modal de borrado
 async function confirmDeletion(requestId) {
   setrequestForDeletion(requestId);
   setIsEditModalVisible(false);
   //setIsCreateModalVisible(false);
   setIsDeleteModalVisible(true);
 }
+//Funcion que se ejecuta al confirmar el modal de edicion
 async function confirmEdition(request) {
   // Convertir los posibles booleanos a enteros en un nuevo objeto clonado
   const castedObject = { ...request };
@@ -505,31 +463,30 @@ async function confirmEdition(request) {
   }
 
   // Establecer el usuario para la edición y controlar la visibilidad de los modales
-  setRequestForEdition(castedObject);
+  setRequestForEdition(castedObject); //se envia el objecto actualizado y convertido para la llamada a la api
   setIsDeleteModalVisible(false);
   //setIsCreateModalVisible(false);
   setIsEditModalVisible(true);
 }
 
+//Funcion que se encarga de eliminar el elemento y gestionar el resultado
 async function deleteRequest(requestId) {
   try {
     //Delete the request by ID
     const resp = await axios.delete(`${baseApiUrl}/requests/${requestId}`);
-    //let message = `Request ${requestId} has been deleted`;
-    // Dispatch toast message to Vuex store for success notification
+
+    //Enviar toast al store de Vuex para mostrar la notificacion de exito
     store.commit("addToast", {
       title: "Request Deleted",
       type: "success",
       message: `Request ${requestId} has been deleted. The request list will be reloaded.`,
     });
 
-    //reload all requests, using the first page
-    //currentPage.value = 1;
-    closeAllModals();
-    await getAllRequests();
+    closeAllModals(); //se cierran todos los modales al terminar
+    await getAllRequests(); //se recargan todas las solicitudes
   } catch (error) {
-    isDataLoaded.value = true; // Set data loaded to true once data is fetched
-    // Handle request error
+    isDataLoaded.value = true; //Establece la carga a verdadero una vez que se obtienen los datos
+    // Se gestiona el error en la solicitud
     handleRequestError(error);
   }
 }
@@ -556,6 +513,7 @@ function transformEditRequestFormData(editRequestFormData) {
   return copyEditRequestFormData;
 }
 
+//Funcion para editar por el ID via la API del backend. Se usan los datos del formulario del edicion mostrado en el modal
 async function editRequest(requestForEdition) {
   let requestId = requestForEdition.value.id;
   try {
@@ -572,23 +530,26 @@ async function editRequest(requestForEdition) {
 
     return true;
   } catch (error) {
-    isDataLoaded.value = true; // Set data loaded to true once data is fetched
-    // Handle request error
+    isDataLoaded.value = true; //Establece la carga a verdadero una vez que se obtienen los datos
+    // Se gestiona el error en la solicitud
     handleRequestError(error);
     return false;
   }
 }
 
+//Funcion para gestionar el resultado del cierre sin accion del modal de borrado
 const onDeleteModalClose = () => {
   setrequestForDeletion(null);
   closeAllModals();
 };
+//Funcion para gestionar el resultado del cierre sin accion del modal de edicion
 const onEditModalClose = async () => {
   await resetEditRequestFormData();
   setRequestForEdition(null);
   closeAllModals();
 };
 
+//Funcion para gestionar la confirmacion del modal de edicion. Con esto se pasa a la accion con la API del backend.
 const onEditModalConfirm = async () => {
   const response = await editRequest(requestForEdition);
   if (response === true) {
@@ -597,12 +558,14 @@ const onEditModalConfirm = async () => {
   }
 };
 
+//Funcion para gestionar la confirmacion del modal de borrrado. Con esto se pasa a la accion con la API del backend.
 const onDeleteModalConfirm = async () => {
   await deleteRequest(requestForDeletion.value);
   setRequestForEdition(null);
   closeAllModals();
 };
 
+//Objecto que se vincula al formulario de edicion para eventualmente mandarlo como payload de la llamada  ala API
 const editRequestFormData = {
   id: null, //id no se actualiza nunca, solo se lee
   request_date: null,
@@ -614,6 +577,7 @@ const editRequestFormData = {
   created_at: "", //solo se lee
 };
 
+//Funcion para resetear el formulario de edicion
 const resetEditRequestFormData = async () => {
   editRequestFormData.id = null;
   editRequestFormData.request_date = null;
@@ -623,11 +587,6 @@ const resetEditRequestFormData = async () => {
   editRequestFormData.product_id = null;
   editRequestFormData.is_accepted = null;
   editRequestFormData.created_at = "";
-};
-
-const submitEditRequestForm = () => {
-  // Submit form logic goes here
-  console.log(editRequestFormData);
 };
 </script>
 <style scoped>

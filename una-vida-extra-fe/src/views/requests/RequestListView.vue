@@ -69,7 +69,7 @@ const getProductRequests = async () => {
     //router.push({ name: "products", query: { registration: "success" } });
   } catch (error) {
     // Handle Error Here
-    console.error(error);
+    console.error(error); //como es un error, se saca como tal por consola tambien
     isLoading.value = false;
     requestError.value = true;
 
@@ -165,7 +165,6 @@ const onModalConfirm = async () => {
   setRequestDeletionConfirmed(true);
 };
 const onModalClose = () => {
-  console.log("Modal closed, nothing confirmed...");
   setIsModalVisible(false);
   setRequestDeletionConfirmed(false);
 };

@@ -1,9 +1,7 @@
+<!--Componente para la gestion de ubicacion. No se pueden crear ubicaciones, eso es la responsabilidad del usuario final.-->
 <template>
   <div>
     <div v-if="isDataLoaded">
-      <!--<div id="new-location-container">
-        <BaseButton @click="confirmAddition">Create new location</BaseButton>
-      </div>-->
       <table class="table table-hover table-sm">
         <thead>
           <tr>
@@ -150,32 +148,6 @@
         </form></div
     ></template>
   </ModalConfirmationDialog>
-  <!--<ModalConfirmationDialog
-    v-if="isCreateModalVisible"
-    @modal-confirmed="onCreateModalConfirm"
-    @modal-close="onCreateModalClose"
-    id="create-location-modal"
-  >
-    <template #header>Location Creation</template>
-    <template #body>
-      <div class="container">
-        <h2>Create Location</h2>
-        <form @submit.prevent="subitEditProductForm">
-        
-          <div class="mb-3">
-            <label for="name" class="form-label">Name</label>
-            <textarea
-              class="form-control"
-              id="name"
-              rows="3"
-              v-model="newLocation"
-            ></textarea>
-          </div>
-        </form></div
-    >
-
-    </template>
-  </ModalConfirmationDialog>  -->
 </template>
 
 <script setup>
@@ -189,45 +161,39 @@ import axios from "axios";
 
 const baseApiUrl = import.meta.env.VITE_BASE_API_URL; //ruta base para la api del backend
 
-// Access current route
+// Acceso a la ruta actual
 const route = useRoute();
-// Access Vuex store
+
 const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 
 //todas las ubicaciones
 const productLocations = ref(null);
 
-// Reference to track if data is loaded
+// Referencia para saber si los datos estan cargados
 const isDataLoaded = ref(false);
 
 //Variables para el componente Modal
 const isDeleteModalVisible = ref(false);
-// Setter for isDeleteModalVisible
+// Setter para isDeleteModalVisible
 const setIsDeleteModalVisible = (value) => {
   isDeleteModalVisible.value = value;
 };
 
 //Variables para el componente Modal
 const isEditModalVisible = ref(false);
-// Setter for isEditModalVisible
+// Setter para isEditModalVisible
 const setIsEditModalVisible = (value) => {
   isEditModalVisible.value = value;
 };
 
-//const isCreateModalVisible = ref(false);
-//const setIsCreateModalVisible = (value) => {
-//  isCreateModalVisible.value = value;
-//};
-
-//const newLocation = ref();
-
+//Funcion para cerrar todos los modales a la vez
 const closeAllModals = () => {
   setIsEditModalVisible(false);
   setIsDeleteModalVisible(false);
   //setIsCreateModalVisible(false);
 };
 
-// Watch to be used as safeguard to make sure both modals can never be visible at the same time
+// Watchs que monitoriza y se utilizará como protección para garantizar que los modales nunca puedan ser visibles al mismo tiempo
 watch(
   () => isEditModalVisible.value,
   (newValue, oldValue) => {
@@ -246,23 +212,12 @@ watch(
 watch(
   () => isDeleteModalVisible.value,
   (newValue, oldValue) => {
-    console.log("isDeleteModalVisible changed from", oldValue, "to", newValue);
     if ((newValue = true)) {
       setIsEditModalVisible(false);
       //   setIsCreateModalVisible(false);
     }
   }
 );
-/*watch(
-  () => isCreateModalVisible.value,
-  (newValue, oldValue) => {
-    console.log("isDeleteModalVisible changed from", oldValue, "to", newValue);
-    if ((newValue = true)) {
-      setIsEditModalVisible(false);
-      setIsDeleteModalVisible(false);
-    }
-  }
-);*/
 
 const locationForDeletion = ref();
 const setLocationForDeletion = (value) => {
@@ -273,21 +228,22 @@ const setLocationForEdition = (value) => {
   locationForEdition.value = value;
 };
 
-// Function to fetch all locations
+// Función para buscar todas las ubicaciones.
 const getAllLocations = async () => {
   try {
     isDataLoaded.value = false;
-    // Fetch all locations to store so they can be used
+    // Obtener todas las ubicaciones para almacenar para que puedan usarse
     productLocations.value = await fetchAllLocations();
-    // Set data loaded to true once data is fetched
+    //Establece la carga a verdadero una vez que se obtienen los datos
     isDataLoaded.value = true;
   } catch (error) {
-    isDataLoaded.value = true; // Set data loaded to true once data is fetched
-    // Handle request error
+    isDataLoaded.value = true; //Establece la carga a verdadero una vez que se obtienen los datos
+    // Se gestiona el error en la solicitud
     handleRequestError(error);
   }
 };
 
+//Funcion para hacer la llamada a la API y obtener las ubicaciones. Se hace desde el componente y no desde el store porque no se va a usar en ninguna parte mas. Se pagina directamente en la llamada y se guardan todas las ubicaciones en local
 const fetchAllLocations = async () => {
   const allLoc = []; // Array para almacenar las solicitudes de usuario
   let currentPage = 1; // Página actual inicializada en 1
@@ -322,15 +278,15 @@ const fetchAllLocations = async () => {
   return allLoc;
 };
 
-// Function to handle request errors
+// Función para manejar errores de solicitud
 const handleRequestError = (error) => {
-  console.error(error);
+  console.error(error); //como es un error, se saca como tal por consola tambien
   isDataLoaded.value = true;
   const errorMessage = error.response
     ? `There was an error while processing the requests. (Code: ${error.response.status})`
     : `There was an error while processing the requests. (Code: ${error.code})`;
 
-  // Dispatch toast message to Vuex store for error notification
+  // Enviar toast al estado de Vuex para notificación de error
   store.commit("addToast", {
     title: "Error Processing Requests",
     type: "error",
@@ -338,25 +294,22 @@ const handleRequestError = (error) => {
   });
 };
 
-// Fetch all locations on component mount
+// Obtener todas las ubicaciones en el montaje del componente
 onMounted(async () => {
   await getAllLocations();
 });
 
+//Funcion que se ejecuta al confirmar el modal de borrado
 async function confirmDeletion(location) {
   setLocationForDeletion(location);
   // setIsCreateModalVisible(false);
   setIsEditModalVisible(false);
   setIsDeleteModalVisible(true);
 }
-/*async function confirmAddition() {
-  setIsEditModalVisible(false);
-  setIsDeleteModalVisible(false);
- // setIsCreateModalVisible(true);
-}*/
 
+//Funcion que se ejecuta al confirmar el modal de edicion
 async function confirmEdition(location) {
-  //feed all the categoriy details to the form to be opened in the modal
+  //poner todos los datos en el formulario que se abrirá en el modal
   for (const key in editLocationFormData) {
     if (location.hasOwnProperty(key)) {
       editLocationFormData[key] = location[key];
@@ -368,50 +321,28 @@ async function confirmEdition(location) {
   //setIsCreateModalVisible(false);
 }
 
+//Funcion que se encarga de eliminar el elemento y gestionar el resultado
 async function deleteLocation(locationId) {
   try {
-    //Delete the product by ID
-    // await store.dispatch("deleteLocation", locationId);
+    //Borar por ID
+
     const resp = await axios.delete(`${baseApiUrl}/locations/${locationId}`);
     store.commit("addToast", {
       title: "Location Deleted",
       type: "success",
       message: `The location has been deleted. The list will be reloaded.`,
     });
-    closeAllModals();
+    closeAllModals(); //se cierran todos los modales al terminar
     await getAllLocations();
   } catch (error) {
-    isDataLoaded.value = true; // Set data loaded to true once data is fetched
-    // Handle request error
+    isDataLoaded.value = true; //Establece la carga a verdadero una vez que se obtienen los datos
+    // Se gestiona el error en la solicitud
     handleRequestError(error);
   }
 }
-/*
-async function createLocation(locationName) {
-  try {
-    //Edit the product by ID
-    await store.dispatch("createLocation", {
-      name: locationName,
-    });
 
-    // Dispatch toast message to Vuex store for success notification
-    store.commit("addToast", {
-      title: "Location Created",
-      type: "success",
-      message: `The location has been created. The list will be reloaded.`,
-    });
-
-    //reload all projects, using the first page
-    //currentPage.value = 1;
-    closeAllModals();
-    await getAllLocations();
-  } catch (error) {
-    isDataLoaded.value = true; // Set data loaded to true once data is fetched
-    // Handle request error
-    handleRequestError(error);
-  }
-}*/
-async function editLocation(locID) {
+//Funcion para editar por el ID via la API del backend. Se usan los datos del formulario del edicion mostrado en el modal
+async function editLocation() {
   try {
     const resp = await axios.put(
       `${baseApiUrl}/locations/${editLocationFormData.id}`,
@@ -422,59 +353,51 @@ async function editLocation(locID) {
         city: editLocationFormData.city,
       }
     );
-    // Dispatch toast message to Vuex store for success notification
+    //Enviar toast al store de Vuex para mostrar la notificacion de exito
     store.commit("addToast", {
       title: "Location Updated",
       type: "success",
       message: `The location has been updated. The list will be reloaded.`,
     });
 
-    //reload all projects, using the first page
-    //currentPage.value = 1;
-    closeAllModals();
+    //se hace una recarga para obtener datos actualizados del servidor tras la accion
+
+    closeAllModals(); //se cierran todos los modales al terminar
     await getAllLocations();
   } catch (error) {
-    isDataLoaded.value = true; // Set data loaded to true once data is fetched
-    // Handle request error
+    isDataLoaded.value = true; //Establece la carga a verdadero una vez que se obtienen los datos
+    // Se gestiona el error en la solicitud
     handleRequestError(error);
   }
 }
 
+//Funcion para gestionar el resultado del cierre sin accion del modal de borrado
 const onDeleteModalClose = () => {
-  console.log("Modal closed, nothing confirmed...");
   setLocationForDeletion(null);
   closeAllModals();
 };
+//Funcion para gestionar el resultado del cierre sin accion del modal de edicion
 const onEditModalClose = async () => {
-  console.log("Edit Modal closed, nothing confirmed...");
-  await reseteditLocationFormData();
+  await resetEditLocationFormData();
   setLocationForEdition(null);
   closeAllModals();
 };
-/*const onCreateModalClose = () => {
-  console.log("Modal closed, nothing confirmed...");
-  newLocation.value = null;
-  closeAllModals();
-};*/
 
+//Funcion para gestionar la confirmacion del modal de edicion. Con esto se pasa a la accion con la API del backend.
 const onEditModalConfirm = async () => {
-  console.log("Edit modal closd, cofirming something...");
-  await editLocation(locationForEdition);
+  await editLocation();
   setLocationForEdition(null);
-  reseteditLocationFormData();
+  resetEditLocationFormData();
 };
 
-/*const onCreateModalConfirm = async () => {
-  await createLocation(newLocation.value);
-  newLocation.value = null;
-};*/
-
+//Funcion para gestionar la confirmacion del modal de borrrado. Con esto se pasa a la accion con la API del backend.
 const onDeleteModalConfirm = async () => {
   await deleteLocation(locationForDeletion.value);
   setLocationForEdition(null);
   closeAllModals();
 };
 
+//Objecto que se vincula al formulario de edicion para eventualmente mandarlo como payload de la llamada  ala API
 const editLocationFormData = {
   id: null,
   city: "",
@@ -483,7 +406,8 @@ const editLocationFormData = {
   longitude: null,
 };
 
-const reseteditLocationFormData = async () => {
+//Funcion para resetear el formulario de edicion
+const resetEditLocationFormData = async () => {
   editLocationFormData.id = null;
   editLocationFormData.city = "";
   editLocationFormData.country = "";

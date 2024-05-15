@@ -15,7 +15,7 @@ const store = useStore(); // inicializacion para acceso al state en el store de 
 
 //Variables para el componente Modal
 const isDeleteModalVisible = ref(false);
-// Setter for isDeleteModalVisible
+// Setter para isDeleteModalVisible
 const setIsDeleteModalVisible = (value) => {
   isDeleteModalVisible.value = value;
 };
@@ -311,14 +311,17 @@ const confirmDeletion = async () => {
   setIsDeleteModalVisible(true);
 };
 
+//Funcion para gestionar el resultado del cierre sin accion del modal de borrado
 const onDeleteModalClose = () => {
   setIsDeleteModalVisible(false);
 };
+//Funcion para gestionar la confirmacion del modal de borrrado. Con esto se pasa a la accion con la API del backend.
 const onDeleteModalConfirm = async () => {
   await deleteProduct(props.id);
   setIsDeleteModalVisible(false);
 };
 
+//Funcion que se encarga de eliminar el elemento y gestionar el resultado
 async function deleteProduct(productId) {
   try {
     //Borrar por ID

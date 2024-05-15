@@ -101,7 +101,6 @@ const onModalConfirm = async () => {
   setRequestAccepted(true);
 };
 const onModalClose = () => {
-  console.log("Modal closed, nothing confirmed...");
   setIsModalVisible(false);
   setRequestAccepted(false);
 };
@@ -135,7 +134,7 @@ onBeforeMount(async () => {
 // Define a function to handle errors
 const handleRequestError = (error) => {
   // Handle Error Here
-  console.error(error);
+  console.error(error); //como es un error, se saca como tal por consola tambien
   isLoading.value = false;
   requestError.value = true;
 

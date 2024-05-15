@@ -70,7 +70,7 @@ const getProductData = async () => {
   } catch (err) {
     console.log(err);
   } finally {
-    isDataLoaded.value = true; // Set data loaded to true once data is fetched
+    isDataLoaded.value = true; //Establece la carga a verdadero una vez que se obtienen los datos
   }
 };
 

@@ -44,6 +44,7 @@
         </div>
       </div>
     </div>
+    <!--Menu vertical para los subcomponentes-->
     <div class="admin-dashboard-nav row">
       <ul class="nav nav-pills col-md-2">
         <li class="nav-item">

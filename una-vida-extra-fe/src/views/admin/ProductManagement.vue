@@ -1,3 +1,4 @@
+<!--Componente para la gestion de los productos de todos los usuarios. Se pagina directamente desde el servidor, dada la cantidad. Se usan modales para la edicion y el borrado. El administrador no crea productos desde el panel. Si lo necesita, lo hace como usuario. -->
 <template>
   <div>
     <div v-if="isDataLoaded">
@@ -72,19 +73,6 @@
           </tr>
         </tbody>
       </table>
-
-      <!--<section class="product-card-container">
-        <div v-for="product in productResults.data">
-          <product-card
-            :key="product.id"
-            :id="product.id"
-            :image="product.image"
-            :title="product.title"
-            :date="product.created_at"
-            :location="product.location"
-          />
-        </div>
-      </section>-->
       <!-- Pagination controls -->
       <div class="pagination-controls">
         <BaseButton @click="loadPreviousPage" :disabled="currentPage === 1">
@@ -151,8 +139,6 @@
 
           <!-- Image Field -->
           <div class="mb-3">
-            <!--<label for="image" class="form-label">Image</label>
-            <input type="file" class="form-control" id="image" />-->
             <img
               class="mini"
               :src="baseUrlImg + editProductFormData.image"
@@ -266,38 +252,38 @@ import ModalConfirmationDialog from "../../components/ui/ModalConfirmationDialog
 const baseUrl = import.meta.env.VITE_BASE_API_URL;
 const baseUrlImg = import.meta.env.VITE_BASE_IMG_URL;
 
-// Access current route
+// Acceso a la ruta actual
 const route = useRoute();
-// Access Vuex store
+
 const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 
 // Computed property to access product results state from the store
 const productResults = computed(() => store.state.productResults);
-const productTags = computed(() => store.state.productTags);
 const productCategories = computed(() => store.state.productCategories);
-// Reference to track if data is loaded
+// Referencia para saber si los datos estan cargados
 const isDataLoaded = ref(false);
 
 //Variables para el componente Modal
 const isDeleteModalVisible = ref(false);
-// Setter for isDeleteModalVisible
+// Setter para isDeleteModalVisible
 const setIsDeleteModalVisible = (value) => {
   isDeleteModalVisible.value = value;
 };
 
 //Variables para el componente Modal
 const isEditModalVisible = ref(false);
-// Setter for isEditModalVisible
+// Setter para isEditModalVisible
 const setIsEditModalVisible = (value) => {
   isEditModalVisible.value = value;
 };
 
+//Funcion para cerrar todos los modales a la vez
 const closeAllModals = () => {
   setIsEditModalVisible(false);
   setIsDeleteModalVisible(false);
 };
 
-// Watch to be used as safeguard to make sure both modals can never be visible at the same time
+// Watchs que monitoriza y se utilizará como protección para garantizar que los modales nunca puedan ser visibles al mismo tiempo
 watch(
   () => isEditModalVisible.value,
   (newValue, oldValue) => {
@@ -315,33 +301,34 @@ watch(
 watch(
   () => isDeleteModalVisible.value,
   (newValue, oldValue) => {
-    console.log("isDeleteModalVisible changed from", oldValue, "to", newValue);
     if ((newValue = true)) {
       setIsEditModalVisible(false);
     }
   }
 );
 
+//Variable y setter para el producto a borrar
 const productForDeletion = ref();
 const setproductForDeletion = (value) => {
   productForDeletion.value = value;
 };
+//Variable y setter para el producto a editar
 const productForEdition = ref();
 const setProductForEdition = (value) => {
   productForEdition.value = value;
 };
 
-// Pagination variables
+//Variables usadas en la paginacion
 const currentPage = ref(1);
-const pageSize = 10; // Number of products per page
+const pageSize = 10; // Numero de elementos por pagina
 const totalPages = computed(() => productResults.value.meta.last_page);
 
-// Load products for the current page
+//Cargar elementos para la pagina actual
 const loadProducts = async () => {
   await getProductRequests(currentPage.value);
 };
 
-// Event handler to load the previous page of products
+//Gestor del evento onclick para cargar la pagina anterior
 const loadPreviousPage = () => {
   if (currentPage.value > 1) {
     currentPage.value--;
@@ -349,7 +336,7 @@ const loadPreviousPage = () => {
   }
 };
 
-// Event handler to load the next page of products
+//Gestor del evento onclick para cargar la pagina siguiente
 const loadNextPage = () => {
   if (currentPage.value < totalPages.value) {
     currentPage.value++;
@@ -357,32 +344,30 @@ const loadNextPage = () => {
   }
 };
 
-// Function to fetch products based on search text
+// Funcion para obtener los productos desde el estado de la app en Vuex
 const getProductRequests = async (page) => {
   try {
     isDataLoaded.value = false;
-    // Fetch products or perform product search depending on route params
-
     await store.dispatch("getProducts", page);
 
-    // Set data loaded to true once data is fetched
+    //Establece la carga a verdadero una vez que se obtienen los datos
     isDataLoaded.value = true;
   } catch (error) {
-    isDataLoaded.value = true; // Set data loaded to true once data is fetched
-    // Handle request error
+    isDataLoaded.value = true; //Establece la carga a verdadero una vez que se obtienen los datos
+    // Se gestiona el error en la solicitud
     handleRequestError(error);
   }
 };
 
-// Function to handle request errors
+// Función para manejar errores de solicitud
 const handleRequestError = (error) => {
-  console.error(error);
+  console.error(error); //como es un error, se saca como tal por consola tambien
   isDataLoaded.value = true;
   const errorMessage = error.response
     ? `There was an error while processing the requests. (Code: ${error.response.status})`
     : `There was an error while processing the requests. (Code: ${error.code})`;
 
-  // Dispatch toast message to Vuex store for error notification
+  // Enviar toast al estado de Vuex para notificación de error
   store.commit("addToast", {
     title: "Error Processing Requests",
     type: "error",
@@ -399,114 +384,113 @@ onMounted(async () => {
   await getProductRequests(currentPage);
 });
 
-// Reset productResults to an empty array on component unmount
+// Al salir del componente se ponen a cero en el estado para aligerar
 onUnmounted(() => {
   store.commit("setProductResults", []);
 });
 
+//Funcion que se ejecuta al confirmar el modal de borrado
 async function confirmDeletion(productId) {
   setproductForDeletion(productId);
   setIsEditModalVisible(false);
   setIsDeleteModalVisible(true);
 }
+//Funcion que se ejecuta al confirmar el modal de edicion
 async function confirmEdition(prod) {
-  //feed all the product details to the form to be opened in the modal
-
-  //cast potential booleans to integers
+  //convertir valores booleanos potenciales a números enteros para pasarlos a la api en el formato correcto
   const castedObject = {
     ...prod,
     available: prod.available ? 1 : 0,
     is_taken: prod.is_taken ? 1 : 0,
   };
-
+  //poner todos los datos en el formulario que se abrirá en el modal
   for (const key in editProductFormData) {
     if (castedObject.hasOwnProperty(key)) {
       editProductFormData[key] = castedObject[key];
     }
   }
 
-  setProductForEdition(castedObject);
+  setProductForEdition(castedObject); //se envia el objecto actualizado y convertido para la llamada a la api
   setIsDeleteModalVisible(false);
   setIsEditModalVisible(true);
 }
 
+//Funcion que se encarga de eliminar el elemento y gestionar el resultado
 async function deleteProduct(productId) {
   try {
-    //Delete the product by ID
+    //Borar por ID
     await store.dispatch("deleteProduct", productId);
 
-    //let message = `Product ${productId} has been deleted`;
-    // Dispatch toast message to Vuex store for success notification
+    //Enviar toast al store de Vuex para mostrar la notificacion de exito
     store.commit("addToast", {
       title: "Product Deleted",
       type: "success",
       message: `Product ${productId} has been deleted. The product list will be reloaded.`,
     });
 
-    //reload all projects, using the first page
+    //se hace una recarga para obtener datos actualizados del servidor tras la accion
     currentPage.value = 1;
-    closeAllModals();
+    closeAllModals(); //se cierran todos los modales al terminar
     await loadProducts();
   } catch (error) {
-    isDataLoaded.value = true; // Set data loaded to true once data is fetched
-    // Handle request error
+    isDataLoaded.value = true; //Establece la carga a verdadero una vez que se obtienen los datos
+    // Se gestiona el error en la solicitud
     handleRequestError(error);
   }
 }
+//Funcion para editar por el ID via la API del backend. Se usan los datos del formulario del edicion mostrado en el modal
 async function editProduct(productId) {
   try {
-    //Edit the product by ID
     await store.dispatch("updateProductData", {
       id: editProductFormData.id,
       payload: editProductFormData,
     });
 
-    //let message = `Product ${productId} has been deleted`;
-    // Dispatch toast message to Vuex store for success notification
+    //Enviar toast al store de Vuex para mostrar la notificacion de exito
     store.commit("addToast", {
       title: "Product Updated",
       type: "success",
       message: `Product ${productId} has been updated. The product list will be reloaded.`,
     });
 
-    //reload all projects, using the first page
+    //se hace una recarga para obtener datos actualizados del servidor tras la accion
     currentPage.value = 1;
-    closeAllModals();
+    closeAllModals(); //se cierran todos los modales al terminar
     await loadProducts();
   } catch (error) {
-    isDataLoaded.value = true; // Set data loaded to true once data is fetched
-    // Handle request error
+    isDataLoaded.value = true; //Establece la carga a verdadero una vez que se obtienen los datos
+    // Se gestiona el error en la solicitud
     handleRequestError(error);
   }
 }
 
+//Funcion para gestionar el resultado del cierre sin accion del modal de borrado
 const onDeleteModalClose = () => {
-  console.log("Modal closed, nothing confirmed...");
   setproductForDeletion(null);
   closeAllModals();
 };
+//Funcion para gestionar el resultado del cierre sin accion del modal de edicion
 const onEditModalClose = async () => {
-  console.log("Edit Modal closed, nothing confirmed...");
   await resetEditProductFormData();
   setProductForEdition(null);
   closeAllModals();
 };
 
+//Funcion para gestionar la confirmacion del modal de edicion. Con esto se pasa a la accion con la API del backend.
 const onEditModalConfirm = async () => {
-  console.log("Edit modal closd, cofirming something...");
   await editProduct(productForEdition);
   setProductForEdition(null);
   resetEditProductFormData();
 };
 
+//Funcion para gestionar la confirmacion del modal de borrrado. Con esto se pasa a la accion con la API del backend.
 const onDeleteModalConfirm = async () => {
-  console.log("Modal closed, something confirmed...");
-
   await deleteProduct(productForDeletion.value);
   setProductForEdition(null);
   closeAllModals();
 };
 
+//Objecto que se vincula al formulario de edicion para eventualmente mandarlo como payload de la llamada  ala API
 const editProductFormData = {
   id: null,
   image: null,
@@ -519,6 +503,7 @@ const editProductFormData = {
   owner_id: null,
 };
 
+//Funcion para resetear el formulario de edicion
 const resetEditProductFormData = async () => {
   editProductFormData.id = null;
   editProductFormData.image = null;
@@ -529,11 +514,6 @@ const resetEditProductFormData = async () => {
   editProductFormData.category = "";
   editProductFormData.created_at = "";
   editProductFormData.owner_id = null;
-};
-
-const subitEditProductForm = () => {
-  // Submit form logic goes here
-  console.log(editProductFormData);
 };
 </script>
 <style scoped>

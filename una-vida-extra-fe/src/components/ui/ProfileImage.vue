@@ -78,7 +78,7 @@ const generateGravatarUrl = async (email) => {
     //errorores
     isGravatarValid.value = false;
     gravatarUrl.value = "https://ui-avatars.com/api/?name=" + email;
-    isDataLoaded.value = true; // Set data loaded to true once data is fetched
+    isDataLoaded.value = true; //Establece la carga a verdadero una vez que se obtienen los datos
   }
 };
 </script>

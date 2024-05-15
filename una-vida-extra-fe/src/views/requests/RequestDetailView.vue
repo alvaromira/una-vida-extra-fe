@@ -42,7 +42,7 @@ const prodDetail = ref([]); //variable para los detalles del producto
 const getProductData = async () => {
   try {
     prodDetail.value = await store.dispatch("getProductData", route.params.id);
-    //    isDataLoaded.value = true; // Set data loaded to true once data is fetched
+    //    isDataLoaded.value = true; //Establece la carga a verdadero una vez que se obtienen los datos
   } catch (err) {
     console.err(err);
   }

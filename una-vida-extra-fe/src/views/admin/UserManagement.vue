@@ -1,3 +1,4 @@
+<!--Componente para gestionar todos los usuarios, incluidos otros administradores. Los administradores no pueden crear otros usuarios, pero si elevan sus permisos y deshabilitarlos. Toda la interaccion sobre modales. Por seguridad, no se ven los hash de los passwords. Si los usuarios finales necesitan un reset, que lo hagan con el forgot password-->
 <template>
   <div>
     <div v-if="isDataLoaded">
@@ -9,17 +10,12 @@
             <th scope="col">is_disabled</th>
             <th scope="col">name</th>
             <th scope="col">surname</th>
-            <!-- <th scope="col">image</th>-->
+
             <th scope="col">email</th>
             <th scope="col">phone</th>
-            <!-- <th scope="col">public_details</th>
-            <th scope="col">email_verified_at</th>-->
+
             <th scope="col">location_id</th>
-            <!--  <th scope="col">password</th>
-            <th scope="col">two_factor_secret</th>
-            <th scope="col">two_factor_recovery_codes</th>
-            <th scope="col">two_factor_confirmed_at</th>
-            <th scope="col">remember_token</th>-->
+
             <th scope="col">created_at</th>
             <th scope="col"></th>
             <th scope="col"></th>
@@ -32,17 +28,12 @@
             <td>{{ user.user_is_disabled }}</td>
             <td>{{ user.name }}</td>
             <td>{{ user.surname }}</td>
-            <!--            <td>{{ user.image }}</td>-->
+
             <td>{{ user.email }}</td>
             <td>{{ user.phone }}</td>
-            <!--<td>{{ user.public_details }}</td>
-            <td>{{ user.email_verified_at }}</td>-->
+
             <td>{{ user.user_location.id }}</td>
-            <!-- <td>{{ user.password }}</td>
-             <td>{{ user.two_factor_secret }}</td>
-            <td>{{ user.two_factor_recovery_codes }}</td>
-            <td>{{ user.two_factor_confirmed_at }}</td>
-            <td>{{ user.remember_token }}</td> -->
+
             <td>{{ formatDate(user.created_at) }}</td>
             <td>
               <button @click="confirmEdition(user)">
@@ -287,42 +278,44 @@ const baseApiUrl = import.meta.env.VITE_BASE_API_URL; //ruta base para la api de
 
 const { formatDate } = useUserFriendlyTimeStamp(); //fucion para validar passwords
 
-// Access current route
+// Acceso a la ruta actual
 const route = useRoute();
-// Access Vuex store
+
 const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 
 // Computed property to access user results state from the store
 const userResults = ref(null);
 
-// Reference to track if data is loaded
+// Referencia para saber si los datos estan cargados
 const isDataLoaded = ref(false);
 
 //Variables para el componente Modal
 const isDeleteModalVisible = ref(false);
-// Setter for isDeleteModalVisible
+// Setter para isDeleteModalVisible
 const setIsDeleteModalVisible = (value) => {
   isDeleteModalVisible.value = value;
 };
 
 //Variables para el componente Modal
 const isEditModalVisible = ref(false);
-// Setter for isEditModalVisible
+// Setter para isEditModalVisible
 const setIsEditModalVisible = (value) => {
   isEditModalVisible.value = value;
 };
 
 const isCreateModalVisible = ref(false);
+//Setter paraisCreateModalVisible
 const setIsCreateModalVisible = (value) => {
   isCreateModalVisible.value = value;
 };
 
+//Funcion para cerrar todos los modales a la vez
 const closeAllModals = () => {
   setIsEditModalVisible(false);
   setIsDeleteModalVisible(false);
 };
 
-// Watch to be used as safeguard to make sure both modals can never be visible at the same time
+// Watchs que monitoriza y se utilizará como protección para garantizar que los modales nunca puedan ser visibles al mismo tiempo
 watch(
   () => isEditModalVisible.value,
   (newValue, oldValue) => {
@@ -341,7 +334,6 @@ watch(
 watch(
   () => isDeleteModalVisible.value,
   (newValue, oldValue) => {
-    console.log("isDeleteModalVisible changed from", oldValue, "to", newValue);
     if ((newValue = true)) {
       setIsEditModalVisible(false);
       setIsCreateModalVisible(false);
@@ -351,7 +343,6 @@ watch(
 watch(
   () => isCreateModalVisible.value,
   (newValue, oldValue) => {
-    console.log("isDeleteModalVisible changed from", oldValue, "to", newValue);
     if ((newValue = true)) {
       setIsEditModalVisible(false);
       setIsDeleteModalVisible(false);
@@ -368,7 +359,7 @@ const setUserForEdition = (value) => {
   userForEdition.value = value;
 };
 
-// Pagination variables
+//Variables usadas en la paginacion
 const currentPage = ref(1);
 const itemsPerPage = ref(10); // Number of users per page
 const totalPages = computed(() => {
@@ -510,15 +501,15 @@ const handleRequestError = (error) => {
 };
 
 /*
-// Function to handle request errors
+// Función para manejar errores de solicitud
 const handleRequestError = (error) => {
-  console.error(error);
+  console.error(error); //como es un error, se saca como tal por consola tambien
   isDataLoaded.value = true;
   const errorMessage = error.response
     ? `There was an error while processing the requests. (Code: ${error.response.status})`
     : `There was an error while processing the requests. (Code: ${error.code})`;
 
-  // Dispatch toast message to Vuex store for error notification
+ // Enviar toast al estado de Vuex para notificación de error
   store.commit("addToast", {
     title: "Error Processing Requests",
     type: "error",
@@ -531,12 +522,14 @@ onMounted(async () => {
   await getAllUsers();
 });
 
+//Funcion que se ejecuta al confirmar el modal de borrado
 async function confirmDeletion(userId) {
   setuserForDeletion(userId);
   setIsEditModalVisible(false);
   setIsCreateModalVisible(false);
   setIsDeleteModalVisible(true);
 }
+//Funcion que se ejecuta al confirmar el modal de edicion
 async function confirmEdition(user) {
   // Alimentar todos los detalles del usuario al formulario que se abrirá en el modal
 
@@ -554,18 +547,19 @@ async function confirmEdition(user) {
   }
 
   // Establecer el usuario para la edición y controlar la visibilidad de los modales
-  setUserForEdition(castedObject);
+  setUserForEdition(castedObject); //se envia el objecto actualizado y convertido para la llamada a la api
   setIsDeleteModalVisible(false);
   setIsCreateModalVisible(false);
   setIsEditModalVisible(true);
 }
 
+//Funcion que se encarga de eliminar el elemento y gestionar el resultado
 async function deleteUser(userId) {
   try {
     //Delete the user by ID
     const resp = await axios.delete(`${baseApiUrl}/users/${userId}`);
     //let message = `User ${userId} has been deleted`;
-    // Dispatch toast message to Vuex store for success notification
+    //Enviar toast al store de Vuex para mostrar la notificacion de exito
     store.commit("addToast", {
       title: "User Deleted",
       type: "success",
@@ -573,12 +567,12 @@ async function deleteUser(userId) {
     });
 
     //reload all users, using the first page
-    //currentPage.value = 1;
-    closeAllModals();
+
+    closeAllModals(); //se cierran todos los modales al terminar
     await getAllUsers();
   } catch (error) {
-    isDataLoaded.value = true; // Set data loaded to true once data is fetched
-    // Handle request error
+    isDataLoaded.value = true; //Establece la carga a verdadero una vez que se obtienen los datos
+    // Se gestiona el error en la solicitud
     handleRequestError(error);
   }
 }
@@ -607,6 +601,7 @@ function transformEditUserFormData(editUserFormData) {
   return copyEditUserFormData;
 }
 
+//Funcion para editar por el ID via la API del backend. Se usan los datos del formulario del edicion mostrado en el modal
 async function editUser(userForEdition) {
   let userId = userForEdition.value.id;
   try {
@@ -619,7 +614,7 @@ async function editUser(userForEdition) {
       payload: copyEditUserFormData,
     });
 
-    // Dispatch toast message to Vuex store for success notification
+    //Enviar toast al store de Vuex para mostrar la notificacion de exito
     /*store.commit("addToast", {
       title: "User Updated",
       type: "success",
@@ -629,23 +624,26 @@ async function editUser(userForEdition) {
 
     return true;
   } catch (error) {
-    isDataLoaded.value = true; // Set data loaded to true once data is fetched
-    // Handle request error
+    isDataLoaded.value = true; //Establece la carga a verdadero una vez que se obtienen los datos
+    // Se gestiona el error en la solicitud
     handleRequestError(error);
     return false;
   }
 }
 
+//Funcion para gestionar el resultado del cierre sin accion del modal de borrado
 const onDeleteModalClose = () => {
   setuserForDeletion(null);
   closeAllModals();
 };
+//Funcion para gestionar el resultado del cierre sin accion del modal de edicion
 const onEditModalClose = async () => {
   await resetEditUserFormData();
   setUserForEdition(null);
   closeAllModals();
 };
 
+//Funcion para gestionar la confirmacion del modal de edicion. Con esto se pasa a la accion con la API del backend.
 const onEditModalConfirm = async () => {
   const response = await editUser(userForEdition);
   if (response === true) {
@@ -654,12 +652,14 @@ const onEditModalConfirm = async () => {
   }
 };
 
+//Funcion para gestionar la confirmacion del modal de borrrado. Con esto se pasa a la accion con la API del backend.
 const onDeleteModalConfirm = async () => {
   await deleteUser(userForDeletion.value);
   setUserForEdition(null);
   closeAllModals();
 };
 
+//Objecto que se vincula al formulario de edicion para eventualmente mandarlo como payload de la llamada  ala API
 const editUserFormData = {
   id: null, //id no se actualiza nunca, solo se lee
   user_is_admin: null,
@@ -676,6 +676,7 @@ const editUserFormData = {
   //created_at nunca se actualiza solo se lee,
 };
 
+//Funcion para resetear el formulario de edicion
 const resetEditUserFormData = async () => {
   editUserFormData.id = null;
   editUserFormData.user_is_admin = null;

@@ -1,3 +1,4 @@
+<!--Componente donde se cargan todas las categorias para poder editarlas. Ademas, como administrador se debe poder añadir nuevas categorias. Para editar y crear, se usan formularios en modales-->
 <template>
   <div>
     <div v-if="isDataLoaded">
@@ -140,53 +141,53 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch } from "vue";
-import ProductCard from "../../components/ui/product/ProductCard.vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import BaseSpinner from "../../components/ui/BaseSpinner.vue";
 import BaseButton from "../../components/ui/BaseButton.vue";
 import ModalConfirmationDialog from "../../components/ui/ModalConfirmationDialog.vue";
 
-// Access current route
+// Acceso a la ruta actual
 const route = useRoute();
-// Access Vuex store
+
 const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 
-// Computed property to access product results state from the store
-
+// Se usa una computada para obtener las categorias directamente desde el store. Como se se esperan centenas de ellas, se carga directamente desde la api por la paginacion de esta en lugar de en local
 const productCategories = computed(() => store.state.productCategories);
 
-// Reference to track if data is loaded
+// Referencia para saber si los datos estan cargados
 const isDataLoaded = ref(false);
 
 //Variables para el componente Modal
 const isDeleteModalVisible = ref(false);
-// Setter for isDeleteModalVisible
+// Setter para isDeleteModalVisible
 const setIsDeleteModalVisible = (value) => {
   isDeleteModalVisible.value = value;
 };
 
 //Variables para el componente Modal
 const isEditModalVisible = ref(false);
-// Setter for isEditModalVisible
+// Setter para isEditModalVisible
 const setIsEditModalVisible = (value) => {
   isEditModalVisible.value = value;
 };
 
 const isCreateModalVisible = ref(false);
+//Setter paraisCreateModalVisible
 const setIsCreateModalVisible = (value) => {
   isCreateModalVisible.value = value;
 };
 
 const newCategory = ref();
 
+//Funcion para cerrar todos los modales a la vez
 const closeAllModals = () => {
   setIsEditModalVisible(false);
   setIsDeleteModalVisible(false);
   setIsCreateModalVisible(false);
 };
 
-// Watch to be used as safeguard to make sure both modals can never be visible at the same time
+// Watchs que monitoriza y se utilizará como protección para garantizar que los modales nunca puedan ser visibles al mismo tiempo
 watch(
   () => isEditModalVisible.value,
   (newValue, oldValue) => {
@@ -205,7 +206,6 @@ watch(
 watch(
   () => isDeleteModalVisible.value,
   (newValue, oldValue) => {
-    console.log("isDeleteModalVisible changed from", oldValue, "to", newValue);
     if ((newValue = true)) {
       setIsEditModalVisible(false);
       setIsCreateModalVisible(false);
@@ -215,47 +215,46 @@ watch(
 watch(
   () => isCreateModalVisible.value,
   (newValue, oldValue) => {
-    console.log("isDeleteModalVisible changed from", oldValue, "to", newValue);
     if ((newValue = true)) {
       setIsEditModalVisible(false);
       setIsDeleteModalVisible(false);
     }
   }
 );
-
+//Variable para guardar la categoria que se borra
 const categoryForDeletion = ref();
 const setCategoryForDeletion = (value) => {
   categoryForDeletion.value = value;
 };
+//Variable para guardar la categoria que se edita
 const categoryForEdition = ref();
 const setCategoryForEdition = (value) => {
   categoryForEdition.value = value;
 };
 
-// Function to fetch all categories
+// Función para buscar todas las categorías
 const getAllCategories = async () => {
   try {
     isDataLoaded.value = false;
-    // Fetch all categories to store so they can be used
+    // Recupera todas las categorías para almacenarlas y poder usarlas
     await store.dispatch("getProductCategories");
-    // Set data loaded to true once data is fetched
     isDataLoaded.value = true;
   } catch (error) {
-    isDataLoaded.value = true; // Set data loaded to true once data is fetched
-    // Handle request error
+    isDataLoaded.value = true;
+    // Gestionar error
     handleRequestError(error);
   }
 };
 
-// Function to handle request errors
+// Función para manejar errores de solicitud
 const handleRequestError = (error) => {
-  console.error(error);
+  console.error(error); //como es un error, se saca como tal por consola tambien
   isDataLoaded.value = true;
   const errorMessage = error.response
     ? `There was an error while processing the requests. (Code: ${error.response.status})`
     : `There was an error while processing the requests. (Code: ${error.code})`;
 
-  // Dispatch toast message to Vuex store for error notification
+  // Enviar toast al estado de Vuex para notificación de error
   store.commit("addToast", {
     title: "Error Processing Requests",
     type: "error",
@@ -263,30 +262,33 @@ const handleRequestError = (error) => {
   });
 };
 
-// Fetch all tags on component mount
+// Recupera todas las etiquetas en el montaje del componente
 onMounted(async () => {
   await getAllCategories();
 });
 
-// Reset tags in store to an empty array on component unmount
+// Borrar las etiquetas en el store de Vuex a una matriz vacía al desmontar el componente
 onUnmounted(() => {
   store.commit("setProductCategories", []);
 });
 
+//Funcion que se ejecuta al confirmar el modal de borrado
 async function confirmDeletion(category) {
   setCategoryForDeletion(category);
   setIsCreateModalVisible(false);
   setIsEditModalVisible(false);
   setIsDeleteModalVisible(true);
 }
+//Funcion que se ejecuta al confirmar el modal de creacion
 async function confirmAddition() {
   setIsEditModalVisible(false);
   setIsDeleteModalVisible(false);
   setIsCreateModalVisible(true);
 }
 
+//Funcion que se ejecuta al confirmar el modal de edicion
 async function confirmEdition(category) {
-  //feed all the categoriy details to the form to be opened in the modal
+  //poner todos los datos en el formulario que se abrirá en el modal
   for (const key in editCategoryFormData) {
     if (category.hasOwnProperty(key)) {
       editCategoryFormData[key] = category[key];
@@ -298,123 +300,123 @@ async function confirmEdition(category) {
   setIsCreateModalVisible(false);
 }
 
+//Funcion que se encarga de eliminar el elemento y gestionar el resultado
 async function deleteCategory(categoryId) {
   try {
-    //Delete the product by ID
+    //Borar por ID
     await store.dispatch("deleteCategory", categoryId);
 
-    // Dispatch toast message to Vuex store for success notification
+    //Enviar toast al store de Vuex para mostrar la notificacion de exito
     store.commit("addToast", {
       title: "Category Deleted",
       type: "success",
       message: `Category ${categoryId} has been deleted. The list will be reloaded.`,
     });
 
-    //reload all projects, using the first page
-    //currentPage.value = 1;
-    closeAllModals();
+    closeAllModals(); //se cierran todos los modales al terminar
     await getAllCategories();
   } catch (error) {
-    isDataLoaded.value = true; // Set data loaded to true once data is fetched
-    // Handle request error
+    isDataLoaded.value = true; //Establece la carga a verdadero una vez que se obtienen los datos
+    // Se gestiona el error en la solicitud
     handleRequestError(error);
   }
 }
 
+//Funcion para crear elemento llamando a la API del backend
 async function createCategory(categoryName) {
   try {
-    //Edit the product by ID
     await store.dispatch("createCategory", {
       name: categoryName,
     });
 
-    // Dispatch toast message to Vuex store for success notification
+    //Enviar toast al store de Vuex para mostrar la notificacion de exito
     store.commit("addToast", {
       title: "Category Created",
       type: "success",
       message: `The category has been created. The list will be reloaded.`,
     });
 
-    //reload all projects, using the first page
-    //currentPage.value = 1;
-    closeAllModals();
+    //se hace una recarga para obtener datos actualizados del servidor tras la accion
+
+    closeAllModals(); //se cierran todos los modales al terminar
     await getAllCategories();
   } catch (error) {
-    isDataLoaded.value = true; // Set data loaded to true once data is fetched
-    // Handle request error
+    isDataLoaded.value = true; //Establece la carga a verdadero una vez que se obtienen los datos
+    // Se gestiona el error en la solicitud
     handleRequestError(error);
   }
 }
+//Funcion para editar por el ID via la API del backend. Se usan los datos del formulario del edicion mostrado en el modal
 async function editCategory(category) {
   try {
-    //Edit the product by ID
     await store.dispatch("updateCategory", {
       id: editCategoryFormData.id,
       newname: editCategoryFormData.name,
     });
 
-    // Dispatch toast message to Vuex store for success notification
+    //Enviar toast al store de Vuex para mostrar la notificacion de exito
     store.commit("addToast", {
       title: "Category Updated",
       type: "success",
       message: `The category has been updated. The list will be reloaded.`,
     });
 
-    //reload all projects, using the first page
-    //currentPage.value = 1;
-    closeAllModals();
+    //se hace una recarga para obtener datos actualizados del servidor tras la accion
+
+    closeAllModals(); //se cierran todos los modales al terminar
     await getAllCategories();
   } catch (error) {
-    isDataLoaded.value = true; // Set data loaded to true once data is fetched
-    // Handle request error
+    isDataLoaded.value = true; //Establece la carga a verdadero una vez que se obtienen los datos
+    // Se gestiona el error en la solicitud
     handleRequestError(error);
   }
 }
 
+//Funcion para gestionar el resultado del cierre sin accion del modal de borrado
 const onDeleteModalClose = () => {
-  console.log("Modal closed, nothing confirmed...");
   setCategoryForDeletion(null);
   closeAllModals();
 };
+//Funcion para gestionar el resultado del cierre sin accion del modal de edicion
 const onEditModalClose = async () => {
-  console.log("Edit Modal closed, nothing confirmed...");
-  await reseteditCategoryFormData();
+  await resetEditCategoryFormData();
   setCategoryForEdition(null);
   closeAllModals();
 };
+//Funcion para gestionar el resultado del cierre sin accion del modal de creacion
 const onCreateModalClose = () => {
-  console.log("Modal closed, nothing confirmed...");
   newCategory.value = null;
   closeAllModals();
 };
 
+//Funcion para gestionar la confirmacion del modal de edicion. Con esto se pasa a la accion con la API del backend.
 const onEditModalConfirm = async () => {
-  console.log("Edit modal closd, cofirming something...");
   await editCategory(categoryForEdition);
   setCategoryForEdition(null);
-  reseteditCategoryFormData();
+  resetEditCategoryFormData();
 };
 
+//Funcion para gestionar la confirmacion del modal de edicion. Con esto se pasa a la accion con la API del backend.
 const onCreateModalConfirm = async () => {
-  console.log("Edit modal closd, cofirming something...");
   await createCategory(newCategory.value);
   newCategory.value = null;
 };
 
+//Funcion para gestionar la confirmacion del modal de borrrado. Con esto se pasa a la accion con la API del backend.
 const onDeleteModalConfirm = async () => {
-  console.log("Modal closed, something confirmed...");
-
   await deleteCategory(categoryForDeletion.value);
   setCategoryForEdition(null);
   closeAllModals();
 };
 
+//Objecto que se vincula al formulario de edicion para eventualmente mandarlo como payload de la llamada  ala API
 const editCategoryFormData = {
   id: null,
   name: "",
 };
 
-const reseteditCategoryFormData = async () => {
+//Funcion para resetear el formulario de edicion
+const resetEditCategoryFormData = async () => {
   editCategoryFormData.id = null;
   editCategoryFormData.name = "";
 };
