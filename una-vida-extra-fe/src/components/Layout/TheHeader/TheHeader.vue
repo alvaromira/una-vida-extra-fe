@@ -182,7 +182,9 @@
                 >
               </li>
               <li class="nav-item">
-                <a class="nav-link">Help</a>
+                <RouterLink class="nav-link" :to="{ name: 'help' }"
+                  >Help</RouterLink
+                >
               </li>
             </ul>
           </div>

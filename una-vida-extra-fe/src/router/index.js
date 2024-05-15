@@ -28,6 +28,15 @@ const router = createRouter({
       component: () => import('../views/ProjectView.vue') // Componente asociado a la vista del proyecto
     },
     {
+      path: '/Help', // Ruta para la vista del proyecto
+      name: 'help',
+      meta: {
+        middleware: "public", // Middleware público (sin autenticación requerida)
+        title: "Help - FAQ" // Título de la página
+      },
+      component: () => import('../views/HelpView.vue') // Componente asociado a la vista del proyecto
+    },
+    {
       path: '/products', // Ruta para mostrar todos los productos
       name: 'products',
       meta: {
