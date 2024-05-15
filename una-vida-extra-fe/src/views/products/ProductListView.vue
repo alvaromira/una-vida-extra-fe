@@ -10,7 +10,11 @@
 
       <h2 v-else>Check the latest additions!</h2>
 
-      <section class="product-card-container">
+      <!--Solo se muestran los productos si la base de datos y el backend están disponible y por tanto hay productos recuperados. REalment esto es para posibles codigos 500 y errores de red-->
+      <section
+        class="product-card-container"
+        v-if="productResults.data && productResults.data.length > 0"
+      >
         <product-card
           v-for="product in productResults.data"
           :key="product.id"
@@ -21,6 +25,14 @@
           :date="product.created_at"
           :location="product.location"
         />
+      </section>
+      <section v-else class="row">
+        <div class="col text-center">
+          <p>
+            Opps, it seems like there is a problem to load items. If it persist,
+            please contact us.
+          </p>
+        </div>
       </section>
       <!-- Pagination controls -->
       <div class="pagination-controls" v-if="totalPages > 1">
@@ -86,7 +98,7 @@ const props = defineProps({
 //Variables usadas en la paginacion
 const currentPage = ref(1);
 const pageSize = 10; // Numero de elementos por pagina
-const totalPages = computed(() => productResults.value.meta.last_page);
+const totalPages = computed(() => productResults.value?.meta?.last_page || 0); // Si productResults, meta o last_page es undefined, totalPages se establecerá en 0
 
 //Cargar elementos para la pagina actual
 const loadProducts = async () => {
