@@ -3,7 +3,7 @@
   <section id="faq-overview">
     <div class="row">
       <div class="class col-md-12">
-        <h1>Help - FAQ</h1>
+        <h1>Help</h1>
         <p>
           Hey there! Curious about what everyone's up to on our fun trading
           platform? Check out the stuff our awesome users are always doing –
@@ -12,13 +12,15 @@
         </p>
         <p>
           And hey, if you think we're missing something cool, hit us up! We're
-          all ears for any suggestions to spice up our FAQ section. Just contact
+          all ears for any suggestions to spice up our FAQ section. Just
+          <RouterLink :to="{ name: 'contact' }">contact</RouterLink>
           us and let us know. Let's make this community even better together!
         </p>
       </div>
     </div>
   </section>
   <!--Esta es realmente la sección con las preguntas. Se usan componentes para cada pregunta para ganar flexibilidad  y en un futuro sacar el contenido estático a un CMS y obtenerlo en tiempo real. De momento todas las preguntas son estáticas-->
+  <h2>Frequently Asked Questions</h2>
   <section id="faq">
     <div class="row question-block">
       <hr />
@@ -90,7 +92,8 @@
           <template #responseText>
             <p>
               Admin users can disable user accounts if they consider there is an
-              absolute in the way they use the platform. Please contact us to
+              absolute in the way they use the platform. Please
+              <RouterLink :to="{ name: 'contact' }">contact</RouterLink> us to
               discuss your case and get your account back online.
             </p>
           </template>
@@ -181,8 +184,9 @@
           <template #responseText>
             <p>
               Categories are managed by admins. If you feel you need to have
-              more categories and get them renamed, please contact us so an
-              admin user can get manage your request and get the new category
+              more categories and get them renamed, please
+              <RouterLink :to="{ name: 'contact' }">contact</RouterLink> us so
+              an admin user can get manage your request and get the new category
               added for you.
             </p>
           </template>
@@ -230,5 +234,8 @@ h2.question-block-title {
 }
 .question-title h3 {
   color: gray !important;
+}
+#faq-overview {
+  padding-bottom: 2rem;
 }
 </style>

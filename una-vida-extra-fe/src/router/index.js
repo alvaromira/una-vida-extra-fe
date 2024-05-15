@@ -28,13 +28,40 @@ const router = createRouter({
       component: () => import('../views/ProjectView.vue') // Componente asociado a la vista del proyecto
     },
     {
-      path: '/Help', // Ruta para la vista del proyecto
+      path: '/Help', // Ruta para la vista de ayuda
       name: 'help',
       meta: {
         middleware: "public", // Middleware público (sin autenticación requerida)
-        title: "Help - FAQ" // Título de la página
+        title: "Help" // Título de la página
       },
-      component: () => import('../views/HelpView.vue') // Componente asociado a la vista del proyecto
+      component: () => import('../views/HelpView.vue') // Componente asociado a la vista de ayuda
+    },
+    {
+      path: '/contact', // Ruta para la vista de contacto
+      name: 'contact',
+      meta: {
+        middleware: "public", // Middleware público (sin autenticación requerida)
+        title: "Contact" // Título de la página
+      },
+      component: () => import('../views/ContactView.vue') // Componente asociado a la vista de contacto
+    },
+    {
+      path: '/privacy', // Ruta para la vista de la politica de privacidad
+      name: 'privacy',
+      meta: {
+        middleware: "public", // Middleware público (sin autenticación requerida)
+        title: "Privacy Policy" // Título de la página
+      },
+      component: () => import('../views/PrivacyPolicyView.vue') // Componente asociado a la vista de la politica de privacidad
+    },
+    {
+      path: '/cookies', // Ruta para la vista de las cookies
+      name: 'cookies',
+      meta: {
+        middleware: "public", // Middleware público (sin autenticación requerida)
+        title: "About our Cookies" // Título de la página
+      },
+      component: () => import('../views/CookiesView.vue') // Componente asociado a la vista de las cookies
     },
     {
       path: '/products', // Ruta para mostrar todos los productos

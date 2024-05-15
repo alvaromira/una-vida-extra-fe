@@ -41,7 +41,7 @@
                 v-model="searchTerm"
                 class="form-control"
                 pattern=".{3,}"
-                placeholder="Enter your search here..."
+                placeholder="Enter your product search here..."
                 aria-label="Search"
               />
               <button type="submit" class="btn search-button">

@@ -85,7 +85,7 @@ nav a:first-of-type {
   }
 
   #content {
-    padding: 2rem 0;
+    padding: 4rem 0;
     max-width: 80%;
     width: auto;
     margin: 0 auto;
