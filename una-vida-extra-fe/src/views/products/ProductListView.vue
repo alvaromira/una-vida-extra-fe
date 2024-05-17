@@ -1,10 +1,31 @@
 <template>
   <div>
-    <div v-if="registrationRedirection">
-      <p>User successfully registered!</p>
+    <div class="row justify-content-md-center">
+      <div class="col-md-8 welcome-wrapper">
+        <div class="row">
+          <div class="col welcome-title dark-side">
+            <p>Welcome to <strong>Una vida Extra</strong></p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col welcome-message light-side">
+            <p>
+              Looking for a place where to
+              <strong>donate, re-use, recycle and re-purpose</strong> stuff? You
+              found us! We are an online community that promote the re-use of
+              items. All <strong>free</strong>, no money or cards accepted. Just
+              good will is accepted 😁. Protect the planet by consuming less and
+              re-using more with us! Please
+              <RouterLink :to="{ name: 'register' }">register</RouterLink>
+              and get started.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
     <div v-if="isDataLoaded">
       <h2 v-if="sText">
+        <!--Para cuando haya busquedas-->
         {{ productResults.meta.total }} result(s) for found for {{ sText }}.
       </h2>
 
@@ -214,5 +235,35 @@ h2 {
   clip: rect(0, 0, 0, 0) !important;
   white-space: nowrap !important;
   border: 0 !important;
+}
+.light-side {
+  color: black;
+  background-color: white;
+}
+
+.dark-side {
+  background-color: #7ab370;
+  color: white;
+}
+
+.welcome-title {
+  font-size: 2rem;
+}
+.welcome-title,
+.welcome-message {
+  padding: 1rem;
+}
+.welcome-title p,
+.welcome-message p {
+  padding: 0;
+  margin: 0;
+  font-weight: 300;
+  text-align: center;
+}
+.welcome-wrapper {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  margin-bottom: 2rem;
 }
 </style>

@@ -172,15 +172,16 @@
                 >
               </li>
               <li class="nav-item">
-                <RouterLink class="nav-link" :to="{ name: 'sponsors' }"
-                  >Sponsors</RouterLink
-                >
-              </li>
-              <li class="nav-item">
                 <RouterLink class="nav-link" :to="{ name: 'project' }"
                   >Project</RouterLink
                 >
               </li>
+              <li class="nav-item">
+                <RouterLink class="nav-link" :to="{ name: 'sponsors' }"
+                  >Sponsors</RouterLink
+                >
+              </li>
+
               <li class="nav-item">
                 <RouterLink class="nav-link" :to="{ name: 'help' }"
                   >Help</RouterLink
