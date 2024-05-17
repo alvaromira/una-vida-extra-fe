@@ -403,7 +403,7 @@ label[for="site-search"] {
   display: none;
 }
 #site-search {
-  min-width: 300px;
+  min-width: unset;
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
   border-top-right-radius: 0px;
@@ -483,7 +483,7 @@ label[for="site-search"] {
 }
 /* De forma predeterminada para dispositivos pequeños, no se muestra */
 .profile-image-icon {
-  display: none !important;
+  display: none;
 }
 #second-nav-bar .navbar-nav {
   gap: 1rem;
@@ -503,7 +503,11 @@ label[for="site-search"] {
     margin-top: 0rem;
   }
   .profile-image-icon {
-    display: block;
+    display: flex;
+    align-items: center;
+  }
+  #site-search {
+    min-width: 360px;
   }
 }
 </style>
