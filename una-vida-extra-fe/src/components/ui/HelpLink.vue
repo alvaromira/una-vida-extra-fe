@@ -1,6 +1,6 @@
 <!-- Sencillo icono hiperenlazado que acepta la propiedad del enlace del router-->
 <template>
-  <RouterLink :to="to">
+  <RouterLink :to="{ name: 'help' }">
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="16"
@@ -22,4 +22,9 @@ const props = defineProps({
   to: Object, //se trata del destino en los enlaces
 });
 </script>
-<style scoped></style>
+<style scoped>
+a {
+  color: #edb421;
+  opacity: 0.6;
+}
+</style>
