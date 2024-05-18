@@ -1010,7 +1010,7 @@
                 to obligate us to maintain and support the Services or to supply
                 any corrections, updates, or releases in connection therewith.
               </div>
-              <div>
+              <div id="law">
                 <strong>14.&nbsp;GOVERNING LAW</strong>
               </div>
               <div>
@@ -1026,7 +1026,7 @@
                 protection rights in regards to these Legal Terms in Spain, or
                 in the EU country in which you reside.
               </div>
-              <div>
+              <div id="disputes">
                 <strong>15.&nbsp;DISPUTE RESOLUTION</strong>
               </div>
               <div>
@@ -1092,7 +1092,7 @@
                 above, and the Parties agree to submit to the personal
                 jurisdiction of that court.
               </div>
-              <div>
+              <div id="corrections">
                 <strong>16.&nbsp;CORRECTIONS</strong>
               </div>
               <div>
@@ -1103,7 +1103,7 @@
                 inaccuracies, or omissions and to change or update the
                 information on the Services at any time, without prior notice.
               </div>
-              <div>
+              <div id="disclaimer">
                 <strong>17. DISCLAIMER</strong>
               </div>
               <div>
@@ -1140,7 +1140,7 @@
                 ENVIRONMENT, YOU SHOULD USE YOUR BEST JUDGEMENT AND EXERCISE
                 CAUTION WHERE APPROPRIATE.
               </div>
-              <div>
+              <div id="liability">
                 <strong>18.&nbsp;LIMITATIONS OF LIABILITY</strong>
               </div>
               <div>
@@ -1160,7 +1160,7 @@
                 LIMITATIONS MAY NOT APPLY TO YOU, AND YOU MAY HAVE ADDITIONAL
                 RIGHTS.
               </div>
-              <div>
+              <div id="indemnification">
                 <strong>19.&nbsp;INDEMNIFICATION</strong>
               </div>
               <div>
@@ -1184,7 +1184,7 @@
                 which is subject to this indemnification upon becoming aware of
                 it.
               </div>
-              <div>
+              <div id="userdata">
                 <strong>20.&nbsp;USER DATA</strong>
               </div>
               <div>
@@ -1199,7 +1199,7 @@
                 action against us arising from any such loss or corruption of
                 such data.
               </div>
-              <div>
+              <div id="electronic">
                 <strong
                   >21.&nbsp;ELECTRONIC COMMUNICATIONS, TRANSACTIONS, AND
                   SIGNATURES</strong
@@ -1222,7 +1222,7 @@
                 records, or to payments or the granting of credits by any means
                 other than electronic means.
               </div>
-              <div>
+              <div id="misc">
                 <strong>22.&nbsp;MISCELLANEOUS</strong>
               </div>
               <div>
