@@ -5,33 +5,41 @@
       <div>
         <div>
           <h2>Terms and Conditions</h2>
+          <br />
           <div>
             <div>
               <div>
-                <strong>Last updated</strong> <strong>May 09, 2024</strong>
+                <strong>Last updated</strong>
+                <strong>May 09, 2024</strong>
               </div>
-              <div><strong>AGREEMENT TO OUR LEGAL TERMS </strong></div>
+              <div>
+                <strong>AGREEMENT TO OUR LEGAL TERMS</strong>
+              </div>
             </div>
             <div>
-              <div><a name="_6aa3gkhykvst"></a></div>
+              <div>&nbsp;</div>
             </div>
             <div>
               <div>
-                We are Una Vida Extra (<em>Company</em>, <em>we</em>,
-                <em>us</em>, or <em>our</em>), an open web community project
-                started in Malaga (Spain).
+                We are Una Vida Extra (<em><i>Company</i></em
+                >, <em><i>we</i></em
+                >, <em><i>us</i></em
+                >, or <em><i>our</i></em
+                >), an open web community project started in Malaga (Spain).
               </div>
             </div>
             <div>
               <div>
                 We operate the website
-                <a href="https://una-vida-extra.site/" target="_blank"
-                  >https://una-vida-extra.site/</a
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href="https://una-vida-extra.site/"
+                  ><u>https://una-vida-extra.site/</u></a
                 >(the '<strong>Site</strong>'), as well as any other related
                 products and services that refer or link to these legal terms
                 (the '<strong
-                  >Legal Terms') (collectively, the
-                  '<strong>Services</strong>').</strong
+                  >Legal Terms') (collectively, the 'Services').</strong
                 >
               </div>
               <div>
@@ -47,13 +55,12 @@
               <div>
                 These Legal Terms constitute a legally binding agreement made
                 between you, whether personally or on behalf of an entity
-                ('<strong>y</strong><strong>ou</strong>'), and Una Vida Extra,
-                concerning your access to and use of the Services. You agree
-                that by accessing the Services, you have read, understood, and
-                agreed to be bound by all of these Legal Terms. IF YOU DO NOT
-                AGREE WITH ALL OF THESE LEGAL TERMS, THEN YOU ARE EXPRESSLY
-                PROHIBITED FROM USING THE SERVICES AND YOU MUST DISCONTINUE USE
-                IMMEDIATELY.
+                ('<strong>you</strong>'), and Una Vida Extra, concerning your
+                access to and use of the Services. You agree that by accessing
+                the Services, you have read, understood, and agreed to be bound
+                by all of these Legal Terms. IF YOU DO NOT AGREE WITH ALL OF
+                THESE LEGAL TERMS, THEN YOU ARE EXPRESSLY PROHIBITED FROM USING
+                THE SERVICES AND YOU MUST DISCONTINUE USE IMMEDIATELY.
               </div>
               <div>
                 Supplemental terms and conditions or documents that may be
@@ -72,7 +79,7 @@
             </div>
             <div>
               <section>
-                <h2>MINORS' USAGE</h2>
+                <strong>MINORS' USAGE</strong>
                 <p>
                   All users who are minors in the jurisdiction in which they
                   reside (generally under the age of 18) must have the
@@ -89,80 +96,128 @@
               <div>
                 <strong>TABLE OF CONTENTS</strong>
               </div>
-              <div><a href="#services">1. OUR SERVICES </a></div>
               <div>
-                <a href="#ip">2. INTELLECTUAL PROPERTY RIGHTS </a>
+                <a rel="noopener noreferrer" href="#services"
+                  ><u>1. OUR SERVICES</u></a
+                >
               </div>
               <div>
-                <a href="#userreps">3. USER REPRESENTATIONS </a>
+                <a rel="noopener noreferrer" href="#ip"
+                  ><u>2. INTELLECTUAL PROPERTY RIGHTS</u></a
+                >
               </div>
               <div>
-                <a href="#userreg">4. USER REGISTRATION </a>
+                <a rel="noopener noreferrer" href="#userreps"
+                  ><u>3. USER REPRESENTATIONS</u></a
+                >
               </div>
               <div>
-                <a href="#prohibited">5. PROHIBITED ACTIVITIES </a>
+                <a rel="noopener noreferrer" href="#userreg"
+                  ><u>4. USER REGISTRATION</u></a
+                >
               </div>
               <div>
-                <a href="#ugc">6. USER GENERATED CONTRIBUTIONS </a>
+                <a rel="noopener noreferrer" href="#prohibited"
+                  ><u>5. PROHIBITED ACTIVITIES</u></a
+                >
               </div>
               <div>
-                <a href="#license">7. CONTRIBUTION LICENCE</a>
+                <a rel="noopener noreferrer" href="#ugc"
+                  ><u>6. USER GENERATED CONTRIBUTIONS</u></a
+                >
               </div>
               <div>
-                <a href="#reviews">8. GUIDELINES FOR REVIEWS</a>
+                <a rel="noopener noreferrer" href="#license"
+                  ><u>7. CONTRIBUTION LICENCE</u></a
+                >
               </div>
               <div>
-                <a href="#sitemanage">9. SERVICES MANAGEMENT </a>
+                <a rel="noopener noreferrer" href="#reviews"
+                  ><u>8. GUIDELINES FOR REVIEWS</u></a
+                >
               </div>
               <div>
-                <a href="#ppyes">10. PRIVACY POLICY</a>
+                <a rel="noopener noreferrer" href="#sitemanage"
+                  ><u>9. SERVICES MANAGEMENT</u></a
+                >
               </div>
               <div>
-                <a href="#copyrightno">11. COPYRIGHT INFRINGEMENTS </a>
+                <a rel="noopener noreferrer" href="#ppyes"
+                  ><u>10. PRIVACY POLICY</u></a
+                >
               </div>
               <div>
-                <a href="#terms">12. TERM AND TERMINATION </a>
+                <a rel="noopener noreferrer" href="#copyrightno"
+                  ><u>11. COPYRIGHT INFRINGEMENTS</u></a
+                >
               </div>
               <div>
-                <a href="#modifications"
-                  >13. MODIFICATIONS AND INTERRUPTIONS
-                </a>
+                <a rel="noopener noreferrer" href="#terms"
+                  ><u>12. TERM AND TERMINATION</u></a
+                >
               </div>
               <div>
-                <a href="#law">14. GOVERNING LAW </a>
+                <a rel="noopener noreferrer" href="#modifications"
+                  ><u>13. MODIFICATIONS AND INTERRUPTIONS</u></a
+                >
               </div>
               <div>
-                <a href="#disputes">15. DISPUTE RESOLUTION </a>
+                <a rel="noopener noreferrer" href="#law"
+                  ><u>14. GOVERNING LAW</u></a
+                >
               </div>
               <div>
-                <a href="#corrections">16. CORRECTIONS </a>
+                <a rel="noopener noreferrer" href="#disputes"
+                  ><u>15. DISPUTE RESOLUTION</u></a
+                >
               </div>
               <div>
-                <a href="#disclaimer">17. DISCLAIMER </a>
+                <a rel="noopener noreferrer" href="#corrections"
+                  ><u>16. CORRECTIONS</u></a
+                >
               </div>
               <div>
-                <a href="#liability">18. LIMITATIONS OF LIABILITY </a>
+                <a rel="noopener noreferrer" href="#disclaimer"
+                  ><u>17. DISCLAIMER</u></a
+                >
               </div>
               <div>
-                <a href="#indemnification">19. INDEMNIFICATION </a>
+                <a rel="noopener noreferrer" href="#liability"
+                  ><u>18. LIMITATIONS OF LIABILITY</u></a
+                >
               </div>
               <div>
-                <a href="#userdata">20. USER DATA </a>
+                <a rel="noopener noreferrer" href="#indemnification"
+                  ><u>19. INDEMNIFICATION</u></a
+                >
               </div>
               <div>
-                <a href="#electronic"
-                  >21. ELECTRONIC COMMUNICATIONS, TRANSACTIONS, AND SIGNATURES
-                </a>
+                <a rel="noopener noreferrer" href="#userdata"
+                  ><u>20. USER DATA</u></a
+                >
               </div>
               <div>
-                <a href="#misc">22. MISCELLANEOUS </a>
+                <a rel="noopener noreferrer" href="#electronic"
+                  ><u
+                    >21. ELECTRONIC COMMUNICATIONS, TRANSACTIONS, AND
+                    SIGNATURES</u
+                  ></a
+                >
               </div>
               <div>
-                <a href="#contact">23. CONTACT US </a>
+                <a rel="noopener noreferrer" href="#misc"
+                  ><u>22. MISCELLANEOUS</u></a
+                >
+              </div>
+              <div>
+                <a rel="noopener noreferrer" href="#contact"
+                  ><u>23. CONTACT US</u></a
+                >
               </div>
             </div>
+            <br />
             <section id="services">
-              <h2>OUR SERVICES</h2>
+              <strong>1. OUR SERVICES</strong>
               <p>
                 The information provided when using the Services is not intended
                 for distribution to or use by any person or entity in any
@@ -174,54 +229,57 @@
                 solely responsible for compliance with local laws, if and to the
                 extent local laws are applicable.
               </p>
-              <h3>Donation and Request Process</h3>
+              <strong>Donation and Request Process</strong>
               <p>
-                <strong>1.1 Donation Listings:</strong> Users can sign up for
-                free and publish items they wish to donate. Only free items are
-                allowed to be listed, and no monetary transactions are permitted
-                on our platform.
+                <strong>1.1 Donation Listings:</strong>
+                Users can sign up for free and publish items they wish to
+                donate. Only free items are allowed to be listed, and no
+                monetary transactions are permitted on our platform.
               </p>
               <p>
-                <strong>1.2 Requesting Items:</strong> Registered users can
-                request items available for donation. Requests will be sorted by
-                proximity to promote local reuse and recycling efforts.
+                <strong>1.2 Requesting Items:</strong>
+                Registered users can request items available for donation.
+                Requests will be sorted by proximity to promote local reuse and
+                recycling efforts.
               </p>
               <p>
-                <strong>1.3 Item Transfer:</strong> Once a donation request is
-                accepted by the item owner, users can arrange for the transfer
-                of the item. Una Vida Extra does not facilitate or oversee the
-                transfer process and is not liable for any issues that may
-                arise.
+                <strong>1.3 Item Transfer:</strong>
+                Once a donation request is accepted by the item owner, users can
+                arrange for the transfer of the item. Una Vida Extra does not
+                facilitate or oversee the transfer process and is not liable for
+                any issues that may arise.
               </p>
-              <h3>User Responsibilities</h3>
+              <strong>User Responsibilities</strong>
               <p>
-                <strong>2.1 Accurate Information:</strong> Users are responsible
-                for providing accurate and truthful information when creating an
-                account and listing or requesting items.
-              </p>
-              <p>
-                <strong>2.2 Respectful Communication:</strong> Users must
-                communicate respectfully and courteously with other users at all
-                times. Harassment, discrimination, or any form of abuse will not
-                be tolerated and may result in account suspension or
-                termination.
-              </p>
-              <h3>Limitation of Liability</h3>
-              <p>
-                <strong>3.1 Use at Own Risk:</strong> The use of Una Vida Extra
-                is at your own risk. We do not guarantee the accuracy,
-                reliability, or completeness of any information on the website.
+                <strong>2.1 Accurate Information:</strong>
+                Users are responsible for providing accurate and truthful
+                information when creating an account and listing or requesting
+                items.
               </p>
               <p>
-                <strong>3.2 Third-party Links:</strong> Our website may contain
-                links to third-party websites that are not owned or controlled
-                by Una Vida Extra. We have no control over, and assume no
-                responsibility for, the content, privacy policies, or practices
-                of any third-party websites.
+                <strong>2.2 Respectful Communication:</strong>
+                Users must communicate respectfully and courteously with other
+                users at all times. Harassment, discrimination, or any form of
+                abuse will not be tolerated and may result in account suspension
+                or termination.
+              </p>
+              <strong>Limitation of Liability</strong>
+              <p>
+                <strong>3.1 Use at Own Risk:</strong>
+                The use of Una Vida Extra is at your own risk. We do not
+                guarantee the accuracy, reliability, or completeness of any
+                information on the website.
+              </p>
+              <p>
+                <strong>3.2 Third-party Links:</strong>
+                Our website may contain links to third-party websites that are
+                not owned or controlled by Una Vida Extra. We have no control
+                over, and assume no responsibility for, the content, privacy
+                policies, or practices of any third-party websites.
               </p>
             </section>
-            <div>
-              <strong>2. INTELLECTUAL PROPERTY RIGHTS </strong>
+            <div id="ip">
+              <strong>2. INTELLECTUAL PROPERTY RIGHTS</strong>
             </div>
             <div>
               <div>
@@ -251,9 +309,10 @@
               </div>
               <div>
                 Subject to your compliance with these Legal Terms, including the
-                '<a href="#prohibited">PROHIBITED ACTIVITIES' </a> section
-                below, we grant you a non-exclusive, non-transferable, revocable
-                licence to:
+                '<a rel="noopener noreferrer" href="#prohibited"
+                  ><u>PROHIBITED ACTIVITIES' </u></a
+                >section below, we grant you a non-exclusive, non-transferable,
+                revocable licence to:
               </div>
               <ul>
                 <li>access the Services; and</li>
@@ -301,33 +360,35 @@
                 <strong>Your submissions and contributions</strong>
               </div>
               <div>
-                Please review this section and the '<a href="#prohibited"
-                  >PROHIBITED ACTIVITIES' </a
+                Please review this section and the '<a
+                  rel="noopener noreferrer"
+                  href="#prohibited"
+                  ><u>PROHIBITED ACTIVITIES' </u></a
                 >section carefully prior to using our Services to understand the
                 (a) rights you give us and (b) obligations you have when you
                 post or upload any content through the Services.
               </div>
               <div>
-                <strong>Submissions:</strong> By directly sending us any
-                question, comment, suggestion, idea, feedback, or other
-                information about the Services ('Submissions'), you agree to
-                assign to us all intellectual property rights in such
-                Submission. You agree that we shall own this Submission and be
-                entitled to its unrestricted use and dissemination for any
-                lawful purpose, commercial or otherwise, without acknowledgment
-                or compensation to you.
+                <strong>Submissions:</strong>
+                By directly sending us any question, comment, suggestion, idea,
+                feedback, or other information about the Services
+                ('Submissions'), you agree to assign to us all intellectual
+                property rights in such Submission. You agree that we shall own
+                this Submission and be entitled to its unrestricted use and
+                dissemination for any lawful purpose, commercial or otherwise,
+                without acknowledgment or compensation to you.
               </div>
               <div>
-                <strong>Contributions:</strong> The Services may invite you to
-                chat, contribute to, or participate in blogs, message boards,
-                online forums, and other functionality during which you may
-                create, submit, post, display, transmit, publish, distribute, or
-                broadcast content and materials to us or through the Services,
-                including but not limited to text, writings, video, audio,
-                photographs, music, graphics, comments, reviews, rating
-                suggestions, personal information, or other material
-                ('Contributions'). Any Submission that is publicly posted shall
-                also be treated as a Contribution.
+                <strong>Contributions:</strong>
+                The Services may invite you to chat, contribute to, or
+                participate in blogs, message boards, online forums, and other
+                functionality during which you may create, submit, post,
+                display, transmit, publish, distribute, or broadcast content and
+                materials to us or through the Services, including but not
+                limited to text, writings, video, audio, photographs, music,
+                graphics, comments, reviews, rating suggestions, personal
+                information, or other material ('Contributions'). Any Submission
+                that is publicly posted shall also be treated as a Contribution.
               </div>
               <div>
                 You understand that Contributions may be viewable by other users
@@ -349,8 +410,8 @@
                   incorporate into other works, your Contributions, and to
                   sublicence the licences granted in this section. Our use and
                   distribution may occur in any media formats and through any
-                  media channels.
-                </strong>
+                  media channels.</strong
+                >
               </div>
               <div>
                 This licence includes our use of your name, company name, and
@@ -370,10 +431,10 @@
               <ul>
                 <li>
                   confirm that you have read and agree with our '<a
+                    rel="noopener noreferrer"
                     href="#prohibited"
-                    >PROHIBITED ACTIVITIES'
-                  </a>
-                  and will not post, send, publish, upload, or transmit through
+                    ><u>PROHIBITED ACTIVITIES' </u></a
+                  >and will not post, send, publish, upload, or transmit through
                   the Services any Submission nor post any Contribution that is
                   illegal, harassing, hateful, harmful, defamatory, obscene,
                   bullying, abusive, discriminatory, threatening to any person
@@ -401,16 +462,16 @@
                 You are solely responsible for your Submissions and/or
                 Contributions and you expressly agree to reimburse us for any
                 and all losses that we may suffer because of your breach of (a)
-                this section, (b) any third party&rsquo;s intellectual property
+                this section, (b) any third party’s intellectual property
                 rights, or (c) applicable law.
               </div>
               <div>
-                <strong>We may remove or edit your Content:</strong> Although we
-                have no obligation to monitor any Contributions, we shall have
-                the right to remove or edit any Contributions at any time
-                without notice if in our reasonable opinion we consider such
-                Contributions harmful or in breach of these Legal Terms. If we
-                remove or edit any such Contributions, we may also suspend or
+                <strong>We may remove or edit your Content:</strong>
+                Although we have no obligation to monitor any Contributions, we
+                shall have the right to remove or edit any Contributions at any
+                time without notice if in our reasonable opinion we consider
+                such Contributions harmful or in breach of these Legal Terms. If
+                we remove or edit any such Contributions, we may also suspend or
                 disable your account and report you to the authorities.
               </div>
               <div>
@@ -420,21 +481,16 @@
                 We respect the intellectual property rights of others. If you
                 believe that any material available on or through the Services
                 infringes upon any copyright you own or control, please
-                immediately refer to the '<a href="#copyrightno"
-                  >COPYRIGHT INFRINGEMENTS' section below.
-                </a>
+                immediately refer to the '<a
+                  rel="noopener noreferrer"
+                  href="#copyrightno"
+                  ><u>COPYRIGHT INFRINGEMENTS' section below.</u></a
+                >
               </div>
             </div>
             <div>
-              <div>
-                <a name="_5hg7kgyv9l8z"></a
-                ><strong
-                  ><strong
-                    ><strong
-                      ><strong>3.&nbsp;USER REPRESENTATIONS </strong></strong
-                    ></strong
-                  ></strong
-                >
+              <div id="userreps">
+                <strong>3.&nbsp;USER REPRESENTATIONS</strong>
               </div>
             </div>
             <div>
@@ -465,14 +521,8 @@
                   </div>
                 </div>
                 <div>
-                  <div>
-                    <strong
-                      ><strong
-                        ><strong
-                          ><strong>4.&nbsp;USER REGISTRATION </strong></strong
-                        ></strong
-                      ></strong
-                    >
+                  <div id="userreg">
+                    <strong>4.&nbsp;USER REGISTRATION</strong>
                   </div>
                 </div>
                 <div>
@@ -487,16 +537,8 @@
                   </div>
                 </div>
                 <div>
-                  <div>
-                    <strong
-                      ><strong
-                        ><strong
-                          ><strong
-                            >5.&nbsp;PROHIBITED ACTIVITIES
-                          </strong></strong
-                        ></strong
-                      ></strong
-                    >
+                  <div id="prohibited">
+                    <strong>5.&nbsp;PROHIBITED ACTIVITIES</strong>
                   </div>
                 </div>
                 <div>
@@ -558,8 +600,8 @@
                           transmit) viruses, Trojan horses, or other material,
                           including excessive use of capital letters and
                           spamming (continuous posting of repetitive text), that
-                          interferes with any party&rsquo;s uninterrupted use
-                          and enjoyment of the Services or modifies, impairs,
+                          interferes with any party’s uninterrupted use and
+                          enjoyment of the Services or modifies, impairs,
                           disrupts, alters, or interferes with the use,
                           features, functions, operation, or maintenance of the
                           Services.
@@ -583,10 +625,10 @@
                           transmit) any material that acts as a passive or
                           active information collection or transmission
                           mechanism, including without limitation, clear
-                          graphics interchange formats ('gifs'), 1&times;1
-                          pixels, web bugs, cookies, or other similar devices
-                          (sometimes referred to as 'spyware' or 'passive
-                          collection mechanisms' or 'pcms').
+                          graphics interchange formats ('gifs'), 1×1 pixels, web
+                          bugs, cookies, or other similar devices (sometimes
+                          referred to as 'spyware' or 'passive collection
+                          mechanisms' or 'pcms').
                         </li>
                         <li>
                           Interfere with, disrupt, or create an undue burden on
@@ -649,16 +691,8 @@
                   </div>
                   <div>
                     <div>
-                      <div>
-                        <strong
-                          ><strong
-                            ><strong
-                              ><strong
-                                >6.&nbsp;USER GENERATED CONTRIBUTIONS
-                              </strong></strong
-                            ></strong
-                          ></strong
-                        >
+                      <div id="ugc">
+                        <strong>6.&nbsp;USER GENERATED CONTRIBUTIONS</strong>
                       </div>
                     </div>
                     <div>
@@ -764,14 +798,8 @@
                   </div>
                 </div>
                 <div>
-                  <div>
-                    <strong
-                      ><strong
-                        ><strong
-                          ><strong>7.&nbsp;CONTRIBUTION LICENCE</strong></strong
-                        ></strong
-                      ></strong
-                    >
+                  <div id="license">
+                    <strong>7.&nbsp;CONTRIBUTION LICENCE</strong>
                   </div>
                 </div>
                 <div>
@@ -833,12 +861,8 @@
                 </div>
               </div>
               <div>
-                <div>
-                  <strong
-                    ><strong
-                      ><strong>8.&nbsp;GUIDELINES FOR REVIEWS </strong></strong
-                    ></strong
-                  >
+                <div id="reviews">
+                  <strong>8.&nbsp;GUIDELINES FOR REVIEWS</strong>
                 </div>
                 <div>
                   We may provide you areas on the Services to leave reviews or
@@ -874,14 +898,8 @@
                   relating to review.
                 </div>
               </div>
-              <div>
-                <strong
-                  ><strong
-                    ><strong
-                      ><strong>9.&nbsp;SERVICES MANAGEMENT </strong></strong
-                    ></strong
-                  ></strong
-                >
+              <div id="sitemanage">
+                <strong>9.&nbsp;SERVICES MANAGEMENT</strong>
               </div>
               <div>
                 We reserve the right, but not the obligation, to: (1) monitor
@@ -900,21 +918,19 @@
                 protect our rights and property and to facilitate the proper
                 functioning of the Services.
               </div>
-              <div>
-                <strong
-                  ><strong
-                    ><strong>10.&nbsp;PRIVACY POLICY </strong></strong
-                  ></strong
-                >
+              <div id="ppyes">
+                <strong>10.&nbsp;PRIVACY POLICY</strong>
               </div>
               <div>
                 We care about data privacy and security. Please review our
-                Privacy Policy:<strong
-                  >&nbsp;<a
-                    href="https://una-vida-extra.site/privacy"
-                    target="_blank"
-                    >https://una-vida-extra.site/privacy</a
-                  ></strong
+                Privacy Policy:<strong>&nbsp;</strong
+                ><a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href="https://una-vida-extra.site/privacy"
+                  ><strong
+                    ><u>https://una-vida-extra.site/privacy</u></strong
+                  ></a
                 >. By using the Services, you agree to be bound by our Privacy
                 Policy, which is incorporated into these Legal Terms. Please be
                 advised the Services are hosted in Spain. If you access the
@@ -925,16 +941,8 @@
                 your data to Spain, and you expressly consent to have your data
                 transferred to and processed in Spain.
               </div>
-              <div>
-                <strong
-                  ><strong
-                    ><strong
-                      ><strong
-                        >11.&nbsp;COPYRIGHT INFRINGEMENTS
-                      </strong></strong
-                    ></strong
-                  ></strong
-                >
+              <div id="copyrightno">
+                <strong>11.&nbsp;COPYRIGHT INFRINGEMENTS</strong>
               </div>
               <div>
                 We respect the intellectual property rights of others. If you
@@ -950,14 +958,8 @@
                 infringes your copyright, you should consider first contacting
                 an attorney.
               </div>
-              <div>
-                <strong
-                  ><strong
-                    ><strong
-                      ><strong>12.&nbsp;TERM AND TERMINATION </strong></strong
-                    ></strong
-                  ></strong
-                >
+              <div id="terms">
+                <strong>12.&nbsp;TERM AND TERMINATION</strong>
               </div>
               <div>
                 These Legal Terms shall remain in full force and effect while
@@ -983,16 +985,8 @@
                 without limitation pursuing civil, criminal, and injunctive
                 redress.
               </div>
-              <div>
-                <strong
-                  ><strong
-                    ><strong
-                      ><strong
-                        >13.&nbsp;MODIFICATIONS AND INTERRUPTIONS
-                      </strong></strong
-                    ></strong
-                  ></strong
-                >
+              <div id="modifications">
+                <strong>13.&nbsp;MODIFICATIONS AND INTERRUPTIONS</strong>
               </div>
               <div>
                 We reserve the right to change, modify, or remove the contents
@@ -1017,13 +1011,7 @@
                 any corrections, updates, or releases in connection therewith.
               </div>
               <div>
-                <strong
-                  ><strong
-                    ><strong
-                      ><strong>14.&nbsp;GOVERNING LAW </strong></strong
-                    ></strong
-                  ></strong
-                >
+                <strong>14.&nbsp;GOVERNING LAW</strong>
               </div>
               <div>
                 These Legal Terms are governed by and interpreted following the
@@ -1039,13 +1027,7 @@
                 in the EU country in which you reside.
               </div>
               <div>
-                <strong
-                  ><strong
-                    ><strong
-                      ><strong>15.&nbsp;DISPUTE RESOLUTION </strong></strong
-                    ></strong
-                  ></strong
-                >
+                <strong>15.&nbsp;DISPUTE RESOLUTION</strong>
               </div>
               <div>
                 <strong>Informal Negotiations</strong>
@@ -1072,10 +1054,9 @@
                 European Centre of Arbitration having its seat in Strasbourg,
                 and which are in force at the time the application for
                 arbitration is filed, and of which adoption of this clause
-                constitutes acceptance. The seat of arbitration shall be
-                M&aacute;laga, Spain. The language of the proceedings shall be
-                Spanish. Applicable rules of substantive law shall be the law of
-                Spain.
+                constitutes acceptance. The seat of arbitration shall be Málaga,
+                Spain. The language of the proceedings shall be Spanish.
+                Applicable rules of substantive law shall be the law of Spain.
               </div>
               <div>
                 <strong>Restrictions</strong>
@@ -1092,8 +1073,8 @@
               </div>
               <div>
                 <strong
-                  >Exceptions to Informal Negotiations and Arbitration
-                </strong>
+                  >Exceptions to Informal Negotiations and Arbitration</strong
+                >
               </div>
               <div>
                 The Parties agree that the following Disputes are not subject to
@@ -1112,13 +1093,7 @@
                 jurisdiction of that court.
               </div>
               <div>
-                <strong
-                  ><strong
-                    ><strong
-                      ><strong>16.&nbsp;CORRECTIONS </strong></strong
-                    ></strong
-                  ></strong
-                >
+                <strong>16.&nbsp;CORRECTIONS</strong>
               </div>
               <div>
                 There may be information on the Services that contains
@@ -1129,9 +1104,7 @@
                 information on the Services at any time, without prior notice.
               </div>
               <div>
-                <strong
-                  ><strong><strong>17. DISCLAIMER </strong></strong></strong
-                >
+                <strong>17. DISCLAIMER</strong>
               </div>
               <div>
                 THE SERVICES ARE PROVIDED ON AN AS-IS AND AS-AVAILABLE BASIS.
@@ -1168,15 +1141,7 @@
                 CAUTION WHERE APPROPRIATE.
               </div>
               <div>
-                <strong
-                  ><strong
-                    ><strong
-                      ><strong
-                        >18.&nbsp;LIMITATIONS OF LIABILITY
-                      </strong></strong
-                    ></strong
-                  ></strong
-                >
+                <strong>18.&nbsp;LIMITATIONS OF LIABILITY</strong>
               </div>
               <div>
                 IN NO EVENT WILL WE OR OUR DIRECTORS, EMPLOYEES, OR AGENTS BE
@@ -1196,22 +1161,16 @@
                 RIGHTS.
               </div>
               <div>
-                <strong
-                  ><strong
-                    ><strong
-                      ><strong>19.&nbsp;INDEMNIFICATION </strong></strong
-                    ></strong
-                  ></strong
-                >
+                <strong>19.&nbsp;INDEMNIFICATION</strong>
               </div>
               <div>
                 You agree to defend, indemnify, and hold us harmless, including
                 our subsidiaries, affiliates, and all of our respective
                 officers, agents, partners, and employees, from and against any
                 loss, damage, liability, claim, or demand, including reasonable
-                attorneys&rsquo; fees and expenses, made by any third party due
-                to or arising out of: (1) your Contributions;&nbsp;(2) use of
-                the Services; (3) breach of these Legal Terms; (4) any breach of
+                attorneys’ fees and expenses, made by any third party due to or
+                arising out of: (1) your Contributions;&nbsp;(2) use of the
+                Services; (3) breach of these Legal Terms; (4) any breach of
                 your representations and warranties set forth in these Legal
                 Terms; (5) your violation of the rights of a third party,
                 including but not limited to intellectual property rights; or
@@ -1226,13 +1185,7 @@
                 it.
               </div>
               <div>
-                <strong
-                  ><strong
-                    ><strong
-                      ><strong>20.&nbsp;USER DATA </strong></strong
-                    ></strong
-                  ></strong
-                >
+                <strong>20.&nbsp;USER DATA</strong>
               </div>
               <div>
                 We will maintain certain data that you transmit to the Services
@@ -1248,14 +1201,8 @@
               </div>
               <div>
                 <strong
-                  ><strong
-                    ><strong
-                      ><strong
-                        >21.&nbsp;ELECTRONIC COMMUNICATIONS, TRANSACTIONS, AND
-                        SIGNATURES
-                      </strong></strong
-                    ></strong
-                  ></strong
+                  >21.&nbsp;ELECTRONIC COMMUNICATIONS, TRANSACTIONS, AND
+                  SIGNATURES</strong
                 >
               </div>
               <div>
@@ -1276,13 +1223,7 @@
                 other than electronic means.
               </div>
               <div>
-                <strong
-                  ><strong
-                    ><strong
-                      ><strong>22.&nbsp;MISCELLANEOUS </strong></strong
-                    ></strong
-                  ></strong
-                >
+                <strong>22.&nbsp;MISCELLANEOUS</strong>
               </div>
               <div>
                 These Legal Terms and any policies or operating rules posted by
@@ -1307,14 +1248,8 @@
                 based on the electronic form of these Legal Terms and the lack
                 of signing by the parties hereto to execute these Legal Terms.
               </div>
-              <div>
-                <strong
-                  ><strong
-                    ><strong
-                      ><strong>23.&nbsp;CONTACT US </strong></strong
-                    ></strong
-                  ></strong
-                >
+              <div id="contact">
+                <strong>23.&nbsp;CONTACT US</strong>
               </div>
               <div>
                 In order to resolve a complaint regarding the Services or to
@@ -1325,6 +1260,15 @@
           </div>
         </div>
       </div>
+      <br />
+      <footer>
+        <nav>
+          <ul>
+            <li><a href="#top">Back to Top</a></li>
+            <li><a href="#contact">Contact Us</a></li>
+          </ul>
+        </nav>
+      </footer>
     </div>
   </div>
 </template>
