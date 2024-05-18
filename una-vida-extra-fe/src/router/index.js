@@ -15,7 +15,7 @@ const router = createRouter({
       redirect: '/products', // Redirige la ruta raíz a la vista de productos
       meta: {
         middleware: "public", // Middleware público (sin autenticación requerida)
-        title: 'Home' // Título de la página
+        title: 'Inicio' // Título de la página
       },
     },
     {
@@ -23,7 +23,7 @@ const router = createRouter({
       name: 'project',
       meta: {
         middleware: "public", // Middleware público (sin autenticación requerida)
-        title: "The Project" // Título de la página
+        title: "Nuestro proyecto" // Título de la página
       },
       component: () => import('../views/ProjectView.vue') // Componente asociado a la vista del proyecto
     },
@@ -32,7 +32,7 @@ const router = createRouter({
       name: 'help',
       meta: {
         middleware: "public", // Middleware público (sin autenticación requerida)
-        title: "Help" // Título de la página
+        title: "Ayuda" // Título de la página
       },
       component: () => import('../views/HelpView.vue') // Componente asociado a la vista de ayuda
     },
@@ -41,7 +41,7 @@ const router = createRouter({
       name: 'contact',
       meta: {
         middleware: "public", // Middleware público (sin autenticación requerida)
-        title: "Contact" // Título de la página
+        title: "Contacto" // Título de la página
       },
       component: () => import('../views/ContactView.vue') // Componente asociado a la vista de contacto
     },
@@ -50,7 +50,7 @@ const router = createRouter({
       name: 'privacy',
       meta: {
         middleware: "public", // Middleware público (sin autenticación requerida)
-        title: "Privacy Policy" // Título de la página
+        title: "Política de privacidad" // Título de la página
       },
       component: () => import('../views/PrivacyPolicyView.vue') // Componente asociado a la vista de la politica de privacidad
     },
@@ -59,7 +59,7 @@ const router = createRouter({
       name: 'cookies',
       meta: {
         middleware: "public", // Middleware público (sin autenticación requerida)
-        title: "About our Cookies" // Título de la página
+        title: "Sobre nuestras Cookies" // Título de la página
       },
       component: () => import('../views/CookiesView.vue') // Componente asociado a la vista de las cookies
     },
@@ -68,7 +68,7 @@ const router = createRouter({
       name: 'products',
       meta: {
         middleware: "public", // Middleware público (sin autenticación requerida)
-        title: "Products" // Título de la página
+        title: "Productos" // Título de la página
       },
       component: () => import('../views/products/ProductListView.vue'), // Componente asociado a la vista de lista de productos
       props: route => ({ sText: route.query.q }) // Propiedades pasadas al componente, incluyendo el texto de búsqueda si está presente en la consulta URL
@@ -78,7 +78,7 @@ const router = createRouter({
       name: 'userProducts',
       meta: {
         middleware: "auth", // Middleware de autenticación requerida
-        title: 'User Products' // Título de la página
+        title: 'Productos del usuario' // Título de la página
       },
       component: () => import('../views/products/UserProductListView.vue') // Componente asociado a la vista de productos del usuario
     },
@@ -87,7 +87,7 @@ const router = createRouter({
       name: 'addProduct',
       meta: {
         middleware: "auth", // Middleware de autenticación requerida
-        title: "Add a Product" // Título de la página
+        title: "Añadir un producto" // Título de la página
       },
       component: () => import('../views/products/AddNewProduct.vue') // Componente asociado a la vista de agregar nuevo producto
     },
@@ -96,7 +96,7 @@ const router = createRouter({
       name: 'product',
       meta: {
         middleware: "public", // Middleware público (sin autenticación requerida)
-        title: "Product Details" // Título de la página
+        title: "Detalles del producto" // Título de la página
       },
       props: true, // Pasar las propiedades de la ruta al componente
       component: () => import('../views/products/ProductDetailView.vue') // Componente asociado a la vista de detalles del producto
@@ -106,7 +106,7 @@ const router = createRouter({
       name: 'requestProduct',
       meta: {
         middleware: "auth", // Middleware de autenticación requerida
-        title: "Request a Product" // Título de la página
+        title: "Solicitar un producto" // Título de la página
       },
       props: true, // Pasar las propiedades de la ruta al componente
       component: () => import('../views/requests/RequestDetailView.vue') // Componente asociado a la vista de solicitud de producto
@@ -116,7 +116,7 @@ const router = createRouter({
       name: 'editProduct',
       meta: {
         middleware: "auth", // Middleware de autenticación requerida
-        title: "Edit a Product" // Título de la página
+        title: "Editar un producto" // Título de la página
       },
       props: true, // Pasar las propiedades de la ruta al componente
       component: () => import('../views/products/EditProductView.vue') // Componente asociado a la vista de edición de producto
@@ -126,7 +126,7 @@ const router = createRouter({
       name: 'requests',
       meta: {
         middleware: "auth", // Middleware de autenticación requerida
-        title: "Requests" // Título de la página
+        title: "Solicitudes" // Título de la página
       },
       component: () => import('../views/requests/RequestListView.vue') // Componente asociado a la vista de lista de solicitudes
     },
@@ -135,7 +135,7 @@ const router = createRouter({
       name: 'productRequests',
       meta: {
         middleware: "auth", // Middleware de autenticación requerida
-        title: "Product Requests" // Título de la página
+        title: "Solicitudes de productos" // Título de la página
       },
       component: () => import('../views/requests/ProductRequestListView.vue') // Componente asociado a la vista de solicitudes de producto específico
     },
@@ -144,7 +144,7 @@ const router = createRouter({
       name: 'sponsors',
       meta: {
         middleware: "public", // Middleware público (sin autenticación requerida)
-        title: "Sponsors" // Título de la página
+        title: "Patrocinios" // Título de la página
       },
       component: () => import('../views/SponsorsView.vue') // Componente asociado a la vista de patrocinadores
     },
@@ -153,25 +153,25 @@ const router = createRouter({
       name: 'login',
       meta: {
         middleware: "guest", // Middleware de invitado (no autenticado)
-        title: 'Login' // Título de la página
+        title: 'Acceso' // Título de la página
       },
       component: () => import('../views/user/LoginView.vue') // Componente asociado a la vista de inicio de sesión
     },
-    {
-      path: '/forgot-password', // Ruta para restablecer la contraseña olvidada
-      name: 'forgot-password',
-      meta: {
-        middleware: "guest", // Middleware de invitado (no autenticado)
-        title: 'Forgot Password' // Título de la página
-      },
-      component: () => import('../views/user/ForgotPasswordView.vue') // Componente asociado a la vista de olvido de contraseña
-    },
+    /* {
+       path: '/forgot-password', // Ruta para restablecer la contraseña olvidada
+       name: 'forgot-password',
+       meta: {
+         middleware: "guest", // Middleware de invitado (no autenticado)
+         title: 'Contraseña olvidada' // Título de la página
+       },
+       component: () => import('../views/user/ForgotPasswordView.vue') // Componente asociado a la vista de olvido de contraseña
+     },*/
     {
       path: '/reset-password/:token', // Ruta para restablecer la contraseña con un token específico
       name: 'reset-password',
       meta: {
         middleware: "guest", // Middleware de invitado (no autenticado)
-        title: 'Reset Password' // Título de la página
+        title: 'Restablecer contraseña' // Título de la página
       },
       component: () => import('../views/user/ResetPasswordView.vue') // Componente asociado a la vista de restablecimiento de contraseña
     },
@@ -180,7 +180,7 @@ const router = createRouter({
       name: 'register',
       meta: {
         middleware: "guest", // Middleware de invitado (no autenticado)
-        title: 'Register' // Título de la página
+        title: 'Registro' // Título de la página
       },
       component: () => import('../views/user/UserRegisterView.vue') // Componente asociado a la vista de registro de usuario
     },
@@ -189,7 +189,7 @@ const router = createRouter({
       name: 'terms',
       meta: {
         middleware: "public", // Middleware público (sin autenticación requerida)
-        title: "Terms and Conditions" // Título de la página
+        title: "Términos y condiciones" // Título de la página
       },
       component: () => import('../views/TermsAndConditionsView.vue') // Componente asociado a la vista de términos y condiciones
     },
@@ -199,7 +199,7 @@ const router = createRouter({
       name: 'logout',
       meta: {
         middleware: "public", // Middleware público (sin autenticación requerida)
-        title: "Logout" // Título de la página
+        title: "Salir" // Título de la página
       },
       component: () => import('../views/user/LogoutView.vue') // Componente asociado a la vista de cierre de sesión
     },
@@ -208,7 +208,7 @@ const router = createRouter({
       name: 'profile',
       meta: {
         middleware: "auth", // Middleware de autenticación requerido
-        title: "User Profile" // Título de la página
+        title: "Perfil de usuario" // Título de la página
       },
       component: () => import('../views/user/ProfileView.vue') // Componente asociado a la vista de perfil de usuario
     },
@@ -228,7 +228,7 @@ const router = createRouter({
       ],
       meta: {
         middleware: "admin", // Middleware de administrador requerido
-        title: "Admin Dashboard" // Título de la página
+        title: "Zona Admin" // Título de la página
       },
       component: () => import('../views/AdminDashboard.vue') // Componente asociado al panel de administración
     },
@@ -237,7 +237,7 @@ const router = createRouter({
       name: 'forgot-password',
       meta: {
         middleware: "public", // Middleware público (sin autenticación requerida)
-        title: "Forgot Password" // Título de la página
+        title: "Contraseña olvidada" // Título de la página
       },
       component: () => import('../views/user/ForgotPasswordView.vue') // Componente asociado a la vista de olvido de contraseña
     },
@@ -248,7 +248,7 @@ const router = createRouter({
       name: 'notFound',
       meta: {
         middleware: "public", // Middleware público (sin autenticación requerida)
-        title: "Not Found" // Título de la página
+        title: "Página no encontrada" // Título de la página
       },
       component: NotFound404Page // Componente asociado a la página de error 404
     }
@@ -259,7 +259,7 @@ const router = createRouter({
 const isAuthenticated = computed(() => store.getters.authenticated);
 
 // Propiedad computada para obtener los datos del usuario
-const user = computed(() => store.getters.user);
+//const user = computed(() => store.getters.user);
 
 // Función para manejar rutas accesibles para invitados
 async function handleGuestRoute(to, next) {
@@ -267,11 +267,11 @@ async function handleGuestRoute(to, next) {
   // Pendiente (considerar una página de redirección)
   store.dispatch("getAuthUser").then(() => {
     if (isAuthenticated.value) {
-      console.log("VISITANDO UNA RUTA DE INVITADO, ya estás autenticado", to.name);
+      //console.log("VISITANDO UNA RUTA DE INVITADO, ya estás autenticado", to.name);
       next({ name: "products" });
       //next();
     } else {
-      console.log("VISITANDO UNA RUTA DE INVITADO, no estás autenticado", to.name);
+      //console.log("VISITANDO UNA RUTA DE INVITADO, no estás autenticado", to.name);
       next();
     }
   });
@@ -279,7 +279,11 @@ async function handleGuestRoute(to, next) {
 
 // Función para manejar rutas públicas, realmente no hace falta nada al ser pública, se sigue adelante
 function handlePublicRoute(to, next) {
-  next();
+  //Se comprueba la autenticación, por el usuario ya esta autenticado, si lo está, se mostrará el contenido como autenticado, por si hay contenido específico
+  store.dispatch("getAuthUser").then(() => {
+    next();
+  });
+
 }
 
 // Función para manejar rutas autenticadas
@@ -315,6 +319,7 @@ router.beforeEach((to, from, next) => {
 
   // Determinar el tipo de middleware de la ruta y manejarla en consecuencia con los métodos de arriba
   if (to.meta.middleware === "guest") {
+    //Las rutas de tipo guest se usan para paginas en las que el usuario autenticado no debería visitar. Por ejmplo, login, token reset, etc.
     handleGuestRoute(to, next);
   } else if (to.meta.middleware === "admin") {
     handleAuthRoute(to, from, next);
