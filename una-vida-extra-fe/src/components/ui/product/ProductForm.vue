@@ -233,7 +233,7 @@ const submitForm = async () => {
   formData.append("user_id", loggedInUser.value);
   formData.append("available", 1);
   formData.append("is_taken", 0);
-  formData.append("end_date", "2024-12-08 16:12:49");
+  //formData.append("end_date", "2024-12-08 16:12:49"); //De momento no se usa la funcionalidad de autocaducidad
 
   try {
     isLoading.value = true;
