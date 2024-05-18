@@ -5,9 +5,9 @@
   </div>
   <div v-if="props.gravatarInfo">
     <p>
-      Since we are about re-using, we use the
-      <a href="https://gravatar.com/" target="_blank">gravatar</a> linked to
-      your email address once you register. &#128522;
+      Nos encanta reutilizar, así que usamos el
+      <a href="https://gravatar.com/" target="_blank">gravatar</a> vinculado a
+      tu dirección de correo electrónico una vez te registras. &#128522;
     </p>
   </div>
 </template>

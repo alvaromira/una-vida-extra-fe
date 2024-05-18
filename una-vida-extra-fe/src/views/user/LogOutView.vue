@@ -15,7 +15,7 @@ onMounted(async () => {
 
 <template>
   <div class="form-wrapper">
-    <div><p class="loggingOut">Logging Out</p></div>
+    <div><p class="loggingOut">Saliendo</p></div>
   </div>
 </template>
 

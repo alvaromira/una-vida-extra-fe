@@ -4,16 +4,16 @@
     <div class="col-md-10 cta-wrapper">
       <div class="row">
         <div class="col-md-6 light-side cta-side">
-          <h2>We are in this together!</h2>
+          <h2>Esto es cosa de todos.</h2>
           <p>
-            We want our <strong>Una vida extra</strong> to get bigger and
-            better. So we are always willing to listen to your feedback and
-            ideas 💡. Keep them coming!
+            Queremos que <strong>Una vida extra</strong> siga creciendo y
+            mejorando. Estarems encantados de recibir tus comentarios e ideas
+            💡. ¡Mándanoslas!
           </p>
         </div>
         <div class="col-md-6 dark-side cta-side">
-          <h2>Let's talk.</h2>
-          <p>Please feel free to reach out to us at</p>
+          <h2>¿Hablamos?</h2>
+          <p>Ponte en contacto con nosotros a través de</p>
           <p>
             <a class="contact-email" href="mailto:admin@una-vida-extra.site"
               >admin@una-vida-extra.site</a

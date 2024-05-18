@@ -72,7 +72,6 @@ const numberOfRequests = computed(() => {
 //Check all requests, set all of them as not available but the one acceptes
 //reload
 const onModalConfirm = async () => {
-  console.log("Requested confirmed...");
   setIsModalVisible(false);
   try {
     setRequestAccepted(false);
@@ -107,7 +106,6 @@ const onModalClose = () => {
 
 //when removing a request, received from a request card
 const processRequestAcceptance = (userId, requestId, productId) => {
-  console.log(`Accepted request id ${requestId}`);
   setAcceptedRequestId(requestId);
   setIsModalVisible(true);
 };
@@ -141,21 +139,21 @@ const handleRequestError = (error) => {
   if (error.response) {
     // The request was made and the server responded with a status code
     // that falls out of the range of 2xx
-    console.error("Error data", error.response.data);
-    console.error("Error status", error.response.status);
+    console.error("Datos del error", error.response.data);
+    console.error("Código de error", error.response.status);
     store.commit("addToast", {
-      title: "Error Processing Requests",
+      title: "Error al procesar la solicitud",
       type: "error",
-      message: `There was an error while processing the requests. (Code: ${error.response.status})`,
+      message: `Hubo un error al procesar las solicitudes. (Código: ${error.response.status})`,
     });
   } else {
     // Something happened in setting up the request that triggered an Error
-    console.error("Error message", error.message);
-    console.error("Error code", error.code);
+    console.error("Mensaje de error", error.message);
+    console.error("Código de error", error.code);
     store.commit("addToast", {
-      title: "Error Processing Requests",
+      title: "Error al procesar la solicitud",
       type: "error",
-      message: `There was an error while processing the requests. (Code: ${error.code})`,
+      message: `Hubo un error al procesar las solicitudes. (Código: ${error.code})`,
     });
   }
 };
@@ -165,7 +163,7 @@ const handleRequestError = (error) => {
   <div class="row justify-content-md-center">
     <div class="back-to-products-button col">
       <a :href="$router.resolve({ name: 'userProducts' }).href"
-        >Back to your products</a
+        >Volver a tus productos</a
       >
     </div>
   </div>
@@ -183,13 +181,15 @@ const handleRequestError = (error) => {
       v-if="prodRequests.length < 1"
     >
       <div class="col-md-8 no-requests-found text-center">
-        <p>Opps! You don't have any active requests for this item (yet).</p>
         <p>
-          Click
+          ¡Ups! No tienes ninguna solicitud activa para este artículo (aún).
+        </p>
+        <p>
+          Haz clic
           <RouterLink v-if="!isUserAdmin" :to="{ name: 'userProducts' }"
-            >here</RouterLink
+            >aquí</RouterLink
           >
-          to go back to your products.
+          para volver a tus productos.
         </p>
       </div>
     </div>
@@ -197,7 +197,7 @@ const handleRequestError = (error) => {
       <div class="row">
         <div class="col">
           <h2>
-            Requests received for <em>{{ productTitle }}</em>
+            Solicitudes recibidas para <em>{{ productTitle }}</em>
           </h2>
         </div>
       </div>
@@ -229,14 +229,14 @@ const handleRequestError = (error) => {
     @modal-confirmed="onModalConfirm"
     @modal-close="onModalClose"
   >
-    <template #header>Accept Product Request</template>
+    <template #header>Aceptar solicitud de producto</template>
     <template #body
       ><p>
-        Are you sure you want to Accept this request for your product? This will
-        mark the rest of requests as inactive and your item will no longer be
-        listed.
+        ¿Está seguro de que desea aceptar esta solicitud para su producto? Esto
+        marcará el resto de las solicitudes como inactivas y su artículo ya no
+        aparecerá en el listado.
       </p>
-      <p>This action cannot be undone.</p></template
+      <p>Esta acción no se puede deshacer.</p></template
     ></ModalConfirmationDialog
   >
 </template>

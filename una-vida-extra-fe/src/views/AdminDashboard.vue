@@ -5,7 +5,7 @@
     <div class="row admin-panel-jumbo">
       <div class="col">
         <div class="d-flex" style="justify-content: space-between">
-          <h2>Admin Panel</h2>
+          <h2>Zona Admin</h2>
           &nbsp;
           <a
             class="collapse-icon"
@@ -32,14 +32,15 @@
         </div>
         <div class="collapse" id="collapseInfo">
           <p>
-            This is a resctricted area only available to admin users. Use the
-            navigation sidebar on the right to access the data managed in the
-            app, the users, etc.
+            Esta es un área restringida solo disponible para usuarios
+            administradores. Utilice la barra lateral de navegación de la
+            derecha para acceder a los datos gestionados en la aplicación, los
+            usuarios, etc.
           </p>
           <p>
-            Please be mindful of your actions when working on this admin panel
-            since your actions can be destructive, especially when deleting
-            data.
+            Tenga en cuenta sus acciones cuando trabaje en este panel de
+            administración, ya que pueden ser destructivas, especialmente al
+            eliminar datos.
           </p>
         </div>
       </div>
@@ -52,7 +53,7 @@
             class="nav-link"
             :class="{ active: currentPath === '/admin/products' }"
             :to="{ path: '/admin/products' }"
-            >Products</router-link
+            >Productos</router-link
           >
         </li>
         <li class="nav-item">
@@ -60,7 +61,7 @@
             class="nav-link"
             :class="{ active: currentPath === '/admin/users' }"
             :to="{ path: '/admin/users' }"
-            >Users</router-link
+            >Usuarios</router-link
           >
         </li>
         <li class="nav-item">
@@ -68,7 +69,7 @@
             class="nav-link"
             :class="{ active: currentPath === '/admin/categories' }"
             :to="{ path: '/admin/categories' }"
-            >Categories</router-link
+            >Categorías</router-link
           >
         </li>
         <li class="nav-item">
@@ -76,7 +77,7 @@
             class="nav-link"
             :class="{ active: currentPath === '/admin/tags' }"
             :to="{ path: '/admin/tags' }"
-            >Tags</router-link
+            >Etiquetas</router-link
           >
         </li>
         <li class="nav-item">
@@ -84,7 +85,7 @@
             class="nav-link"
             :class="{ active: currentPath === '/admin/requests' }"
             :to="{ path: '/admin/requests' }"
-            >Requests</router-link
+            >Solicitudes</router-link
           >
         </li>
         <li class="nav-item">
@@ -92,7 +93,7 @@
             class="nav-link"
             :class="{ active: currentPath === '/admin/locations' }"
             :to="{ path: '/admin/locations' }"
-            >Locations</router-link
+            >Ubicaciones</router-link
           >
         </li>
       </ul>

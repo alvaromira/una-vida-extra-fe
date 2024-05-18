@@ -9,9 +9,9 @@
         <thead>
           <tr>
             <th scope="col">id</th>
-            <th scope="col">name</th>
-            <th scope="col">Edit</th>
-            <th scope="col">Delete</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Editar</th>
+            <th scope="col">Eliminar</th>
           </tr>
         </thead>
         <tbody>
@@ -70,10 +70,10 @@
     <template #header>Confirm Tag Deletion</template>
     <template #body
       ><p>
-        Are you sure you want to delete this tag? The tag will be removed from
-        products where it is now used.
+        ¿Estás seguro de que deseas eliminar esta etiqueta? La etiqueta se
+        eliminará de los productos en los que se utiliza actualmente.
       </p>
-      <p>This action cannot be undone.</p></template
+      <p>Esta acción no se puede deshacer.</p></template
     >
   </ModalConfirmationDialog>
   <ModalConfirmationDialog
@@ -102,7 +102,7 @@
 
           <!-- Name Field -->
           <div class="mb-3">
-            <label for="name" class="form-label">Name</label>
+            <label for="name" class="form-label">Nombre</label>
             <textarea
               class="form-control"
               id="name"
@@ -119,14 +119,14 @@
     @modal-close="onCreateModalClose"
     id="create-tag-modal"
   >
-    <template #header>Tag Creation</template>
+    <template #header>Creación de etiquetas</template>
     <template #body>
       <div class="container">
         <h2>Create Tag</h2>
         <form @submit.prevent="subitEditProductForm">
           <!-- Name Field -->
           <div class="mb-3">
-            <label for="name" class="form-label">Name</label>
+            <label for="name" class="form-label">Nombre</label>
             <textarea
               class="form-control"
               id="name"
@@ -193,12 +193,6 @@ const closeAllModals = () => {
 watch(
   () => isEditModalVisible.value,
   (newValue, oldValue) => {
-    console.log(
-      "isEditModalVisible prop changed from",
-      oldValue,
-      "to",
-      newValue
-    );
     if ((newValue = true)) {
       setIsDeleteModalVisible(false);
       setIsCreateModalVisible(false);
@@ -253,12 +247,12 @@ const handleRequestError = (error) => {
   console.error(error); //como es un error, se saca como tal por consola tambien
   isDataLoaded.value = true;
   const errorMessage = error.response
-    ? `There was an error while processing the requests. (Code: ${error.response.status})`
-    : `There was an error while processing the requests. (Code: ${error.code})`;
+    ? `Hubo un error al procesar las solicitudes. (Código: ${error.response.status})`
+    : `Hubo un error al procesar las solicitudes. (Código: ${error.code})`;
 
   // Enviar toast al estado de Vuex para notificación de error
   store.commit("addToast", {
-    title: "Error Processing Requests",
+    title: "Error al procesar la solicitud",
     type: "error",
     message: errorMessage,
   });
@@ -310,9 +304,9 @@ async function deleteTag(tagId) {
 
     //Enviar toast al store de Vuex para mostrar la notificacion de exito
     store.commit("addToast", {
-      title: "Tag Deleted",
+      title: "Etiqueta eliminada",
       type: "success",
-      message: `Tag ${tagId} has been deleted. The tag list will be reloaded.`,
+      message: `La etiqueta ${tagId} ha sido eliminada. La lista de etiquetas se recargará.`,
     });
 
     //se hace una recarga para obtener datos actualizados del servidor tras la accion
@@ -335,9 +329,9 @@ async function createTag(tagName) {
 
     //Enviar toast al store de Vuex para mostrar la notificacion de exito
     store.commit("addToast", {
-      title: "Tag Created",
+      title: "Etiqueta creada",
       type: "success",
-      message: `The tag has been created. The tag list will be reloaded.`,
+      message: `La etiqueta ha sido creada. La lista de etiquetas se recargará.`,
     });
 
     //se hace una recarga para obtener datos actualizados del servidor tras la accion
@@ -360,9 +354,9 @@ async function editTag(tag) {
 
     //Enviar toast al store de Vuex para mostrar la notificacion de exito
     store.commit("addToast", {
-      title: "Tag Updated",
+      title: "Etiqueta actualizada",
       type: "success",
-      message: `The tag has been updated. The tag list will be reloaded.`,
+      message: `La etiqueta ha sido actualizada. La lista de etiquetas se recargará.`,
     });
 
     //se hace una recarga para obtener datos actualizados del servidor tras la accion

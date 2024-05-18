@@ -20,7 +20,7 @@
         <div v-if="props.isAccepted" class="col item">
           <!--Solo cuando la solicitud esta aceptada se muestra para el usuario su correo-->
           <span class="note"
-            >You can now contact the requester:
+            >Ya puedes contactar con el solicitante:
             <a :href="'mailto:' + props.userEmail"
               ><svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -46,13 +46,13 @@
         v-if="!props.isAccepted"
         @click="acceptRequest"
         :isDisabled="!props.isActive"
-        >Accept</BaseButton
+        >Aceptar</BaseButton
       >
       <BaseButton
         v-else
         :to="{ name: 'product', params: { id: props.productId } }"
         link="true"
-        >Go to Product</BaseButton
+        >Ir al producto</BaseButton
       >
     </div>
   </div>

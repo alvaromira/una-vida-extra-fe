@@ -30,7 +30,7 @@
                 </li>
                 <li class="nav-item">
                   <RouterLink class="nav-link" :to="{ name: 'contact' }"
-                    >Contact</RouterLink
+                    >Contacto</RouterLink
                   >
                 </li>
               </ul>

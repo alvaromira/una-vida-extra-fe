@@ -4,20 +4,22 @@
       <div class="col-md-8 welcome-wrapper">
         <div class="row">
           <div class="col welcome-title dark-side">
-            <p>Welcome to <strong>Una vida Extra</strong></p>
+            <p>Bienvenido a <strong>Una vida extra</strong></p>
+            <!-- <span class="triangle-up">&nbsp;</span>-->
           </div>
         </div>
         <div class="row">
           <div class="col welcome-message light-side">
+            <!--<span class="triangle-down">&nbsp;</span>-->
             <p>
-              Looking for a place where to
-              <strong>donate, re-use, recycle and re-purpose</strong> stuff? You
-              found us! We are an online community that promote the re-use of
-              items. All <strong>free</strong>, no money or cards accepted. Just
-              good will is accepted 😁. Protect the planet by consuming less and
-              re-using more with us! Please
-              <RouterLink :to="{ name: 'register' }">register</RouterLink>
-              and get started.
+              ¿Buscas un lugar donde
+              <strong>donar, reutilizar, reciclar y reutilizar</strong> cosas?
+              ¡Nos encontraste! Somos una comunidad en línea para la
+              reutilización. Todo <strong>gratis</strong>, no se aceptan dinero
+              ni tarjetas. Sólo buena voluntad 😁. ¡Protege el planeta
+              consumiendo menos y reutilizando más con nosotros! ¿A qué esperas
+              para
+              <RouterLink :to="{ name: 'register' }">registrarte</RouterLink>?
             </p>
           </div>
         </div>
@@ -26,10 +28,11 @@
     <div v-if="isDataLoaded">
       <h2 v-if="sText">
         <!--Para cuando haya busquedas-->
-        {{ productResults.meta.total }} result(s) for found for {{ sText }}.
+        {{ productResults.meta.total }} resultado(s) encontrado(s) para
+        {{ sText }}.
       </h2>
 
-      <h2 v-else>Check the latest additions!</h2>
+      <h2 v-else>Lo más reciente</h2>
 
       <!--Solo se muestran los productos si la base de datos y el backend están disponible y por tanto hay productos recuperados. REalment esto es para posibles codigos 500 y errores de red-->
       <section
@@ -50,8 +53,8 @@
       <section v-else class="row">
         <div class="col text-center">
           <p>
-            Opps, it seems like there is a problem to load items. If it persist,
-            please contact us.
+            Vaya, parece que hay un problema al cargar elementos. Si persiste,
+            por favor contáctanos.
           </p>
         </div>
       </section>
@@ -62,7 +65,7 @@
           mode="outline"
           :disabled="currentPage === 1"
         >
-          <span class="sr-only">Previous</span>
+          <span class="sr-only">Anterior</span>
           <span aria-hidden="true">&lt;</span>
         </BaseButton>
         <span class="pagination-information"
@@ -73,7 +76,7 @@
           @click="loadNextPage"
           :disabled="currentPage === totalPages"
         >
-          <span class="sr-only">Next</span>
+          <span class="sr-only">Siguiente</span>
           <span aria-hidden="true">&gt;</span>
         </BaseButton>
       </div>
@@ -178,12 +181,12 @@ const handleRequestError = (error) => {
   console.error(error); //como es un error, se saca como tal por consola tambien
   isDataLoaded.value = true;
   const errorMessage = error.response
-    ? `There was an error while processing the requests. (Code: ${error.response.status})`
-    : `There was an error while processing the requests. (Code: ${error.code})`;
+    ? `Hubo un error al procesar las solicitudes. (Código: ${error.response.status})`
+    : `Hubo un error al procesar las solicitudes. (Código: ${error.code})`;
 
   // Enviar toast al estado de Vuex para notificación de error
   store.commit("addToast", {
-    title: "Error Processing Requests",
+    title: "Error al procesar la solicitud",
     type: "error",
     message: errorMessage,
   });
@@ -248,6 +251,10 @@ h2 {
 
 .welcome-title {
   font-size: 2rem;
+  position: relative;
+}
+.welcome-message {
+  position: relative;
 }
 .welcome-title,
 .welcome-message {
@@ -265,5 +272,29 @@ h2 {
   overflow: hidden;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   margin-bottom: 2rem;
+}
+
+.triangle-up {
+  width: 0px;
+  height: 0px;
+  border-style: solid;
+  border-width: 0 13px 20px 13px;
+  border-color: transparent transparent #ffffff transparent;
+  transform: rotate(0deg);
+  display: block;
+  position: absolute;
+  right: 1rem;
+}
+.triangle-down {
+  width: 0px;
+  height: 0px;
+  border-style: solid;
+  border-width: 0 13px 20px 13px;
+  border-color: transparent transparent #7ab370 transparent;
+  transform: rotate(180deg);
+  display: block;
+  position: absolute;
+  left: 1rem;
+  top: 0rem;
 }
 </style>

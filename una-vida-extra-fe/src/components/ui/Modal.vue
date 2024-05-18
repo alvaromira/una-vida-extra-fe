@@ -9,30 +9,30 @@
         aria-describedby="modalDescription"
       >
         <header class="modal-header" id="modalTitle">
-          <slot name="header"> This is the default title! </slot>
+          <slot name="header">¡Este es el título predeterminado!</slot>
           <button
             type="button"
             class="btn-close"
             @click="close"
-            aria-label="Close modal"
+            aria-label="Cerrar modal"
           >
             x
           </button>
         </header>
 
         <section class="modal-body" id="modalDescription">
-          <slot name="body"> This is the default body! </slot>
+          <slot name="body"> ¡Este es el cuerpo predeterminado!</slot>
         </section>
 
         <footer class="modal-footer">
-          <slot name="footer"> This is the default footer! </slot>
+          <slot name="footer"> ¡Este es el pie de página predeterminado! </slot>
           <button
             type="button"
             class="btn-green"
             @click="close"
-            aria-label="Close modal"
+            aria-label="Cerrar modal"
           >
-            Close Modal
+            Cerrar modal
           </button>
         </footer>
       </div>

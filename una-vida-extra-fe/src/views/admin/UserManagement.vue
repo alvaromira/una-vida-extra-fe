@@ -6,17 +6,17 @@
         <thead>
           <tr>
             <th scope="col">id</th>
-            <th scope="col">is_admin</th>
-            <th scope="col">is_disabled</th>
-            <th scope="col">name</th>
-            <th scope="col">surname</th>
+            <th scope="col">Administrador</th>
+            <th scope="col">Desactivado</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Apellidos</th>
 
-            <th scope="col">email</th>
-            <th scope="col">phone</th>
+            <th scope="col">Email</th>
+            <th scope="col">Telf.</th>
 
-            <th scope="col">location_id</th>
+            <th scope="col">id ubic.</th>
 
-            <th scope="col">created_at</th>
+            <th scope="col">creación</th>
             <th scope="col"></th>
             <th scope="col"></th>
           </tr>
@@ -74,31 +74,19 @@
         </tbody>
       </table>
 
-      <!--<section class="user-card-container">
-        <div v-for="user in userResults.data">
-          <user-card
-            :key="user.id"
-            :id="user.id"
-            :image="user.image"
-            :title="user.title"
-            :date="user.created_at"
-            :location="user.location"
-          />
-        </div>
-      </section>-->
       <!-- Pagination controls -->
       <div class="pagination-controls">
         <BaseButton @click="loadPreviousPage" :disabled="currentPage === 1">
-          Previous
+          Anterior
         </BaseButton>
         <span class="pagination-information"
-          >Page {{ currentPage }} of {{ totalPages }}</span
+          >Página {{ currentPage }} de {{ totalPages }}</span
         >
         <BaseButton
           @click="loadNextPage"
           :disabled="currentPage === totalPages"
         >
-          Next
+          Siguiente
         </BaseButton>
       </div>
     </div>
@@ -113,15 +101,15 @@
     @modal-close="onDeleteModalClose"
     id="delete-user-modal"
   >
-    <template #header>Confirm User Deletion</template>
+    <template #header>Confirmar eliminación de usuario</template>
     <template #body
       ><p>
-        Are you sure you want to delete this user? The user will no longer be
-        listed or visible to anybody. Any requests and products related to this
-        user may be affected by this action. Please consider
-        <strong>disabling</strong> the user instead.
+        ¿Estás seguro de que deseas eliminar este usuario? El usuario ya no
+        aparecerá en la lista ni será visible para nadie. Cualquier solicitud y
+        producto relacionado con este usuario puede verse afectado por esta
+        acción. En su lugar, considere <strong>desactivar</strong> al usuario.
       </p>
-      <p>This action cannot be undone.</p></template
+      <p>Esta acción no se puede deshacer.</p></template
     >
   </ModalConfirmationDialog>
   <ModalConfirmationDialog
@@ -130,7 +118,7 @@
     @modal-close="onEditModalClose"
     id="edit-user-modal"
   >
-    <template #header>User Editing</template>
+    <template #header>Edición de usuario</template>
     <template #body>
       <div class="container">
         <h2>Edit User</h2>
@@ -148,13 +136,13 @@
               aria-describedby="idHelp"
             />
             <p id="idHelp" class="form-text">
-              This is the user ID and it must not be updated.
+              Este es el ID de usuario y no debe actualizarse.
             </p>
           </div>
 
           <!-- Name Field -->
           <div class="mb-3">
-            <label for="name" class="form-label">Name</label>
+            <label for="name" class="form-label">Nombre</label>
             <input
               type="text"
               class="form-control"
@@ -187,7 +175,8 @@
               aria-describedby="emailHelp"
             />
             <p id="emailHelp" class="form-text">
-              This is the login username and it must not be updated.
+              Este es el nombre de usuario de inicio de sesión y no debe
+              actualizarse.
             </p>
           </div>
 
@@ -204,7 +193,7 @@
 
           <!-- Admin Field -->
           <div class="mb-3">
-            <label for="is-admin" class="form-label">Is Admin?</label>
+            <label for="is-admin" class="form-label">¿Administrador?</label>
             <input
               type="checkbox"
               class="form-check-input"
@@ -216,7 +205,7 @@
           <!-- is disabled Field -->
           <div class="mb-3">
             <label for="is-disabled" class="form-label"
-              >Is the user account disabled?</label
+              >¿Cuenta desactivada?</label
             >
             <input
               type="checkbox"
@@ -228,7 +217,7 @@
 
           <!-- Created At Field -->
           <div class="mb-3">
-            <label for="created_at" class="form-label">Created At</label>
+            <label for="created_at" class="form-label">Creación</label>
             <input
               type="text"
               class="form-control"
@@ -239,13 +228,13 @@
               aria-describedby="dateHelp"
             />
             <p id="dateHelp" class="form-text">
-              This is the user creation date and it must not be updated.
+              Esta es la fecha de creación del usuario y no debe actualizarse.
             </p>
           </div>
 
           <!-- location id Field -->
           <div class="mb-3">
-            <label for="location-id" class="form-label">Location id</label>
+            <label for="location-id" class="form-label">id ubic.</label>
             <input
               type="number"
               class="form-control"
@@ -253,11 +242,8 @@
               v-model="editUserFormData.location_id"
             />
           </div>
-
-          <!--<button type="submit" class="btn btn-primary">Submit</button>-->
-        </form>
-      </div></template
-    >
+        </form></div
+    ></template>
   </ModalConfirmationDialog>
 </template>
 
@@ -319,12 +305,6 @@ const closeAllModals = () => {
 watch(
   () => isEditModalVisible.value,
   (newValue, oldValue) => {
-    console.log(
-      "isEditModalVisible prop changed from",
-      oldValue,
-      "to",
-      newValue
-    );
     if ((newValue = true)) {
       setIsDeleteModalVisible(false);
       setIsCreateModalVisible(false);
@@ -452,9 +432,9 @@ const handleSuccess = async () => {
 
   // Show success toast
   store.commit("addToast", {
-    title: "User updated",
+    title: "Usuario actualizado",
     type: "success",
-    message: "You have successfully updated the user.",
+    message: "Has actualizado con éxito el usuario.",
   });
   closeAllModals();
   await getAllUsers();
@@ -470,7 +450,7 @@ const handleRequestError = (error) => {
   if (error.response) {
     // Capturar el codigo de error
     errorStatus = error.response.status;
-    console.error("Error status", error.response.status);
+    console.error("Código de error", error.response.status);
 
     // Extraer mensaje de error, solo el primero, de forma que si hay varios se solucinan uno a uno.
     const errors = error.response.data.errors;
@@ -483,39 +463,19 @@ const handleRequestError = (error) => {
     }
   } else {
     // Otros errores
-    console.error("There was an unexpected error processing the request.");
-    //console.error("Error code", error.code);
-    // errorStatus = error.code;
-    // errorMessage = error.message;
+    console.error("Se produjo un error inesperado al procesar la solicitud.");
   }
 
   // Construir el mensaje de error final
-  const finalMessage = `The product could not be updated. Error code: ${errorStatus}. Error message: ${errorMessage}`;
+  const finalMessage = `El usuario no se pudo actualizar. Código de error: ${errorStatus}. Mensaje de error: ${errorMessage}`;
 
   //Mostrar el toast con el error
   store.commit("addToast", {
-    title: "Product Not Updated",
+    title: "Usuario no actualizado",
     type: "error",
     message: finalMessage,
   });
 };
-
-/*
-// Función para manejar errores de solicitud
-const handleRequestError = (error) => {
-  console.error(error); //como es un error, se saca como tal por consola tambien
-  isDataLoaded.value = true;
-  const errorMessage = error.response
-    ? `There was an error while processing the requests. (Code: ${error.response.status})`
-    : `There was an error while processing the requests. (Code: ${error.code})`;
-
- // Enviar toast al estado de Vuex para notificación de error
-  store.commit("addToast", {
-    title: "Error Processing Requests",
-    type: "error",
-    message: errorMessage,
-  });
-};*/
 
 // Fetch users on component mount
 onMounted(async () => {
@@ -561,9 +521,9 @@ async function deleteUser(userId) {
     //let message = `User ${userId} has been deleted`;
     //Enviar toast al store de Vuex para mostrar la notificacion de exito
     store.commit("addToast", {
-      title: "User Deleted",
+      title: "Usuario eliminado",
       type: "success",
-      message: `User ${userId} has been deleted. The user list will be reloaded.`,
+      message: `El usuario ${userId} ha sido eliminado. La lista de usuarios se recargará.`,
     });
 
     //reload all users, using the first page
@@ -614,12 +574,6 @@ async function editUser(userForEdition) {
       payload: copyEditUserFormData,
     });
 
-    //Enviar toast al store de Vuex para mostrar la notificacion de exito
-    /*store.commit("addToast", {
-      title: "User Updated",
-      type: "success",
-      message: `User ${userId} has been updated. The user list will be reloaded.`,
-    });*/
     await handleSuccess();
 
     return true;

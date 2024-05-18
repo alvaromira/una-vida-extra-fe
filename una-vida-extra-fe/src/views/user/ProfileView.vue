@@ -9,7 +9,7 @@ onMounted(async () => {});
 <template>
   <div class="form-wrapper">
     <div class="row">
-      <div class="col"><h2>My Profile</h2></div>
+      <div class="col"><h2>Mi perfil</h2></div>
     </div>
     <user-profile-form />
   </div>

@@ -10,18 +10,18 @@
         aria-describedby="modalDescription"
       >
         <header class="modal-header" id="modalTitle">
-          <slot name="header"> This is the default title! </slot>
+          <slot name="header"> ¡Este es el título predeterminado! </slot>
           <!--se usa un slot para pasar contenido-->
           <button
             type="button"
             class="btn-close"
             @click="onClose"
-            aria-label="Close modal"
+            aria-label="Cerrar modal"
           ></button>
         </header>
 
         <section class="modal-body" id="modalDescription">
-          <slot name="body"> This is the default body! </slot>
+          <slot name="body"> ¡Este es el cuerpo predeterminado! </slot>
         </section>
 
         <footer class="modal-footer">
@@ -32,16 +32,16 @@
             @click="onConfirm"
             aria-label="Confirm deletion"
           >
-            Confirm
+            Confirmar
           </button>
           <!--evento onclick que manda la cancelacion al padre-->
           <button
             type="button"
             class="btn-cancel"
             @click="onClose"
-            aria-label="Close modal"
+            aria-label="Cerrar modal"
           >
-            Close
+            Cerrar
           </button>
         </footer>
       </div>

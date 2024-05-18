@@ -3,13 +3,13 @@
   <div id="products-data-wrapper">
     <div id="products-data">
       <div id="re-used-prods-data" class="prod-data-container">
-        <span class="prod-data-item">0</span> Re-used products
+        <span class="prod-data-item">0</span> Productos reutilizados
       </div>
       <div id="no-members-data" class="prod-data-container">
-        <span class="prod-data-item">0</span> Members
+        <span class="prod-data-item">0</span> Miembros
       </div>
       <div id="no-locations-data" class="prod-data-container">
-        <span class="prod-data-item">0</span> Locations
+        <span class="prod-data-item">0</span> Ubicaciones
       </div>
     </div>
   </div>

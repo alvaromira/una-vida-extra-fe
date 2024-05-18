@@ -2,8 +2,8 @@
 <template>
   <div>
     <p>
-      You are logged in already. Redirecting you to prodcuts in
-      {{ countdown }} seconds...
+      Ya has iniciado sesión. Redirigiéndote a productos en
+      {{ countdown }} segundos...
     </p>
   </div>
 </template>

@@ -43,7 +43,7 @@
               <div class="location-icon col-md-12">
                 <span class="location-toggle" @click="showLocation">
                   <span v-if="!isLocationDisplayed"
-                    ><IconLocation /> View Location</span
+                    ><IconLocation />&nbsp;Ver ubicación</span
                   >
                   <span v-else
                     ><svg
@@ -60,7 +60,7 @@
                       <path
                         d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1z"
                       /></svg
-                    >&nbsp;View Image</span
+                    >&nbsp;Ver imagen</span
                   >
                 </span>
               </div>
@@ -72,18 +72,18 @@
                 </div>
                 <div class="product-card-detail-publication-details">
                   <p v-if="!loggedUserIsOwner">
-                    Published by
+                    Publicado por
                     <span class="publication-details-owner">
                       {{ props.owner }}</span
                     >
-                    on
+                    . Fecha:
                     <span class="product-card-product-actual-date">{{
                       userFriendlyDate
                     }}</span
                     >.
                   </p>
                   <p v-else>
-                    You published this item on
+                    Tú publicaste este artículo en:
                     <span class="product-card-product-actual-date">{{
                       userFriendlyDate
                     }}</span
@@ -97,20 +97,21 @@
                 <div class="product-detail-availability">
                   <div v-if="loggedUserIsOwner">
                     <p>
-                      You have accepted a request for this product. Please mark
-                      the product as taken when you have donated it.
+                      Has aceptado una solicitud para este producto. Por favor
+                      marca el producto tal como donado cuando lo hayan
+                      recogido.
                     </p>
                   </div>
 
                   <div v-else>
                     <!--Para no dueÑos del producto, en esta sección solo hay dos casos: donado y por tanto se borrará en breve, o bien, con solicitud aceptada y no disponible pero no donado. El resto de casos, no pueden existir {ejemplo: disponible y donado al mismo tiempo}-->
                     <p v-if="!props.available && !productIsTaken">
-                      This product has an accepted request and it only needs to
-                      be collected. So you can't request it at the moment.
+                      Este producto tiene una solicitud aceptada y solo necesita
+                      que lo recojan. No puedes solicitarlo por el momento.
                     </p>
                     <p v-else-if="!props.available && productIsTaken">
-                      This product has been donated already. It will be unlisted
-                      soon.
+                      Este producto ya ha sido donado. Se eliminará del listado
+                      pronto.
                     </p>
                   </div>
                 </div>
@@ -132,10 +133,10 @@
                     },
                   }"
                   link="true"
-                  >Edit</BaseButton
+                  >Editar</BaseButton
                 >
                 <BaseButton v-else @click="setIsModalVisible(true)"
-                  >Mark as Taken</BaseButton
+                  >Marcar como donado</BaseButton
                 >
                 <BaseButton
                   :to="{
@@ -145,7 +146,7 @@
                     },
                   }"
                   link="true"
-                  >Requests</BaseButton
+                  >Solicitudes</BaseButton
                 >
               </div>
               <div v-else>
@@ -160,7 +161,7 @@
                       },
                     }"
                     link="true"
-                    >Request it!</BaseButton
+                    >Solicitar</BaseButton
                   >
                 </span>
                 <!--Caso tres, el product no está donado y NO está disponible, no se puede solicitar. En este caso el usuario dueño debería marcarlo como tomado-->
@@ -177,14 +178,14 @@
         @modal-confirmed="onModalConfirm"
         @modal-close="onModalClose"
       >
-        <template #header>Mark Product As Taken</template>
+        <template #header>Marcar como donado</template>
         <template #body
           ><p>
-            Are you sure you want to mark this product as taken? By doing so you
-            confirm the product has been donated and it will no longer be edited
-            nor listed to other users.
+            ¿Está seguro de que desea marcar este producto como donado? Al
+            hacerlo confirmas que el producto ha sido donado y ya no será
+            editable, ni listado para otros usuarios.
           </p>
-          <p>This action cannot be undone.</p></template
+          <p>Esta acción no se puede deshacer.</p></template
         ></ModalConfirmationDialog
       >
     </div>
@@ -276,9 +277,9 @@ const onModalConfirm = async () => {
     if (data.is_taken === true) {
       setProductIsTaken(true);
       store.commit("addToast", {
-        title: "Product Donated",
+        title: "Producto donado",
         type: "success",
-        message: "You have correctly marked the product as donated.",
+        message: "Has marcado correctamente el producto como donado.",
       });
     } else {
       setProductIsTaken(false);
@@ -286,7 +287,7 @@ const onModalConfirm = async () => {
         title: "Error",
         type: "error",
         message:
-          "There was an error marking the product as taken. Please try again. If it does not work, please contact support.",
+          "Hubo un error al marcar el producto como recibido. Inténtalo de nuevo. Si no funciona, ponte en contacto con nosotros.",
       });
     }
   } catch (error) {
@@ -295,7 +296,7 @@ const onModalConfirm = async () => {
       title: "Error",
       type: "error",
       message:
-        "There was an error marking the product as taken. Please try again.",
+        "Hubo un error al marcar el producto como donado. Inténtalo de nuevo.",
     });
   }
   setIsModalVisible(false);

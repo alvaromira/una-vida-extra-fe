@@ -2,13 +2,13 @@
 <template>
   <div v-if="isProductedAlreadyRequestedByUser" class="already-requested">
     <!--Si ya se ha solicitado, se indica y no se muestra el formulario-->
-    <p>It seems like you have already requested this product.</p>
+    <p>Parece que ya has solicitado este producto.</p>
     <p>
-      Click
+      Haz clic
       <RouterLink v-if="!isUserAdmin" :to="{ name: 'requests' }"
-        >here</RouterLink
+        >aquí</RouterLink
       >
-      to check your own requested items.
+      para ver tus solicitudes.
     </p>
   </div>
   <form v-else @submit.prevent="submitForm">
@@ -17,7 +17,7 @@
         <div class="mb-3">
           <div class="form-control" :class="{ invalid: !data.message.isValid }">
             <label for="message" hidden="hidden" class="form-label"
-              >Message</label
+              >Mensaje</label
             >
             <textarea
               class="form-control"
@@ -27,14 +27,15 @@
               v-model.trim="data.message.val"
               @blur="clearValidity('message')"
               maxlength="400"
-              placeholder="Enter the message the onwer of the product you are requesting to read (max 400 characters)"
+              placeholder="Mensaje que el propietario del producto recibirá con tu solicitud (máximo 400 caracteres)"
             ></textarea>
           </div>
         </div>
       </div>
       <div v-if="!data.message.isValid" class="validation-error-container">
         <p>
-          The message must not be empty and must a maximum of 400 characters.
+          El mensaje no debe estar vacío y debe tener un máximo de 400
+          caracteres.
         </p>
       </div>
     </div>
@@ -43,7 +44,7 @@
       <BaseButton
         @submit.prevent="submitForm"
         :isDisabled="isProductedAlreadyRequestedByUser"
-        >Submit Request</BaseButton
+        >Enviar solicitud</BaseButton
       ><!--Si el usuario ya lo ha solicitado, el botón estará desactivado-->
     </div>
     <div class="loading col text-center" v-show="isLoading">
@@ -153,9 +154,9 @@ const handleSuccess = () => {
   isLoading.value = false;
   //toast
   store.commit("addToast", {
-    title: "Request Sent",
+    title: "Solicitud enviada",
     type: "success",
-    message: "You have correctly requested the product. Good luck!",
+    message: "Ha solicitado el producto. ¡Buena suerte!",
   });
   router.push({ name: "requests" });
 };
@@ -172,7 +173,7 @@ const handleError = (error) => {
   if (error.response) {
     // Capturar el codigo de error
     errorStatus = error.response.status;
-    console.error("Error status", error.response.status);
+    console.error("Código de error", error.response.status);
 
     // Extraer mensaje de error, solo el primero, de forma que si hay varios se solucinan uno a uno.
     const errors = error.response.data.errors;
@@ -185,18 +186,18 @@ const handleError = (error) => {
     }
   } else {
     // Otros errores
-    console.error("Error message", error.message);
-    console.error("Error code", error.code);
+    console.error("Mensaje de error", error.message);
+    console.error("Código de error", error.code);
     errorStatus = error.code;
     errorMessage = error.message;
   }
 
   // Construir el mensaje de error final
-  const finalMessage = `The request could not be placed. Error code: ${errorStatus}. Error message: ${errorMessage}`;
+  const finalMessage = `No se pudo realizar la solicitud. Código de error: ${errorStatus}. Mensaje de error: ${errorMessage}`;
 
   //Mostrar el toast con el error
   store.commit("addToast", {
-    title: "Request Not Sent",
+    title: "Solicitud no enviada",
     type: "error",
     message: finalMessage,
   });

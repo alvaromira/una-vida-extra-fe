@@ -6,14 +6,14 @@
         <thead>
           <tr>
             <th scope="col">id</th>
-            <th scope="col">Image</th>
-            <th scope="col">Description</th>
-            <th scope="col">Title</th>
-            <th scope="col">Availability</th>
-            <th scope="col">Taken</th>
-            <th scope="col">Category</th>
-            <th scope="col">Creation</th>
-            <th scope="col">Owner</th>
+            <th scope="col">Imagen</th>
+            <th scope="col">Descripción</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Disponibilidad</th>
+            <th scope="col">Donado</th>
+            <th scope="col">Categoría</th>
+            <th scope="col">Creación</th>
+            <th scope="col">Dueño</th>
             <th scope="col"></th>
             <th scope="col"></th>
           </tr>
@@ -76,16 +76,16 @@
       <!-- Pagination controls -->
       <div class="pagination-controls">
         <BaseButton @click="loadPreviousPage" :disabled="currentPage === 1">
-          Previous
+          Anterior
         </BaseButton>
         <span class="pagination-information"
-          >Page {{ currentPage }} of {{ totalPages }}</span
+          >Página {{ currentPage }} de {{ totalPages }}</span
         >
         <BaseButton
           @click="loadNextPage"
           :disabled="currentPage === totalPages"
         >
-          Next
+          Siguiente
         </BaseButton>
       </div>
     </div>
@@ -100,14 +100,14 @@
     @modal-close="onDeleteModalClose"
     id="delete-user-modal"
   >
-    <template #header>Confirm Product Deletion</template>
+    <template #header>Confirmar eliminación del producto</template>
     <template #body
       ><p>
-        Are you sure you want to delete this product? The product will no longer
-        be listed or visible to anybody. Any requests it may have will be
-        deleted as well.
+        ¿Estás seguro de que deseas eliminar este producto? El producto ya no
+        aparecerá en la lista ni será visible para nadie. Cualquier solicitud
+        que pueda tener también será eliminada.
       </p>
-      <p>This action cannot be undone.</p></template
+      <p>Esta acción no se puede deshacer.</p></template
     >
   </ModalConfirmationDialog>
   <ModalConfirmationDialog
@@ -116,10 +116,10 @@
     @modal-close="onEditModalClose"
     id="edit-user-modal"
   >
-    <template #header>Product Editing</template>
+    <template #header>Edición de productos</template>
     <template #body>
       <div class="container">
-        <h2>Edit Product</h2>
+        <h2>Editar Producto</h2>
         <form
           @submit.prevent="subitEditProductForm"
           class="product-edition-form"
@@ -143,12 +143,12 @@
               class="mini"
               :src="baseUrlImg + editProductFormData.image"
               :alt="editProductFormData.title"
-            /><span>(not editable)</span>
+            /><span>(no editable)</span>
           </div>
 
           <!-- Description Field -->
           <div class="mb-3">
-            <label for="description" class="form-label">Description</label>
+            <label for="description" class="form-label">Descripción</label>
             <textarea
               class="form-control"
               id="description"
@@ -159,7 +159,7 @@
 
           <!-- Title Field -->
           <div class="mb-3">
-            <label for="title" class="form-label">Title</label>
+            <label for="title" class="form-label">Nombre</label>
             <input
               type="text"
               class="form-control"
@@ -170,7 +170,9 @@
 
           <!-- Availability Field -->
           <div class="mb-3">
-            <label for="availability" class="form-label">Is available?</label>
+            <label for="availability" class="form-label"
+              >¿Esta disponible?</label
+            >
             <input
               type="checkbox"
               class="form-check-input"
@@ -181,7 +183,7 @@
 
           <!-- Taken Field -->
           <div class="mb-3">
-            <label for="taken" class="form-label">Is donated already?</label>
+            <label for="taken" class="form-label">¿Se ha donado ya?</label>
             <input
               type="checkbox"
               class="form-check-input"
@@ -192,13 +194,13 @@
 
           <!-- Category Field -->
           <div class="mb-3">
-            <label for="category" class="form-label">Category</label>
+            <label for="category" class="form-label">Categoría</label>
             <select
               class="form-select"
               id="category"
               v-model="editProductFormData.category"
             >
-              <option value="">Select a category...</option>
+              <option value="">Selecciona una categoría...</option>
               <option
                 v-for="category in productCategories"
                 :key="category.id"
@@ -211,7 +213,7 @@
 
           <!-- Created At Field -->
           <div class="mb-3">
-            <label for="created_at" class="form-label">Created At</label>
+            <label for="created_at" class="form-label">Creación</label>
             <input
               type="datetime-local"
               class="form-control"
@@ -224,7 +226,7 @@
 
           <!-- Owner Field -->
           <div class="mb-3">
-            <label for="owner-id" class="form-label">Owner</label>
+            <label for="owner-id" class="form-label">Dueño</label>
             <input
               type="number"
               class="form-control"
@@ -232,11 +234,8 @@
               v-model="editProductFormData.owner_id"
             />
           </div>
-
-          <!--<button type="submit" class="btn btn-primary">Submit</button>-->
-        </form>
-      </div></template
-    >
+        </form></div
+    ></template>
   </ModalConfirmationDialog>
 </template>
 
@@ -287,12 +286,6 @@ const closeAllModals = () => {
 watch(
   () => isEditModalVisible.value,
   (newValue, oldValue) => {
-    console.log(
-      "isEditModalVisible prop changed from",
-      oldValue,
-      "to",
-      newValue
-    );
     if ((newValue = true)) {
       setIsDeleteModalVisible(false);
     }
@@ -364,12 +357,12 @@ const handleRequestError = (error) => {
   console.error(error); //como es un error, se saca como tal por consola tambien
   isDataLoaded.value = true;
   const errorMessage = error.response
-    ? `There was an error while processing the requests. (Code: ${error.response.status})`
-    : `There was an error while processing the requests. (Code: ${error.code})`;
+    ? `Hubo un error al procesar las solicitudes. (Código: ${error.response.status})`
+    : `Hubo un error al procesar las solicitudes. (Código: ${error.code})`;
 
   // Enviar toast al estado de Vuex para notificación de error
   store.commit("addToast", {
-    title: "Error Processing Requests",
+    title: "Error al procesar la solicitud",
     type: "error",
     message: errorMessage,
   });
@@ -423,9 +416,9 @@ async function deleteProduct(productId) {
 
     //Enviar toast al store de Vuex para mostrar la notificacion de exito
     store.commit("addToast", {
-      title: "Product Deleted",
+      title: "Producto eliminado",
       type: "success",
-      message: `Product ${productId} has been deleted. The product list will be reloaded.`,
+      message: `El producto ${productId} ha sido eliminado. La lista de productos se recargará.`,
     });
 
     //se hace una recarga para obtener datos actualizados del servidor tras la accion
@@ -448,9 +441,9 @@ async function editProduct(productId) {
 
     //Enviar toast al store de Vuex para mostrar la notificacion de exito
     store.commit("addToast", {
-      title: "Product Updated",
+      title: "Producto actualizado",
       type: "success",
-      message: `Product ${productId} has been updated. The product list will be reloaded.`,
+      message: `El producto ${productId} ha sido actualizado. La lista de productos se recargará.`,
     });
 
     //se hace una recarga para obtener datos actualizados del servidor tras la accion

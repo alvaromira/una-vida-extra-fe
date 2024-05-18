@@ -19,7 +19,7 @@
 </template>
 <script setup>
 const props = defineProps({
-  to: Object, //se trata del destino en los enlaces
+  to: String, //se trata del destino en los enlaces
 });
 </script>
 <style scoped>

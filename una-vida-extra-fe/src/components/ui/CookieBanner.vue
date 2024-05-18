@@ -4,16 +4,19 @@
       <div class="row">
         <div class="col">
           <p>
-            We use tracking cookies as part of the basic functionality of our
-            site. Please accept them to keep enjoying the site. More info in our
-            <RouterLink :to="{ name: 'cookies' }">cookie policy</RouterLink>.
+            Utilizamos cookies de seguimiento como parte de la funcionalidad
+            básica de nuestro sitio. Por favor acéptelos para seguir disfrutando
+            del sitio. Más información en nuestro
+            <RouterLink :to="{ name: 'cookies' }"
+              >política de cookies</RouterLink
+            >.
           </p>
         </div>
       </div>
       <div class="row">
         <div class="col d-flex justify-content-center" style="gap: 2rem">
-          <button type="button" @click="acceptCookies">Accept cookies</button>
-          <button type="button" @click="declineCookies">Decline cookies</button>
+          <button type="button" @click="acceptCookies">Aceptar cookies</button>
+          <button type="button" @click="declineCookies">Denegar cookies</button>
         </div>
       </div>
     </div>

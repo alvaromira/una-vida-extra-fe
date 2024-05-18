@@ -2,19 +2,19 @@
 <template>
   <div class="row not-found-wrapper">
     <div class="col">
-      <p class="top-page-not-found">Page not found</p>
+      <p class="top-page-not-found">Página no encontrada</p>
       <section class="wrapper">
         <div class="top">404</div>
         <div class="bottom" aria-hidden="true">404</div>
       </section>
       <p class="message">
-        <span class="oops">Oops!</span> We can't find this page but why not
-        checking all the products available to see if you find what you are
-        looking for?
+        <span class="oops">¡Vaya!</span> No podemos encontrar la página que
+        buscas, pero ¿por qué no revisas todos los productos disponibles para
+        ver si encuentras lo que buscas?
       </p>
       <div class="cta-button">
         <BaseButton :to="{ name: 'products' }" mode="outline-green" link="true"
-          >All Products</BaseButton
+          >Todos los productos</BaseButton
         >
       </div>
     </div>

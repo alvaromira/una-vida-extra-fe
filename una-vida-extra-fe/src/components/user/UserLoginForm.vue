@@ -6,7 +6,7 @@
         <div class="container">
           <div class="form-field row text-center">
             <div class="col-3 form-label">
-              <label for="email">Email</label>
+              <label for="email">Correo</label>
             </div>
             <div class="col-9">
               <input
@@ -31,7 +31,7 @@
 
           <div class="form-field row text-center">
             <div class="col-3 form-label">
-              <label for="password">Password</label>
+              <label for="password">Contraseña</label>
             </div>
             <div class="col-9">
               <input
@@ -50,7 +50,7 @@
             :class="{ active: !data.password.isValid }"
           >
             <div class="col">
-              <p>Password must not be empty.</p>
+              <p>La contraseña no debe estar vacía.</p>
             </div>
           </div>
 
@@ -59,13 +59,13 @@
               v-if="formIsValid.value === false"
               class="form-field row text-center"
             >
-              <p>Please fix the above errors and submit again.</p>
+              <p>Corrija los errores anteriores y envíelo nuevamente.</p>
             </div>
           </div>
 
           <div class="form-field row submit">
             <div class="form-submit-button">
-              <BaseButton :disabled="isProcessing">Login</BaseButton>
+              <BaseButton :disabled="isProcessing">Acceder</BaseButton>
             </div>
           </div>
           <div v-if="!isProcessing">
@@ -77,11 +77,12 @@
               v-if="loginError"
             >
               <p v-if="errorCode === 422" class="validation-error">
-                Wrong credentials provided. Please check your email and
-                password.
+                Se proporcionaron credenciales incorrectas. Por favor revisa tu
+                correo electrónico y contraseña.
               </p>
               <p v-else>
-                There was an error while logging you in. Please try again later.
+                Se produjo un error al iniciar sesión. Vuelva a intentarlo más
+                tarde.
               </p>
             </div>
           </div>
@@ -96,7 +97,7 @@
           <div class="col-sm-8 col-md-12">
             <div id="forgot-password">
               <RouterLink :to="{ name: 'forgot-password' }"
-                >Forgot your password?</RouterLink
+                >¿Has olvidado tu contraseña?</RouterLink
               >
             </div>
           </div>
@@ -140,14 +141,11 @@ const router = useRouter(); // inicializacion para acceso al router
 
 //Para poner los campos en true al modificarlos y salir de ellos, asi que puede revalidar
 const clearValidity = (input) => {
-  console.log(`Setting valid to true: ${input}`);
   data[input].isValid = true;
 };
 
 //validación específica de cada uno de los campos del formulario
 const validateForm = async () => {
-  console.log("Running validation on registration form");
-
   formIsValid.value = true;
 
   if (data.email.val === "") {
@@ -312,10 +310,12 @@ h3 {
 #forgot-password a:link,
 #forgot-password a:visited {
   color: #edb421;
+  text-decoration: none;
 }
 #forgot-password a:hover {
   color: edb421;
   opacity: 0.7;
+  text-decoration: underline;
 }
 #forgot-password a:active {
   color: #edb421;
