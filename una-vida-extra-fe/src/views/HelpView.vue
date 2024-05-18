@@ -3,35 +3,38 @@
   <section id="faq-overview">
     <div class="row">
       <div class="class col-md-12">
-        <h1>Help</h1>
+        <h1>Ayuda</h1>
         <p>
-          Hey there! Curious about what everyone's up to on our fun trading
-          platform? Check out the stuff our awesome users are always doing –
-          from publishing loved items they do not use anylonger to deciding what
-          of the requests to accept.
+          ¡Hola! ¿Tienes curiosidad por saber qué están haciendo todos en
+          nuestro divertido trading? ¿plataforma? Echa un vistazo a las cosas
+          que nuestros fantásticos usuarios siempre hacen: desde publicar
+          artículos amados que ya no usan hasta decidir qué de las solicitudes a
+          aceptar.
         </p>
         <p>
-          And hey, if you think we're missing something cool, hit us up! We're
-          all ears for any suggestions to spice up our FAQ section. Just
-          <RouterLink :to="{ name: 'contact' }">contact</RouterLink>
-          us and let us know. Let's make this community even better together!
+          Y oye, si crees que nos estamos perdiendo algo interesante,
+          ¡contáctanos! Eran Todos los oídos para cualquier sugerencia para
+          darle vida a nuestra sección de preguntas frecuentes. Justo
+          <RouterLink :to="{ name: 'contact' }"> contacto </RouterLink>
+          nosotros y háganoslo saber. ¡Hagamos que esta comunidad sea aún mejor
+          juntos!
         </p>
       </div>
     </div>
   </section>
   <!--Esta es realmente la sección con las preguntas. Se usan componentes para cada pregunta para ganar flexibilidad  y en un futuro sacar el contenido estático a un CMS y obtenerlo en tiempo real. De momento todas las preguntas son estáticas-->
-  <h2>Frequently Asked Questions</h2>
+  <h2>Preguntas frecuentes</h2>
   <section id="faq">
     <div class="row question-block">
       <hr />
-      <div class="col"><h2 class="question-block-title">Users</h2></div>
+      <div class="col"><h2 class="question-block-title">Usuarios</h2></div>
       <div class="class col-md-12">
         <QuestionAndAnswerItem questionId="how-to-reset-password">
           <template #question>
-            <h3>Password reset</h3>
+            <h3>Restablecer contraseña</h3>
           </template>
           <template #questionText>
-            <p>I do not remember my password 😧. How do I reset it?</p>
+            <p>No recuerdo mi contraseña 😧. ¿Cómo lo reinicio?</p>
           </template>
           <template #responseText>
             <p>
@@ -195,20 +198,20 @@
     </div>
     <div class="row question-block">
       <hr />
-      <div class="col"><h2 class="question-block-title">Tags</h2></div>
+      <div class="col"><h2 class="question-block-title">Etiquetas</h2></div>
       <div class="class col-md-12">
         <QuestionAndAnswerItem questionId="allow-location-details">
           <template #question>
-            <h3>Use of Tags</h3>
+            <h3>Uso de etiquetas</h3>
           </template>
           <template #questionText>
-            <p>Why can't I get tags updated in my items?</p>
+            <p>¿Por qué no puedo actualizar las etiquetas de mis artículos?</p>
           </template>
           <template #responseText>
             <p>
-              We are aware of this limitation 😳. Our community platform is
-              still in its early stages at the moment. We are working to make
-              this happen soon 😊.
+              Somos conscientes de esta limitación 😳. Nuestra plataforma
+              comunitaria es todavía en sus primeras etapas por el momento.
+              Estamos trabajando para hacer esto sucederá pronto 😊.
             </p>
           </template>
         </QuestionAndAnswerItem>

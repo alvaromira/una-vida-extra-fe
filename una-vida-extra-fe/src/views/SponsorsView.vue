@@ -3,12 +3,12 @@
   <div class="row d-flex justify-content-center">
     <div class="col-md-10">
       <div class="sponsors-shop-window">
-        <h1>Our Sponsors</h1>
+        <h1>Nuestros patrocinadores</h1>
         <p>
-          At the moment, we do not have any official supporter or sponsor 😔.
-          All our work is privately supported 😅. Our sponsors's info will be
-          shown in these cool looking 😎 cards below! (see some sample and
-          picture yourself there!)
+          Por el momento, no tenemos ningún patrocinador oficial 😔. Todo
+          nuestro trabajo parte de aportaciones privadas 😅. La información de
+          nuestros patrocinadores se mostrará en estas tarjetas tan cool 😎.
+          (Echa un vistazo a los ejemplo e imagínate ahí).
         </p>
         <div id="sponsors-section">
           <div class="row">
@@ -24,14 +24,14 @@
                   </div>
                   <div class="col-md-8">
                     <div class="card-body">
-                      <h5 class="card-title">Luna's cafe</h5>
+                      <h5 class="card-title">Luna cafe</h5>
                       <p class="card-text">
-                        Luna's is more than just a cafe – it's a gathering place
-                        where locals come together to indulge in the art of
-                        specialty coffee.
+                        Luna cafe es más que una simple cafetería: es un lugar
+                        de reunión donde los lugareños se reúnen para disfrutar
+                        del arte de café de especialidad.
                       </p>
                       <p class="card-text">
-                        <small class="text-muted">luna-cafe.site</small>
+                        <small class="text-muted"> luna-cafe.site </small>
                       </p>
                     </div>
                   </div>
@@ -47,19 +47,19 @@
                     <img
                       src="https://source.unsplash.com/brown-leather-sandals-on-brown-wooden-floor-FrLEWPxNjl0"
                       class="img-fluid"
-                      alt="Martina's garden"
+                      alt="El jardin Martina"
                     />
                   </div>
                   <div class="col-md-8">
                     <div class="card-body">
-                      <h5 class="card-title">Martina's Garden</h5>
+                      <h5 class="card-title">El jardín de Martina</h5>
                       <p class="card-text">
-                        Whether you're celebrating a special occasion or simply
-                        brightening someone's day, we are your go-to destination
-                        for all things floral.
+                        Ya sea que estés celebrando una ocasión especial o
+                        simplemente alegrandole el día a alguien, somos tu
+                        destino ideal para todo lo floral.
                       </p>
                       <p class="card-text">
-                        <small class="text-muted">martina-garden.site</small>
+                        <small class="text-muted"> jardin-martina.site </small>
                       </p>
                     </div>
                   </div>
@@ -69,42 +69,45 @@
           </div>
         </div>
       </div>
-      <h2>Our sponsors and supporters</h2>
+      <h2>Nuestros patrocinadores y seguidores</h2>
       <p>
-        Join us at <strong>Una vida extra</strong> and be part of something
-        meaningful. Together, let's make a positive impact on our local
-        communities and the planet.
+        Únase a nosotros en <strong> Una vida extra </strong> y formta parte de
+        algo significativo. Juntos, tendremos un impacto positivo en nuestras
+        comunidades locales y en todo el planeta.
       </p>
       <p>
-        Are you passionate about community, sustainability, and making a
-        positive impact on the world? Join us at Una vida extra, where we're on
-        a mission to create a more connected, generous, and sustainable society.
+        ¿Te apasiona la comunidad, la sostenibilidad y tener un impacto positivo
+        en el mundo? Únase a nosotros en Una vida extra, donde tenemos la misión
+        para crear una sociedad más conectada, generosa y sostenible evitando el
+        derroche y potenciando el reuso.
       </p>
 
       <h2></h2>
 
       <div class="sponsor-info">
-        <h2>Become a Sponsor of Una vida extra: Make a Difference Today!</h2>
+        <h2>
+          Conviértete en patrocinador de Una vida extra: ¡Marca la diferencia!
+        </h2>
         <p>
-          Are you passionate about community, sustainability, and making a
-          positive impact on the world? Join us at Una vida extra, where we're
-          on a mission to create a more connected, generous, and sustainable
-          society.
+          ¿Te apasiona tu comunidad, la sostenibilidad y tener un impacto
+          positivo en el mundo? Únate a nosotros en Una vida extra, donde
+          tenemos la misión de crear un mundo más conectado, generoso y
+          sostenible.
         </p>
         <p>
-          By sponsoring Una vida extra, you'll be supporting a project that
-          embodies values such as community, generosity, and sustainability.
-          Your sponsorship will help us to continue to work on the platform
-          itself, while you contribute to raise awareness about the importance
-          of reuse, recycling, and local community engagement.
+          Patrocinando Una vida extra estarás apoyando un proyecto que encarna
+          valores como la comunidad, la generosidad y la sostenibilidad. Tu
+          patrocinio nos ayudará a seguir trabajando en la plataforma. Además,
+          al tiempo que contribuirás a concienciar sobre la importancia de
+          reutilización, reciclaje y participación de la comunidad local.
         </p>
         <p>
-          As a sponsor of Una vida extra, you'll receive recognition and brand
-          visibily.
+          Como patrocinador de Una vida extra, recibirás reconocimiento y
+          mejorarás la visibilidad de tu marca.
         </p>
         <p>
-          For sponsorship inquiries and more information, please
-          <RouterLink :to="{ name: 'contact' }">contact us</RouterLink>.
+          Para consultas sobre patrocinio y más información, por favor
+          <routerlink :to="{ name: 'contact' }"> contáctenos </routerlink> .
         </p>
       </div>
     </div>

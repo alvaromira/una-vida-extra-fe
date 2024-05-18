@@ -13,53 +13,55 @@
         <div class="col-md-6 dark-side cta-side">
           <h2>Una vida extra</h2>
           <p>
-            We believe in the power of community, generosity, and
-            sustainability. Our platform is a vibrant web community where people
-            come together to share items they no longer need, but that still
-            have plenty of life left in them. It's all about giving back,
-            reusing, and recycling – and best of all, it's completely free.
+            Creemos en el poder de la comunidad, la generosidad y
+            sostenibilidad. Nuestra plataforma es una vibrante comunidad web
+            donde las personas se reúnen para compartir elementos que ya no
+            necesitan, pero que aún les queda mucha vida. Se trata de retribuir,
+            reutilizar y reciclar y, lo mejor de todo, es completamente gratis.
           </p>
         </div>
       </div>
       <div class="row">
         <div class="col-md-12 light-side cta-side">
-          <h2>How it works</h2>
+          <h2>Cómo funciona</h2>
           <p>
-            <strong>Donate</strong>: Have items gathering dust at home? Give
-            them a new lease on life by donating them. Whether it's clothing,
-            books, household items, or anything in between, your donations can
-            make a real difference to someone else.
+            <strong> Donar</strong>: ¿Tienes artículos acumulando polvo en casa?
+            Dar darles una nueva oportunidad de vida donándolos. Ya sea ropa,
+            libros, artículos para el hogar o cualquier otra cosa, sus
+            donaciones pueden hacer una diferencia real para otra persona.
           </p>
 
           <p>
-            <strong>Request</strong>: Need something specific? Browse our
-            listings and make requests for items you're looking for. All
-            requests are sorted by proximity first, ensuring that items are
-            preferably shared locally and sustainably.
+            <strong> Solicitar</strong>: ¿Necesita algo específico? Navega por
+            nuestro listados y realizar solicitudes de los artículos que estás
+            buscando. Todo Las solicitudes se clasifican primero por proximidad,
+            lo que garantiza que los artículos estén preferentemente compartido
+            de forma local y sostenible.
           </p>
 
           <p>
-            <strong>Pick Up</strong>: Once your request is accepted, simply
-            arrange a time to pick up the item from its original location. It's
-            that easy – no money involved, just a spirit of community and
-            kindness.
+            <strong> Recoger</strong>: Una vez aceptada su solicitud,
+            simplemente concertar una hora para recoger el artículo en su
+            ubicación original. Es así de fácil: sin dinero involucrado, solo un
+            espíritu de comunidad y amabilidad.
           </p>
         </div>
       </div>
       <div class="row">
         <div class="col-md-6 dark-side cta-side">
-          <h2>Our values</h2>
+          <h2>Nuestros valores</h2>
           <p>
-            <strong>Community</strong>: We're all about bringing people together
-            and fostering a sense of belonging.
+            <strong> Comunidad </strong> : nuestro objetivo es unir a las
+            personas y fomentar el sentido de pertenencia.
           </p>
           <p>
-            <strong>Generosity</strong>: Sharing is caring, and our community
-            thrives on the generosity of its members.
+            <strong> Generosidad </strong> : Compartir es cuidar, y nuestra
+            comunidad prospera gracias a la generosidad de sus miembros.
           </p>
           <p>
-            <strong>Sustainability</strong>: By reusing and recycling items,
-            we're helping to reduce waste and lessen our environmental impact.
+            <strong> Sostenibilidad </strong> : al reutilizar y reciclar
+            artículos, Estamos ayudando a reducir los residuos y disminuir
+            nuestro impacto ambiental.
           </p>
         </div>
         <div class="col-md-6 light-side cta-side">
