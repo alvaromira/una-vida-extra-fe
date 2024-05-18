@@ -18,12 +18,12 @@
 
       <div v-else>
         <div class="request-card-wrapper">
-          <div class="request-product-id request-card-item">Id producto</div>
+          <div class="request-product-id request-card-item">Producto</div>
           <div class="request-message request-card-item">Mensaje</div>
           <div class="request-date request-card-item">Fecha</div>
           <div class="request-distance request-card-item">Ubicación</div>
-          <div class="request-status request-card-item">Disponibilidad</div>
-          <div class="request-cancel-button">Cancelar</div>
+          <div class="request-status request-card-item">Disp.</div>
+          <div class="request-cancel-button"></div>
         </div>
         <transition-group name="list" tag="div">
           <div v-for="request in prodRequests" :key="request.id">
@@ -34,6 +34,7 @@
               :date="request.request_date"
               :isActive="request.is_active"
               :productId="request.product_id"
+              :product-title="request.product_title"
               @removed-request="removeCancelledRequest"
             /></div
         ></transition-group>
