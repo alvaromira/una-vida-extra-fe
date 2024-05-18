@@ -147,16 +147,16 @@ watch(
   () => props.sText,
   (newValue, oldValue) => {
     console.log("sText prop changed:", newValue);
-    // Fetch products based on new search text
+    // Obtener productos según el nuevo texto de búsqueda
     getProductRequests(props.sText);
   }
 );
 
-// Function to fetch products based on search text
+// Función para buscar productos según el texto de búsqueda
 const getProductRequests = async (search, page) => {
   try {
     isDataLoaded.value = false;
-    // Fetch products or perform product search depending on route params
+    // Obtener productos o realizar una búsqueda de productos según los parámetros de ruta
     if (search) {
       await store.dispatch("searchProducts", search);
     } else {
@@ -189,12 +189,12 @@ const handleRequestError = (error) => {
   });
 };
 
-// Fetch products on component mount
+// Obtener productos en el montaje de componentes
 onMounted(async () => {
   await getProductRequests(props.sText, currentPage);
 });
 
-// Reset productResults to an empty array on component unmount
+// Restablecer productResults a una matriz vacía al desmontar el componente
 onUnmounted(() => {
   store.commit("setProductResults", []);
 });
