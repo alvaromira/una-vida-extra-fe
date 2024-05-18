@@ -19,6 +19,11 @@
                   >
                 </li>
                 <li class="nav-item">
+                  <RouterLink class="nav-link" :to="{ name: 'terms' }"
+                    >Términos y condiciones</RouterLink
+                  >
+                </li>
+                <li class="nav-item">
                   <RouterLink class="nav-link" :to="{ name: 'cookies' }"
                     >Cookies&nbsp;🍪</RouterLink
                   >
@@ -64,6 +69,6 @@ p {
   text-decoration: underline;
 }
 .navbar-nav {
-  gap: 1rem;
+  gap: 1.5rem;
 }
 </style>
