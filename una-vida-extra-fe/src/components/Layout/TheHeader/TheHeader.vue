@@ -41,7 +41,7 @@
                 v-model="searchTerm"
                 class="form-control"
                 pattern=".{3,}"
-                placeholder="Enter your search here..."
+                placeholder="Enter your product search here..."
                 aria-label="Search"
               />
               <button type="submit" class="btn search-button">
@@ -172,17 +172,20 @@
                 >
               </li>
               <li class="nav-item">
-                <RouterLink class="nav-link" :to="{ name: 'sponsors' }"
-                  >Sponsors</RouterLink
-                >
-              </li>
-              <li class="nav-item">
                 <RouterLink class="nav-link" :to="{ name: 'project' }"
                   >Project</RouterLink
                 >
               </li>
               <li class="nav-item">
-                <a class="nav-link">Help</a>
+                <RouterLink class="nav-link" :to="{ name: 'sponsors' }"
+                  >Sponsors</RouterLink
+                >
+              </li>
+
+              <li class="nav-item">
+                <RouterLink class="nav-link" :to="{ name: 'help' }"
+                  >Help</RouterLink
+                >
               </li>
             </ul>
           </div>
@@ -400,7 +403,7 @@ label[for="site-search"] {
   display: none;
 }
 #site-search {
-  min-width: 300px;
+  min-width: unset;
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
   border-top-right-radius: 0px;
@@ -480,7 +483,7 @@ label[for="site-search"] {
 }
 /* De forma predeterminada para dispositivos pequeños, no se muestra */
 .profile-image-icon {
-  display: none !important;
+  display: none;
 }
 #second-nav-bar .navbar-nav {
   gap: 1rem;
@@ -500,7 +503,11 @@ label[for="site-search"] {
     margin-top: 0rem;
   }
   .profile-image-icon {
-    display: block;
+    display: flex;
+    align-items: center;
+  }
+  #site-search {
+    min-width: 360px;
   }
 }
 </style>

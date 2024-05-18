@@ -4,8 +4,14 @@ import TheFooter from "./components/Layout/TheFooter/TheFooter.vue";
 import TheHeader from "./components/Layout/TheHeader/TheHeader.vue";
 import Toasts from "./components/ui/Toasts.vue";
 import "bootstrap/dist/css/bootstrap.css";
-
+import CookieBanner from "./components/ui/CookieBanner.vue";
 import "bootstrap/dist/js/bootstrap.js";
+import { ref } from "vue";
+
+//Comprueba si las cookies están aceptadas o rechazadas para mostrar el banner de las cookies
+const showBanner = ref(
+  localStorage.getItem("unaVidaExtraCookiesAccepted") !== "true"
+);
 </script>
 <!--Esta es la estructura general de la aplicación, donde se colocan las diferentes vistas. Es un contenedor para las vistas que se cargan con las rutas del router-->
 <template>
@@ -19,6 +25,7 @@ import "bootstrap/dist/js/bootstrap.js";
   </div>
   <TheFooter></TheFooter>
   <!--Pie de pagina-->
+  <CookieBanner v-if="showBanner" @hide-banner="showBanner = false" />
 </template>
 
 <style scoped>
@@ -85,7 +92,7 @@ nav a:first-of-type {
   }
 
   #content {
-    padding: 2rem 0;
+    padding: 4rem 0;
     max-width: 80%;
     width: auto;
     margin: 0 auto;

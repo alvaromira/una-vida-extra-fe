@@ -544,12 +544,11 @@ const submitForm = async () => {
   //Funcion para crear la ubicacion del usuario, que es necesari para poder registrarse
   const createUserLocation = async () => {
     try {
-      const cookie = await axios.get(`${baseUrl}/sanctum/csrf-cookie`); //se require la llamada a sanctum para la cookie csrf de Laravel que permite las llamadas con proteccion de middleware
+      //se crea la ubicacion primero para tenerla lista antes del registro, para crear la ubicacion no es necesario sanctum
       const resp = await axios.post(
         `${baseApiUrl}/locations`,
         locationFormData
       );
-      console.log(`Newly created Location ID: ${resp.data.data.id}`);
 
       //para el exito se muestra un toast
       if (resp.status === 201) {
@@ -565,24 +564,25 @@ const submitForm = async () => {
         // router.push({ name: "products" });
       }
     } catch (error) {
-      //Si hay un error se muestra en la UI en por consola como errores
+      //Si hay un error se muestra en la UI en por consola como errores y se pone un toast de error
       requestError.value = true;
       if (error.response) {
-        console.error("Error data", error.response.data);
-        console.error("Error status", error.response.status);
-        errorDetails.code = error.response.status;
-        errorDetails.message = error.message;
-        if (error.response.data.errors) {
-          let requestRecivedErrors = error.response.data.errors;
-          for (const property in requestRecivedErrors) {
-            errorDetails.errors.push(requestRecivedErrors[property].toString());
-          }
-        }
+        store.commit("addToast", {
+          title: "Location not created",
+          type: "error",
+          message:
+            "There was an error creating the location. Code: " +
+            error.response.status,
+        });
       } else {
         console.error("Error message", error.message);
         console.error("Error code", error.code);
-        errorDetails.code = error.code;
-        errorDetails.message = error.message;
+        store.commit("addToast", {
+          title: "Location not created",
+          type: "error",
+          message:
+            "There was an error creating the location. Code: " + error.code,
+        });
       }
     }
   };

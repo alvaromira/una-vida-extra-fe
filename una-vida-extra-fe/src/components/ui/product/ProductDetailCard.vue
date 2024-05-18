@@ -168,6 +168,7 @@
             </div>
           </section>
         </div>
+        <HelpLink to="{name: 'contact'}"></HelpLink>
       </div>
 
       <!--Modal para la confirmación de la acción de marcar como donado un producto para el usuario dueño-->
@@ -197,6 +198,7 @@ import { useStore } from "vuex";
 import ModalConfirmationDialog from "../ModalConfirmationDialog.vue";
 import Map from "../Map.vue";
 import IconLocation from "../../icons/IconLocation.vue";
+import HelpLink from "../HelpLink.vue";
 
 //Funcion para poner una fecha en formato facil de entender para el usuario
 const userFriendlyDate = computed(() => {
@@ -346,6 +348,7 @@ p {
 .product-detail-buttons {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
 }
 
 .taken p,

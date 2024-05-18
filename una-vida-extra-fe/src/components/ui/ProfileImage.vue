@@ -90,7 +90,6 @@ const generateGravatarUrl = async (email) => {
   margin-inline-end: 3px;
   background-color: #e9ecef;
   margin: 0 auto;
-  margin-bottom: 1rem;
 }
 
 .small {
