@@ -25,22 +25,9 @@ const isRequestedProductCoordsValid = computed(() => {
   );
 });
 
-//Variable para centrar el map.
+//Variable para centrar el mapa.
 let center = ref(null);
 
-/*
-//Se se dan las coordinadas del usuario y son validas, se usan para centrar el mapa. Si no se dan las del usuario, se usan las del producto, si son validas
-if (isUserCoordsValid.value) {
-  center.value = ref([props.UserCoords[0], props.UserCoords[1]]);
-} else if (isRequestedProductCoordsValid.value) {
-  center.value = [
-    props.RequestedProductCoords[0],
-    props.RequestedProductCoords[1],
-  ];
-} else {
-  // Si ni UserCoords ni RequestedProductCoords son válidos, se saca un error
-  console.error("No se han dado coordinadas validas.");
-}*/
 //variable para poner el div donde se monta el mapa
 let mapDiv = null;
 //variable para crear el icono marcador de color verde para el mapa
@@ -117,8 +104,6 @@ onMounted(async () => {
   await setMapCenter();
   await setupLeafletMap();
 });
-
-//onUnmounted(() => console.log("Unmounting Map component"));
 </script>
 <style scoped>
 #mapContainer {
