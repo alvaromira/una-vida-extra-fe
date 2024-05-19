@@ -10,7 +10,7 @@ const store = useStore(); // inicializacion para acceso al state en el store de 
 <template>
   <div class="form-wrapper">
     <div class="row">
-      <div class="col"><h2>Login</h2></div>
+      <div class="col"><h2>Acceso</h2></div>
     </div>
     <UserLoginForm />
   </div>

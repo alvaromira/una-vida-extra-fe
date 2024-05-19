@@ -24,6 +24,7 @@ const props = defineProps({
   id: Number,
   isActive: Boolean,
   productId: Number,
+  productTitle: String,
   // productLocation: Object,
 });
 
@@ -45,15 +46,7 @@ const emit = defineEmits(["removed-request"]);
 
 //function
 const cancelMyRequest = () => {
-  //TODO:
-  //modal for confirmation
-  //place request to cancel
-  //if success, emit event to parent with ID, remove it
-  // $emit('removedRequest', props.id)
   emit("removed-request", activeUserId.value, props.id, props.productId);
-  //console.log(
-  //  `User ${activeUserId.value} is cancelling request with id ${props.id}`
-  //);
 };
 
 const showLocation = () => {
@@ -66,14 +59,20 @@ const showModal = () => {
 };
 //funcion para cerrar el modal en la UI
 const closeModal = () => {
-  console.log("modal emit received, closing modal visibilty");
   isModalVisible.value = false;
 };
 </script>
 
 <template>
   <div class="request-card-wrapper" :id="id">
-    <div class="request-product-id request-card-item">{{ productId }}</div>
+    <div class="request-product-id request-card-item">
+      <RouterLink
+        :to="{ name: 'product', params: { id: productId } }"
+        link="true"
+        target="_blank"
+        >{{ productTitle }}</RouterLink
+      >
+    </div>
     <div class="request-message request-card-item">{{ message }}</div>
     <div class="request-date request-card-item">{{ date }}</div>
     <div class="request-distance request-card-item">
@@ -84,7 +83,7 @@ const closeModal = () => {
       <span v-else><IconNotAvailable /></span>
     </div>
     <div class="request-cancel-button">
-      <BaseButton @click="cancelMyRequest">Cancel</BaseButton>
+      <BaseButton @click="cancelMyRequest">Cancelar</BaseButton>
     </div>
   </div>
 
@@ -115,5 +114,12 @@ const closeModal = () => {
 
 .request-message {
   color: gray;
+}
+.request-card-item a {
+  text-decoration: none;
+  color: gray;
+}
+.request-card-item a:hover {
+  text-decoration: underline;
 }
 </style>

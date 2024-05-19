@@ -5,12 +5,12 @@ import ProductForm from "../../components/ui/product/ProductForm.vue";
   <div class="row row justify-content-md-center">
     <div class="back-to-products-button col-md-10">
       <a :href="$router.resolve({ name: 'userProducts' }).href"
-        >Back to your products</a
+        >Volver a tus productos</a
       >
     </div>
   </div>
   <div class="row">
-    <div class="col"><h2>Add a New Product</h2></div>
+    <div class="col"><h2>Añadir nuevo producto</h2></div>
   </div>
   <product-form></product-form>
 </template>

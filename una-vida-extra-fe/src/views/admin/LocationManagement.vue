@@ -6,12 +6,12 @@
         <thead>
           <tr>
             <th scope="col">Id</th>
-            <th scope="col">Latitude</th>
-            <th scope="col">Longitude</th>
-            <th scope="col">City</th>
-            <th scope="col">Country</th>
-            <th scope="col">edit</th>
-            <th scope="col">delete</th>
+            <th scope="col">Latitud</th>
+            <th scope="col">Longitud</th>
+            <th scope="col">Ciudad</th>
+            <th scope="col">País</th>
+            <th scope="col">Editar</th>
+            <th scope="col">Eliminar</th>
           </tr>
         </thead>
         <tbody>
@@ -70,14 +70,14 @@
     @modal-close="onDeleteModalClose"
     id="delete-location-modal"
   >
-    <template #header>Confirm Location Deletion</template>
+    <template #header>Confirmar eliminación de ubicación</template>
     <template #body
       ><p>
-        Are you sure you want to delete this location? Deleting a location used
-        by a user could have a big impact on the user, their products and
-        requests.
+        ¿Estás seguro de que deseas eliminar esta ubicación? Eliminar una
+        ubicación utilizada por un usuario podría tener un gran impacto en el
+        usuario, sus productos y solicitudes.
       </p>
-      <p>This action cannot be undone.</p></template
+      <p>Esta acción no se puede deshacer.</p></template
     >
   </ModalConfirmationDialog>
   <ModalConfirmationDialog
@@ -86,7 +86,7 @@
     @modal-close="onEditModalClose"
     id="edit-location-modal"
   >
-    <template #header>Location Editing</template>
+    <template #header>Edición de ubicación</template>
     <template #body>
       <div class="container">
         <h2>Edit Location</h2>
@@ -106,7 +106,7 @@
 
           <!-- Lat Field -->
           <div class="mb-3">
-            <label for="latitude" class="form-label">Latitude</label>
+            <label for="latitude" class="form-label">Latitud</label>
             <input
               type="number"
               class="form-control"
@@ -116,7 +116,7 @@
           </div>
           <!-- Long Field -->
           <div class="mb-3">
-            <label for="longitude" class="form-label">longitude</label>
+            <label for="longitude" class="form-label">Longitud</label>
             <input
               type="number"
               class="form-control"
@@ -127,7 +127,7 @@
 
           <!-- City -->
           <div class="mb-3">
-            <label for="city" class="form-label">City</label>
+            <label for="city" class="form-label">Ciudad</label>
             <input
               type="text"
               class="form-control"
@@ -137,7 +137,7 @@
           </div>
           <!-- Country -->
           <div class="mb-3">
-            <label for="country" class="form-label">Country</label>
+            <label for="country" class="form-label">País</label>
             <input
               type="text"
               class="form-control"
@@ -197,12 +197,6 @@ const closeAllModals = () => {
 watch(
   () => isEditModalVisible.value,
   (newValue, oldValue) => {
-    console.log(
-      "isEditModalVisible prop changed from",
-      oldValue,
-      "to",
-      newValue
-    );
     if ((newValue = true)) {
       setIsDeleteModalVisible(false);
       //setIsCreateModalVisible(false);
@@ -269,7 +263,7 @@ const fetchAllLocations = async () => {
       currentPage++;
     } catch (error) {
       // Registra cualquier error que ocurra al recuperar las solicitudes de usuario
-      console.error("Error fetching locations:", error);
+      console.error("Error al obtener ubicaciones:", error);
       throw error; // Lanza el error para que el llamante pueda manejarlo si es necesario
     }
   }
@@ -283,12 +277,12 @@ const handleRequestError = (error) => {
   console.error(error); //como es un error, se saca como tal por consola tambien
   isDataLoaded.value = true;
   const errorMessage = error.response
-    ? `There was an error while processing the requests. (Code: ${error.response.status})`
-    : `There was an error while processing the requests. (Code: ${error.code})`;
+    ? `Hubo un error al procesar las solicitudes. (Código: ${error.response.status})`
+    : `Hubo un error al procesar las solicitudes. (Código: ${error.code})`;
 
   // Enviar toast al estado de Vuex para notificación de error
   store.commit("addToast", {
-    title: "Error Processing Requests",
+    title: "Error al procesar la solicitud",
     type: "error",
     message: errorMessage,
   });
@@ -328,9 +322,9 @@ async function deleteLocation(locationId) {
 
     const resp = await axios.delete(`${baseApiUrl}/locations/${locationId}`);
     store.commit("addToast", {
-      title: "Location Deleted",
+      title: "Ubicación eliminada",
       type: "success",
-      message: `The location has been deleted. The list will be reloaded.`,
+      message: `La ubicación ha sido eliminada. La lista se recargará.`,
     });
     closeAllModals(); //se cierran todos los modales al terminar
     await getAllLocations();
@@ -355,9 +349,9 @@ async function editLocation() {
     );
     //Enviar toast al store de Vuex para mostrar la notificacion de exito
     store.commit("addToast", {
-      title: "Location Updated",
+      title: "Ubicación actualizada",
       type: "success",
-      message: `The location has been updated. The list will be reloaded.`,
+      message: `La ubicación ha sido actualizada. La lista se recargará.`,
     });
 
     //se hace una recarga para obtener datos actualizados del servidor tras la accion

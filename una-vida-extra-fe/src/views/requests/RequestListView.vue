@@ -1,3 +1,61 @@
+<template>
+  <div>
+    <div class="row title">
+      <div class="col"><h2>Mis solicitudes</h2></div>
+    </div>
+
+    <div class="loading" v-show="isLoading">
+      <base-spinner></base-spinner>
+    </div>
+    <section v-if="!isLoading">
+      <div v-if="!numberOfRequests">
+        <div class="row">
+          <div class="no-requests-found text-center">
+            <p>No tienes ninguna solicitud activa.</p>
+          </div>
+        </div>
+      </div>
+
+      <div v-else>
+        <div class="request-card-wrapper">
+          <div class="request-product-id request-card-item">Producto</div>
+          <div class="request-message request-card-item">Mensaje</div>
+          <div class="request-date request-card-item">Fecha</div>
+          <div class="request-distance request-card-item">Ubicación</div>
+          <div class="request-status request-card-item">Disp.</div>
+          <div class="request-cancel-button"></div>
+        </div>
+        <transition-group name="list" tag="div">
+          <div v-for="request in prodRequests" :key="request.id">
+            <RequestCard
+              :id="request.id"
+              :message="request.message"
+              :distance="request.distance"
+              :date="request.request_date"
+              :isActive="request.is_active"
+              :productId="request.product_id"
+              :product-title="request.product_title"
+              @removed-request="removeCancelledRequest"
+            /></div
+        ></transition-group>
+      </div>
+
+      <ModalConfirmationDialog
+        v-if="isModalVisible"
+        @modal-confirmed="onModalConfirm"
+        @modal-close="onModalClose"
+      >
+        <template #header>Eliminar solicitud</template>
+        <template #body
+          ><p>
+            ¿Está seguro de que desea eliminar la solicitud
+            {{ requestIdToBeRemoved }}?
+          </p></template
+        ></ModalConfirmationDialog
+      >
+    </section>
+  </div>
+</template>
 <script setup>
 import { ref, computed, reactive } from "vue";
 import RequestCard from "../../components/ui/request/RequestCard.vue";
@@ -76,8 +134,8 @@ const getProductRequests = async () => {
     if (error.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
-      console.error("Error data", error.response.data);
-      console.error("Error status", error.response.status);
+      console.error("Datos del error", error.response.data);
+      console.error("Código de error", error.response.status);
       errorDetails.code = error.response.status;
       errorDetails.message = error.message;
       if (error.response.data.errors) {
@@ -88,8 +146,8 @@ const getProductRequests = async () => {
       }
     } else {
       // Something happened in setting up the request that triggered an Error
-      console.error("Error message", error.message);
-      console.error("Error code", error.code);
+      console.error("Mensaje de error", error.message);
+      console.error("Código de error", error.code);
       errorDetails.code = error.code;
       errorDetails.message = error.message;
     }
@@ -109,23 +167,29 @@ const deleteProductRequests = async (deletionRequestID) => {
     const resp = await axios.delete(
       `${baseApiUrl}/requests/${deletionRequestID}`
     );
-    console.log(resp);
     if (resp.status === 200 || resp.status === 204) {
-      console.log("Data successfully deleted");
       return true;
     }
   } catch (error) {
-    // Handle Error Here
-    console.error("An error occurred while deleting the request:", error);
+    console.error("Se produjo un error al eliminar la solicitud:", error);
     if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.error("Error data  - request deletion", error.response.data);
-      console.error("Error status - request deletion", error.response.status);
+      // Se realizó la solicitud y el servidor respondió con un código de estado
+      //fuera del rango de 2xx
+      console.error(
+        "Datos de error: solicitud de eliminación",
+        error.response.data
+      );
+      console.error(
+        "Estado de error: solicitud de eliminación",
+        error.response.status
+      );
     } else {
-      // Something happened in setting up the request that triggered an Error
-      console.error("Error message - request deletion", error.message);
-      console.error("Error code - request deletion", error.code);
+      // Algo sucedió al configurar la solicitud que provocó un error
+      console.error(
+        "Mensaje de error: solicitud de eliminación",
+        error.message
+      );
+      console.error("Código de error: solicitud de eliminación", error.code);
     }
     return false;
   }
@@ -140,7 +204,6 @@ const removeChildComponentById = (id) => {
 
 //behaviour for modal
 const onModalConfirm = async () => {
-  console.log("Deletion confirmed...");
   setIsModalVisible(false);
   //Remove with api request, if all good, reload list and show toast
   const deletionResult = await deleteProductRequests(
@@ -148,17 +211,17 @@ const onModalConfirm = async () => {
   );
   if (deletionResult === true) {
     store.commit("addToast", {
-      title: "Request deleted",
+      title: "Solicitud eliminada",
       type: "success",
-      message: "You have successfully deleted the request.",
+      message: "Has eliminado la solicitud.",
     });
     await getProductRequests();
   } else {
     store.commit("addToast", {
-      title: "Request deleted",
+      title: "Solicitud eliminada",
       type: "error",
       message:
-        "There was an error deleting the request. Try again. If the error persists, get in touch.",
+        "Hubo un error al eliminar la solicitud. Inténtalo nuevamente. Si el error persiste, ponte en contacto.",
     });
   }
   //removeChildComponentById(reqId);
@@ -173,65 +236,11 @@ const onModalClose = () => {
 const removeCancelledRequest = async (userId, reqId, prodId) => {
   setRequestIdToBeRemoved(reqId);
 
-  console.log(
-    `Parent removing card for request ID ${reqId} from the list of requests. Action triggered by ${userId}`
-  );
   setIsModalVisible(true);
   //todo, do it with a modal
   //TO DO show toast with result
 };
 </script>
-
-<template>
-  <div>
-    <h2>My requests</h2>
-
-    <div class="loading" v-show="isLoading">
-      <base-spinner></base-spinner>
-    </div>
-    <section v-if="!isLoading">
-      <div v-if="!numberOfRequests">
-        <p>You don't not have any active requests.</p>
-      </div>
-
-      <div v-else>
-        <div class="request-card-wrapper">
-          <div class="request-product-id request-card-item">Product Id</div>
-          <div class="request-message request-card-item">Message</div>
-          <div class="request-date request-card-item">Date</div>
-          <div class="request-distance request-card-item">Location</div>
-          <div class="request-status request-card-item">Availability</div>
-          <div class="request-cancel-button">Cancel</div>
-        </div>
-        <transition-group name="list" tag="div">
-          <div v-for="request in prodRequests" :key="request.id">
-            <RequestCard
-              :id="request.id"
-              :message="request.message"
-              :distance="request.distance"
-              :date="request.request_date"
-              :isActive="request.is_active"
-              :productId="request.product_id"
-              @removed-request="removeCancelledRequest"
-            /></div
-        ></transition-group>
-      </div>
-
-      <ModalConfirmationDialog
-        v-if="isModalVisible"
-        @modal-confirmed="onModalConfirm"
-        @modal-close="onModalClose"
-      >
-        <template #header>Remove request</template>
-        <template #body
-          ><p>
-            Are you sure you want to delete request {{ requestIdToBeRemoved }}?
-          </p></template
-        ></ModalConfirmationDialog
-      >
-    </section>
-  </div>
-</template>
 
 <style scoped>
 .request-card-wrapper {
@@ -253,5 +262,24 @@ const removeCancelledRequest = async (userId, reqId, prodId) => {
 .list-leave-to {
   opacity: 0;
   transform: translateX(30px);
+}
+.no-requests-found {
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  background-color: #fff;
+}
+.no-requests-found p {
+  margin: 0;
+  color: var(--bs-nav-link-color);
+}
+.no-requests-found p a {
+  text-decoration: none;
+  color: #edb421;
+}
+
+.row.title {
+  padding-bottom: 2rem;
+  text-align: center;
 }
 </style>

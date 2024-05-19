@@ -9,12 +9,12 @@
         aria-describedby="modalDescription"
       >
         <header class="modal-header" id="modalTitle">
-          <div name="header">Location Data</div>
+          <div name="header">Datos de ubicación</div>
           <button
             type="button"
             class="btn-close"
             @click="$emit('close')"
-            aria-label="Close"
+            aria-label="Cerrar"
           ></button>
         </header>
 
@@ -27,12 +27,12 @@
               :-requested-product-coords="[prodLat, prodLong]"
             ></Map>
             <div class="map-legend">
-              <div class="active-user-legend">Your location</div>
-              <div class="other-user-legend">User location</div>
+              <div class="active-user-legend">Tu ubicación</div>
+              <div class="other-user-legend">Ubicación del usuario</div>
             </div>
           </div>
           <div v-else>
-            <p>Loading map details...</p>
+            <p>Cargando detalles del mapa...</p>
           </div>
         </section>
 
@@ -47,9 +47,9 @@
             type="button"
             class="btn-green"
             @click="$emit('close')"
-            aria-label="Close"
+            aria-label="Cerrar"
           >
-            Close
+            Cerrar
           </button>
         </footer>
       </div>

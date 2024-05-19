@@ -5,7 +5,7 @@
       <div class="form-left-side form-side col-md-6">
         <div class="form-field row text-center">
           <div class="col-3 form-label">
-            <label for="firstname">Firstname</label>
+            <label for="firstname">Nombre</label>
           </div>
           <div class="col-9">
             <input
@@ -19,12 +19,12 @@
           </div>
         </div>
         <div v-if="!data.firstName.isValid" class="validation-error-container">
-          <p>Firstname must not be empty.</p>
+          <p>El nombre no debe estar vacío.</p>
         </div>
 
         <div class="form-field row text-center">
           <div class="col-3 form-label">
-            <label for="lastname">Lastname</label>
+            <label for="lastname">Apellidos</label>
           </div>
           <div class="col-9">
             <input
@@ -38,11 +38,11 @@
           </div>
         </div>
         <div v-if="!data.lastName.isValid" class="validation-error-container">
-          <p>Lastname must not be empty.</p>
+          <p>Los apellidos no pueden estar vacíos.</p>
         </div>
 
         <div class="form-field row text-center">
-          <div class="col-3 form-label"><label for="email">Email</label></div>
+          <div class="col-3 form-label"><label for="email">Correo</label></div>
           <div class="col-9">
             <input
               :class="{ invalid: !data.email.isValid }"
@@ -55,11 +55,13 @@
           </div>
         </div>
         <div v-if="!data.email.isValid" class="validation-error-container">
-          <p>Email must not be empty.</p>
+          <p>El correo electrónico no debe estar vacío.</p>
         </div>
 
         <div class="form-field row text-center">
-          <div class="col-3 form-label"><label for="phone">Phone</label></div>
+          <div class="col-3 form-label">
+            <label for="phone">Teléfono</label>
+          </div>
           <div class="col-9">
             <input
               :class="{ invalid: !data.phone.isValid }"
@@ -72,19 +74,19 @@
           </div>
         </div>
         <div v-if="!data.phone.isValid" class="validation-error-container">
-          <p>Phone must not be empty.</p>
+          <p>El teléfono no debe estar vacío.</p>
         </div>
         <p v-if="formIsValid.value === false">
-          Please fix the above errors and submit again.
+          Arregla los errores anteriores y envíalo nuevamente.
         </p>
         <div class="row">
           <div class="col-sm-8 col-md-12">
             <div id="forgot-password">
               <!--{or si las moscas, el reset de password se hace como un forgot, para tener la verificacion de correo, etc.}-->
               <p class="note">
-                Do you want to reset your password? No probs! You can reset it
+                ¿Quieres restablecer tu contraseña? ¡No hay problema! Haz clic
 
-                <RouterLink :to="{ name: 'forgot-password' }">here</RouterLink>.
+                <RouterLink :to="{ name: 'forgot-password' }">aquí</RouterLink>.
               </p>
             </div>
           </div>
@@ -101,7 +103,7 @@
         <div id="coords-details">
           <div class="form-field row text-center">
             <div class="col-3 form-label">
-              <label for="longitude">Longitude</label>
+              <label for="longitude">Longitud</label>
             </div>
             <div class="col-9">
               <input
@@ -117,12 +119,12 @@
             v-if="!data.longitude.isValid"
             class="validation-error-container"
           >
-            <p>Longitude must not be empty.</p>
+            <p>La longitud no debe estar vacía.</p>
           </div>
 
           <div class="form-field row text-center">
             <div class="col-3 form-label">
-              <label for="latitude">Latitude</label>
+              <label for="latitude">Latitud</label>
             </div>
             <div class="col-9">
               <input
@@ -135,21 +137,21 @@
             </div>
           </div>
           <div v-if="!data.latitude.isValid" class="validation-error-container">
-            <p>Latitude must not be empty.</p>
+            <p>La latitud no debe estar vacía.</p>
           </div>
           <div id="user-city" class="row" v-if="userCity !== ''">
             <div class="col text-end">
-              <p>You are based around {{ userCity }}.</p>
+              <p>Estás ubicado alrededor de {{ userCity }}.</p>
             </div>
           </div>
           <div class="row">
             <div class="col text-end">
               <BaseButton @click.prevent="getLocationCoords" mode="outline"
-                >Get my Location</BaseButton
+                >Obtener mi ubicación</BaseButton
               >
               <p class="note">
-                We need your location to make sure that proximity is considered
-                when donating products.Thanks!
+                Necesitamos su ubicación para asegurarnos de que se considere la
+                proximidad al donar productos. ¡Gracias!
               </p>
             </div>
           </div>
@@ -157,7 +159,7 @@
         <div class="row">
           <div class="co">
             <div class="form-submit-button">
-              <BaseButton>Update</BaseButton>
+              <BaseButton>Actualizar</BaseButton>
             </div>
           </div>
         </div>
@@ -304,8 +306,8 @@ const getLocationCoords = () => {
       );
     },
     (error) => {
-      console.log(
-        `There was an error fetching the geo coords ${error.message}`
+      console.error(
+        `Hubo un error al obtener las coordenadas geográficas ${error.message}`
       );
     }
   );
@@ -336,8 +338,6 @@ const clearValidity = (input) => {
 
 //validación específica de cada uno de los campos del formulario
 const validateForm = () => {
-  console.log("Running validation on registration form");
-
   formIsValid.value = true;
 
   if (data.firstName.val === "") {
@@ -417,16 +417,16 @@ async function updateUser(userID, data) {
     });
     // Mostrar toast de exito
     store.commit("addToast", {
-      title: "User Updated",
+      title: "Usuario actualizado",
       type: "success",
-      message: `Your user profile details have been updated.`,
+      message: `Los detalles de su perfil de usuario han sido actualizados.`,
     });
   } catch (error) {
     // Mostrar toast de error
     store.commit("addToast", {
-      title: "User Not Updated",
+      title: "Usuario no actualizado",
       type: "error",
-      message: `Your user profile could not be updated. Please try again later.`,
+      message: `Su perfil de usuario no se pudo actualizar. Por favor, inténtalo de nuevo más tarde.`,
     });
   }
 }
@@ -452,7 +452,7 @@ const createUserLocation = async (locationFormData) => {
         `${baseApiUrl}/locations`,
         locationFormData
       );
-      console.log(`Newly created Location ID: ${resp.data.data.id}`);
+
       handleSuccessfulResponse(resp);
     }
   } catch (error) {
@@ -471,8 +471,8 @@ const handleSuccessfulResponse = (resp) => {
 const handleErrorResponse = (error) => {
   requestError.value = true; //se pone a true para que se muestren en el formulario
   if (error.response) {
-    console.error("Error data", error.response.data);
-    console.error("Error status", error.response.status);
+    console.error("Datos del error", error.response.data);
+    console.error("Código de error", error.response.status);
     errorDetails.code = error.response.status;
     errorDetails.message = error.message;
     if (error.response.data.errors) {
@@ -482,8 +482,8 @@ const handleErrorResponse = (error) => {
       }
     }
   } else {
-    console.error("Error message", error.message);
-    console.error("Error code", error.code);
+    console.error("Mensaje de error", error.message);
+    console.error("Código de error", error.code);
     errorDetails.code = error.code;
     errorDetails.message = error.message;
   }
@@ -622,6 +622,14 @@ h3 {
 .note {
   color: rgb(139, 138, 138);
   padding-top: 1rem;
+}
+
+.note a {
+  text-decoration: none;
+  color: #edb421;
+}
+.note a:hover {
+  text-decoration: underline;
 }
 
 .form-submit-button {

@@ -3,15 +3,15 @@
   <div>
     <div v-if="isDataLoaded">
       <div id="new-category-container">
-        <BaseButton @click="confirmAddition">Create new category</BaseButton>
+        <BaseButton @click="confirmAddition">Crear nueva categoría</BaseButton>
       </div>
       <table class="table table-hover table-sm">
         <thead>
           <tr>
             <th scope="col">id</th>
-            <th scope="col">name</th>
-            <th scope="col">Edit</th>
-            <th scope="col">Delete</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Editar</th>
+            <th scope="col">Eliminar</th>
           </tr>
         </thead>
         <tbody>
@@ -67,13 +67,13 @@
     @modal-close="onDeleteModalClose"
     id="delete-category-modal"
   >
-    <template #header>Confirm Category Deletion</template>
+    <template #header>Confirmar eliminación de categoría</template>
     <template #body
       ><p>
-        Are you sure you want to delete this category? The category will be
-        removed from products where it is now used.
+        ¿Estás seguro de que deseas eliminar esta categoría? La categoría se
+        eliminará de los productos donde se utiliza ahora.
       </p>
-      <p>This action cannot be undone.</p></template
+      <p>Esta acción no se puede deshacer.</p></template
     >
   </ModalConfirmationDialog>
   <ModalConfirmationDialog
@@ -82,10 +82,10 @@
     @modal-close="onEditModalClose"
     id="edit-category-modal"
   >
-    <template #header>Category Editing</template>
+    <template #header>Edición de categorías</template>
     <template #body>
       <div class="container">
-        <h2>Edit Category</h2>
+        <h2>Editar categoría</h2>
         <form @submit.prevent="subitEditProductForm">
           <!-- ID Field -->
           <div class="mb-3">
@@ -102,7 +102,7 @@
 
           <!-- Name Field -->
           <div class="mb-3">
-            <label for="name" class="form-label">Name</label>
+            <label for="name" class="form-label">Nombre</label>
             <textarea
               class="form-control"
               id="name"
@@ -119,14 +119,14 @@
     @modal-close="onCreateModalClose"
     id="create-category-modal"
   >
-    <template #header>Category Creation</template>
+    <template #header>Creación de categorías</template>
     <template #body>
       <div class="container">
-        <h2>Create Category</h2>
+        <h2>Crear categoria</h2>
         <form @submit.prevent="subitEditProductForm">
           <!-- Name Field -->
           <div class="mb-3">
-            <label for="name" class="form-label">Name</label>
+            <label for="name" class="form-label">Nombre</label>
             <textarea
               class="form-control"
               id="name"
@@ -191,12 +191,6 @@ const closeAllModals = () => {
 watch(
   () => isEditModalVisible.value,
   (newValue, oldValue) => {
-    console.log(
-      "isEditModalVisible prop changed from",
-      oldValue,
-      "to",
-      newValue
-    );
     if ((newValue = true)) {
       setIsDeleteModalVisible(false);
       setIsCreateModalVisible(false);
@@ -251,12 +245,12 @@ const handleRequestError = (error) => {
   console.error(error); //como es un error, se saca como tal por consola tambien
   isDataLoaded.value = true;
   const errorMessage = error.response
-    ? `There was an error while processing the requests. (Code: ${error.response.status})`
-    : `There was an error while processing the requests. (Code: ${error.code})`;
+    ? `Hubo un error al procesar las solicitudes. (Código: ${error.response.status})`
+    : `Hubo un error al procesar las solicitudes. (Código: ${error.code})`;
 
   // Enviar toast al estado de Vuex para notificación de error
   store.commit("addToast", {
-    title: "Error Processing Requests",
+    title: "Error al procesar la solicitud",
     type: "error",
     message: errorMessage,
   });
@@ -308,9 +302,9 @@ async function deleteCategory(categoryId) {
 
     //Enviar toast al store de Vuex para mostrar la notificacion de exito
     store.commit("addToast", {
-      title: "Category Deleted",
+      title: "Categoría eliminada",
       type: "success",
-      message: `Category ${categoryId} has been deleted. The list will be reloaded.`,
+      message: `Se ha eliminado la categoría ${categoryId}. La lista se recargará.`,
     });
 
     closeAllModals(); //se cierran todos los modales al terminar
@@ -331,9 +325,9 @@ async function createCategory(categoryName) {
 
     //Enviar toast al store de Vuex para mostrar la notificacion de exito
     store.commit("addToast", {
-      title: "Category Created",
+      title: "Categoría creada",
       type: "success",
-      message: `The category has been created. The list will be reloaded.`,
+      message: `La categoría ha sido creada. La lista se recargará.`,
     });
 
     //se hace una recarga para obtener datos actualizados del servidor tras la accion
@@ -356,9 +350,9 @@ async function editCategory(category) {
 
     //Enviar toast al store de Vuex para mostrar la notificacion de exito
     store.commit("addToast", {
-      title: "Category Updated",
+      title: "Categoría actualizada",
       type: "success",
-      message: `The category has been updated. The list will be reloaded.`,
+      message: `La categoría ha sido actualizada. La lista se recargará.`,
     });
 
     //se hace una recarga para obtener datos actualizados del servidor tras la accion

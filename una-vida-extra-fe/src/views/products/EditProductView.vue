@@ -2,13 +2,13 @@
   <div class="row row justify-content-md-center">
     <div class="back-to-products-button col-md-10">
       <a :href="$router.resolve({ name: 'userProducts' }).href"
-        >Back to your products</a
+        >Volver a tus productos</a
       >
     </div>
   </div>
   <div class="form-wrapper">
     <div class="row">
-      <div class="col"><h2>Edit Product</h2></div>
+      <div class="col"><h2>Editar producto</h2></div>
     </div>
   </div>
   <div class="product-editing" :id="route.params.id">

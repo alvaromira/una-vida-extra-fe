@@ -25,21 +25,9 @@ const isRequestedProductCoordsValid = computed(() => {
   );
 });
 
-//Variable para centrar el map.
+//Variable para centrar el mapa.
 let center = ref(null);
 
-//Se se dan las coordinadas del usuario y son validas, se usan para centrar el mapa. Si no se dan las del usuario, se usan las del producto, si son validas
-if (isUserCoordsValid.value) {
-  center.value = ref([props.UserCoords[0], props.UserCoords[1]]);
-} else if (isRequestedProductCoordsValid.value) {
-  center.value = [
-    props.RequestedProductCoords[0],
-    props.RequestedProductCoords[1],
-  ];
-} else {
-  // Si ni UserCoords ni RequestedProductCoords son válidos, se saca un error
-  console.error("No se han dado coordinadas validas.");
-}
 //variable para poner el div donde se monta el mapa
 let mapDiv = null;
 //variable para crear el icono marcador de color verde para el mapa
@@ -54,9 +42,23 @@ const greenIcon = new L.Icon({
   shadowSize: [41, 41],
 });
 
+//Funcion para calcular el centro del mapa
+const setMapCenter = async () => {
+  if (isUserCoordsValid.value) {
+    center.value = [props.UserCoords[0], props.UserCoords[1]];
+  } else if (isRequestedProductCoordsValid.value) {
+    center.value = [
+      props.RequestedProductCoords[0],
+      props.RequestedProductCoords[1],
+    ];
+  } else {
+    // Si ni UserCoords ni RequestedProductCoords son válidos, se saca un error
+    console.error("No se han dado coordenadas válidas.");
+  }
+};
+
 //Funcion de preparacion del mapa
-const setupLeafletMap = () => {
-  console.log("Configurando mapa con centro  en: " + center.value);
+const setupLeafletMap = async () => {
   //El nombre de map debe ser el id de un div
   mapDiv = leaflet
     .map("mapContainer")
@@ -75,7 +77,7 @@ const setupLeafletMap = () => {
     let userMarker = L.marker([props.UserCoords[0], props.UserCoords[1]]).addTo(
       mapDiv
     );
-    userMarker.bindPopup("User location.");
+    userMarker.bindPopup("Ubicación del usuario");
   }
 
   //Se añade el marcador del producto, si las coordenadas son validas. Se usa el icono verde creado para diferenciarlo
@@ -84,7 +86,7 @@ const setupLeafletMap = () => {
       [props.RequestedProductCoords[0], props.RequestedProductCoords[1]],
       { icon: greenIcon }
     ).addTo(mapDiv);
-    prodMarker.bindPopup("Product location.");
+    prodMarker.bindPopup("Ubicación del producto");
   }
 };
 
@@ -97,12 +99,11 @@ onBeforeMount(() => {
   }
 });
 
-//Al montar el componente, se configura y carga el mapa
-onMounted(() => {
-  setupLeafletMap();
+//Al montar el componente, se configura el centro y carga el mapa
+onMounted(async () => {
+  await setMapCenter();
+  await setupLeafletMap();
 });
-
-//onUnmounted(() => console.log("Unmounting Map component"));
 </script>
 <style scoped>
 #mapContainer {

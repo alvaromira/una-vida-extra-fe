@@ -13,7 +13,7 @@
     </div>
     <div class="card-footer">
       <BaseButton :to="{ name: 'product', params: { id: id } }" link="true"
-        >More info</BaseButton
+        >Ver detalles</BaseButton
       >
     </div>
   </div>

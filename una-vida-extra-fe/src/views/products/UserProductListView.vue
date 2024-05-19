@@ -1,19 +1,23 @@
 <template>
   <div class="row">
     <div class="col">
-      <h2>My Products</h2>
+      <h2>Mis productos</h2>
     </div>
   </div>
 
   <div class="row" id="user-product-addition">
     <section class="col d-flex justify-content-end">
       <BaseButton :to="{ name: 'addProduct' }" link="true"
-        >Add New Product
+        >Añadir nuevo producto
       </BaseButton>
     </section>
   </div>
   <div v-if="isDataLoaded" class="row">
-    <div id="user-product-list" class="row">
+    <div
+      id="user-product-list"
+      class="row"
+      v-if="userProducts.data && userProducts.data.length > 0"
+    >
       <section class="product-card-container">
         <div v-for="product in userProducts.data">
           <product-card
@@ -29,6 +33,11 @@
         </div>
       </section>
     </div>
+    <div v-else class="row justify-content-md-center">
+      <div class="col no-requests-found text-center">
+        <p>No tienes ningún producto.</p>
+      </div>
+    </div>
     <!-- Pagination controls -->
     <div class="row">
       <div class="pagination-controls" v-if="totalPages > 1">
@@ -37,7 +46,7 @@
           mode="outline"
           :disabled="currentPage === 1"
         >
-          <span class="sr-only">Previous</span>
+          <span class="sr-only">Anterior</span>
           <span aria-hidden="true">&lt;</span>
         </BaseButton>
         <span class="pagination-information"
@@ -48,7 +57,7 @@
           @click="loadNextPage"
           :disabled="currentPage === totalPages"
         >
-          <span class="sr-only">Next</span>
+          <span class="sr-only">Siguiente</span>
           <span aria-hidden="true">&gt;</span>
         </BaseButton>
       </div>
@@ -127,12 +136,12 @@ const handleRequestError = (error) => {
   console.error(error); //como es un error, se saca como tal por consola tambien
   isDataLoaded.value = true;
   const errorMessage = error.response
-    ? `There was an error while processing the requests. (Code: ${error.response.status})`
-    : `There was an error while processing the requests. (Code: ${error.code})`;
+    ? `Hubo un error al procesar las solicitudes. (Código: ${error.response.status})`
+    : `Hubo un error al procesar las solicitudes. (Código: ${error.code})`;
 
   // Enviar toast al estado de Vuex para notificación de error
   store.commit("addToast", {
-    title: "Error Processing Your Products",
+    title: "Error al procesar sus productos",
     type: "error",
     message: errorMessage,
   });
@@ -156,7 +165,6 @@ onMounted(async () => {
 }
 
 h2 {
-  text-transform: uppercase;
   text-align: center;
   color: #7ab370;
   padding: 1rem 1rem 1.5rem 1rem;
@@ -184,5 +192,19 @@ h2 {
   clip: rect(0, 0, 0, 0) !important;
   white-space: nowrap !important;
   border: 0 !important;
+}
+.no-requests-found {
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  background-color: #fff;
+}
+.no-requests-found p {
+  margin: 0;
+  color: var(--bs-nav-link-color);
+}
+.no-requests-found p a {
+  text-decoration: none;
+  color: #edb421;
 }
 </style>

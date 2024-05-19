@@ -6,11 +6,11 @@ import UserRegistrationForm from "../../components/user/UserRegistrationForm.vue
 <template>
   <div class="form-wrapper">
     <div class="row">
-      <div class="col"><h2>Register</h2></div>
+      <div class="col"><h2>Registro</h2></div>
     </div>
     <p>
-      Use the form below to become part of our community and start contributing.
-      Thanks!
+      Utilice el siguiente formulario para formar parte de nuestra comunidad y
+      comenzar a contribuir. ¡Gracias!
     </p>
     <user-registration-form />
   </div>

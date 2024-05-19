@@ -7,7 +7,7 @@
           <div class="row edit-card-top">
             <div class="form-left-side form-side col-md-6">
               <div class="mb-3">
-                <label for="productName" class="form-label">Name</label>
+                <label for="productName" class="form-label">Nombre</label>
                 <input
                   :class="{ invalid: !data.productName.isValid }"
                   class="form-control"
@@ -15,18 +15,18 @@
                   id="productName"
                   v-model.trim="data.productName.val"
                   @blur="clearValidity('productName')"
-                  placeholder="Name of your product"
+                  placeholder="Nombre del producto"
                 />
               </div>
               <div
                 v-if="!data.productName.isValid"
                 class="validation-error-container"
               >
-                <p>The name must not be empty.</p>
+                <p>El nombre no debe estar vacío.</p>
               </div>
 
               <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
+                <label for="description" class="form-label">Descripción</label>
 
                 <textarea
                   class="form-control"
@@ -34,7 +34,7 @@
                   id="description"
                   rows="5"
                   v-model.trim="data.description.val"
-                  placeholder="Description of your product"
+                  placeholder="Descripción del producto"
                   @blur="clearValidity('description')"
                 ></textarea>
               </div>
@@ -42,7 +42,7 @@
                 v-if="!data.description.isValid"
                 class="validation-error-container"
               >
-                <p>Description must not be empty.</p>
+                <p>La descripción no debe estar vacía.</p>
               </div>
             </div>
             <div class="form-right-side form-side col-md-6">
@@ -51,7 +51,7 @@
                   <img :src="imagePath" class="product-image" />
                   <div>
                     <label for="product-image" class="form-label"
-                      >Product image</label
+                      >Imagen del producto</label
                     >
                     <input
                       type="file"
@@ -65,27 +65,30 @@
                 </div>
               </div>
 
-              <div class="mb-3">
-                <label for="tags" class="form-label">Tags:</label>
+              <div class="mb-3 disabled-field">
+                <label for="tags" class="form-label">Etiquetas:</label>
 
                 <input
                   class="form-control"
                   type="text"
                   id="tags"
                   v-model.trim="data.tags.val"
-                  placeholder="Insert the tags for your product, separate them with commmas"
+                  placeholder="Inserta las etiquetas de tu producto, sepáralas con comas"
+                  disabled
+                  readonly
                 />
                 <div id="emailHelp" class="form-text">
-                  Tag editing is not available at the moment.
+                  La edición de etiquetas no está disponible en este momento. Lo
+                  estará en breve. 😅
                 </div>
               </div>
               <div v-if="!data.tags.isValid" class="validation-error-container">
-                <p>tags must not be empty.</p>
+                <p>Las etiquetas no deben estar vacías.</p>
               </div>
 
               <div class="form-field row">
                 <div class="mb-3">
-                  <label for="category" class="form-label">Category:</label>
+                  <label for="category" class="form-label">Categoría:</label>
                   <select
                     class="form-select"
                     aria-label="Select category"
@@ -110,14 +113,14 @@
                 v-if="!data.category.isValid"
                 class="validation-error-container"
               >
-                <p>Category must not be empty.</p>
+                <p>La categoría no debe estar vacía.</p>
               </div>
             </div>
           </div>
           <div class="row edit-card-bottom">
             <div class="col">
               <div class="form-submit-button">
-                <BaseButton @submit.prevent="submitForm">Add</BaseButton>
+                <BaseButton @submit.prevent="submitForm">Añadir</BaseButton>
               </div>
             </div>
           </div>
@@ -188,11 +191,11 @@ const validateForm = async () => {
     data.description.isValid = false;
     formIsValid.value = false;
   }
-
+  /* Funcion deshabilitada por el momento, pero el componente ya esta preparado
   if (data.tags.val === "") {
     data.tags.isValid = false;
     formIsValid.value = false;
-  }
+  }*/
 
   if (data.category.val === "" || data.category.val === null) {
     data.category.isValid = false;
@@ -208,8 +211,9 @@ const clearForm = () => {
   data.description.val === "";
   data.description.isValid = true;
 
-  data.tags.val === "";
-  data.tags.isValid = false;
+  //Funcion deshabilitada de momento
+  //  data.tags.val === "";
+  //  data.tags.isValid = false;
 
   data.category.val === "";
   data.category.isValid = true;
@@ -228,12 +232,12 @@ const submitForm = async () => {
   formData.append("image", data.image.val);
   formData.append("title", data.productName.val);
   formData.append("description", data.description.val);
-  //formData.append('tags', data.tags.val);
+  //formData.append('tags', data.tags.val);  Funcion deshabilitada de momento
   formData.append("category_id", data.category.val);
   formData.append("user_id", loggedInUser.value);
   formData.append("available", 1);
   formData.append("is_taken", 0);
-  formData.append("end_date", "2024-12-08 16:12:49");
+  //formData.append("end_date", "2024-12-08 16:12:49"); //De momento no se usa la funcionalidad de autocaducidad
 
   try {
     isLoading.value = true;
@@ -256,9 +260,9 @@ const handleSuccess = () => {
   data.image.isUpdated = false;
 
   store.commit("addToast", {
-    title: "Product added",
+    title: "Producto añadido",
     type: "success",
-    message: "You have successfully added a new product",
+    message: "Has añadido un nuevo producto.",
   });
 
   router.push({ name: "userProducts" });
@@ -276,7 +280,7 @@ const handleError = (error) => {
   if (error.response) {
     // capturar el codigo de error
     errorStatus = error.response.status;
-    console.error("Error status", error.response.status);
+    console.error("Código de error", error.response.status);
 
     // Extraer mensaje de error, solo el primero, de forma que si hay varios se solucinan uno a uno.
     const errors = error.response.data.errors;
@@ -289,18 +293,18 @@ const handleError = (error) => {
     }
   } else {
     // OTros errores
-    console.error("Error message", error.message);
-    console.error("Error code", error.code);
+    console.error("Mensaje de error", error.message);
+    console.error("Código de error", error.code);
     errorStatus = error.code;
     errorMessage = error.message;
   }
 
   // Mensaje de erorr final
-  const finalMessage = `The product could not be created. Error code: ${errorStatus}. Error message: ${errorMessage}`;
+  const finalMessage = `No se pudo crear el producto. Código de error: ${errorStatus}. Mensaje de error: ${errorMessage}`;
 
   // Toast de error
   store.commit("addToast", {
-    title: "Product Not Created",
+    title: "Producto no creado",
     type: "error",
     message: finalMessage,
   });
@@ -332,8 +336,8 @@ const getProductCategories = async () => {
     requestError.value = true;
 
     if (error.response) {
-      console.error("Error data", error.response.data);
-      console.error("Error status", error.response.status);
+      console.error("Datos del error", error.response.data);
+      console.error("Código de error", error.response.status);
       errorDetails.code = error.response.status;
       errorDetails.message = error.message;
       if (error.response.data.errors) {
@@ -344,8 +348,8 @@ const getProductCategories = async () => {
       }
     } else {
       // Algo sucedió al configurar la solicitud que provocó un error
-      console.error("Error message", error.message);
-      console.error("Error code", error.code);
+      console.error("Mensaje de error", error.message);
+      console.error("Código de error", error.code);
       errorDetails.code = error.code;
       errorDetails.message = error.message;
     }
@@ -486,5 +490,15 @@ select#category {
   font: inherit;
   box-shadow: rgba(17, 17, 26, 0.2) 0px 2px 4px;
   color: gray;
+}
+.disabled-field {
+  color: lightgray;
+  opacity: 0.75;
+}
+.disabled-field label {
+  color: lightgray;
+}
+.disabled-field input {
+  border: thin solid lightgray;
 }
 </style>

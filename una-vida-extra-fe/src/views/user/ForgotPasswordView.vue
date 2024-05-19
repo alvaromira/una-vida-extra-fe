@@ -5,7 +5,7 @@ import UserForgotPasswordForm from "../../components/user/UserForgotPasswordForm
 <template>
   <div class="form-wrapper container">
     <div class="row">
-      <div class="col"><h2>Password Reset</h2></div>
+      <div class="col"><h2>Restablecimiento de contraseña</h2></div>
     </div>
 
     <UserForgotPasswordForm />

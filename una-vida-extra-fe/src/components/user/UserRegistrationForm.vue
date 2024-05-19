@@ -514,8 +514,8 @@ const submitForm = async () => {
       if (error.response) {
         // Se realizó la solicitud y el servidor respondió con un código de estado
         // eso cae fuera del rango de 2xx
-        console.error("Error data", error.response.data);
-        console.error("Error status", error.response.status);
+        console.error("Datos del error", error.response.data);
+        console.error("Código de error", error.response.status);
         errorDetails.code = error.response.status;
         errorDetails.message = error.message;
         if (error.response.data.errors) {
@@ -526,8 +526,8 @@ const submitForm = async () => {
         }
       } else {
         // Algo sucedió al configurar la solicitud que provocó un error
-        console.error("Error message", error.message);
-        console.error("Error code", error.code);
+        console.error("Mensaje de error", error.message);
+        console.error("Código de error", error.code);
         errorDetails.code = error.code;
         errorDetails.message = error.message;
       }
@@ -575,8 +575,8 @@ const submitForm = async () => {
             error.response.status,
         });
       } else {
-        console.error("Error message", error.message);
-        console.error("Error code", error.code);
+        console.error("Mensaje de error", error.message);
+        console.error("Código de error", error.code);
         store.commit("addToast", {
           title: "Location not created",
           type: "error",

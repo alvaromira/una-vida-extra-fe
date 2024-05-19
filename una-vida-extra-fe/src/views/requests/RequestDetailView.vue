@@ -1,8 +1,10 @@
 <!--Componente tipo vista donde se usan los subcomponentes para mostrar un formulario donde solicitar el producto-->
 <template>
-  <div class="row">
-    <div class="col justify-content-md-center">
-      <h2>Request {{ prodDetail.title }}</h2>
+  <div class="row justify-content-md-center">
+    <div class="col">
+      <h2>
+        Solicitar <em>{{ prodDetail.title }}</em>
+      </h2>
     </div>
   </div>
 

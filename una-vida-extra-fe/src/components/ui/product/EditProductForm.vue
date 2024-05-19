@@ -174,9 +174,9 @@ const handleSuccess = () => {
 
   // Show success toast
   store.commit("addToast", {
-    title: "Product updated",
+    title: "Producto actualizado",
     type: "success",
-    message: "You have successfully updated the product",
+    message: "Has actualizado el producto.",
   });
 };
 
@@ -192,7 +192,7 @@ const handleError = (error) => {
   if (error.response) {
     // Capturar el codigo de error
     errorStatus = error.response.status;
-    console.error("Error status", error.response.status);
+    console.error("Código de error", error.response.status);
 
     // Extraer mensaje de error, solo el primero, de forma que si hay varios se solucinan uno a uno.
     const errors = error.response.data.errors;
@@ -205,14 +205,14 @@ const handleError = (error) => {
     }
   } else {
     // Otros errores
-    console.error("Error message", error.message);
-    console.error("Error code", error.code);
+    console.error("Mensaje de error", error.message);
+    console.error("Código de error", error.code);
     errorStatus = error.code;
     errorMessage = error.message;
   }
 
   // Construir el mensaje de error final
-  const finalMessage = `The product could not be updated. Error code: ${errorStatus}. Error message: ${errorMessage}`;
+  const finalMessage = `El producto no se pudo actualizar. Código de error: ${errorStatus}. Mensaje de error: ${errorMessage}`;
 
   //Mostrar el toast con el error
   store.commit("addToast", {
@@ -242,8 +242,8 @@ const getProductCategories = async () => {
     if (error.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
-      console.error("Error data", error.response.data);
-      console.error("Error status", error.response.status);
+      console.error("Datos del error", error.response.data);
+      console.error("Código de error", error.response.status);
       errorDetails.code = error.response.status;
       errorDetails.message = error.message;
       if (error.response.data.errors) {
@@ -254,8 +254,8 @@ const getProductCategories = async () => {
       }
     } else {
       // Something happened in setting up the request that triggered an Error
-      console.error("Error message", error.message);
-      console.error("Error code", error.code);
+      console.error("Mensaje de error", error.message);
+      console.error("Código de error", error.code);
       errorDetails.code = error.code;
       errorDetails.message = error.message;
     }
@@ -329,16 +329,16 @@ async function deleteProduct(productId) {
 
     //Se muestra el success
     store.commit("addToast", {
-      title: "Product Deleted",
+      title: "Producto eliminado",
       type: "success",
-      message: `Product ${productId} has been deleted. You are not taken to your rest of products`,
+      message: `El producto ${productId} ha sido eliminado. No te llevan a tu resto de productos.`,
     });
     router.push({ name: "userProducts" });
   } catch (error) {
     store.commit("addToast", {
-      title: "Product Not Deleted",
+      title: "Producto no eliminado",
       type: "error",
-      message: `Your product could not be deleted. Please try again later`,
+      message: `Su producto no se pudo eliminar. Por favor, inténtelo de nuevo más tarde.`,
     });
   }
 }
@@ -352,7 +352,7 @@ async function deleteProduct(productId) {
           <div class="row edit-card-top">
             <div class="form-left-side form-side col-md-6">
               <div class="mb-3">
-                <label for="productName" class="form-label">Name</label>
+                <label for="productName" class="form-label">Nombre</label>
                 <input
                   :class="{ invalid: !data.productName.isValid }"
                   class="form-control"
@@ -360,18 +360,18 @@ async function deleteProduct(productId) {
                   id="productName"
                   v-model.trim="data.productName.val"
                   @blur="clearValidity('productName')"
-                  placeholder="Name of your product"
+                  placeholder="Nombre del producto"
                 />
               </div>
               <div
                 v-if="!data.productName.isValid"
                 class="validation-error-container"
               >
-                <p>productName must not be empty.</p>
+                <p>El nombre del producto no debe estar vacío.</p>
               </div>
 
               <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
+                <label for="description" class="form-label">Descripción</label>
 
                 <textarea
                   class="form-control"
@@ -386,7 +386,7 @@ async function deleteProduct(productId) {
                 v-if="!data.description.isValid"
                 class="validation-error-container"
               >
-                <p>Description must not be empty.</p>
+                <p>La descripción no debe estar vacía.</p>
               </div>
             </div>
             <div class="form-right-side form-side col-md-6">
@@ -395,7 +395,7 @@ async function deleteProduct(productId) {
                   <img :src="imagePath" class="profile-pic" />
                   <div>
                     <label for="profile-pic" class="form-label"
-                      >Product image</label
+                      >Imagen del producto</label
                     >
                     <input
                       type="file"
@@ -409,29 +409,30 @@ async function deleteProduct(productId) {
                 </div>
               </div>
 
-              <div class="mb-3">
-                <label for="tags" class="form-label">Tags:</label>
+              <div class="mb-3 disabled-field">
+                <label for="tags" class="form-label">Etiquetas:</label>
 
                 <input
                   class="form-control"
                   type="text"
                   id="tags"
                   v-model.trim="data.tags.val"
-                  placeholder="Insert the tags for your product, separate them with commmas"
+                  placeholder="Inserta las etiquetas de tu producto, sepáralas con comas"
                   disabled
                   readonly
                 />
                 <div id="emailHelp" class="form-text">
-                  Tag editing is not available at the moment.
+                  La edición de etiquetas no está disponible en este momento. Lo
+                  estará en breve. 😅
                 </div>
               </div>
               <div v-if="!data.tags.isValid" class="validation-error-container">
-                <p>tags must not be empty.</p>
+                <p>Las etiquetas no deben estar vacías.</p>
               </div>
 
               <div class="form-field row">
                 <div class="mb-3">
-                  <label for="category" class="form-label">Category:</label>
+                  <label for="category" class="form-label">Categoría:</label>
                   <select
                     class="form-select"
                     aria-label="Select category"
@@ -456,16 +457,16 @@ async function deleteProduct(productId) {
                 v-if="!data.category.isValid"
                 class="validation-error-container"
               >
-                <p>Category must not be empty.</p>
+                <p>La categoría no debe estar vacía.</p>
               </div>
             </div>
           </div>
           <div class="row edit-card-bottom">
             <div class="col">
               <div class="form-submit-button">
-                <BaseButton @submit.prevent="submitForm">Update</BaseButton>
+                <BaseButton @submit.prevent="submitForm">Actualizar</BaseButton>
                 <BaseButton @click.prevent="confirmDeletion()"
-                  >Delete</BaseButton
+                  >Eliminar</BaseButton
                 >
               </div>
             </div>
@@ -478,8 +479,8 @@ async function deleteProduct(productId) {
             <transition name="request-errors">
               <div class="request-errors col" v-show="requestError">
                 <p>
-                  There was an error when trying to perform the registration.
-                  Please try again.
+                  Se produjo un error al intentar realizar el registro.
+                  Inténtalo de nuevo.
                 </p>
                 <div v-if="apiErrorsFound">
                   <p>Details:</p>
@@ -500,14 +501,14 @@ async function deleteProduct(productId) {
     @modal-close="onDeleteModalClose"
     id="delete-user-modal"
   >
-    <template #header>Confirm Product Deletion</template>
+    <template #header>Confirmar eliminación del producto</template>
     <template #body
       ><p>
-        Are you sure you want to delete this product? The product will no longer
-        be listed or visible to anybody. Any requests it may have will be
-        deleted as well.
+        ¿Estás seguro de que deseas eliminar este producto? El producto ya no
+        estar listado o visible para cualquiera. Cualquier solicitud que pueda
+        tener será eliminado también.
       </p>
-      <p>This action cannot be undone.</p></template
+      <p>Esta acción no se puede deshacer.</p></template
     >
   </ModalConfirmationDialog>
 </template>
@@ -550,6 +551,7 @@ async function deleteProduct(productId) {
 
   margin-right: 1rem;
   margin-bottom: 1rem;
+  border-radius: 5px;
 }
 #image-upload input {
   margin: 0;
@@ -636,6 +638,16 @@ input[type="checkbox"]:focus {
 
 .form-submit-button {
   text-align: right;
+}
+.disabled-field {
+  color: lightgray;
+  opacity: 0.75;
+}
+.disabled-field label {
+  color: lightgray;
+}
+.disabled-field input {
+  border: thin solid lightgray;
 }
 select#category {
   border: thin solid #edb421;

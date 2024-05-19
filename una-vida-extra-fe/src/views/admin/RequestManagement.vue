@@ -6,13 +6,13 @@
         <thead>
           <tr>
             <th scope="col">id</th>
-            <th scope="col">request_date</th>
-            <th scope="col">is_active</th>
-            <th scope="col">message</th>
-            <th scope="col">user_id</th>
-            <th scope="col">product_id</th>
-            <th scope="col">is_accepted</th>
-            <th scope="col">created_at</th>
+            <th scope="col">Fecha sol.</th>
+            <th scope="col">Está activo</th>
+            <th scope="col">Mensaje</th>
+            <th scope="col">id usuario</th>
+            <th scope="col">id prod.</th>
+            <th scope="col">está aceptada</th>
+            <th scope="col">creación</th>
             <th scope="col"></th>
             <th scope="col"></th>
           </tr>
@@ -69,16 +69,16 @@
       <!-- Pagination controls -->
       <div class="pagination-controls">
         <BaseButton @click="loadPreviousPage" :disabled="currentPage === 1">
-          Previous
+          Anterior
         </BaseButton>
         <span class="pagination-information"
-          >Page {{ currentPage }} of {{ totalPages }}</span
+          >Página {{ currentPage }} de {{ totalPages }}</span
         >
         <BaseButton
           @click="loadNextPage"
           :disabled="currentPage === totalPages"
         >
-          Next
+          Siguiente
         </BaseButton>
       </div>
     </div>
@@ -93,14 +93,15 @@
     @modal-close="onDeleteModalClose"
     id="delete-request-modal"
   >
-    <template #header>Confirm Request Deletion</template>
+    <template #header>Confirmar la eliminación de la solicitud</template>
     <template #body
       ><p>
-        Are you sure you want to delete this request? The request will no longer
-        be listed or visible to anybody. Any users and products related to this
-        request may be affected by this action.
+        ¿Está seguro de que desea eliminar esta solicitud? La solicitud ya no
+        aparecerá en la lista ni será visible para nadie. Todos los usuarios y
+        productos relacionados con esta solicitud pueden verse afectados por
+        esta acción.
       </p>
-      <p>This action cannot be undone.</p></template
+      <p>Esta acción no se puede deshacer.</p></template
     >
   </ModalConfirmationDialog>
   <ModalConfirmationDialog
@@ -109,10 +110,10 @@
     @modal-close="onEditModalClose"
     id="edit-request-modal"
   >
-    <template #header>Request Editing</template>
+    <template #header>Edición de solicitud</template>
     <template #body>
       <div class="container">
-        <h2>Edit Request</h2>
+        <h2>Editar solicitud</h2>
         <form
           @submit.prevent="submitEditRequestForm"
           class="request-edition-form"
@@ -130,13 +131,13 @@
               aria-describedby="idHelp"
             />
             <p id="idHelp" class="form-text">
-              This is the request ID and it must not be updated.
+              Este es el ID de la solicitud y no debe actualizarse.
             </p>
           </div>
 
           <!-- MEssage Field -->
           <div class="mb-3">
-            <label for="message" class="form-label">message</label>
+            <label for="message" class="form-label">Mensaje</label>
             <textarea
               rows="5"
               class="form-control"
@@ -147,7 +148,7 @@
 
           <!-- user ID Field -->
           <div class="mb-3">
-            <label for="user-id" class="form-label">user_id</label>
+            <label for="user-id" class="form-label">id usuario</label>
             <input
               type="number"
               class="form-control"
@@ -158,7 +159,7 @@
 
           <!-- product ID Field -->
           <div class="mb-3">
-            <label for="product-id" class="form-label">product_id</label>
+            <label for="product-id" class="form-label">id producto</label>
             <input
               type="number"
               class="form-control"
@@ -169,7 +170,7 @@
 
           <!-- Admin Field -->
           <div class="mb-3">
-            <label for="is-accepted" class="form-label">Is accepted?</label>
+            <label for="is-accepted" class="form-label">¿Está aceptada?</label>
             <input
               type="checkbox"
               class="form-check-input"
@@ -180,7 +181,7 @@
 
           <!-- Admin Field -->
           <div class="mb-3">
-            <label for="is-active" class="form-label">Is active?</label>
+            <label for="is-active" class="form-label">¿Esta activa?</label>
             <input
               type="checkbox"
               class="form-check-input"
@@ -191,7 +192,7 @@
 
           <!-- Created At Field -->
           <div class="mb-3">
-            <label for="created_at" class="form-label">Created At</label>
+            <label for="created_at" class="form-label">Creación</label>
             <input
               type="text"
               class="form-control"
@@ -202,11 +203,10 @@
               aria-describedby="dateHelp"
             />
             <p id="dateHelp" class="form-text">
-              This is the request creation date and it must not be updated.
+              Esta es la fecha de creación de la solicitud y no debe
+              actualizarse.
             </p>
           </div>
-
-          <!--<button type="submit" class="btn btn-primary">Submit</button>-->
         </form>
       </div></template
     >
@@ -265,12 +265,6 @@ const closeAllModals = () => {
 watch(
   () => isEditModalVisible.value,
   (newValue, oldValue) => {
-    console.log(
-      "isEditModalVisible prop changed from",
-      oldValue,
-      "to",
-      newValue
-    );
     if ((newValue = true)) {
       setIsDeleteModalVisible(false);
       //setIsCreateModalVisible(false);
@@ -379,7 +373,7 @@ const fetchAllRequests = async () => {
       page++;
     } catch (error) {
       // Registra cualquier error que ocurra al recuperar usuarios
-      console.error("Error fetching requests:", error);
+      console.error("Error al recuperar solicitudes:", error);
       throw error; // Lanza el error para que el llamante pueda manejarlo si es necesario
     }
   }
@@ -394,9 +388,9 @@ const handleSuccess = async () => {
 
   // Show success toast
   store.commit("addToast", {
-    title: "Request updated",
+    title: "Solicitud actualizada",
     type: "success",
-    message: "You have successfully updated the request.",
+    message: "Ha actualizado correctamente la solicitud.",
   });
   closeAllModals();
   await getAllRequests();
@@ -412,7 +406,7 @@ const handleRequestError = (error) => {
   if (error.response) {
     // Capturar el codigo de error
     errorStatus = error.response.status;
-    console.error("Error status", error.response.status);
+    console.error("Código de error", error.response.status);
 
     // Extraer mensaje de error, solo el primero, de forma que si hay varios se solucinan uno a uno.
     const errors = error.response.data.errors;
@@ -424,15 +418,15 @@ const handleRequestError = (error) => {
       }
     }
   } else {
-    console.error("There was an unexpected error processing the request.");
+    console.error("Se produjo un error inesperado al procesar la solicitud.");
   }
 
   // Construir el mensaje de error final
-  const finalMessage = `The product could not be updated. Error code: ${errorStatus}. Error message: ${errorMessage}`;
+  const finalMessage = `El producto no se pudo actualizar. Código de error: ${errorStatus}. Mensaje de error: ${errorMessage}`;
 
   //Mostrar el toast con el error
   store.commit("addToast", {
-    title: "Product Not Updated",
+    title: "Solicitud no actualizada",
     type: "error",
     message: finalMessage,
   });
@@ -477,9 +471,9 @@ async function deleteRequest(requestId) {
 
     //Enviar toast al store de Vuex para mostrar la notificacion de exito
     store.commit("addToast", {
-      title: "Request Deleted",
+      title: "Solicitud eliminada",
       type: "success",
-      message: `Request ${requestId} has been deleted. The request list will be reloaded.`,
+      message: `La solicitud ${requestId} ha sido eliminada. La lista de solicitudes se recargará.`,
     });
 
     closeAllModals(); //se cierran todos los modales al terminar
