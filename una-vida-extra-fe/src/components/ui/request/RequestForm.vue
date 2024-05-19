@@ -211,7 +211,6 @@ onBeforeMount(async () => {
   if (requestedProds) {
     let filteredData = [];
     for (let i = 0; i < requestedProds.length; i++) {
-      console.log(requestedProds[i].product_id);
       if (requestedProds[i].product_id == props.id) {
         filteredData.push(requestedProds[i]);
       }
@@ -224,6 +223,9 @@ onBeforeMount(async () => {
 </script>
 
 <style scoped>
+.form-control {
+  padding: 0;
+}
 form {
   background-color: #fff;
   padding: 0;

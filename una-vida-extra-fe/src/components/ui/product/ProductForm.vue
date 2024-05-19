@@ -98,7 +98,7 @@
                     v-model="data.category.val"
                   >
                     <option
-                      v-for="category in prodCategories"
+                      v-for="category in productCategories"
                       :key="category.id"
                       :id="category.id"
                       :value="category.id"
@@ -128,19 +128,27 @@
       </div>
     </div>
   </div>
+  <div class="row">
+    <div class="loading col text-center" v-show="isLoading">
+      <base-spinner></base-spinner>
+    </div>
+  </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, computed } from "vue";
+import { ref, reactive, onMounted, computed, onBeforeMount } from "vue";
 import BaseButton from "../BaseButton.vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
 import { useStore } from "vuex";
+import BaseSpinner from "../BaseSpinner.vue";
+
 const baseApiUrl = import.meta.env.VITE_BASE_API_URL; //ruta base para la api del backend
 
 const router = useRouter(); // inicializacion para acceso al router
 const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 //data
+
 //Datos vinculados al formulario para irlos actualizando automáticamente (tienen un v-model)
 const data = reactive({
   productName: {
@@ -323,14 +331,15 @@ const createProduct = async (payload) => {
   }
 };
 const requestError = ref(false);
-const prodCategories = ref([]);
+
+// Se usa una computada para obtener las categorias directamente desde el store. Como se se esperan centenas de ellas, se carga directamente desde la api por la paginacion de esta en lugar de en local
+const productCategories = computed(() => store.state.productCategories);
+
 //pillar product requests de la api
 const getProductCategories = async () => {
   try {
-    const resp = await axios.get(`${baseApiUrl}/categories`);
-
-    prodCategories.value = resp.data.data;
-    console.log(prodCategories);
+    // Recupera todas las categorías para almacenarlas y poder usarlas
+    await store.dispatch("getProductCategories");
     requestError.value = false;
   } catch (error) {
     requestError.value = true;
@@ -356,8 +365,10 @@ const getProductCategories = async () => {
   }
 };
 
-//Al cargarse el componente, gestionar categorías para mostrar las adecuadas
-getProductCategories();
+onBeforeMount(() => {
+  //Antes de montar, cargar las categorias
+  getProductCategories();
+});
 
 const imagePath = computed(() => {
   if (
@@ -405,6 +416,7 @@ const onImageChange = (e) => {
 
   margin-right: 1rem;
   margin-bottom: 1rem;
+  border-radius: 5px;
 }
 #image-upload input {
   margin: 0;

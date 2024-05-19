@@ -261,7 +261,7 @@ onMounted(async () => {
   await getAllCategories();
 });
 
-// Borrar las etiquetas en el store de Vuex a una matriz vacía al desmontar el componente
+// Borrar las categorias en el store de Vuex a una matriz vacía al desmontar el componente
 onUnmounted(() => {
   store.commit("setProductCategories", []);
 });
