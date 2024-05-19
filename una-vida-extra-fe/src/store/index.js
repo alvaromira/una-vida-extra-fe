@@ -351,6 +351,11 @@ const store = createStore({
                     // Verificar si hay una página siguiente
                     nextPage = response.data.links.next;
                 }
+
+                // Se ordenan las categorias de A-Z
+                allCategories.sort((a, b) => {
+                    return a.name.localeCompare(b.name);
+                });
                 // Actualizar el estado de la aplicación con todas las categorías de productos
                 commit('setProductCategories', allCategories);
             } catch (error) {

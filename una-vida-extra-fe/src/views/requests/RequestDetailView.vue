@@ -1,7 +1,7 @@
 <!--Componente tipo vista donde se usan los subcomponentes para mostrar un formulario donde solicitar el producto-->
 <template>
-  <div class="row justify-content-md-center">
-    <div class="col">
+  <div class="row">
+    <div class="col justify-content-md-center d-flex request-title">
       <h2>
         Solicitar <em>{{ prodDetail.title }}</em>
       </h2>
@@ -59,3 +59,8 @@ const imagePath = computed(() => {
   }
 });
 </script>
+<style scoped>
+.request-title {
+  padding-bottom: 2rem;
+}
+</style>

@@ -3,7 +3,7 @@
     <div class="container">
       <div class="form-field row text-center">
         <div class="col-3 form-label">
-          <label for="email">Email</label>
+          <label for="email">Correo</label>
         </div>
         <div class="col-9">
           <input
@@ -22,13 +22,13 @@
         :class="{ active: !data.email.isValid }"
       >
         <div class="col">
-          <p>Email must not be empty.</p>
+          <p>El correo electrónico no debe estar vacío.</p>
         </div>
       </div>
 
       <div class="form-field row text-center">
         <div class="col-3 form-label">
-          <label for="password">Password</label>
+          <label for="password">Contraseña</label>
         </div>
         <div class="col-9">
           <div class="input-group">
@@ -57,16 +57,16 @@
       >
         <div class="col">
           <p>
-            Password must be at least 8 characters long and contain at least one
-            uppercase letter, one lowercase letter, one number, and one special
-            character."
+            La contraseña debe tener al menos 8 caracteres y contener al menos
+            una letra mayúscula, una letra minúscula, un número y un carácter
+            especial.
           </p>
         </div>
       </div>
 
       <div class="form-field row text-center">
         <div class="col-3 form-label">
-          <label for="password-confirmation">Password Confirmation</label>
+          <label for="password-confirmation">Confirmación de contraseña</label>
         </div>
         <div class="col-9">
           <div class="input-group">
@@ -94,7 +94,9 @@
         :class="{ active: !data.passwordConfirmation.isValid }"
       >
         <div class="col">
-          <p>The password confirmation must match the password.</p>
+          <p>
+            La confirmación de la contraseña debe coincidir con la contraseña.
+          </p>
         </div>
       </div>
 
@@ -103,7 +105,7 @@
           v-if="formIsValid.value === false"
           class="form-field row text-center"
         >
-          <p>Please fix the above errors and submit again.</p>
+          <p>Corrije los errores anteriores y envíalo nuevamente.</p>
         </div>
       </div>
       <div v-if="!isProcessing">
@@ -124,7 +126,9 @@
       <div class="form-field row submit">
         <div class="col-md-6"></div>
         <div class="form-submit-button col-md-6">
-          <BaseButton :disabled="isProcessing">Reset Password</BaseButton>
+          <BaseButton :disabled="isProcessing"
+            >Restablecer contraseña</BaseButton
+          >
         </div>
       </div>
     </div>
@@ -157,7 +161,7 @@ const togglePasswordVisibility = (event) => {
 const resetError = ref(false);
 const errorCode = ref(null);
 const errorString = ref(
-  "Wrong credentials provided. Please check your email and password."
+  "Se proporcionaron credenciales incorrectas. Por favor revisa tu correo electrónico y contraseña."
 );
 
 //data
@@ -247,8 +251,6 @@ const validatePassword = (password) => {
 
 //validación específica de cada uno de los campos del formulario
 const validateForm = async () => {
-  console.log("Running validation on reset form");
-
   formIsValid.value = true;
 
   if (data.email.val === "") {
@@ -293,7 +295,6 @@ const submitForm = async () => {
 };
 
 const resetPassword = async () => {
-  console.log("resetting password");
   isProcessing.value = true; //Establece la carga a verdadero una vez que se obtienen los datos
   try {
     const formData = {
@@ -332,10 +333,10 @@ const handleSuccessfulReset = () => {
   isProcessing.value = false;
   //toast
   store.commit("addToast", {
-    title: "Password Correctly Reset",
+    title: "Contraseña actualizada",
     type: "success",
     message:
-      "You have correctly updated your password. You can now login to the site.",
+      "Has actualizado tu contraseña. Ahora puedes iniciar sesión en el sitio.",
   });
   router.push("/login");
 };

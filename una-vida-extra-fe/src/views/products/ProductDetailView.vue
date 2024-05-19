@@ -4,7 +4,7 @@
       <div class="row row justify-content-md-center">
         <div class="back-to-products-button col-md-8">
           <a :href="$router.resolve({ name: 'products' }).href"
-            >Volver a tus productos</a
+            >Volver a todos los productos</a
           >
         </div>
       </div>

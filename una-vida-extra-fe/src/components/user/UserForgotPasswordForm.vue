@@ -5,14 +5,14 @@
       <div class="row instructions">
         <div class="col">
           <p>
-            Enter your email and we will email you a link to reset your
-            password.
+            Introduce tu correo electrónico y te enviaremos un enlace para
+            restablecer la contraseña.
           </p>
         </div>
       </div>
       <div class="form-field row text-center">
         <div class="col-3 form-label">
-          <label for="email">Email</label>
+          <label for="email">Correo</label>
         </div>
         <div class="col-9">
           <input
@@ -32,17 +32,15 @@
           :class="{ active: anyError }"
         >
           <div class="col" v-if="!data.email.isValid">
-            <p>Email must not be empty.</p>
+            <p>El correo electrónico no debe estar vacío.</p>
           </div>
           <div class="col" v-if="resetError">
             <div id="login-errors">
               <p v-if="errorCode === 422" class="validation-error">
-                Wrong credentials provided. Please check your email and
-                password.
+                Se proporcionaron datos incorrectos. Por favor revisa tu correo
+                electrónico.
               </p>
-              <p v-else>
-                There was an error while logging you in. Please try again later.
-              </p>
+              <p v-else>Se produjo un error. Vuelve a intentarlo más tarde.</p>
             </div>
           </div>
         </div>
@@ -53,7 +51,9 @@
       </div>
       <div class="form-field row submit">
         <div class="form-submit-button">
-          <BaseButton :disabled="isProcessing">Send Link to Email</BaseButton>
+          <BaseButton :disabled="isProcessing"
+            >Enviar enlace al correo</BaseButton
+          >
         </div>
       </div>
     </div>
@@ -124,10 +124,10 @@ const handleSuccessfulReset = () => {
   isProcessing.value = false;
   //se muestra un toast de exito
   store.commit("addToast", {
-    title: "Password Reset Requested",
+    title: "Restablecimiento de contraseña solicitado",
     type: "success",
     message:
-      "You have requested a password reset. You will receive an email to process your password reset in a few minutes.",
+      "Has solicitado un restablecimiento de contraseña. Recibirás un correo electrónico para procesar el restablecimiento de la contraseña en unos minutos.",
   });
   //se redirije a la ruta login
   router.push("/login");

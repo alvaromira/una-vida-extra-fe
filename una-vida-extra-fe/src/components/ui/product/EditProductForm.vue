@@ -331,7 +331,7 @@ async function deleteProduct(productId) {
     store.commit("addToast", {
       title: "Producto eliminado",
       type: "success",
-      message: `El producto ${productId} ha sido eliminado. No te llevan a tu resto de productos.`,
+      message: `El producto ${productId} ha sido eliminado.`,
     });
     router.push({ name: "userProducts" });
   } catch (error) {

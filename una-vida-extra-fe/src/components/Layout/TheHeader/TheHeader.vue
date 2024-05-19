@@ -4,14 +4,15 @@
     <section id="primary-nav-bar">
       <nav class="navbar navbar-expand-md">
         <div class="container-fluid">
-          <RouterLink :to="{ name: 'products' }" class="navbar-brand" href="#">
+          <RouterLink :to="{ name: 'products' }" class="navbar-brand">
             <img
               alt="1up logo"
               class="logo"
               src="@/assets/images/one-life-up-logo.png"
               width="125"
               height="100"
-          /></RouterLink>
+            /><span class="logo-letters">Una vida extra</span></RouterLink
+          >
 
           <button
             class="navbar-toggler"
@@ -487,6 +488,18 @@ label[for="site-search"] {
 }
 #second-nav-bar .navbar-nav {
   gap: 1rem;
+}
+.navbar-brand a {
+  color: white;
+}
+.navbar-brand a:hover {
+  color: white;
+  text-decoration: underline;
+}
+.logo-letters {
+  color: white;
+  letter-spacing: -0.1rem;
+  font-weight: 300;
 }
 @media (min-width: 768px) {
   #access {

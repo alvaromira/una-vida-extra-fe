@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="row title">
-      <div class="col"><h2>Mis solicitudes</h2></div>
+      <div class="col"><h2>Mis solicitudes enviadas</h2></div>
     </div>
 
     <div class="loading" v-show="isLoading">
@@ -17,6 +17,16 @@
       </div>
 
       <div v-else>
+        <div class="row">
+          <div class="col">
+            <div class="no-requests-found text-center">
+              <p>
+                Las siguientes son las solicitudes que tú has enviado para
+                productos que te interesan.
+              </p>
+            </div>
+          </div>
+        </div>
         <div class="request-card-wrapper">
           <div class="request-product-id request-card-item">Producto</div>
           <div class="request-message request-card-item">Mensaje</div>

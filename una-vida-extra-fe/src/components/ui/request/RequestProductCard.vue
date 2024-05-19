@@ -75,7 +75,7 @@ p {
   margin: 0;
   padding: 0;
   color: #edb421;
-  text-transform: uppercase;
+  padding-bottom: 1rem;
 }
 .product-card-product-actual-date,
 .publication-details-owner,
