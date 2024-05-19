@@ -8,7 +8,7 @@ Este formulario es identico al UserProfileForm, aunque un poco mas sencillo. PAr
       <div class="form-left-side form-side col-md-6">
         <div class="form-field row text-center">
           <div class="col-3 form-label">
-            <label for="firstname">Firstname</label>
+            <label for="firstname">Nombre</label>
           </div>
           <div class="col-9">
             <input
@@ -22,12 +22,12 @@ Este formulario es identico al UserProfileForm, aunque un poco mas sencillo. PAr
           </div>
         </div>
         <div v-if="!data.firstName.isValid" class="validation-error-container">
-          <p>Firstname must not be empty.</p>
+          <p>El nombre no debe estar vacío.</p>
         </div>
 
         <div class="form-field row text-center">
           <div class="col-3 form-label">
-            <label for="lastname">Lastname</label>
+            <label for="lastname">Apellidos</label>
           </div>
           <div class="col-9">
             <input
@@ -41,11 +41,11 @@ Este formulario es identico al UserProfileForm, aunque un poco mas sencillo. PAr
           </div>
         </div>
         <div v-if="!data.lastName.isValid" class="validation-error-container">
-          <p>Lastname must not be empty.</p>
+          <p>Los apellidos no deben estar vacíos.</p>
         </div>
 
         <div class="form-field row text-center">
-          <div class="col-3 form-label"><label for="email">Email</label></div>
+          <div class="col-3 form-label"><label for="email">Correo</label></div>
           <div class="col-9">
             <input
               :class="{ invalid: !data.email.isValid }"
@@ -58,7 +58,7 @@ Este formulario es identico al UserProfileForm, aunque un poco mas sencillo. PAr
           </div>
         </div>
         <div v-if="!data.email.isValid" class="validation-error-container">
-          <p>Email must not be empty.</p>
+          <p>El correo electrónico no debe estar vacío.</p>
         </div>
 
         <div class="form-field row text-center">
@@ -75,12 +75,12 @@ Este formulario es identico al UserProfileForm, aunque un poco mas sencillo. PAr
           </div>
         </div>
         <div v-if="!data.phone.isValid" class="validation-error-container">
-          <p>Phone must not be empty.</p>
+          <p>El teléfono de tener un máximo 9 dígitos.</p>
         </div>
 
         <div class="form-field row text-center">
           <div class="col-3 form-label">
-            <label for="password">Password</label>
+            <label for="password">Contraseña</label>
           </div>
           <div class="col-9">
             <div class="input-group">
@@ -105,13 +105,16 @@ Este formulario es identico al UserProfileForm, aunque un poco mas sencillo. PAr
         </div>
         <div v-if="!data.password.isValid" class="validation-error-container">
           <p>
-            Password must not be empty and it must be 8 characters in length.
+            La contraseña no debe estar vacía, debe tener al menos 8 caracteres,
+            1 mayúscula, 1 miníscula, 1 número y 1 caracter especial.
           </p>
         </div>
 
         <div class="form-field row text-center">
           <div class="col-3 form-label">
-            <label for="password-confirmation">Password confirmation</label>
+            <label for="password-confirmation"
+              >Confirmación de contraseña</label
+            >
           </div>
           <div class="col-9">
             <div class="input-group">
@@ -138,8 +141,7 @@ Este formulario es identico al UserProfileForm, aunque un poco mas sencillo. PAr
           class="validation-error-container"
         >
           <p>
-            Password confirmation must not be empty and must be at least 8
-            characters.
+            La confirmación de la contraseña debe ser igual a la contraseña.
           </p>
         </div>
         <div
@@ -148,15 +150,15 @@ Este formulario es identico al UserProfileForm, aunque un poco mas sencillo. PAr
           "
           class="validation-error-container"
         >
-          <p>Your password and your password confirmation must match.</p>
+          <p>Su contraseña y su confirmación de contraseña deben coincidir.</p>
         </div>
         <div class="form-field row">
           <div class="col">
             <!--Los terminos y conditiones se abren en otra pagina porque son muy largos-->
             <label for="public-details"
-              >By enabling this checkbox I accept the
+              >Al habilitar esta casilla acepto los
               <a :href="$router.resolve({ name: 'terms' }).href" target="_blank"
-                >terms and conditions</a
+                >términos y condiciones</a
               ></label
             >
             <input
@@ -174,11 +176,11 @@ Este formulario es identico al UserProfileForm, aunque un poco mas sencillo. PAr
           class="validation-error-container"
           v-if="!data.publicDetails.isValid"
         >
-          <p>You must accept our terms and conditions.</p>
+          <p>Debes aceptar nuestros términos y condiciones.</p>
         </div>
 
         <p v-if="formIsValid.value === false">
-          Please fix the above errors and submit again.
+          Corrija los errores anteriores y envíelo nuevamente.
         </p>
       </div>
       <div class="form-right-side form-side col-md-6">
@@ -192,7 +194,7 @@ Este formulario es identico al UserProfileForm, aunque un poco mas sencillo. PAr
         <div id="coords-details">
           <div class="form-field row text-center">
             <div class="col-3 form-label">
-              <label for="longitude">Longitude</label>
+              <label for="longitude">Longitud</label>
             </div>
             <div class="col-9">
               <input
@@ -208,12 +210,12 @@ Este formulario es identico al UserProfileForm, aunque un poco mas sencillo. PAr
             v-if="!data.longitude.isValid"
             class="validation-error-container"
           >
-            <p>Longitude must not be empty.</p>
+            <p>La longitud no debe estar vacía.</p>
           </div>
 
           <div class="form-field row text-center">
             <div class="col-3 form-label">
-              <label for="latitude">Latitude</label>
+              <label for="latitude">Latitud</label>
             </div>
             <div class="col-9">
               <input
@@ -226,21 +228,21 @@ Este formulario es identico al UserProfileForm, aunque un poco mas sencillo. PAr
             </div>
           </div>
           <div v-if="!data.latitude.isValid" class="validation-error-container">
-            <p>Latitude must not be empty.</p>
+            <p>Latitud no debe estar vacía.</p>
           </div>
           <div id="user-city" class="row" v-if="userCity !== ''">
             <div class="col text-end">
-              <p>You are based around {{ userCity }}.</p>
+              <p>Estás en la zona de {{ userCity }}.</p>
             </div>
           </div>
           <div class="row">
             <div class="col text-end">
               <BaseButton @click.prevent="getLocationCoords" mode="outline"
-                >Get my Location</BaseButton
+                >Obtener mi ubicación</BaseButton
               >
               <p class="note">
-                We need your location to make sure that proximity is considered
-                when donating products.Thanks!
+                Necesitamos su ubicación para asegurarnos de que se considere la
+                proximidad al donar productos. ¡Gracias!
               </p>
             </div>
           </div>
@@ -248,7 +250,7 @@ Este formulario es identico al UserProfileForm, aunque un poco mas sencillo. PAr
         <div class="row">
           <div class="co">
             <div class="form-submit-button">
-              <BaseButton>Register</BaseButton>
+              <BaseButton>Registrarse</BaseButton>
             </div>
           </div>
         </div>
@@ -262,8 +264,8 @@ Este formulario es identico al UserProfileForm, aunque un poco mas sencillo. PAr
       <transition name="request-errors">
         <div class="request-errors col" v-show="requestError">
           <p>
-            There was an error when trying to perform the registration. Please
-            try again.
+            Se produjo un error al intentar realizar el registro. Inténtalo de
+            nuevo.
           </p>
           <div v-if="apiErrorsFound">
             <p>Details:</p>
@@ -380,8 +382,8 @@ const getLocationCoords = () => {
       );
     },
     (error) => {
-      console.log(
-        `There was an error fetching the geo coords ${error.message}`
+      console.error(
+        `Hubo un error al obtener las coordenadas geográficas ${error.message}`
       );
     }
   );
@@ -499,9 +501,9 @@ const submitForm = async () => {
         requestError.value = false;
 
         store.commit("addToast", {
-          title: "User registered",
+          title: "Usuario registrado",
           type: "success",
-          message: "You have successfully registered. You can now log in.",
+          message: "Te has registrado. Ahora puedes iniciar sesión.",
         });
 
         router.push({ name: "products" });
@@ -550,14 +552,14 @@ const submitForm = async () => {
         locationFormData
       );
 
-      //para el exito se muestra un toast
+      //para el exito se sigue adelante porque esto es invisible para el usuario
       if (resp.status === 201) {
         requestError.value = false;
-        store.commit("addToast", {
+        /*  store.commit("addToast", {
           title: "Location created",
           type: "success",
           message: "You have successfully created a location",
-        });
+        });*/
 
         locationId.value = resp.data.data.id;
         return resp.data.data.id;
@@ -568,20 +570,20 @@ const submitForm = async () => {
       requestError.value = true;
       if (error.response) {
         store.commit("addToast", {
-          title: "Location not created",
+          title: "Ubicación no creada",
           type: "error",
           message:
-            "There was an error creating the location. Code: " +
+            "Hubo un error al crear la ubicación. Código: " +
             error.response.status,
         });
       } else {
         console.error("Mensaje de error", error.message);
         console.error("Código de error", error.code);
         store.commit("addToast", {
-          title: "Location not created",
+          title: "Ubicación no creada",
           type: "error",
           message:
-            "There was an error creating the location. Code: " + error.code,
+            "Se produjo un error al crear la ubicación. Código:" + error.code,
         });
       }
     }

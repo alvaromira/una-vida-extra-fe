@@ -9,7 +9,7 @@ import UserRegistrationForm from "../../components/user/UserRegistrationForm.vue
       <div class="col"><h2>Registro</h2></div>
     </div>
     <p>
-      Utilice el siguiente formulario para formar parte de nuestra comunidad y
+      Usa el siguiente formulario para formar parte de nuestra comunidad y
       comenzar a contribuir. ¡Gracias!
     </p>
     <user-registration-form />

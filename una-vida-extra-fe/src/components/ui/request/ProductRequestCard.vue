@@ -152,6 +152,7 @@ const closeModal = () => {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 0.2rem;
 } /*
 
 .request-message {

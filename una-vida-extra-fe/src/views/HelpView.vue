@@ -5,19 +5,18 @@
       <div class="class col-md-12">
         <h1>Ayuda</h1>
         <p>
-          ¡Hola! ¿Tienes curiosidad por saber qué están haciendo todos en
-          nuestro divertido trading? ¿plataforma? Echa un vistazo a las cosas
-          que nuestros fantásticos usuarios siempre hacen: desde publicar
-          artículos amados que ya no usan hasta decidir qué de las solicitudes a
-          aceptar.
+          ¡Hola! ¿Tienes curiosidad por saber qué están haciendo los miembros de
+          nuestra comunidad? Desde publicar sus queridos artículos que ya no
+          usan hasta decidir qué solicitudes van a aceptar. Abajo tienes un
+          listado de las preguntas que suelen hacernos.
         </p>
         <p>
-          Y oye, si crees que nos estamos perdiendo algo interesante,
-          ¡contáctanos! Eran Todos los oídos para cualquier sugerencia para
-          darle vida a nuestra sección de preguntas frecuentes. Justo
-          <RouterLink :to="{ name: 'contact' }"> contacto </RouterLink>
-          nosotros y háganoslo saber. ¡Hagamos que esta comunidad sea aún mejor
-          juntos!
+          Y oye, si crees que falta algo, ¡contáctanos! Somos todo oídos para
+          cualquier sugerencia para darle más vida a nuestra sección de
+          preguntas frecuentes. Solo tienes que
+          <RouterLink :to="{ name: 'contact' }"> contactar </RouterLink>
+          nosotros e decirnos qué tienes en la cabeza. ¡Hagamos que esta
+          comunidad sea aún mejor juntos!
         </p>
       </div>
     </div>

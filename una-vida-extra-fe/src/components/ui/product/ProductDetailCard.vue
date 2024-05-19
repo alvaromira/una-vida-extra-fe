@@ -118,32 +118,40 @@
             <div class="col-md-12 product-detail-buttons">
               <!--Si se trata del dueño del producto, se muestran botones para gestionarlo -->
               <div v-if="loggedUserIsOwner" class="product-magement-buttons">
-                <BaseButton
-                  v-if="props.available && !productIsTaken"
-                  :to="{
-                    name: 'editProduct',
-                    params: {
-                      id: id,
-                    },
-                  }"
-                  link="true"
-                  >Editar</BaseButton
-                >
-                <BaseButton v-else @click="setIsModalVisible(true)"
-                  >Marcar como donado</BaseButton
-                >
-                <BaseButton
-                  :to="{
-                    name: 'productRequests',
-                    params: {
-                      id: id,
-                    },
-                  }"
-                  link="true"
-                  >Solicitudes</BaseButton
-                >
+                <div v-if="productIsTaken">
+                  <p class="donated-already-notice">
+                    Ya donaste el producto y alguien está disfrutando de él. 🎉
+                  </p>
+                </div>
+                <div v-else class="product-magement-buttons">
+                  <BaseButton
+                    v-if="props.available && !productIsTaken"
+                    :to="{
+                      name: 'editProduct',
+                      params: {
+                        id: id,
+                      },
+                    }"
+                    link="true"
+                    >Editar</BaseButton
+                  >
+                  <BaseButton v-else @click="setIsModalVisible(true)"
+                    >Marcar como donado</BaseButton
+                  >
+                  <BaseButton
+                    :to="{
+                      name: 'productRequests',
+                      params: {
+                        id: id,
+                      },
+                    }"
+                    link="true"
+                    >Solicitudes</BaseButton
+                  >
+                </div>
               </div>
               <div v-else>
+                <!--Cuando no es el dueño-->
                 <!-- Caso uno, el producto esta donado, no se muestra nada-->
                 <!--Caso dos, el producto no está donado y está disponible, se puede solicitar y se muestra botón -->
                 <span v-if="!productIsTaken && props.available">
@@ -463,5 +471,8 @@ p {
 }
 .is-yours-notice {
   color: gray;
+}
+.taken p.donated-already-notice {
+  color: #7ab370 !important;
 }
 </style>

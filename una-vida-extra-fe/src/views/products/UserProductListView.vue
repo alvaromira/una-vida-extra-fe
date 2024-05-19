@@ -1,10 +1,17 @@
 <template>
   <div class="row">
     <div class="col">
-      <h2>Mis productos</h2>
+      <h2>Mis productos publicados</h2>
     </div>
   </div>
-
+  <div class="row justify-content-md-center">
+    <div class="col no-requests-found text-center">
+      <p>
+        Esta es la lista de los productos y artículos que tienes publicados de
+        momento.
+      </p>
+    </div>
+  </div>
   <div class="row" id="user-product-addition">
     <section class="col d-flex justify-content-end">
       <BaseButton :to="{ name: 'addProduct' }" link="true"
