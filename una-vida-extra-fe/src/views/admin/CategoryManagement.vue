@@ -85,7 +85,7 @@
     <template #header>Edición de categorías</template>
     <template #body>
       <div class="container">
-        <h2>Edit Category</h2>
+        <h2>Editar categoría</h2>
         <form @submit.prevent="subitEditProductForm">
           <!-- ID Field -->
           <div class="mb-3">
@@ -122,7 +122,7 @@
     <template #header>Creación de categorías</template>
     <template #body>
       <div class="container">
-        <h2>Create Category</h2>
+        <h2>Crear categoria</h2>
         <form @submit.prevent="subitEditProductForm">
           <!-- Name Field -->
           <div class="mb-3">

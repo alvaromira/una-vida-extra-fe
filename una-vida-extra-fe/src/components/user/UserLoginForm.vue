@@ -76,7 +76,11 @@
               :class="{ active: loginError }"
               v-if="loginError"
             >
-              <p v-if="errorCode === 422" class="validation-error">
+              <p v-if="userIsDisabled === true && errorCode === 422">
+                Tu cuenta de usuario está desactivada. Contacta con nosotros si
+                quieres re-activarla.
+              </p>
+              <p v-else-if="errorCode === 422" class="validation-error">
                 Se proporcionaron credenciales incorrectas. Por favor revisa tu
                 correo electrónico y contraseña.
               </p>
@@ -120,6 +124,7 @@ const isProcessing = ref(false);
 
 const loginError = ref(false);
 const errorCode = ref(null);
+const userIsDisabled = ref(false);
 
 //datos del formulario, reactivos y vinculados a los campos del formulario
 const data = reactive({
@@ -181,7 +186,16 @@ const login = async () => {
     isProcessing.value = false; // se desactiva la carga
     loginError.value = true; //si hay errores se activa esta variable para mostrarlos en pantalla y se asignan corespondientemente el resto de variables de error
     if (error.response.status) {
-      if (error.response.status && error.response.status === 422) {
+      //Comprobacion de si el usuario está desactivado
+      if (
+        error.response.status &&
+        error.response.status === 422 &&
+        error.response.data.errors.disabled
+      ) {
+        console.error("Cuenta de usuario desactivada.");
+        userIsDisabled.value = true;
+        errorCode.value = 422;
+      } else if (error.response.status && error.response.status === 422) {
         errorCode.value = 422;
       } else {
         errorCode.value = error.response.status;

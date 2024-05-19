@@ -267,6 +267,13 @@ h2 {
   font-weight: 300;
   text-align: center;
 }
+.welcome-message p a {
+  text-decoration: none;
+  color: #edb421;
+}
+.welcome-message p a:hover {
+  text-decoration: underline;
+}
 .welcome-wrapper {
   border-radius: 10px;
   overflow: hidden;

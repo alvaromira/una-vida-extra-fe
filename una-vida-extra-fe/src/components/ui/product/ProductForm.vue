@@ -65,7 +65,7 @@
                 </div>
               </div>
 
-              <div class="mb-3">
+              <div class="mb-3 disabled-field">
                 <label for="tags" class="form-label">Etiquetas:</label>
 
                 <input
@@ -73,10 +73,13 @@
                   type="text"
                   id="tags"
                   v-model.trim="data.tags.val"
-                  placeholder="Insert the tags for your product, separate them with commmas"
+                  placeholder="Inserta las etiquetas de tu producto, sepáralas con comas"
+                  disabled
+                  readonly
                 />
                 <div id="emailHelp" class="form-text">
-                  La edición de etiquetas no está disponible en este momento.
+                  La edición de etiquetas no está disponible en este momento. Lo
+                  estará en breve. 😅
                 </div>
               </div>
               <div v-if="!data.tags.isValid" class="validation-error-container">
@@ -188,11 +191,11 @@ const validateForm = async () => {
     data.description.isValid = false;
     formIsValid.value = false;
   }
-
+  /* Funcion deshabilitada por el momento, pero el componente ya esta preparado
   if (data.tags.val === "") {
     data.tags.isValid = false;
     formIsValid.value = false;
-  }
+  }*/
 
   if (data.category.val === "" || data.category.val === null) {
     data.category.isValid = false;
@@ -208,8 +211,9 @@ const clearForm = () => {
   data.description.val === "";
   data.description.isValid = true;
 
-  data.tags.val === "";
-  data.tags.isValid = false;
+  //Funcion deshabilitada de momento
+  //  data.tags.val === "";
+  //  data.tags.isValid = false;
 
   data.category.val === "";
   data.category.isValid = true;
@@ -228,7 +232,7 @@ const submitForm = async () => {
   formData.append("image", data.image.val);
   formData.append("title", data.productName.val);
   formData.append("description", data.description.val);
-  //formData.append('tags', data.tags.val);
+  //formData.append('tags', data.tags.val);  Funcion deshabilitada de momento
   formData.append("category_id", data.category.val);
   formData.append("user_id", loggedInUser.value);
   formData.append("available", 1);
@@ -486,5 +490,15 @@ select#category {
   font: inherit;
   box-shadow: rgba(17, 17, 26, 0.2) 0px 2px 4px;
   color: gray;
+}
+.disabled-field {
+  color: lightgray;
+  opacity: 0.75;
+}
+.disabled-field label {
+  color: lightgray;
+}
+.disabled-field input {
+  border: thin solid lightgray;
 }
 </style>

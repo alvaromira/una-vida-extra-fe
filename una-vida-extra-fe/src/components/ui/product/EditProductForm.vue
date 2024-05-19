@@ -409,7 +409,7 @@ async function deleteProduct(productId) {
                 </div>
               </div>
 
-              <div class="mb-3">
+              <div class="mb-3 disabled-field">
                 <label for="tags" class="form-label">Etiquetas:</label>
 
                 <input
@@ -422,7 +422,8 @@ async function deleteProduct(productId) {
                   readonly
                 />
                 <div id="emailHelp" class="form-text">
-                  La edición de etiquetas no está disponible en este momento.
+                  La edición de etiquetas no está disponible en este momento. Lo
+                  estará en breve. 😅
                 </div>
               </div>
               <div v-if="!data.tags.isValid" class="validation-error-container">
@@ -550,6 +551,7 @@ async function deleteProduct(productId) {
 
   margin-right: 1rem;
   margin-bottom: 1rem;
+  border-radius: 5px;
 }
 #image-upload input {
   margin: 0;
@@ -636,6 +638,16 @@ input[type="checkbox"]:focus {
 
 .form-submit-button {
   text-align: right;
+}
+.disabled-field {
+  color: lightgray;
+  opacity: 0.75;
+}
+.disabled-field label {
+  color: lightgray;
+}
+.disabled-field input {
+  border: thin solid lightgray;
 }
 select#category {
   border: thin solid #edb421;

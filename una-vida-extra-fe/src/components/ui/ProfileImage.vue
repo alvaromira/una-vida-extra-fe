@@ -112,5 +112,6 @@ const generateGravatarUrl = async (email) => {
   height: 100%;
   object-fit: cover;
   background-color: white;
+  border-radius: 5px;
 }
 </style>

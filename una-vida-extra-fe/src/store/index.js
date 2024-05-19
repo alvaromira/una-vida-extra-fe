@@ -279,6 +279,7 @@ const store = createStore({
             const userRequests = []; // Array para almacenar las solicitudes de usuario
             let currentPage = 1; // Página actual inicializada en 1
 
+            //Se usa paginacion simple para este endpoint
             while (true) {
                 try {
                     // URL de destino para obtener las solicitudes de usuario de la página actual
@@ -292,7 +293,7 @@ const store = createStore({
                     userRequests.push(...requestObjects);
 
                     // Si no hay una página siguiente, se sale del bucle
-                    if (!data.data.links.next) {
+                    if (!data.next_page_url) {
                         break;
                     }
 
@@ -436,12 +437,8 @@ const store = createStore({
                     commit('SET_USER', {});
                     commit('SET_AUTHENTICATED', false);
                     commit('SET_USER_IS_ADMIN', false);
-                    console.log("No valid session");
+                    console.error("No valid session");
                 }
-
-                // Registra los detalles del usuario autenticado
-                console.log("calling getAuthUser");
-                console.log(response.data.data);
 
                 // Actualiza el estado de la aplicación con los datos del usuario autenticado
                 commit('SET_USER', response.data.data);

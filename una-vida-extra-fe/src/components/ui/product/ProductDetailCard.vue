@@ -71,19 +71,8 @@
                   <h2>{{ props.title }}</h2>
                 </div>
                 <div class="product-card-detail-publication-details">
-                  <p v-if="!loggedUserIsOwner">
-                    Publicado por
-                    <span class="publication-details-owner">
-                      {{ props.owner }}</span
-                    >
-                    . Fecha:
-                    <span class="product-card-product-actual-date">{{
-                      userFriendlyDate
-                    }}</span
-                    >.
-                  </p>
-                  <p v-else>
-                    Tú publicaste este artículo en:
+                  <p>
+                    Fecha de publicación:
                     <span class="product-card-product-actual-date">{{
                       userFriendlyDate
                     }}</span
@@ -95,13 +84,18 @@
                 </div>
 
                 <div class="product-detail-availability">
-                  <div v-if="loggedUserIsOwner">
+                  <!--info adicional si es el dueÑo-->
+                  <p v-if="loggedUserIsOwner" class="is-yours-notice">
+                    (Este artículo es tuyo, <strong>{{ loggedUserName }}</strong
+                    >).
+                  </p>
+                  <!-- <div v-if="loggedUserIsOwner">
                     <p>
                       Has aceptado una solicitud para este producto. Por favor
                       marca el producto tal como donado cuando lo hayan
                       recogido.
                     </p>
-                  </div>
+                  </div>-->
 
                   <div v-else>
                     <!--Para no dueÑos del producto, en esta sección solo hay dos casos: donado y por tanto se borrará en breve, o bien, con solicitud aceptada y no disponible pero no donado. El resto de casos, no pueden existir {ejemplo: disponible y donado al mismo tiempo}-->
@@ -253,6 +247,15 @@ watch(
 const loggedUserIsOwner = computed(() => {
   if (store.state.user.id === props.owner) {
     return true;
+  } else {
+    return false;
+  }
+});
+
+//computado para usar nombre
+const loggedUserName = computed(() => {
+  if (store.state.user) {
+    return store.state.user.name;
   } else {
     return false;
   }
@@ -442,7 +445,6 @@ p {
 }
 .product-card-product-title h2 {
   color: black;
-  text-transform: capitalize;
 }
 .product-card-product-location {
   padding-bottom: 1rem;
@@ -457,6 +459,9 @@ p {
   gap: 1rem;
 }
 .product-detail-availability {
-  font-weight: bold;
+  font-weight: 300;
+}
+.is-yours-notice {
+  color: gray;
 }
 </style>

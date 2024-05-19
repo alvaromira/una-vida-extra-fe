@@ -38,66 +38,73 @@
           </template>
           <template #responseText>
             <p>
-              Easy! If you do not remember your password or you simply want to
-              update it, just use the 'Forgot password' functionality
-              <RouterLink :to="{ name: 'forgot-password' }">here</RouterLink>.
+              ¡Fácil! Si no recuerdas tu contraseña o simplemente quieres
+              actualízalo, solo usa la funcionalidad 'Olvidé mi contraseña'
+              <RouterLink :to="{ name: 'forgot-password' }">aquí</RouterLink>.
             </p>
           </template>
         </QuestionAndAnswerItem>
 
         <QuestionAndAnswerItem questionId="user-icon">
           <template #question>
-            <h3>User Image</h3>
+            <h3>Imagen de usuario</h3>
           </template>
           <template #questionText>
-            <p>I do not like my user profile image. How do I change it?</p>
+            <p>No me gusta mi imagen de perfil de usuario. ¿Cómo la cambio?</p>
           </template>
           <template #responseText>
             <p>
-              As mentioned in the registration, we are all about re-using here!
-              We use the
-              <a href="https://gravatar.com/" target="_blank">gravatar</a>
-              linked to your registered email address. So if you want to update
-              the picture displayed, just update your actual gravatar and it
-              will be updated in all the places where you use it. 😊
+              Como se mencionó en el registro, ¡aquí nuestro objetivo es
+              reutilizar! Usamos el
+              <a href="https://gravatar.com/" target="_blank"> gravatar </a>
+              vinculado a su dirección de correo electrónico registrada. Así que
+              si quieres actualizar la imagen mostrada, simplemente actualice su
+              gravatar real y Se actualizará en todos los lugares donde lo
+              utilices. 😊
             </p>
           </template>
         </QuestionAndAnswerItem>
 
         <QuestionAndAnswerItem questionId="user-location">
           <template #question>
-            <h3>User Location</h3>
+            <h3>Ubicación del usuario</h3>
           </template>
           <template #questionText>
-            <p>I have moved to a new address. How do I update my profile?</p>
+            <p>
+              Me he mudado a una nueva dirección. ¿Cómo actualizo mi perfil?
+            </p>
           </template>
           <template #responseText>
             <p>
-              Excellent question! First you need to login and then go to your
-              <RouterLink :to="{ name: 'profile' }">profile</RouterLink>. Then,
-              inside the profile, you will see your coordinates. To get them
-              updated, click on the 'Get my Location' button and wait for the
-              location to be updated.
+              ¡Excelente pregunta! Primero debe iniciar sesión y luego ir a su
+              <RouterLink :to="{ name: 'profile' }"> perfil </RouterLink> .
+              Entonces, Dentro del perfil, verás tus coordenadas. Para
+              conseguirlos actualizado, haga clic en el botón 'Obtener mi
+              ubicación' y espere a que ubicación a actualizar.
               <br />
-              Once the coordinates are updated, you can then click on the
-              'Update' button to confirm the update of your profile.
+              Una vez actualizadas las coordenadas, puede hacer clic en el Botón
+              'Actualizar' para confirmar la actualización de tu perfil.
             </p>
           </template>
         </QuestionAndAnswerItem>
 
         <QuestionAndAnswerItem questionId="user-disabled">
           <template #question>
-            <h3>User Account Disabled</h3>
+            <h3>Cuenta de usuario desactivada</h3>
           </template>
           <template #questionText>
-            <p>When I try to log in, my user account is disabled. Why?</p>
+            <p>
+              Cuando intento iniciar sesión, mi cuenta de usuario está
+              desactivada. ¿Por qué?
+            </p>
           </template>
           <template #responseText>
             <p>
-              Admin users can disable user accounts if they consider there is an
-              absolute in the way they use the platform. Please
-              <RouterLink :to="{ name: 'contact' }">contact</RouterLink> us to
-              discuss your case and get your account back online.
+              Los usuarios administradores pueden desactivar las cuentas de
+              usuario si consideran que existe una absoluto en la forma en que
+              utilizan la plataforma. Por favor
+              <RouterLink :to="{ name: 'contact' }"> contáctenos </RouterLink>
+              para analice su caso y recupere su cuenta en línea.
             </p>
           </template>
         </QuestionAndAnswerItem>
@@ -105,42 +112,44 @@
     </div>
     <div class="row question-block">
       <hr />
-      <div class="col"><h2 class="question-block-title">Items</h2></div>
+      <div class="col"><h2 class="question-block-title">Productos</h2></div>
       <div class="class col-md-12">
         <QuestionAndAnswerItem questionId="item-images">
           <template #question>
-            <h3>Item Images</h3>
+            <h3>Imágenes de elementos</h3>
           </template>
           <template #questionText>
-            <p>Why don't you allow more than one image per item?</p>
+            <p>¿Por qué no permites más de una imagen por elemento?</p>
           </template>
           <template #responseText>
             <p>
-              We try to keep things lean. We do as much as we can to keep our
-              carbon footprint under control as part of our efforts to be
-              eco-friendly. So you can use one image only, but you can update it
-              if you want. Consider it a shop window to display the best view of
-              your item!
+              Intentamos mantener las cosas sencillas. Hacemos todo lo que
+              podemos para mantener nuestra huella de carbono bajo control como
+              parte de nuestros esfuerzos por ser Respetuoso del medio ambiente.
+              Entonces puedes usar una sola imagen, pero puedes actualizarla. si
+              quieres. Considérelo un escaparate para mostrar la mejor vista de
+              ¡Tu objeto!
               <br />
-              (Note: we may reconsider this in the future 🤔.)
+              (Nota: es posible que reconsideremos esto en el futuro 🤔).
             </p>
           </template>
         </QuestionAndAnswerItem>
 
         <QuestionAndAnswerItem questionId="item-owner">
           <template #question>
-            <h3>Item Owner</h3>
+            <h3>Dueño del producto</h3>
           </template>
           <template #questionText>
             <p>
-              How can I find out who is the owner of an item I am interested in?
+              ¿Cómo puedo saber quién es el dueño de un artículo que me
+              interesa?
             </p>
           </template>
           <template #responseText>
             <p>
-              You simply can't. You can check the details of the item as well as
-              its location, but you cannot know who the onwer is until your
-              request has been accepted.
+              Simplemente no puedes. Podrás consultar los detalles del artículo
+              así como su ubicación, pero no puedes saber quién es el
+              propietario hasta que la solicitud ha sido aceptada.
             </p>
           </template>
         </QuestionAndAnswerItem>
@@ -148,26 +157,27 @@
     </div>
     <div class="row question-block">
       <hr />
-      <div class="col"><h2 class="question-block-title">Location</h2></div>
+      <div class="col"><h2 class="question-block-title">Ubicación</h2></div>
       <div class="class col-md-12">
         <QuestionAndAnswerItem questionId="allow-location-details">
           <template #question>
-            <h3>Allowing Browser Geolocation</h3>
+            <h3>Permitir la geolocalización del navegador</h3>
           </template>
           <template #questionText>
             <p>
-              When I register, the browser asks me to allow my location. Why is
-              that?
+              Cuando me registro, el navegador me pide que permita mi ubicación.
+              Por que es ¿eso?
             </p>
           </template>
           <template #responseText>
             <p>
-              Well, we are all about re-using and reciclying locally. So to do
-              that and handle requests you receive by proximity, we need to know
-              your exact location. Please remember this is just your location,
-              you are not providind any addresses. So you are not revealing any
-              details. Just make sure you register with a location that makes
-              sense for you and the rest of the community.
+              Bueno, nuestro objetivo es reutilizar y reciclar localmente. Así
+              que hacer eso y manejar las solicitudes que recibes por
+              proximidad, necesitamos saber tu ubicación exacta. Recuerde que
+              esta es solo su ubicación, No estás proporcionando ninguna
+              dirección. Entonces no estás revelando nada. detalles. Sólo
+              asegúrese de registrarse en una ubicación que haga sentido para
+              usted y el resto de la comunidad.
             </p>
           </template>
         </QuestionAndAnswerItem>
@@ -175,22 +185,23 @@
     </div>
     <div class="row question-block">
       <hr />
-      <div class="col"><h2 class="question-block-title">Categories</h2></div>
+      <div class="col"><h2 class="question-block-title">Categorías</h2></div>
       <div class="class col-md-12">
         <QuestionAndAnswerItem questionId="allow-location-details">
           <template #question>
-            <h3>More Categories</h3>
+            <h3>Más categorías</h3>
           </template>
           <template #questionText>
-            <p>Why can't I add a new category on my own?</p>
+            <p>¿Por qué no puedo agregar una nueva categoría por mi cuenta?</p>
           </template>
           <template #responseText>
             <p>
-              Categories are managed by admins. If you feel you need to have
-              more categories and get them renamed, please
-              <RouterLink :to="{ name: 'contact' }">contact</RouterLink> us so
-              an admin user can get manage your request and get the new category
-              added for you.
+              Las categorías son administradas por administradores. Si sientes
+              que necesitas tener más categorías y cambiarles el nombre, por
+              favor
+              <RouterLink :to="{ name: 'contact' }"> contáctenos </RouterLink>
+              para un usuario administrador puede gestionar su solicitud y
+              obtener la nueva categoría añadido para ti.
             </p>
           </template>
         </QuestionAndAnswerItem>
