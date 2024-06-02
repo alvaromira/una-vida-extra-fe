@@ -522,5 +522,10 @@ label[for="site-search"] {
   #site-search {
     min-width: 360px;
   }
+  .navbar-expand-md .navbar-collapse {
+    display: flex !important;
+    flex-basis: auto;
+    flex-wrap: wrap;
+  }
 }
 </style>
