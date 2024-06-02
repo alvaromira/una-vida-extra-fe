@@ -11,7 +11,7 @@
               src="@/assets/images/one-life-up-logo.png"
               width="125"
               height="100"
-            /><span class="logo-letters">Una vida extra</span></RouterLink
+            /><span class="logo-letters">{{ t("appTitle") }}</span></RouterLink
           >
 
           <button
@@ -202,10 +202,12 @@ import { computed, ref, onMounted } from "vue";
 import { useStore } from "vuex";
 import ProfileImage from "../../ui/ProfileImage.vue";
 import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 
 const router = useRouter(); // inicializacion para acceso al router
 const store = useStore(); // inicializacion para acceso al state en el store de Vuex
 const searchTerm = ref("");
+const { t } = useI18n();
 
 const searchProducts = () => {
   const searchTermValue = searchTerm.value.trim(); // se eliminan espacios en blancos para el termino de busqeuda
