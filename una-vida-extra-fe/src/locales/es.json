@@ -5,7 +5,7 @@
     "search": "Buscar en el sitio web:",
     "register": "Registrarse",
     "access": "Acceder",
-    "user-greeting": "Hola, {{ activeUserEmail }}",
+    "user-greeting": "Hola, {username}",
     "menu": {
       "my-products": "Mis productos",
       "my-requests": "Mis solicitudes",
