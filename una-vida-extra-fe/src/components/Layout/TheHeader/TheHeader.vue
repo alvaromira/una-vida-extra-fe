@@ -34,7 +34,7 @@
               class="d-flex"
               id="search-product-form"
             >
-              <label for="site-search">Buscar en el sitio web:</label>
+              <label for="site-search">{{ t("header.search") }}</label>
               <input
                 type="search"
                 id="site-search"
@@ -62,13 +62,13 @@
             </form>
             <div id="access" class="d-flex" v-if="!getUserStatus">
               <BaseButton :to="{ name: 'register' }" link="true"
-                >Registrarse</BaseButton
+                >{{ t("header.register") }}"</BaseButton
               >
               <BaseButton
                 mode="outline-green"
                 :to="{ name: 'login' }"
                 link="true"
-                >Acceder</BaseButton
+                >{{ t("header.access") }}</BaseButton
               >
             </div>
             <div v-if="getUserStatus" class="profile-image-icon">
@@ -87,8 +87,9 @@
                   role="button"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
-                >
-                  Hola, {{ activeUserEmail }}
+                  >{{
+                    t("header.user-greeting", { username: activeUserEmail })
+                  }}
                 </a>
                 <ul
                   class="dropdown-menu yellow-color w-100"
@@ -99,7 +100,7 @@
                       v-if="!isUserAdmin"
                       class="dropdown-item"
                       :to="{ name: 'userProducts' }"
-                      >Mis productos</RouterLink
+                      >{{ t("header.menu.my-products") }}</RouterLink
                     >
                   </li>
                   <li>
@@ -107,7 +108,7 @@
                       v-if="!isUserAdmin"
                       class="dropdown-item"
                       :to="{ name: 'requests' }"
-                      >Mis solicitudes</RouterLink
+                      >{{ t("header.menu.my-requests") }}</RouterLink
                     >
                   </li>
                   <li>
@@ -115,7 +116,7 @@
                       v-if="!isUserAdmin"
                       class="dropdown-item"
                       :to="{ name: 'profile' }"
-                      >Perfil</RouterLink
+                      >{{ t("header.menu.profile") }}</RouterLink
                     >
                   </li>
 
@@ -124,7 +125,7 @@
                       v-if="!isUserAdmin"
                       class="dropdown-item"
                       :to="{ name: 'logout' }"
-                      >Salir</RouterLink
+                      >{{ t("header.menu.exit") }}</RouterLink
                     >
                   </li>
 
@@ -133,7 +134,7 @@
                       v-if="isUserAdmin"
                       class="dropdown-item"
                       :to="{ name: 'admin' }"
-                      >Zona Admin</RouterLink
+                      >{{ t("header.menu.admin-zone") }}</RouterLink
                     >
                   </li>
                   <li>
@@ -141,7 +142,7 @@
                       v-if="isUserAdmin"
                       class="dropdown-item"
                       :to="{ name: 'profile' }"
-                      >Perfil</RouterLink
+                      >{{ t("header.menu.profile") }}</RouterLink
                     >
                   </li>
                   <li>
@@ -149,7 +150,7 @@
                       v-if="isUserAdmin"
                       class="dropdown-item"
                       :to="{ name: 'logout' }"
-                      >Salir</RouterLink
+                      >{{ t("header.menu.exit") }}</RouterLink
                     >
                   </li>
                 </ul>
@@ -169,24 +170,24 @@
                   aria-current="page"
                   class="nav-link"
                   :to="{ name: 'products' }"
-                  >Productos</RouterLink
+                  >{{ t("header.navbar.products") }}</RouterLink
                 >
               </li>
               <li class="nav-item">
-                <RouterLink class="nav-link" :to="{ name: 'project' }"
-                  >Proyecto</RouterLink
-                >
+                <RouterLink class="nav-link" :to="{ name: 'project' }">{{
+                  t("header.navbar.products")
+                }}</RouterLink>
               </li>
               <li class="nav-item">
-                <RouterLink class="nav-link" :to="{ name: 'sponsors' }"
-                  >Patrocinadores</RouterLink
-                >
+                <RouterLink class="nav-link" :to="{ name: 'sponsors' }">{{
+                  t("header.navbar.sponsors")
+                }}</RouterLink>
               </li>
 
               <li class="nav-item">
-                <RouterLink class="nav-link" :to="{ name: 'help' }"
-                  >Ayuda</RouterLink
-                >
+                <RouterLink class="nav-link" :to="{ name: 'help' }">{{
+                  t("header.navbar.help")
+                }}</RouterLink>
               </li>
             </ul>
           </div>
@@ -219,7 +220,7 @@ const searchProducts = () => {
       query: { q: searchTermValue },
     });
   } else {
-    console.log("El término de búsqueda debe tener al menos 3 caracteres.");
+    console.log(t("errors.min-search-length"));
   }
 };
 

@@ -1,4 +1,26 @@
 {
   "home": "Inicio",
-  "appTitle": "Una vida extra"
+  "appTitle": "Una vida extra",
+  "header": {
+    "search": "Buscar en el sitio web:",
+    "register": "Registrarse",
+    "access": "Acceder",
+    "user-greeting": "Hola, {{ activeUserEmail }}",
+    "menu": {
+      "my-products": "Mis productos",
+      "my-requests": "Mis solicitudes",
+      "profile": "Perfil",
+      "exit": "Salir",
+      "admin-zone": "Zona Admin"
+    },
+    "navbar": {
+      "products": "Productos",
+      "project": "Proyecto",
+      "sponsors": "Patrocinadores",
+      "help": "Ayuda"
+    }
+  },
+  "errors": {
+    "min-search-length": "El término de búsqueda debe tener al menos 3 caracteres."
+  }
 }
